@@ -7,7 +7,7 @@
 <body>
   {{!> menu}}
 
-    {{> about}}
+    {{!> about}}
 
     {{> ziadost}}
   <div id="outer">
@@ -18,7 +18,7 @@
 
 <template name="listObligees">
   <div class="fil">
-    <label>Filter</label>
+    <label>Komu žiadosť adresujete:</label>
     <input type="text" class="fil" id="myfil">
   </div>
 
@@ -26,6 +26,7 @@
     {{#each obligees}}
       {{> obligee}}
     {{/each}}
+    {{tooMany}}
   </div>
 
   {{#if selected_name}}
@@ -35,9 +36,9 @@
   </div>
   {{/if}}
 
-  {{#unless selected_name}}
+  {{#if readyToSelect}}
   <div class="none">Vyberte povinnú osobu</div>
-  {{/unless}}
+  {{/if}}
 
   {{! Filtered by {{filter}}
 </template>
@@ -45,7 +46,7 @@
 <template name="obligee">
   <div class="obligee {{selected}}">
     <span class="name">{{name}}</span>
-    <span class="score">{{score}}</span>
+{{!    <span class="score">{{score} }</span>}}
   </div>
 </template>
 

@@ -33,6 +33,8 @@
 
 Obligees = new Meteor.Collection("obligees");
 
+var limitSearch = 10;
+
 if (Meteor.isClient) {
 
 var alternate_characters = {
@@ -99,20 +101,60 @@ var alternate_characters = {
 	var filter = Session.get("filter");
 //	if(myfilter==null || myfilter==0 || myfilter=="" || myfilter.length==0)
 	//myfilter=document.getElementById("myfil").value;
-	if(filter==null || filter=="")
+	if(filter==null)
 	{
-	    return Obligees.find({}, {sort: {score: -1, name: 1}});
-	}
-	else {
-	    return Obligees.find({name:{$regex:filter,  $options: 'i'}}, {sort: {score: -1, name: 1}});
+	    filter=="";
 	}
 
+    if (Template.listObligees.countObligees()>limitSearch)
+    {
+	return {};
+    }
+    else return Obligees.find({name:{$regex:filter,  $options: 'i'}}, {sort: {score: -1, name: 1},limit:limitSearch});
+
+
   };
+
+  Template.listObligees.countObligees = function () {
+	var filter = Session.get("filter");
+
+	if(filter==null)
+	{
+	    filter=="";
+	}
+
+	return Obligees.find({name:{$regex:filter,  $options: 'i'}}, {sort: {score: -1, name: 1}}).count();
+  };
+
+
+  Template.listObligees.tooMany = function () {
+	var filter = Session.get("filter");
+
+	if(filter=="")
+	{
+	  return "Začnite písať časť názvu inštitúcie.";
+	}
+	else if (Template.listObligees.countObligees()>limitSearch)
+	{
+	  return "Príliš veľa záznamov, pokračujte v písaní názvu.";
+	}
+	else if (Template.listObligees.countObligees()==0)
+	{
+	    return "Zadanému kritériu nevyhovuje žiadny záznam, skúste upraviť hľadanie.";
+	}
+	else return "";
+  };
+
 
   Template.listObligees.selected_name = function () {
     var obligee = Obligees.findOne(Session.get("selected_obligee"));
     return obligee && obligee.name;
   };
+
+  Template.listObligees.readyToSelect = function () {
+    return !this.selected_name && (Template.listObligees.countObligees()<=limitSearch) && (Template.listObligees.countObligees()>0);
+  };
+
 
   Template.email.selected_name = Template.listObligees.selected_name;
 
