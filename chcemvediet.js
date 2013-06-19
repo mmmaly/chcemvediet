@@ -33,7 +33,7 @@
 
 Obligees = new Meteor.Collection("obligees");
 
-var limitSearch = 10;
+var limitSearch = 15;
 
 if (Meteor.isClient) {
 
@@ -136,7 +136,7 @@ var alternate_characters = {
 	}
 	else if (Template.listObligees.countObligees()>limitSearch)
 	{
-	  return "Príliš veľa záznamov, pokračujte v písaní názvu.";
+	  return "Príliš veľa záznamov (" + Template.listObligees.countObligees() +  "), pokračujte v písaní názvu.";
 	}
 	else if (Template.listObligees.countObligees()==0)
 	{
@@ -190,26 +190,6 @@ if (Meteor.isServer) {
   Meteor.startup(function () {
 
     process.env.MAIL_URL="smtp://ziadost%40chcemvediet.sk:censored@smtp.gmail.com:465";
-
-    if (true) {
-      var names = ["Ministerstvo hospodárstva Slovenskej republiky",
-"Ministerstvo financií Slovenskej republiky",
-"Ministerstvo dopravy, výstavby a regionálneho rozvoja Slovenskej republiky",
-"Ministerstvo pôdohospodárstva a rozvoja vidieka Slovenskej republiky",
-"Ministerstvo vnútra Slovenskej republiky",
-"Ministerstvo obrany Slovenskej republiky",
-"Ministerstvo spravodlivosti Slovenskej republiky",
-"Ministerstvo zahraničných vecí a európskych záležitostí Slovenskej republiky",
-"Ministerstvo práce, sociálnych vecí a rodiny Slovenskej republiky",
-"Ministerstvo životného prostredia Slovenskej republiky",
-"Ministerstvo školstva, vedy, výskumu a športu Slovenskej republiky",
-"Ministerstvo kultúry Slovenskej republiky",
-"Ministerstvo zdravotníctva Slovenskej republiky", ];
-//      var names = ["prazdny zoznam", ];
-      Obligees.remove({});
-      for (var i = 0; i < names.length; i++)
-        Obligees.insert({name: names[i], score: Math.floor(Random.fraction()*10)*5});
-    }
   });
 
   Meteor.methods({
