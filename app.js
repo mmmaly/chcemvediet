@@ -32,4 +32,13 @@ app.get("/", function (req, res) {
     res.render("index");
 });
 
+// TODO: just a test, shift routing to a separate file later
+app.get("/why-register", function (req, res) {
+    res.setLocale("sk");
+    res.render("why-register");
+});
+
+
+
+
 app.listen(process.env.PORT || 8080);
