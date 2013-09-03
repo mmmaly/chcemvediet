@@ -1,9 +1,16 @@
-chcemvediet
+Chcem vediet (FOIA requests for the lazy)
 ===========
 
-FOIA requests for the lazy
+PostgreSQL setup
+----------------
+Use the **/private/sql/create_db.sql** script on an empty database to create the database structure.
+TODO: migration strategy, initial data stock
 
-
+Environment variables
+---------------------
+These have to be configured in order for the app to work correctly.
+* **PORT** - HTTP port that the app listens on (default: 8080)
+* **DATABASE_URL** - PostgreSQL database connection URL
 
 Working with heroku
 -------------------

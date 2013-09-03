@@ -3,6 +3,7 @@ html(lang=getLocale())
   head
     script(src="http://code.jquery.com/jquery-1.9.1.min.js")
     script(src="/js/lib/bootstrap.min.js")
+    script(src="/js/layout.js")
     link(rel="stylesheet", href="/styles/bootstrap.min.css")
     link(rel="stylesheet", href="/styles/layout.css")
     block head
@@ -10,7 +11,12 @@ html(lang=getLocale())
     .navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
         .container-fluid
-          .brand Chcem vedieť
+          a.brand(href="/") Chcem vedieť
+          if user
+            a#logout.pull-right(href="#")
+              i.icon-eject.icon-white
+          p#username.navbar-text.pull-right= (user && user.username) || __("Anonymous")
 
     .container
+      #alert
       block content

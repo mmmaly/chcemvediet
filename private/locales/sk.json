@@ -1,3 +1,14 @@
 {
-    "Welcome Message": "Vitajte na Chcem vedieť -- infozákon pre lenivých. tento portál umožňuje pohodlne podať žiadosť o informácie, odsledovať celý proces, dostávať notifikácie o uplynutých lehotách a zdieľať informácie s ostatnými používateľmi."
+    "Welcome Message": "Vitajte na Chcem vedieť -- infozákon pre lenivých. tento portál umožňuje pohodlne podať žiadosť o informácie, odsledovať celý proces, dostávať notifikácie o uplynutých lehotách a zdieľať informácie s ostatnými používateľmi.",
+	"Login": "Prihlásiť",
+	"Register": "Zaregistrovať",
+	"Why register": "Prečo je potrebné sa zaregistrovať?",
+	"Why register - address reason": "Potrebujeme Vašu poštovú adresu - tá musí byť súčasťou žiadosti, v prípade, že povinná osoba žiadosť zamietne, na túto adresu bude zaslané rozhodnutie.",
+	"Why register - monitor reason": "Chceme sledovať vybavovanie Vašej žiadosti a poskytnúť Vám vhodné možnosti.",
+	"Why register - spam reason": "Z bezpečnostných dôvodov, aby sme zabránili spamu a zneužitiu.",
+    "Anonymous": "Neprihlásený",
+    "Email": "E-mail",
+    "Password": "Heslo",
+    "Login error": "Pri prihlasovaní nastala chyba.",
+    "Login failed": "Neplatné prihlasovacie údaje, skúste znova."
 }

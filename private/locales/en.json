@@ -1,3 +1,14 @@
 {
-    "Welcome Message": "Welcome at Chcem vedieť"
+	"Welcome Message": "Welcome at Chcem vedieť -- FOIA law for the lazy. This portal makes the process of filing a request for information more comfortable, simplifies the monitoring of the whole process, receiving notifications about missed deadlines and sharing the information with other users.",
+	"Login": "Login",
+	"Register": "Register",
+	"Why register": "Why do I have to register?",
+	"Why register - address reason": "We need to save your postal address, which needs to be part of each request, because this address will be used to send the resolution in case that the Obligee refuses to provide the information",
+	"Why register - monitor reason": "We want to track your requests to provide you with the appropriate choices",
+	"Why register - spam reason": "For security reasons, to prevent spam and abuse",
+    "Anonymous": "Anonymous",
+    "Email": "Email",
+    "Password": "Password",
+    "Login error": "There was an error logging in.",
+    "Login failed": "Invalid credentials, please try again."
 }
