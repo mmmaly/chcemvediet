@@ -1,15 +1,15 @@
 CREATE TABLE "User"
 (
-  "Email" text NOT NULL,
-  "Password" text NOT NULL,
-  "FirstName" text,
-  "LastName" text,
-  "Street" text,
-  "City" text,
-  "ZIP" text,
-  "Language" text,
-  "AuthToken" text,
-  CONSTRAINT "PK_User" PRIMARY KEY ("Email")
+  "email" text NOT NULL,
+  "password" text NOT NULL,
+  "firstName" text,
+  "lastName" text,
+  "street" text,
+  "city" text,
+  "zip" text,
+  "language" text,
+  "authToken" text,
+  CONSTRAINT "PK_User" PRIMARY KEY ("email")
 )
 WITH (
   OIDS=FALSE

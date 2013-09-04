@@ -1,15 +1,14 @@
 extends layout
 
 block head
-  title= Login
+  title= __("Login")
   script(src="/js/login.js")
 
 block content
-  #alert
   form
     label= __("Email")
     input(name="email", type="text", placeholder=__("Email"))
     label= __("Password")
     input(name="password", type="password", placeholder=__("Password"))
     br
-    button.btn(type="submit")= __("Login")
+    button.btn.btn-primary(type="submit")= __("Login")

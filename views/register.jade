@@ -1,0 +1,47 @@
+extends layout
+
+block head
+  title= __("Register")
+  script.strings(type="text/json")!= strings
+  script(src="/js/register.js")
+
+block content
+  .alert.alert-success(style="display:none")= __("Successful registration")
+    a(href="/login")= __("Login")
+
+  form.form-horizontal
+    .control-group
+      label.control-label(for="email")= __("Email")
+      .controls
+        input(name="email", type="email", placeholder=__("Email"))
+    .control-group
+      label.control-label(for="password")= __("Password")
+      .controls
+        input(name="password", type="password", placeholder=__("Password"))
+    .control-group
+      label.control-label(for="repeat-password")= __("Repeat password")
+      .controls
+        input(name="repeat-password", type="password", placeholder=__("Repeat password"))
+    .control-group
+      label.control-label(for="firstName")= __("FirstName")
+      .controls
+        input(name="firstName", type="text", placeholder=__("FirstName"))
+    .control-group
+      label.control-label(for="lastName")= __("LastName")
+      .controls
+        input(name="lastName", type="text", placeholder=__("LastName"))
+    .control-group
+      label.control-label(for="street")= __("Street")
+      .controls
+        input(name="street", type="text", placeholder=__("Street"))
+    .control-group
+      label.control-label(for="city")= __("City")
+      .controls
+        input(name="city", type="text", placeholder=__("City"))
+    .control-group
+      label.control-label(for="zip")= __("ZIP")
+      .controls
+        input(name="zip", type="text", placeholder=__("ZIP"))
+    .control-group
+      .controls
+        button.btn.btn-primary(type="submit")= __("Register")

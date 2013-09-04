@@ -1,4 +1,4 @@
-Chcem vediet (FOIA requests for the lazy)
+Chcem vediet
 ===========
 
 PostgreSQL setup

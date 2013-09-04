@@ -4,6 +4,11 @@
 
     $(function() {
         $("#logout").click(logout);
+
+        chcemvediet.strings = {};
+        $(".strings").each(function () {
+            $.extend(chcemvediet.strings, JSON.parse($(this).html()));
+        });
     });
 
     function logout()

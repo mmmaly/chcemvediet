@@ -1,7 +1,7 @@
 doctype 5
 html(lang=getLocale())
   head
-    script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+    script(src="https://code.jquery.com/jquery-1.9.1.min.js")
     script(src="/js/lib/bootstrap.min.js")
     script(src="/js/layout.js")
     link(rel="stylesheet", href="/styles/bootstrap.min.css")
@@ -15,7 +15,7 @@ html(lang=getLocale())
           if user
             a#logout.pull-right(href="#")
               i.icon-eject.icon-white
-          p#username.navbar-text.pull-right= (user && user.username) || __("Anonymous")
+          p#username.navbar-text.pull-right= (user && user.displayName()) || __("Anonymous")
 
     .container
       #alert

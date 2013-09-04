@@ -1,18 +1,24 @@
-var passport = require("passport"),
+var db = require("./db"),
+    crypto = require("crypto"),
+    User = require("./models/user").User,
+    passport = require("passport"),
     LocalStrategy = require('passport-local').Strategy;
 
 exports.init = function(app) {
 
     passport.use(new LocalStrategy(
-        function(username, password, done) {
+        function(email, password, done) {
 
-            if (username == "chuck" && password == "norris")
-                return done(null, { username: "chuck", language: "en" });
+            var passwordHash = crypto.createHash('md5').update(password).digest("hex");
 
-            if (username == "robert" && password == "fico")
-                return done(null, { username: "robert", language: "sk" });
-
-            return done(null, false, { message: "Login failed." });
+            db.getUser(email)
+                .then(function (user) {
+                    if (user && user.password === passwordHash)
+                        done(null, new User(user));
+                    else
+                        done(null, false);
+                },
+                done.bind(null, null, false));
         }
     ));
 
@@ -21,7 +27,7 @@ exports.init = function(app) {
     });
 
     passport.deserializeUser(function(user, done) {
-        done(null, JSON.parse(user));
+        done(null, new User(JSON.parse(user)));
     });
 
     app.post("/login", function (req, res) {
@@ -46,5 +52,5 @@ exports.init = function(app) {
     app.post("/logout", function(req, res) {
         req.logout();
         res.end();
-    })
+    });
 };

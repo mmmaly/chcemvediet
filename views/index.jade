@@ -12,4 +12,4 @@ block content
     a.btn(class='btn', href='register')= __("Register")
     a(href='why-register')= "(" + __("Why register") + ")"
   else
-    p= "Welcome, " + user.username
+    p= "Welcome, " + user.displayName()
