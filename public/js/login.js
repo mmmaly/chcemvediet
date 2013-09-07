@@ -2,6 +2,9 @@
 
     $(function() {
         $("button[type='submit']").click(login);
+
+        if (location.search.indexOf("fail=google") >= 0)
+            chcemvediet.reportError(chcemvediet.strings["Google login failed"]);
     });
 
     function login(event)
@@ -13,7 +16,6 @@
             url: "/login",
             dataType: "json",
             data: {
-                authMethod: "local",
                 username: $("[name='email']").val(),
                 password: $("[name='password']").val()
             },

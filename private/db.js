@@ -6,12 +6,19 @@ exports.getUser = function(email) {
         .then(function (result) {
             return result.rows.length == 1 ? result.rows[0] : null;
         });
-}
+};
+
+exports.getUserByAuthToken = function(authToken) {
+    return executeQuery('SELECT * FROM "User" WHERE "authToken"=$1', [authToken])
+        .then(function (result) {
+            return result.rows.length == 1 ? result.rows[0] : null;
+        });
+};
 
 exports.createUser = function(user) {
-    return executeQuery('INSERT INTO "User"("email", "password", "firstName", "lastName", "street", "city", "zip", "language") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-        [user.email, user.password, user.firstName, user.lastName, user.street, user.city, user.zip, user.language || "sk"]);
-}
+    return executeQuery('INSERT INTO "User"("email", "password", "firstName", "lastName", "street", "city", "zip", "authToken", "language") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+        [user.email, user.password, user.firstName, user.lastName, user.street, user.city, user.zip, user.authToken, user.language || "sk"]);
+};
 
 function executeQuery(command, params) {
 

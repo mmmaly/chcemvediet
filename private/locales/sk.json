@@ -27,5 +27,10 @@
     "Zip missing": "Zadajte prosím vaše PSČ",
     "Email already in use": "Zadaný E-mail už používa iný zaregistrovaný užívateľ",
     "Registration error": "Pri registrácii nastala chyba.",
-    "Successful registration": "Registrácia prebehla úspešne. "
+    "Successful registration": "Registrácia prebehla úspešne. ",
+    "Login with": "Prihlásiť sa cez",
+    "Register with": "Zaregistrovať sa cez",
+    "Google login failed": "Prihlásenie cez Google sa nepodarilo.",
+    "Linked with": "Spojený s",
+    "Switch account": "(zmeniť)"
 }

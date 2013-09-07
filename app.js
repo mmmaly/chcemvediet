@@ -13,6 +13,8 @@ i18n.configure({
 var app = express();
 
 app.configure(function () {
+    app.set("url", process.env.APP_URL || "https://chcemvediet.herokuapp.com")
+
     app.set("view engine", "jade");
     app.set("views", __dirname + "/views");
     app.engine("html", jade.__express);

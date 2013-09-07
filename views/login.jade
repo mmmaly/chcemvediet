@@ -2,6 +2,8 @@ extends layout
 
 block head
   title= __("Login")
+  link(rel="stylesheet", href="/styles/login.css")
+  script.strings(type="text/json")!= strings
   script(src="/js/login.js")
 
 block content
@@ -12,3 +14,8 @@ block content
     input(name="password", type="password", placeholder=__("Password"))
     br
     button.btn.btn-primary(type="submit")= __("Login")
+
+  #providers
+    p= __("Login with")
+    a(href="/login/google")
+      img(src="/img/google.png")

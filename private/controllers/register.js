@@ -16,8 +16,36 @@ exports.render = function (req, res) {
         "Zip missing": res.__( "Zip missing")
     };
 
+    // if available, pre-fill some fields from the provider
+    var provider, authToken, email, firstName, lastName;
+
+    var registrationInfo = req.session.registrationInfo;
+    if (registrationInfo) {
+        if (registrationInfo.google) {
+            var profile = registrationInfo.google.profile;
+            provider = "google";
+            authToken = registrationInfo.google.identifier;
+            email = profile.emails && profile.emails[0] && profile.emails[0].value;
+
+            if (profile.name) {
+                var name = profile.name;
+                firstName = name.givenName;
+                lastName = name.middleName ? name.middleName + " " + (name.familyName || "") : name.familyName;
+            }
+        }
+
+        delete req.session.registrationInfo;
+    }
+
+    // todo: display some indication to the user that he is registering with <provider> and give him the possibility to reset it (simply by reloading the page)
+
     res.render("register", {
-        strings: JSON.stringify(strings)
+        strings: JSON.stringify(strings),
+        provider: provider,
+        authToken: authToken,
+        email: email || "",
+        firstName: firstName || "",
+        lastName : lastName || ""
     });
 };
 
@@ -25,11 +53,12 @@ exports.post = function (req, res) {
 
     var user = req.body.user;
 
-    if (!user.email || !user.password || !user.firstName || !user.lastName || !user.street || !user.city || !user.zip)
+    if (!user.email || (!user.authToken && !user.password) || !user.firstName || !user.lastName || !user.street || !user.city || !user.zip)
         return res.json({ error: "Missing data from the form" });
 
     // replace the plain text password with its hash before saving into db
-    user.password = crypto.createHash('md5').update(user.password).digest("hex");
+    if (user.password)
+        user.password = crypto.createHash('md5').update(user.password).digest("hex");
 
     db.getUser(user.email)
         .then(function(duplicate) {

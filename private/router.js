@@ -1,11 +1,20 @@
-var index = require("./controllers/index"),
+var authentication = require("./authentication"),
+	index = require("./controllers/index"),
     login = require("./controllers/login"),
     register = require("./controllers/register"),
     whyRegister = require("./controllers/why-register");
 
 exports.init = function(app) {
     app.get("/", index.render);
-    app.get("/login", login.render);
+	app.get("/login", login.render);
+
+	app.post("/login", authentication.login.local);
+    app.post("/logout", authentication.logout);
+    app.get("/login/google", authentication.login.google.init);
+    app.get("/login/google/return", authentication.login.google["return"]);
+    app.get("/register/google", authentication.register.google.init);
+    app.get("/register/google/return", authentication.register.google["return"]);
+
     app.get("/register", register.render);
     app.post("/register", register.post);
     app.get("/why-register", whyRegister.render);

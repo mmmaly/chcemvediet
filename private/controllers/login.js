@@ -1,3 +1,9 @@
 exports.render = function (req, res) {
-    res.render("login");
+    var strings = {
+        "Google login failed": res.__("Google login failed")
+    };
+
+    res.render("login", {
+        strings: JSON.stringify(strings)
+    });
 }

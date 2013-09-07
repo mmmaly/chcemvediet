@@ -31,22 +31,25 @@
     }
 
     function validate() {
+        var authToken = $("input[name='authToken']").val();
         var email, password, repeatPassword, firstName, lastName, street, city, zip;
 
         if (!(email = validateField("email", "Email missing")))
             return false;
 
-        if (!(password = validateField("password", "Password missing")))
-            return false;
+        if (!authToken) {
+            if (!(password = validateField("password", "Password missing")))
+                return false;
 
-        if (!(repeatPassword = validateField("repeat-password", "Password missing")))
-            return false;
+            if (!(repeatPassword = validateField("repeat-password", "Password missing")))
+                return false;
 
-        if (password !== repeatPassword) {
-            $("input[name='password']").focus()
-                .popover({ content: chcemvediet.strings["Password mismatch"] })
-                .popover("show");
-            return false;
+            if (password !== repeatPassword) {
+                $("input[name='password']").focus()
+                    .popover({ content: chcemvediet.strings["Password mismatch"] })
+                    .popover("show");
+                return false;
+            }
         }
 
         if (!(firstName = validateField("firstName", "First name missing")))
@@ -67,6 +70,7 @@
         return {
             email: email,
             password: password,
+            authToken: authToken,
             firstName: firstName,
             lastName: lastName,
             street: street,

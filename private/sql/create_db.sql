@@ -1,7 +1,7 @@
 CREATE TABLE "User"
 (
   "email" text NOT NULL,
-  "password" text NOT NULL,
+  "password" text,
   "firstName" text,
   "lastName" text,
   "street" text,

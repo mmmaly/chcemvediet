@@ -27,5 +27,10 @@
     "Zip missing": "Please provide your ZIP code",
     "Email already in use": "The given email is already in use by another user.",
     "Registration error": "There was an error registering.",
-    "Successful registration": "Registration was successful. "
+    "Successful registration": "Registration was successful. ",
+    "Login with": "Login with",
+    "Register with": "Register with",
+    "Google login failed": "Login with Google failed.",
+    "Linked with": "Linked with",
+    "Switch account": "(switch)"
 }
