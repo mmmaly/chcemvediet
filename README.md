@@ -11,6 +11,7 @@ Environment variables
 These have to be configured in order for the app to work correctly.
 * **PORT** - HTTP port that the app listens on (default: 8080)
 * **DATABASE_URL** - PostgreSQL database connection URL
+* **APP_URL** - The URL of the web site as deployed (e.g. https://www.chcemvediet.sk), used as a return URL for authentication services
 
 Working with heroku
 -------------------
