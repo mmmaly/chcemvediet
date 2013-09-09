@@ -14,6 +14,9 @@ These have to be configured in order for the app to work correctly.
 * **APP_URL** - The URL of the web site as deployed (e.g. https://www.chcemvediet.sk), used as a return URL for authentication services
 * **TWITTER_KEY** - The consumer key used for twitter authentication (obtained by registering the app under developer.twitter.com)
 * **TWITTER_SECRET** - The consumer secret used for twitter authentication (obtained by registering the app under developer.twitter.com)
+* **FACEBOOK_APP_ID** - The app ID used for facebook authentication (obtained by registering the app under developer.facebook.com)
+* **FACEBOOK_APP_SECRET** - The app secret used for facebook authentication (obtained by registering the app under developer.facebook.com)
+
 
 Working with heroku
 -------------------

@@ -36,12 +36,26 @@ exports.render = function (req, res) {
         else if (registrationInfo.twitter) {
             var profile = registrationInfo.twitter.profile;
             provider = "twitter";
-            authToken = registrationInfo.twitter.token;
+            authToken = registrationInfo.twitter.identifier;
 
             if (profile.displayName) {
                 var names = profile.displayName.split(" ");
                 firstName = names[0];
                 lastName = names.slice(1).join(" ");
+            }
+        }
+        else if (registrationInfo.facebook) {
+            var profile = registrationInfo.facebook.profile;
+            provider = "facebook";
+            authToken = registrationInfo.facebook.identifier;
+
+            if (profile.username)
+                email = profile.username + "@facebook.com";
+
+            if (profile.name) {
+                var name = profile.name;
+                firstName = name.givenName;
+                lastName = name.middleName ? name.middleName + " " + (name.familyName || "") : name.familyName;
             }
         }
 

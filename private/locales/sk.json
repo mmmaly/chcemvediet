@@ -30,8 +30,7 @@
     "Successful registration": "Registrácia prebehla úspešne. ",
     "Login with": "Prihlásiť sa cez",
     "Register with": "Zaregistrovať sa cez",
-    "Google login failed": "Prihlásenie cez Google sa nepodarilo.",
-    "Twitter login failed": "Prihlásenie cez Twitter sa nepodarilo.",
+    "Provider login failed": "Prihlásenie cez {0} sa nepodarilo.",
     "Linked with": "Spojený s",
     "Switch account": "(zmeniť)"
 }

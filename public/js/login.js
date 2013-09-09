@@ -3,11 +3,9 @@
     $(function() {
         $("button[type='submit']").click(login);
 
-        if (location.search.indexOf("fail=google") >= 0)
-            chcemvediet.reportError(chcemvediet.strings["Google login failed"]);
-
-        if (location.search.indexOf("fail=twitter") >= 0)
-            chcemvediet.reportError(chcemvediet.strings["Twitter login failed"]);
+        var uri = chcemvediet.parseUri(location);
+        if (uri.queryKey && uri.queryKey.fail)
+            chcemvediet.reportError(chcemvediet.strings["Provider login failed"].replace("{0}", uri.queryKey.fail));
     });
 
     function login(event)

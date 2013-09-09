@@ -28,7 +28,7 @@ block content
       .control-group
         label.control-label= __("Linked with")
         .controls
-          img(src="/img/" + provider + ".png")
+          img.provider(src="/img/" + provider + ".png")
           a(href="/register")= __("Switch account")
     .control-group
       label.control-label(for="firstName")= __("FirstName")
@@ -62,3 +62,5 @@ block content
         img(src="/img/google.png")
       a(href="/register/twitter")
         img(src="/img/twitter.png")
+      a(href="/register/facebook")
+        img(src="/img/facebook.png")
