@@ -31,6 +31,7 @@
     "Login with": "Prihlásiť sa cez",
     "Register with": "Zaregistrovať sa cez",
     "Google login failed": "Prihlásenie cez Google sa nepodarilo.",
+    "Twitter login failed": "Prihlásenie cez Twitter sa nepodarilo.",
     "Linked with": "Spojený s",
     "Switch account": "(zmeniť)"
 }

@@ -31,6 +31,7 @@
     "Login with": "Login with",
     "Register with": "Register with",
     "Google login failed": "Login with Google failed.",
+    "Twitter login failed": "Login with Twitter failed.",
     "Linked with": "Linked with",
     "Switch account": "(switch)"
 }

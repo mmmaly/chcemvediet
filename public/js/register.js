@@ -6,6 +6,9 @@
         $("input").blur(function () {
             $(this).popover("destroy");
         });
+
+        var firstEmptyInput = $("input").filter(function () { return !$(this).val(); })[0];
+        $(firstEmptyInput).focus();
     });
 
     function register(event) {

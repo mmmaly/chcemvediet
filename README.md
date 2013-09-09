@@ -12,6 +12,8 @@ These have to be configured in order for the app to work correctly.
 * **PORT** - HTTP port that the app listens on (default: 8080)
 * **DATABASE_URL** - PostgreSQL database connection URL
 * **APP_URL** - The URL of the web site as deployed (e.g. https://www.chcemvediet.sk), used as a return URL for authentication services
+* **TWITTER_KEY** - The consumer key used for twitter authentication (obtained by registering the app under developer.twitter.com)
+* **TWITTER_SECRET** - The consumer secret used for twitter authentication (obtained by registering the app under developer.twitter.com)
 
 Working with heroku
 -------------------

@@ -33,11 +33,20 @@ exports.render = function (req, res) {
                 lastName = name.middleName ? name.middleName + " " + (name.familyName || "") : name.familyName;
             }
         }
+        else if (registrationInfo.twitter) {
+            var profile = registrationInfo.twitter.profile;
+            provider = "twitter";
+            authToken = registrationInfo.twitter.token;
+
+            if (profile.displayName) {
+                var names = profile.displayName.split(" ");
+                firstName = names[0];
+                lastName = names.slice(1).join(" ");
+            }
+        }
 
         delete req.session.registrationInfo;
     }
-
-    // todo: display some indication to the user that he is registering with <provider> and give him the possibility to reset it (simply by reloading the page)
 
     res.render("register", {
         strings: JSON.stringify(strings),

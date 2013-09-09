@@ -5,6 +5,9 @@
 
         if (location.search.indexOf("fail=google") >= 0)
             chcemvediet.reportError(chcemvediet.strings["Google login failed"]);
+
+        if (location.search.indexOf("fail=twitter") >= 0)
+            chcemvediet.reportError(chcemvediet.strings["Twitter login failed"]);
     });
 
     function login(event)
