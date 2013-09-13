@@ -1,5 +1,6 @@
 CREATE TABLE "User"
 (
+  "id" serial NOT NULL,
   "email" text NOT NULL,
   "password" text,
   "firstName" text,
@@ -9,7 +10,7 @@ CREATE TABLE "User"
   "zip" text,
   "language" text,
   "authToken" text,
-  CONSTRAINT "PK_User" PRIMARY KEY ("email")
+  CONSTRAINT "PK_User" PRIMARY KEY ("id")
 )
 WITH (
   OIDS=FALSE
