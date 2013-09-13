@@ -1,4 +1,5 @@
-var pg = require("pg"),
+var _ = require("underscore"),
+    pg = require("pg"),
     Q = require("q");
 
 exports.getUser = function(email) {
@@ -19,6 +20,21 @@ exports.createUser = function(user) {
     return executeQuery('INSERT INTO "User"("email", "password", "firstName", "lastName", "street", "city", "zip", "authToken", "language") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
         [user.email, user.password, user.firstName, user.lastName, user.street, user.city, user.zip, user.authToken, user.language || "sk"]);
 };
+
+exports.updateUser = function(user) {
+    var query = 'UPDATE "User" SET ',
+        params = [];
+
+    _.keys(user).forEach(function (key) {
+        params.push(user[key]);
+        if (params.length > 1)
+            query += ',';
+        query += '"' + key +'" = $' + params.length;
+    });
+
+    return executeQuery(query, params);
+}
+
 
 function executeQuery(command, params) {
 

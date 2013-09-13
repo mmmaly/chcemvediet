@@ -2,7 +2,8 @@ var authentication = require("./authentication"),
 	index = require("./controllers/index"),
     login = require("./controllers/login"),
     register = require("./controllers/register"),
-    whyRegister = require("./controllers/why-register");
+    whyRegister = require("./controllers/why-register"),
+    languages = require("./locales/languages");
 
 exports.init = function(app) {
     app.get("/", index.render);
@@ -26,4 +27,6 @@ exports.init = function(app) {
     app.get("/register", register.render);
     app.post("/register", register.post);
     app.get("/why-register", whyRegister.render);
+
+    app.post("/change-language", languages.change);
 };

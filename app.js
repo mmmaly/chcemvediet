@@ -2,10 +2,11 @@ var express = require("express"),
     jade = require("jade"),
     stylus = require("stylus"),
     i18n = require("i18n"),
-    passport = require("passport");
+    passport = require("passport"),
+    languages = require("./private/locales/languages");
 
 i18n.configure({
-    locales: ["sk", "en"],
+    locales: languages.locales,
     directory: __dirname + "/private/locales",
     updateFiles: false
 });
@@ -31,14 +32,7 @@ app.configure(function () {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.use(function(req, res, next){
-        res.setLocale(req.user && req.user.language || "sk");
-
-        // for use in the jade templates
-        res.locals.user = req.user;
-        next();
-    });
-
+    app.use(languages.process);
     app.use(app.router);
 });
 

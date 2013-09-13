@@ -9,13 +9,27 @@
         $(".strings").each(function () {
             $.extend(chcemvediet.strings, JSON.parse($(this).html()));
         });
+
+        $("[data-lang]").click(function () {
+            var code = $(this).attr("data-lang");
+            changeLanguage(code);
+        });
     });
 
-    function logout()
-    {
+    function logout() {
         $.ajax({
             type: "POST",
             url: "/logout",
+            success: function() {
+                window.location.reload();
+            }
+        });
+    }
+
+    function changeLanguage(code) {
+        $.ajax({
+            type: "POST",
+            url: "/change-language?code=" + code,
             success: function() {
                 window.location.reload();
             }

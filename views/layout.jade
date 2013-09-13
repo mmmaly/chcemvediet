@@ -12,10 +12,23 @@ html(lang=getLocale())
       .navbar-inner
         .container-fluid
           a.brand(href="/") Chcem vedieť
-          if user
-            a#logout.pull-right(href="#")
-              i.icon-eject.icon-white
-          p#username.navbar-text.pull-right= (user && user.displayName()) || __("Anonymous")
+
+          ul.nav.pull-right
+            li.dropdown
+              a.dropdown-toggle(href="#", role="button", data-toggle="dropdown")
+                img(src=language.icon)
+              ul.dropdown-menu(role="menu")
+                for lang in languages
+                  li
+                    a(href="#", data-lang=lang.code)
+                      img.lang(src=lang.icon)
+                      span= lang.name
+            li
+              p#username.navbar-text= (user && user.displayName()) || __("Anonymous")
+            if user
+              li
+                a#logout(href="#")
+                  i.icon-eject.icon-white
 
     .container
       #alert

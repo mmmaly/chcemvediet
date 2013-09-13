@@ -1,7 +1,11 @@
-var _ = require("underscore");
+var _ = require("underscore"),
+    languages = require("../locales/languages").languages;
 
 var User = function(o) {
     _.extend(this, o);
+
+    if (typeof this.language == "string")
+        this.language = languages[this.language];
 }
 
 _.extend(User.prototype, {
