@@ -6,4 +6,4 @@ exports.render = function (req, res) {
     res.render("login", {
         strings: JSON.stringify(strings)
     });
-}
+};

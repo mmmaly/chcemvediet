@@ -2,6 +2,10 @@ extends layout
 
 block head
   title Chcem vedieť
+  link(rel="stylesheet", href="/styles/selectize.bootstrap2.css")
+  link(rel="stylesheet", href="/styles/index.css")
+  script(src="/js/lib/selectize.min.js")
+  script(src="/js/index.js")
 
 block content
   .alert= __("Welcome Message")
@@ -13,3 +17,4 @@ block content
     a(href='why-register')= "(" + __("Why register") + ")"
   else
     p= "Welcome, " + user.displayName()
+    select#obligees(placeholder=__("Select obligee"))

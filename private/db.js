@@ -33,6 +33,21 @@ exports.updateUser = function(user) {
     });
 
     return executeQuery(query, params);
+};
+
+exports.findObligees = function(term, limit) {
+    var query = 'SELECT * FROM "Obligee" WHERE unaccent_string("name") ~* $1 OR unaccent_string("street") ~* $1 OR unaccent_string("city") ~* $1',
+        params = [term];
+
+    if (typeof limit == "number") {
+        query += ' LIMIT $2';
+        params.push(limit);
+    }
+
+    return executeQuery(query, params)
+        .then(function (result) {
+            return result.rows || [];
+        });
 }
 
 

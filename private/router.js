@@ -7,7 +7,8 @@ var authentication = require("./authentication"),
 
 exports.init = function(app) {
     app.get("/", index.render);
-	app.get("/login", login.render);
+    app.get("/search/obligees", index.obligees);
+    app.get("/login", login.render);
 
 	app.post("/login", authentication.login.local);
     app.post("/logout", authentication.logout);
