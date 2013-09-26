@@ -16,6 +16,7 @@ You need the following packages installed
 
 Prepare environment
 -------------------
+
 ```shell
 $ cd project_dir
 $ virtualenv env
@@ -29,15 +30,19 @@ Run it
 ------
 
  1. Run testing webserver:
+
     ```shell
     $ cd project_dir/chcemvediet
     $ ../env/bin/python manage.py runserver
     ```
+
  2. Run testing mailserver in another shell (it will dump all incoming emails to stdout):
+
     ```shell
     $ cd project_dir/chcemvediet
     $ ../env/bin/python -m smtpd -n -c DebuggingServer localhost:1025
     ```
+
  3. And navigate your browser to: http://127.0.0.1:8000/
 
 User registration module is not finished, yet. To login a test user use 'kalerab'/'kalerab' for
