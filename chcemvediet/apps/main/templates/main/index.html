@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Vitajte{% endblock %}
+
+{% block body %}
+  <h1>Vitajte na portáli 'Chcem vedieť'</h1>
+  {% if user.is_authenticated %}
+    <p>Užívateľ: {{ user.get_username }}</p>
+  {% else %}
+    <p>Užívateľ: (neprihlásený)</p>
+  {% endif %}
+  <ul>
+    <li><a href="{% url 'accounts:profile' %}">Profil</a></li>
+    <li><a href="{% url 'applications:create' %}">Nová žiadosť</a></li>
+    <li><a href="{% url 'applications:index' %}">Podané žiadosti</a></li>
+    <li><a href="{% url 'obligees:index' %}">Povinné osoby</a></li>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'accounts:logout' %}">Odhlásiť sa</a></li>
+    {% else %}
+      <li><a href="{% url 'accounts:login' %}">Prihlásiť sa</a></li>
+    {% endif %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+  <h1>Profil</h1>
+  <ul>
+    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
+  </ul>
+  <p>Užívateľ: {{ user.get_username }}</p>
+  <p>Meno: {{ user.get_full_name }}</p>
+  <p>Email: {{ user.email }}</p>
+{% endblock %}
+

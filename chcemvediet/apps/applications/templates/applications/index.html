@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Podané žiadosti{% endblock %}
+
+{% block body %}
+  <h1>Podané žiadosti</h1>
+  <p>Užívateľ: {{ user.get_username }}</p>
+  <ul>
+    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
+  </ul>
+  <table>
+    <thead>
+      <tr>
+        <th>Povinná osoba</th>
+        <th>Dátum podania</th>
+        <th>Stav</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for application in application_list %}
+        <tr>
+          <td><a href="{% url 'applications:detail' application.id %}">{{ application.obligee.name }}</a></td>
+          <td>{{ application.submission_date }}</td>
+          <td>(todo)</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p>Počet podaných žiadosti: {{ application_list|length }}</p>
+{% endblock %}

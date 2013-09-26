@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Nová žiadosť{% endblock %}
+
+{% block head %}
+  <script>
+	function update_obligee_details(obligee) {
+		if (obligee) {
+			details = 'Adresa: ' + obligee.street + '; ' + obligee.zip + ' ' + obligee.city;
+			details += '; Email: ' + obligee.email;
+			details += '; ID: ' + obligee.id;
+		} else {
+			details = '(Neznáma povinná osoba. Vyber z menu.)';
+		}
+		$("#id_obligee_details").text(details);
+	};
+
+	$(function() {
+		$("#id_obligee").autocomplete({
+			source: "{% url 'obligees:autocomplete' %}",
+			minLength: 2,
+			select: function(event, ui) {
+				update_obligee_details(ui.item ? ui.item.obligee : null);
+			},
+			change: function(event, ui) {
+				update_obligee_details(ui.item ? ui.item.obligee : null);
+			},
+		});
+		$("#id_obligee").click(function(event){
+			$("#id_obligee").autocomplete("search");
+		});
+	});
+  </script>
+  <style>
+	.ui-autocomplete-loading {
+		background: white url("{% static 'applications/images/ui-anim_basic_16x16.gif' %}") right center no-repeat;
+	}
+  </style>
+{% endblock %}
+
+{% block body %}
+  <h1>Nová žiadosť</h1>
+  <ul>
+    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
+  </ul>
+
+  <form method="post" action=".">
+    {% csrf_token %}
+    <p>Žiadateľ: {{ user.get_full_name }}; (adresu ešte v databáze nemáme)</p>
+    <p>E-mail: (vygeneruje sa pri podani žiadosti)</p>
+    {{ form.as_p }}
+    <input type="submit" value="Podať žiadosť" />
+  </form>
+{% endblock %}

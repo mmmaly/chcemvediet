@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Detail podanej žiadosti{% endblock %}
+
+{% block body %}
+  <h1>Detail podanej žiadosti</h1>
+  <p>Užívateľ: {{ user.get_username }}</p>
+  <ul>
+    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
+    <li><a href="{% url 'applications:index' %}">Návrat zoznam podaných žiadosti</a></li>
+  </ul>
+  <p>Žiadateľ: {{ application.applicant.get_full_name}}; (adresu ešte v databáze nemáme)</p>
+  <p>E-mail odosielateľa: {{ application.sender_email }}</p>
+  <p>Povinná osoba: {{ application.obligee.name }};
+     Adresa: {{ application.obligee.street }}; {{ application.obligee.zip }} {{ application.obligee.city }}</p>
+  <p>E-mail adresáta: {{ application.recepient_email }}</p>
+  <p>Dátum podania: {{ application.submission_date }}</p>
+  <p>Vec (subject): {{ application.subject }}</p>
+  <p>Znenie žiadosti: {{ application.message }}</p>
+{% endblock %}
