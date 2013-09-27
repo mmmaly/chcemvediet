@@ -20,7 +20,8 @@ Prepare environment
 ```shell
 $ cd project_dir
 $ virtualenv env
-$ ./env/bin/pip install Django
+$ ./env/bin/pip install django
+$ ./env/bin/pip install unidecode
 $ git clone https://github.com/martinmacko47/chcemvediet.git
 $ cd chcemvediet
 $ ../env/bin/python manage.py syncdb --noinput

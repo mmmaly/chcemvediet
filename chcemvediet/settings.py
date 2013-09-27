@@ -1,10 +1,4 @@
 
-# Add python paths
-import sys
-sys.path.append(
-    '3part',
-)
-
 # Django settings for chcemvediet project.
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
