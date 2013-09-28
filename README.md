@@ -18,13 +18,11 @@ Prepare environment
 -------------------
 
 ```shell
-$ cd project_dir
-$ virtualenv env
-$ ./env/bin/pip install django
-$ ./env/bin/pip install unidecode
 $ git clone https://github.com/martinmacko47/chcemvediet.git
 $ cd chcemvediet
-$ ../env/bin/python manage.py syncdb --noinput
+$ virtualenv env
+$ env/bin/pip install -r requirements.txt
+$ env/bin/python manage.py syncdb --noinput
 ```
 
 Run it
@@ -33,15 +31,15 @@ Run it
  1. Run testing webserver:
 
     ```shell
-    $ cd project_dir/chcemvediet
-    $ ../env/bin/python manage.py runserver
+    $ cd chcemvediet
+    $ env/bin/python manage.py runserver
     ```
 
  2. Run testing mailserver in another shell (it will dump all incoming emails to stdout):
 
     ```shell
-    $ cd project_dir/chcemvediet
-    $ ../env/bin/python -m smtpd -n -c DebuggingServer localhost:1025
+    $ cd chcemvediet
+    $ env/bin/python -m smtpd -n -c DebuggingServer localhost:1025
     ```
 
  3. And navigate your browser to: http://127.0.0.1:8000/
