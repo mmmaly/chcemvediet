@@ -25,7 +25,6 @@ def index(request):
     context = {'obligee_page': obligee_page}
     return render(request, 'obligees/index.html', context)
 
-
 def autocomplete(request):
     term = request.GET.get('term', '')
     term = unidecode(term).lower() # transliterate unicode to ascii

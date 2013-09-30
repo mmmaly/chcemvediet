@@ -10,5 +10,6 @@
   <p>Užívateľ: {{ user.get_username }}</p>
   <p>Meno: {{ user.get_full_name }}</p>
   <p>Email: {{ user.email }}</p>
+  <p>Adresa: {{ user.profile.street }}; {{ user.profile.zip }} {{ user.profile.city }}</p>
 {% endblock %}
 

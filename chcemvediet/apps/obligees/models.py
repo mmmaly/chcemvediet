@@ -14,7 +14,7 @@ class Obligee(models.Model):
     def __unicode__(self):
         return self.name
 
-def validate_obligee_name(value):
+def validate_obligee_name_exists(value):
     if not Obligee.objects.filter(name=value).exists():
         raise ValidationError(u'Neznáma povinná osoba. Vyber z menu.')
 
