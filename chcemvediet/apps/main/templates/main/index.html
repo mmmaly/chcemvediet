@@ -1,27 +1,29 @@
-{% extends "base.html" %}
+{% extends "main/_e_single_column.html" %}
+{% load webdesign %}
 
-{% block title %}Vitajte{% endblock %}
+{% block title %}Welcome | {{ block.super }}{% endblock %}
 
-{% block body %}
-  <h1>Vitajte na portáli 'Chcem vedieť'</h1>
-  {% if user.is_authenticated %}
-    <p>Užívateľ: {{ user.get_username }}</p>
-  {% else %}
-    <p>Užívateľ: (neprihlásený)</p>
-  {% endif %}
-  <ul>
-    {% if user.is_authenticated %}
-      <li><a href="{% url 'account_logout' %}">Odhlásiť sa</a></li>
-      <li><a href="{% url 'account_change_password' %}">Zmeniť heslo</a></li>
-      <li><a href="{% url 'account_email' %}">Nastaviť email</a></li>
-    {% else %}
-      <li><a href="{% url 'account_login' %}">Prihlásiť sa</a></li>
-      <li><a href="{% url 'account_signup' %}">Zaregistrovať sa</a></li>
-    {% endif %}
-    <br />
-    <li><a href="{% url 'accounts:profile' %}">Profil</a></li>
-    <li><a href="{% url 'applications:create' %}">Nová žiadosť</a></li>
-    <li><a href="{% url 'applications:index' %}">Podané žiadosti</a></li>
-    <li><a href="{% url 'obligees:index' %}">Povinné osoby</a></li>
-  </ul>
+{% block main_col %}
+  <div class="hero-unit">
+    <h1>Welcome to "Chcem vedieť"</h1>
+    <p>{% lorem %}</p>
+    <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+  </div>
+  <div class="row">
+    <div class="span4">
+      <h2>Heading</h2>
+      <p>{% lorem %}</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+    </div>
+    <div class="span4">
+      <h2>Heading</h2>
+      <p>{% lorem %}</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+   </div>
+    <div class="span4">
+      <h2>Heading</h2>
+      <p>{% lorem %}</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+    </div>
+  </div>
 {% endblock %}

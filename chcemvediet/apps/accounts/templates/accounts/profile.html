@@ -1,15 +1,16 @@
-{% extends "base.html" %}
+{% extends "main/_e_single_column.html" %}
 
-{% block title %}Profil{% endblock %}
+{% block title %}Profile | {{ block.super }}{% endblock %}
 
-{% block body %}
-  <h1>Profil</h1>
-  <ul>
-    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
-  </ul>
-  <p>Užívateľ: {{ user.get_username }}</p>
-  <p>Meno: {{ user.get_full_name }}</p>
-  <p>Email: {{ user.email }}</p>
-  <p>Adresa: {{ user.profile.street }}; {{ user.profile.zip }} {{ user.profile.city }}</p>
+{% block main_col %}
+  <h1>User Profile <small>{{ user.get_full_name }}</small></h1>
+  <p>E-mail: {{ user.email }}</p>
+  <p>Street: {{ user.profile.street }}</p>
+  <p>City: {{ user.profile.city }}</p>
+  <p>Zip: {{ user.profile.zip }}</p>
+  <p>
+    <a class="btn" href="{% url 'account_email' %}">Change E-mail</a>
+    <a class="btn" href="{% url 'account_change_password' %}">Change Password</a>
+  </p>
 {% endblock %}
 

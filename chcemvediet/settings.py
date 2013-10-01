@@ -141,6 +141,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.webdesign',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
