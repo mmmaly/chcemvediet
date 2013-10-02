@@ -1,0 +1,9 @@
+{% extends "main/base/single_column.html" %}
+
+{% block title %}Account Inactive | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>Account Inactive</h1>
+  {% include "main/snippets/messages.html" %}
+  <p>This account is inactive.</p>
+{% endblock %}

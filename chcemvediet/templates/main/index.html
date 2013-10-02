@@ -1,0 +1,30 @@
+{% extends "main/base/single_column.html" %}
+{% load lorem from poleno_utils %}
+
+{% block title %}Welcome | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <div class="hero-unit">
+    <h1>Welcome to "Chcem vedieť"</h1>
+    <p>{% lorem %}</p>
+    <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+  </div>
+  {% include "main/snippets/messages.html" %}
+  <div class="row">
+    <div class="span4">
+      <h2>Heading</h2>
+      <p>{% lorem 8 %}</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+    </div>
+    <div class="span4">
+      <h2>Heading</h2>
+      <p>{% lorem 9 %}</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+   </div>
+    <div class="span4">
+      <h2>Heading</h2>
+      <p>{% lorem 14 %}</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+    </div>
+  </div>
+{% endblock %}

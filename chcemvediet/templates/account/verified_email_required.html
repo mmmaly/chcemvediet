@@ -1,0 +1,13 @@
+{% extends "main/base/single_column.html" %}
+
+{% block title %}Verify Your E-mail Address | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>Verify Your E-mail Address</h1>
+  {% include "main/snippets/messages.html" %}
+  <p>This part of the site requires us to verify that you are who you claim to be. For this
+    purpose, we require that you verify ownership of your e-mail address.</p>
+  <p>We have sent an e-mail to you for verification. Please click on the link inside this e-mail.
+    Please contact us if you do not receive it within a few minutes.</p>
+  <p><strong>Note:</strong> you can still <a href="{% url 'account_email' %}">change your e-mail address</a>.</p>
+{% endblock %}

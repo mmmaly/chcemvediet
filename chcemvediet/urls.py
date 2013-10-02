@@ -1,12 +1,13 @@
 # vim: expandtab
 from django.conf.urls import patterns, include, url
-
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
+import views
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^', include('chcemvediet.apps.main.urls', namespace='main')),
+    url(r'^$', views.index, name='index'),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/', include('chcemvediet.apps.accounts.urls', namespace='accounts')),
     url(r'^obligees/', include('chcemvediet.apps.obligees.urls', namespace='obligees')),

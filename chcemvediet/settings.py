@@ -73,6 +73,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    'chcemvediet/static',
 )
 
 # List of finder classes that know how to find static files in
@@ -141,7 +142,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'django.contrib.webdesign',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -150,7 +150,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.twitter',
     'widget_tweaks',
-    'chcemvediet.apps.main',
+    'chcemvediet.apps.poleno_utils',
     'chcemvediet.apps.accounts',
     'chcemvediet.apps.obligees',
     'chcemvediet.apps.applications',

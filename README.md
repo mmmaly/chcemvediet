@@ -46,7 +46,7 @@ Run the project
  3. Navigate your browser to: http://127.0.0.1:8000/admin/socialaccount/socialapp/ and login as
     'admin' with password 'kalerab'. Then click on 'Google OAuth' and enter your Google Apps
     'Client id' and 'Secret'. Similarly enter your secrets for LinkedIn, Twitter and Facebook.
-    Don't forget to logout from the admin interface.
+    Don't forget to logout the admin interface afterwards.
 
  4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 

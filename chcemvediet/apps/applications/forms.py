@@ -11,7 +11,6 @@ class ApplicationForm(forms.Form):
             validators=[validate_obligee_name_exists],
             widget=forms.TextInput(attrs={
                 'placeholder': 'Obligee',
-                'required': 'required',
                 }),
             )
     subject = forms.CharField(
@@ -20,7 +19,6 @@ class ApplicationForm(forms.Form):
             max_length=255,
             widget=forms.TextInput(attrs={
                 'placeholder': 'Subject',
-                'required': 'required',
                 }),
             )
     message = forms.CharField(
@@ -28,7 +26,7 @@ class ApplicationForm(forms.Form):
             initial=lorem(1)[0],
             widget=forms.Textarea(attrs={
                 'placeholder': 'Request',
-                'required': 'required',
+                'class': 'input-block-level',
                 }),
             )
 

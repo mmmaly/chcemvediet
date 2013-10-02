@@ -1,0 +1,25 @@
+{% block before_errors %}{% endblock %}
+{% if form.non_field_errors %}
+  <div class="control-group error">
+    <div class="controls">
+      <span class="help-block">{{ form.non_field_errors|join:" " }}<span>
+    </div>
+  </div>
+{% endif %}
+{% block before_fields %}{% endblock %}
+{% for field in form %}
+  {% if field.is_hidden %}
+    {{ field }}
+  {% else %}
+    <div class="control-group {% if field.errors %}error{% endif %}">
+      {% block before_field %}{% endblock %}
+      <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}:</label>
+      <div class="controls">
+        {{ field }}
+        <span class="help-inline">{{ field.errors|join:" " }}</span>
+      </div>
+      {% block after_field %}{% endblock %}
+    </div>
+  {% endif %}
+{% endfor %}
+{% block after_fields %}{% endblock %}

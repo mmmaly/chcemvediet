@@ -1,0 +1,9 @@
+{% extends "main/base/single_column.html" %}
+
+{% block title %}Login Cancelled | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>Login Cancelled</h1>
+  {% include "main/snippets/messages.html" %}
+  <p>You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a href="{% url 'account_login' %}">sign in</a>.</p>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "main/base/single_column.html" %}
+
+{% block title %}Social Network Login Failure | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>Social Network Login Failure</h1>
+  {% include "main/snippets/messages.html" %}
+  <p>An error occurred while attempting to login via your social network account.</p>
+{% endblock %}

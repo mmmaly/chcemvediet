@@ -1,10 +1,11 @@
-{% extends "main/_e_single_column.html" %}
+{% extends "main/base/single_column.html" %}
 {% load lorem range from poleno_utils %}
 
 {% block title %}Obligees | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>Obligees List</h1>
+  {% include "main/snippets/messages.html" %}
   <p>{% lorem %}</p>
   <table class="table table-striped">
     <thead>

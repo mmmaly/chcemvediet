@@ -1,9 +1,10 @@
-{% extends "main/_e_single_column.html" %}
+{% extends "main/base/single_column.html" %}
 
 {% block title %}Application Detail | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>Application Detail</h1>
+  {% include "main/snippets/messages.html" %}
   <div class="row">
     <p class="span2 text-right">Applicant:</p>
     <div class="span10">

@@ -1,9 +1,10 @@
-{% extends "main/_e_single_column.html" %}
+{% extends "main/base/single_column.html" %}
 
 {% block title %}Submitted Applications | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>Submitted Applications</h1>
+  {% include "main/snippets/messages.html" %}
   {% if application_list %}
     <table class="table table-striped">
       <thead>

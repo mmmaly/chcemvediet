@@ -1,0 +1,9 @@
+{% extends "main/base/single_column.html" %}
+
+{% block title %}Confirm E-mail Address | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>Confirm E-mail Address</h1>
+  {% include "main/snippets/messages.html" %}
+  <p>You have confirmed that <a href="mailto:{{ email_address.email }}">{{ email_address.email }}</a> is an e-mail address for user {{ email_address.user.get_full_name }}.</p>
+{% endblock %}
