@@ -1,5 +1,5 @@
 {% extends "main/_e_single_column.html" %}
-{% load webdesign %}
+{% load lorem from poleno_utils %}
 
 {% block title %}Welcome | {{ block.super }}{% endblock %}
 
@@ -12,17 +12,17 @@
   <div class="row">
     <div class="span4">
       <h2>Heading</h2>
-      <p>{% lorem %}</p>
+      <p>{% lorem 8 %}</p>
       <p><a class="btn" href="#">View details &raquo;</a></p>
     </div>
     <div class="span4">
       <h2>Heading</h2>
-      <p>{% lorem %}</p>
+      <p>{% lorem 9 %}</p>
       <p><a class="btn" href="#">View details &raquo;</a></p>
    </div>
     <div class="span4">
       <h2>Heading</h2>
-      <p>{% lorem %}</p>
+      <p>{% lorem 14 %}</p>
       <p><a class="btn" href="#">View details &raquo;</a></p>
     </div>
   </div>

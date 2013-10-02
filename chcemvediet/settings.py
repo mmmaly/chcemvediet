@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.twitter',
+    'widget_tweaks',
     'chcemvediet.apps.main',
     'chcemvediet.apps.accounts',
     'chcemvediet.apps.obligees',

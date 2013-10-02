@@ -37,7 +37,7 @@ def create(request):
             send_mail(subject, message, sender_full, [recipient_mail])
             return HttpResponseRedirect(reverse('applications:detail', args=(application.id,)))
     else:
-        form = forms.ApplicationForn()
+        form = forms.ApplicationForm()
 
     return render(request, 'applications/create.html', {
         'form': form,

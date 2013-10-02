@@ -1,12 +1,12 @@
 {% extends "main/_e_single_column.html" %}
-{% load webdesign %}
+{% load lorem range from poleno_utils %}
 
 {% block title %}Obligees | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>Obligees List</h1>
   <p>{% lorem %}</p>
-  <table class="table">
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>Organization</th>
@@ -27,25 +27,13 @@
       {% else %}
         <li class="disabled"><span>«</span></li>
       {% endif %}
-      {% if obligee_page.number > 3 %}
-        <li><a href="?page={{ obligee_page.number|add:"-3" }}">{{ obligee_page.number|add:"-3" }}</a></li>
-      {% endif %}
-      {% if obligee_page.number > 2 %}
-        <li><a href="?page={{ obligee_page.number|add:"-2" }}">{{ obligee_page.number|add:"-2" }}</a></li>
-      {% endif %}
-      {% if obligee_page.number > 1 %}
-        <li><a href="?page={{ obligee_page.number|add:"-1" }}">{{ obligee_page.number|add:"-1" }}</a></li>
-      {% endif %}
-      <li class="disabled"><span>{{ obligee_page.number }}</span></li>
-      {% if obligee_page.number < obligee_page.paginator.num_pages|add:"-1" %}
-        <li><a href="?page={{ obligee_page.number|add:"1" }}">{{ obligee_page.number|add:"1" }}</a></li>
-      {% endif %}
-      {% if obligee_page.number < obligee_page.paginator.num_pages|add:"-2" %}
-        <li><a href="?page={{ obligee_page.number|add:"2" }}">{{ obligee_page.number|add:"2" }}</a></li>
-      {% endif %}
-      {% if obligee_page.number < obligee_page.paginator.num_pages|add:"-3" %}
-        <li><a href="?page={{ obligee_page.number|add:"3" }}">{{ obligee_page.number|add:"3" }}</a></li>
-      {% endif %}
+      {% for i in "-3"|range:"4" %}
+        {% if i == 0 %}
+          <li class="disabled"><span>{{ obligee_page.number }}</span></li>
+        {% elif obligee_page.number|add:i > 0 and obligee_page.number|add:i <= obligee_page.paginator.num_pages %}
+          <li><a href="?page={{ obligee_page.number|add:i }}">{{ obligee_page.number|add:i }}</a></li>
+        {% endif %}
+      {% endfor %}
       {% if obligee_page.number < obligee_page.paginator.num_pages %}
         <li><a href="?page={{ obligee_page.paginator.num_pages }}">»</a></li>
       {% else %}

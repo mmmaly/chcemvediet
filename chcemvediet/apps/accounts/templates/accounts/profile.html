@@ -4,10 +4,22 @@
 
 {% block main_col %}
   <h1>User Profile <small>{{ user.get_full_name }}</small></h1>
-  <p>E-mail: {{ user.email }}</p>
-  <p>Street: {{ user.profile.street }}</p>
-  <p>City: {{ user.profile.city }}</p>
-  <p>Zip: {{ user.profile.zip }}</p>
+  <div class="row">
+    <p class="span2 text-right">E-mail:</p>
+    <p class="span10">{{ user.email }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Street:</p>
+    <p class="span10">{{ user.profile.street }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">City:</p>
+    <p class="span10">{{ user.profile.city }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Zip:</p>
+    <p class="span10">{{ user.profile.zip }}</p>
+  </div>
   <p>
     <a class="btn" href="{% url 'account_email' %}">Change E-mail</a>
     <a class="btn" href="{% url 'account_change_password' %}">Change Password</a>

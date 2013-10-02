@@ -1,20 +1,46 @@
-{% extends "base.html" %}
+{% extends "main/_e_single_column.html" %}
 
-{% block title %}Detail podanej žiadosti{% endblock %}
+{% block title %}Application Detail | {{ block.super }}{% endblock %}
 
-{% block body %}
-  <h1>Detail podanej žiadosti</h1>
-  <p>Užívateľ: {{ user.get_username }}</p>
-  <ul>
-    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
-    <li><a href="{% url 'applications:index' %}">Návrat zoznam podaných žiadosti</a></li>
-  </ul>
-  <p>Žiadateľ: {{ application.applicant.get_full_name}}; (adresu ešte v databáze nemáme)</p>
-  <p>E-mail odosielateľa: {{ application.sender_email }}</p>
-  <p>Povinná osoba: {{ application.obligee.name }};
-     Adresa: {{ application.obligee.street }}; {{ application.obligee.zip }} {{ application.obligee.city }}</p>
-  <p>E-mail adresáta: {{ application.recepient_email }}</p>
-  <p>Dátum podania: {{ application.submission_date }}</p>
-  <p>Vec (subject): {{ application.subject }}</p>
-  <p>Znenie žiadosti: {{ application.message }}</p>
+{% block main_col %}
+  <h1>Application Detail</h1>
+  <div class="row">
+    <p class="span2 text-right">Applicant:</p>
+    <div class="span10">
+      <p>{{ application.applicant.get_full_name }}</p>
+      <p>{{ application.applicant.profile.street }}<br>
+        {{ application.applicant.profile.zip }} {{ application.applicant.profile.city }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Obligee:</p>
+    <div class="span10">
+      <p>{{ application.obligee.name }}</p>
+      <p>{{ application.obligee.street }}<br>
+        {{ application.obligee.zip }} {{ application.obligee.city }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Send From:</p>
+    <p class="span10">{{ application.sender_email }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Send To:</p>
+    <p class="span10">{{ application.recepient_email }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Submission Date:</p>
+    <p class="span10">{{ application.submission_date }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Subject:</p>
+    <p class="span10">{{ application.subject }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">Request:</p>
+    <p class="span10">{{ application.message }}</p>
+  </div>
+  <p>
+    <a class="btn" href="{% url 'applications:index' %}">Application List</a>
+  </p>
 {% endblock %}

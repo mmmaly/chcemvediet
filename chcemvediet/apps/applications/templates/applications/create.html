@@ -1,19 +1,73 @@
-{% extends "base.html" %}
+{% extends "main/_e_single_column.html" %}
 {% load staticfiles %}
+{% load render_field add_class attr from widget_tweaks %}
+{% load lorem from poleno_utils %}
 
-{% block title %}Nová žiadosť{% endblock %}
+{% block title %}New Application | {{ block.super }}{% endblock %}
 
-{% block head %}
+{% block main_col %}
+  <h1>New Application</h1>
+  <p>{% lorem 21 %}</p>
+  <p>
+    <form class="form-horizontal" method="post" action=".">
+      {% csrf_token %}
+      <div class="control-group">
+        <label class="control-label" for="id_applicant">Applicant:</label>
+        <div class="controls">
+          <input  type="text" id="id_applicant" placeholder="Applicant" value="{{ user.get_full_name }}" readonly>
+        </div>
+        <div class="offset2" style="padding: 10px 0px 0px 5px;">
+          <div>{{ user.profile.street }}</div>
+          <div>{{ user.profile.zip }} {{ user.profile.city }}</div>
+        </div>
+      </div>
+      <div class="control-group {% if form.obligee.errors %}error{% endif %}">
+        <label class="control-label" for="id_obligee">{{ form.obligee.label }}:</label>
+        <div class="controls">
+          {{ form.obligee|attr:"pattern:''" }}
+          <span class="help-inline">{{ form.obligee.errors|join:" " }}</span>
+        </div>
+        <div class="offset2" style="padding: 10px 0px 0px 5px;">
+          <div id="id_obligee_details1"></div>
+          <div id="id_obligee_details2"></div>
+          <div id="id_obligee_details3"></div>
+        </div>
+      </div>
+      <div class="control-group {% if form.subject.errors %}error{% endif %}">
+        <label class="control-label" for="id_subject">{{ form.subject.label }}:</label>
+        <div class="controls">
+          {{ form.subject }}
+          <span class="help-inline">{{ form.subject.errors|join:" " }}</span>
+        </div>
+      </div>
+      <div class="control-group {% if form.message.errors %}error{% endif %}">
+        <label class="control-label" for="id_message">{{ form.message.label }}:</label>
+        <div class="controls">
+          {{ form.message|add_class:"input-block-level" }}
+          <span class="help-inline">{{ form.message.errors|join:" " }}</span>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+      </div>
+    </form>
+  </p>
+{% endblock %}
+
+{% block javascript %}{{ block.super }}{# {{{ #}
   <script>
 	function update_obligee_details(obligee) {
 		if (obligee) {
-			details = 'Adresa: ' + obligee.street + '; ' + obligee.zip + ' ' + obligee.city;
-			details += '; Email: ' + obligee.email;
-			details += '; ID: ' + obligee.id;
+			$("#id_obligee_details1").text(obligee.street);
+			$("#id_obligee_details2").text(obligee.zip + ' ' + obligee.city);
+			$("#id_obligee_details3").text('E-mail: ' + obligee.email);
+			$('#id_obligee').removeAttr('pattern');
 		} else {
-			details = '(Neznáma povinná osoba. Vyber z menu.)';
+			$("#id_obligee_details1").text('');
+			$("#id_obligee_details2").text('');
+			$("#id_obligee_details3").text('');
+			$('#id_obligee').attr('pattern', '');
 		}
-		$("#id_obligee_details").text(details);
 	};
 
 	$(function() {
@@ -32,24 +86,14 @@
 		});
 	});
   </script>
+{% endblock %}{# }}} #}
+
+{% block stylesheets %}{{ block.super }}{# {{{ #}
   <style>
 	.ui-autocomplete-loading {
 		background: white url("{% static 'applications/images/ui-anim_basic_16x16.gif' %}") right center no-repeat;
 	}
   </style>
-{% endblock %}
+{% endblock %}{# }}} #}
 
-{% block body %}
-  <h1>Nová žiadosť</h1>
-  <ul>
-    <li><a href="{% url 'main:index' %}">Návrat na hlavnu stránku</a></li>
-  </ul>
 
-  <form method="post" action=".">
-    {% csrf_token %}
-    <p>Žiadateľ: {{ user.get_full_name }}; (adresu ešte v databáze nemáme)</p>
-    <p>E-mail: (vygeneruje sa pri podani žiadosti)</p>
-    {{ form.as_p }}
-    <input type="submit" value="Podať žiadosť" />
-  </form>
-{% endblock %}

@@ -1,3 +1,4 @@
 unidecode>=0.04.14
 django>=1.5.4
 django-allauth>=0.13.0
+django-widget-tweaks>=1.3
