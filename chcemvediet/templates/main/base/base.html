@@ -1,3 +1,5 @@
+{% load static from staticfiles %}
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,7 +11,21 @@
     {% block stylesheets %}
       <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">
       <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+      {% comment %}
+      <link href="{% static "main/3part/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" %}" rel="stylesheet">
+      <link href="{% static "main/3part/bootstrap/2.3.2/css/bootstrap-combined.min.css" %}" rel="stylesheet">
+      {% endcomment %}
       <style> @media (min-width: 980px) { body { padding-top: 60px; } } </style>
+    {% endblock %}
+    {% block javascript %}
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+      {% comment %}
+      <script src="{% static "main/3part/jquery/1.10.2/jquery.min.js" %}"></script>
+      <script src="{% static "main/3part/jqueryui/1.10.3/jquery-ui.min.js" %}"></script>
+      <script src="{% static "main/3part/bootstrap/2.3.2/js/bootstrap.min.js" %}"></script>
+      {% endcomment %}
     {% endblock %}
     {% block head %}{% endblock %}
   </head>
@@ -24,10 +40,5 @@
         {% include "main/snippets/footer.html" %}
       </footer>
     </div>
-    {% block javascript %}
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-      <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    {% endblock %}
   </body>
 </html>

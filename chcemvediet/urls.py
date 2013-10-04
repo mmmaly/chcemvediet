@@ -13,5 +13,6 @@ urlpatterns = patterns('',
     url(r'^obligees/', include('chcemvediet.apps.obligees.urls', namespace='obligees')),
     url(r'^applications/', include('chcemvediet.apps.applications.urls', namespace='applications')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 )
 

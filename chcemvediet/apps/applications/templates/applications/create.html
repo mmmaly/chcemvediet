@@ -24,12 +24,10 @@
 			$("#id_obligee_details1").text(obligee.street);
 			$("#id_obligee_details2").text(obligee.zip + ' ' + obligee.city);
 			$("#id_obligee_details3").text('E-mail: ' + obligee.email);
-			$('#id_obligee').removeAttr('pattern');
 		} else {
 			$("#id_obligee_details1").text('');
 			$("#id_obligee_details2").text('');
 			$("#id_obligee_details3").text('');
-			$('#id_obligee').attr('pattern', '');
 		}
 	};
 
@@ -58,5 +56,4 @@
 	}
   </style>
 {% endblock %}{# }}} #}
-
 
