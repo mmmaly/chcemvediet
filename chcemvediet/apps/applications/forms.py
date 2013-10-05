@@ -3,29 +3,30 @@
 from django import forms
 from chcemvediet.apps.obligees.models import validate_obligee_name_exists
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
+from django.utils.translation import ugettext_lazy as _
 
 class ApplicationForm(forms.Form):
     obligee = forms.CharField(
-            label='Obligee',
+            label=_(u'Obligee'),
             max_length=255,
             validators=[validate_obligee_name_exists],
             widget=forms.TextInput(attrs={
-                'placeholder': 'Obligee',
+                'placeholder': _(u'Obligee'),
                 }),
             )
     subject = forms.CharField(
-            label='Subject',
-            initial='Information request',
+            label=_(u'Subject'),
+            initial=_(u'Information request'),
             max_length=255,
             widget=forms.TextInput(attrs={
-                'placeholder': 'Subject',
+                'placeholder': _(u'Subject'),
                 }),
             )
     message = forms.CharField(
-            label='Request',
+            label=_(u'Request'),
             initial=lorem(1)[0],
             widget=forms.Textarea(attrs={
-                'placeholder': 'Request',
+                'placeholder': _(u'Request'),
                 'class': 'input-block-level',
                 }),
             )

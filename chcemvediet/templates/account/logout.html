@@ -1,9 +1,9 @@
 {% extends "main/base/single_column.html" %}
 
-{% block title %}Sign Out | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Sign Out{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>Sign Out</h1>
+  <h1>{% blocktrans %}Sign Out{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   <p>Are you sure you want to sign out?</p>
   <form method="post" action="{% url 'account_logout' %}">
@@ -12,7 +12,7 @@
       <input type="hidden" name="{{redirect_field_name}}" value="{{redirect_field_value}}">
     {% endif %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Sign Out</button>
+      <button type="submit" class="btn btn-primary">{% blocktrans %}Sign Out{% endblocktrans %}</button>
     </div>
   </form>
 {% endblock %}

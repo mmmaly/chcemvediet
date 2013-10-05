@@ -1,9 +1,10 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 
-{% block title %}Account Inactive | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Account Inactive{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>Account Inactive</h1>
+  <h1>{% blocktrans %}Account Inactive{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   <p>This account is inactive.</p>
 {% endblock %}

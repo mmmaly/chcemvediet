@@ -1,18 +1,19 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 {% load static from staticfiles %}
 {% load lorem from poleno_utils %}
 
-{% block title %}New Application | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}New Application{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>New Application</h1>
+  <h1>{% blocktrans %}New Application{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   <p>{% lorem 21 %}</p>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     {% include "applications/snippets/form_create.html" with form=form %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Submit Application</button>
+      <button type="submit" class="btn btn-primary">{% blocktrans %}Submit Application{% endblocktrans %}</button>
     </div>
   </form>
 {% endblock %}

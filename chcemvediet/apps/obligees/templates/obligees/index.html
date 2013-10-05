@@ -1,18 +1,19 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 {% load lorem range from poleno_utils %}
 
-{% block title %}Obligees | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Obligees{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>Obligees List</h1>
+  <h1>{% blocktrans %}Obligees List{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   <p>{% lorem %}</p>
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Organization</th>
-        <th>Address</th>
-        <th>E-mail</th>
+        <th>{% blocktrans %}Organization{% endblocktrans %}</th>
+        <th>{% blocktrans %}Address{% endblocktrans %}</th>
+        <th>{% blocktrans %}E-mail{% endblocktrans %}</th>
       </tr>
     </thead>
     <tbody>

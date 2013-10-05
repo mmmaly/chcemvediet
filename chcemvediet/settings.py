@@ -212,3 +212,9 @@ LANGUAGES = (
     ('en', u'English'),
 )
 
+# Where to search for translations
+LOCALE_PATHS = (
+    './chcemvediet/locale',
+    './chcemvediet/locale/3part/allauth',
+)
+

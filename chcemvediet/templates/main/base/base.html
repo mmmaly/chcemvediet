@@ -1,4 +1,5 @@
 {% load static from staticfiles %}
+{% load blocktrans from i18n %}
 
 <!DOCTYPE html>
 <html>
@@ -7,7 +8,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% endblock %}
-    <title>{% block title %}Chcem vedieť{% endblock %}</title>
+    <title>{% block title %}{% blocktrans %}Chcem vedieť{% endblocktrans %}{% endblock %}</title>
     {% block stylesheets %}
       <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">
       <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">

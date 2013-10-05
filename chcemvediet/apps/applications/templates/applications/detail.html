@@ -1,12 +1,13 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 
-{% block title %}Application Detail | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Application Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>Application Detail</h1>
+  <h1>{% blocktrans %}Application Detail{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   <div class="row">
-    <p class="span2 text-right">Applicant:</p>
+    <p class="span2 text-right">{% blocktrans %}Applicant{% endblocktrans %}:</p>
     <div class="span10">
       <p>{{ application.applicant.get_full_name }}</p>
       <p>{{ application.applicant.profile.street }}<br>
@@ -14,7 +15,7 @@
     </div>
   </div>
   <div class="row">
-    <p class="span2 text-right">Obligee:</p>
+    <p class="span2 text-right">{% blocktrans %}Obligee{% endblocktrans %}:</p>
     <div class="span10">
       <p>{{ application.obligee.name }}</p>
       <p>{{ application.obligee.street }}<br>
@@ -22,26 +23,26 @@
     </div>
   </div>
   <div class="row">
-    <p class="span2 text-right">Send From:</p>
+    <p class="span2 text-right">{% blocktrans %}Send From{% endblocktrans %}:</p>
     <p class="span10">{{ application.sender_email }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">Send To:</p>
+    <p class="span2 text-right">{% blocktrans %}Send To{% endblocktrans %}:</p>
     <p class="span10">{{ application.recepient_email }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">Submission Date:</p>
+    <p class="span2 text-right">{% blocktrans %}Submission Date{% endblocktrans %}:</p>
     <p class="span10">{{ application.submission_date }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">Subject:</p>
+    <p class="span2 text-right">{% blocktrans %}Subject{% endblocktrans %}:</p>
     <p class="span10">{{ application.subject }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">Request:</p>
+    <p class="span2 text-right">{% blocktrans %}Request{% endblocktrans %}:</p>
     <p class="span10">{{ application.message }}</p>
   </div>
   <p>
-    <a class="btn" href="{% url 'applications:index' %}">Application List</a>
+    <a class="btn" href="{% url 'applications:index' %}">{% blocktrans %}Application List{% endblocktrans %}</a>
   </p>
 {% endblock %}

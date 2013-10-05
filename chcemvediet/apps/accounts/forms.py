@@ -1,31 +1,32 @@
 # vim: expandtab
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 class SignupForm(forms.Form):
     first_name = forms.CharField(
             max_length=30,
-            label='First name',
-            widget=forms.TextInput(attrs={'placeholder': 'First name'}),
+            label=_(u'First name'),
+            widget=forms.TextInput(attrs={'placeholder': _(u'First name')}),
             )
     last_name = forms.CharField(
             max_length=30,
-            label='Last name',
-            widget=forms.TextInput(attrs={'placeholder': 'Last name'}),
+            label=_(u'Last name'),
+            widget=forms.TextInput(attrs={'placeholder': _(u'Last name')}),
             )
     street = forms.CharField(
             max_length=100,
-            label='Street',
-            widget=forms.TextInput(attrs={'placeholder': 'Street'}),
+            label=_(u'Street'),
+            widget=forms.TextInput(attrs={'placeholder': _(u'Street')}),
             )
     city = forms.CharField(
             max_length=30,
-            label='City',
-            widget=forms.TextInput(attrs={'placeholder': 'City'}),
+            label=_(u'City'),
+            widget=forms.TextInput(attrs={'placeholder': _(u'City')}),
             )
     zip = forms.RegexField(
             max_length=5,
-            label='Zip',
-            widget=forms.TextInput(attrs={'placeholder': 'Zip'}),
+            label=_(u'Zip'),
+            widget=forms.TextInput(attrs={'placeholder': _(u'Zip')}),
             regex=r'^\d{5}$',
             )
 

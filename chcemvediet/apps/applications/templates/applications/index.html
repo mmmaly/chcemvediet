@@ -1,16 +1,17 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 
-{% block title %}Submitted Applications | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Submitted Applications{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>Submitted Applications</h1>
+  <h1>{% blocktrans %}Submitted Applications{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   {% if application_list %}
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Obligee</th>
-          <th>Submition Date</th>
+          <th>{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th>{% blocktrans %}Submission Date{% endblocktrans %}</th>
         </tr>
       </thead>
       <tbody>
@@ -23,8 +24,8 @@
       </tbody>
     </table>
   {% endif %}
-  <p>Number of submitted applications: {{ application_list|length }}</p>
+  <p>{% blocktrans %}Number of submitted applications{% endblocktrans %}: {{ application_list|length }}</p>
   <p>
-    <a class="btn" href="{% url 'applications:create' %}">New Application</a>
+    <a class="btn" href="{% url 'applications:create' %}">{% blocktrans %}New Application{% endblocktrans %}</a>
   </p>
 {% endblock %}

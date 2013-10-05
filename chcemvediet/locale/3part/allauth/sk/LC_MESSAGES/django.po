@@ -1,0 +1,156 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-05 12:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: account/adapter.py:168
+msgid "Usernames can only contain letters, digits and @/./+/-/_."
+msgstr "Uživatelské meno môže obsahovať iba písmena, číslice a znaky @/./+/-/_."
+
+#: account/adapter.py:173
+msgid "Username can not be used. Please use other username."
+msgstr "Toto uživatelské meno nemôže byť zvolené. Prosím, zvolte si iné."
+
+#: account/forms.py:33 account/forms.py:51 account/forms.py:237
+#: account/forms.py:343
+msgid "Password"
+msgstr "Heslo"
+
+#: account/forms.py:43
+msgid "Password must be a minimum of {0} characters."
+msgstr "Heslo musí obsahovat minimálne {0} znakov."
+
+#: account/forms.py:53
+msgid "Remember Me"
+msgstr "Zapamätaj si ma"
+
+#: account/forms.py:64 account/forms.py:178
+msgid "E-mail address"
+msgstr "E-mailová adresa"
+
+#: account/forms.py:65 account/forms.py:189 account/forms.py:292
+#: account/forms.py:360
+msgid "E-mail"
+msgstr "E-mail"
+
+#: account/forms.py:70 account/forms.py:71 account/forms.py:171
+#: account/forms.py:175
+msgid "Username"
+msgstr "Uživatelské meno"
+
+#: account/forms.py:78
+msgid "Username or e-mail"
+msgstr "Uživatelské meno alebo heslo"
+
+#: account/forms.py:79
+msgctxt "field label"
+msgid "Login"
+msgstr "Uživatelské meno"
+
+#: account/forms.py:111
+msgid "This account is currently inactive."
+msgstr "Účet je v túto chvíľu neaktívny."
+
+#: account/forms.py:115
+msgid "The e-mail address and/or password you specified are not correct."
+msgstr "Zadaný e-mail alebo heslo nie je správne."
+
+#: account/forms.py:119
+msgid "The username and/or password you specified are not correct."
+msgstr "Zadané užívatelské meno alebo heslo nie je správne."
+
+#: account/forms.py:122
+msgid "The login and/or password you specified are not correct."
+msgstr "Zadané prihlasovacie udaje nie su správne."
+
+#: account/forms.py:192
+msgid "E-mail (optional)"
+msgstr "E-mail (nepovinné)"
+
+#: account/forms.py:207
+msgid "This username is already taken. Please choose another."
+msgstr "Toto užívatelské meno je už obsadené. Prosím, vyberte si iné."
+
+#: account/forms.py:216
+msgid "A user is already registered with this e-mail address."
+msgstr "Užívatel s týmto e-mailom je už zaregistrovaný."
+
+#: account/forms.py:238 account/forms.py:344
+msgid "Password (again)"
+msgstr "Heslo (zopakovať)"
+
+#: account/forms.py:256 account/forms.py:333 account/forms.py:349
+#: account/forms.py:418
+msgid "You must type the same password each time."
+msgstr "Hesla sa musia zhodovať."
+
+#: account/forms.py:301
+msgid "This e-mail address is already associated with this account."
+msgstr "Tento e-mail je už k tomuto účtu priradený."
+
+#: account/forms.py:302
+msgid "This e-mail address is already associated with another account."
+msgstr "Tento e-mail je už priradený k inému účtu."
+
+#: account/forms.py:321
+msgid "Current Password"
+msgstr "Aktuálne heslo"
+
+#: account/forms.py:322 account/forms.py:406
+msgid "New Password"
+msgstr "Nové heslo"
+
+#: account/forms.py:323 account/forms.py:407
+msgid "New Password (again)"
+msgstr "Nové heslo (zopakovať)"
+
+#: account/forms.py:327
+msgid "Please type your current password."
+msgstr "Prosím, zadajte svoje aktuálne heslo."
+
+#: account/forms.py:371
+msgid "The e-mail address is not assigned to any user account"
+msgstr "E-mail nie je priradený k žiadnemu účtu"
+
+#: account/models.py:31
+msgid "email address"
+msgstr "e-mailová adresa"
+
+#: account/models.py:32
+msgid "email addresses"
+msgstr "e-mailové adresy"
+
+#: account/models.py:82
+msgid "email confirmation"
+msgstr "overovací e-mail"
+
+#: account/models.py:83
+msgid "email confirmations"
+msgstr "overovacie e-maily"
+
+#: account/utils.py:290
+#, python-format
+msgid "Confirmation e-mail sent to %(email)s"
+msgstr "Overovací e-mail bol odoslaný na %(email)s"
+
+#: socialaccount/adapter.py:73
+msgid "Your account has no password set up."
+msgstr "Váš účet nemá nastavené heslo."
+
+#: socialaccount/adapter.py:78
+msgid "Your account has no verified e-mail address."
+msgstr "Váš účet nemá žiadny overený e-mail."

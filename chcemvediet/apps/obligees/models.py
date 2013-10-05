@@ -16,5 +16,5 @@ class Obligee(models.Model):
 
 def validate_obligee_name_exists(value):
     if not Obligee.objects.filter(name=value).exists():
-        raise ValidationError(u'Invalid obligee name. Select one form the menu.')
+        raise ValidationError(_(u'Invalid obligee name. Select one form the menu.'))
 

@@ -1,10 +1,11 @@
 {% extends "main/snippets/form_horizontal.html" %}
+{% load blocktrans from i18n %}
 
 {% block before_fields %}
   <div class="control-group">
-    <label class="control-label" for="id_applicant">Applicant:</label>
+    <label class="control-label" for="id_applicant">{% blocktrans %}Applicant{% endblocktrans %}:</label>
     <div class="controls">
-      <input  type="text" id="id_applicant" placeholder="Applicant" value="{{ user.get_full_name }}" readonly>
+      <input  type="text" id="id_applicant" placeholder="{% blocktrans %}Applicant{% endblocktrans %}" value="{{ user.get_full_name }}" readonly>
     </div>
     <div class="offset2" style="padding: 10px 0px 0px 5px;">
       <div>{{ user.profile.street }}</div>

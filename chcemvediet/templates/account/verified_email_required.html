@@ -1,9 +1,10 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 
-{% block title %}Verify Your E-mail Address | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Verify Your E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>Verify Your E-mail Address</h1>
+  <h1>{% blocktrans %}Verify Your E-mail Address{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   <p>This part of the site requires us to verify that you are who you claim to be. For this
     purpose, we require that you verify ownership of your e-mail address.</p>

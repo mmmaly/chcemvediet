@@ -1,7 +1,8 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 {% load lorem from poleno_utils %}
 
-{% block title %}Welcome | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Welcome{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <div class="hero-unit">

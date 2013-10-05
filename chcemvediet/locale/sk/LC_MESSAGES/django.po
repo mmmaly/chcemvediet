@@ -1,0 +1,267 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-05 12:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: templates/account/email.html:5 templates/account/email.html.py:8
+msgid "E-mail Addresses"
+msgstr "E-mailové adresy"
+
+#: templates/account/email.html:21
+msgid "Verified"
+msgstr "Overená"
+
+#: templates/account/email.html:23
+msgid "Unverified"
+msgstr "Neoverená"
+
+#: templates/account/email.html:26
+msgid "Primary"
+msgstr "Primárna"
+
+#: templates/account/email.html:33
+msgid "Make Primary"
+msgstr "Nastav ako primárnu"
+
+#: templates/account/email.html:34
+msgid "Re-send Verification"
+msgstr "Prepošli overovací kód"
+
+#: templates/account/email.html:35
+msgid "Remove"
+msgstr "Odober"
+
+#: templates/account/email.html:42
+msgid "Add E-mail Address"
+msgstr "Pridaj e-mailovú adresu"
+
+#: templates/account/email.html:48
+msgid "Add E-mail"
+msgstr "Pridaj e-mail"
+
+#: templates/account/email_confirm.html:4
+#: templates/account/email_confirm.html:7
+#: templates/account/email_confirmed.html:4
+#: templates/account/email_confirmed.html:7
+msgid "Confirm E-mail Address"
+msgstr "Potvrď e-mailovú adresu"
+
+#: templates/account/email_confirm.html:14
+msgid "Confirm"
+msgstr "Potvrď"
+
+#: templates/account/login.html:5 templates/account/login.html.py:8
+#: templates/account/login.html:39 templates/main/snippets/header.html:34
+msgid "Sign In"
+msgstr "Prihlásenie"
+
+#: templates/account/login.html:24
+msgid "Sign In With"
+msgstr "Prihlásenie cez"
+
+#: templates/account/login.html:40
+msgid "Forgot Password?"
+msgstr "Zabudnuté heslo?"
+
+#: templates/account/logout.html:3 templates/account/logout.html.py:6
+#: templates/account/logout.html:15
+msgid "Sign Out"
+msgstr "Odhlásenie"
+
+#: templates/account/password_change.html:4
+#: templates/account/password_change.html:7
+#: templates/account/password_change.html:13
+#: templates/account/password_reset_from_key.html:4
+#: templates/account/password_reset_from_key.html:7
+#: templates/account/password_reset_from_key.html:18
+#: templates/account/password_reset_from_key_done.html:4
+#: templates/account/password_reset_from_key_done.html:7
+#: templates/main/snippets/header.html:26
+msgid "Change Password"
+msgstr "Zmena hesla"
+
+#: templates/account/password_reset.html:3
+#: templates/account/password_reset.html:6
+#: templates/account/password_reset_done.html:4
+#: templates/account/password_reset_done.html:7
+msgid "Password Reset"
+msgstr "Zrušenie hesla"
+
+#: templates/account/password_reset.html:17
+msgid "Reset My Password"
+msgstr "Zmeň heslo"
+
+#: templates/account/password_reset_from_key.html:7
+msgid "Bad Token"
+msgstr "Nesplatný token"
+
+#: templates/account/password_set.html:4 templates/account/password_set.html:7
+#: templates/account/password_set.html:13
+msgid "Set Password"
+msgstr "Nastav heslo"
+
+#: templates/account/signup.html:5 templates/account/signup.html.py:8
+#: templates/account/signup.html:39 templates/main/snippets/header.html:35
+#: templates/socialaccount/signup.html:5 templates/socialaccount/signup.html:8
+#: templates/socialaccount/signup.html:33
+msgid "Sign Up"
+msgstr "Registrácia"
+
+#: templates/account/signup.html:24
+msgid "Sign Up With"
+msgstr "Registrácia cez"
+
+#: templates/account/signup_closed.html:4
+#: templates/account/signup_closed.html:7
+msgid "Sign Up Closed"
+msgstr "Registrácia je pozastavená"
+
+#: templates/account/verification_sent.html:4
+#: templates/account/verification_sent.html:7
+#: templates/account/verified_email_required.html:4
+#: templates/account/verified_email_required.html:7
+msgid "Verify Your E-mail Address"
+msgstr "Over e-maiilovú adresu"
+
+#: templates/account/messages/cannot_delete_primary_email.txt:2
+#, python-format
+msgid "You cannot remove your primary e-mail address (%(email)s)."
+msgstr "Primárnu e-mailovú adresu (%(email)s) nie je možné odobrať."
+
+#: templates/account/messages/email_confirmation_sent.txt:2
+#, python-format
+msgid "Confirmation e-mail sent to %(email)s."
+msgstr "Overovací e-mail bol odoslaný na %(email)s."
+
+#: templates/account/messages/email_confirmed.txt:2
+#, python-format
+msgid "You have confirmed %(email)s."
+msgstr "Overili ste adresu %(email)s."
+
+#: templates/account/messages/email_deleted.txt:2
+#, python-format
+msgid "Removed e-mail address %(email)s."
+msgstr "E-mailová adresa bola %(email)s odobrana."
+
+#: templates/account/messages/password_changed.txt:2
+msgid "Password successfully changed."
+msgstr "Heslo bolo úspešne zmenené."
+
+#: templates/account/messages/password_set.txt:2
+msgid "Password successfully set."
+msgstr "Heslo bolo úspešne nastavené."
+
+#: templates/account/messages/primary_email_set.txt:2
+msgid "Primary e-mail address set."
+msgstr "Primárny e-mail bol nastavený."
+
+#: templates/account/messages/unverified_primary_email.txt:2
+msgid "Your primary e-mail address must be verified."
+msgstr "Vaša primárna e-mailová adresa musí byť overená."
+
+#: templates/account/snippets/social_login_buttons.html:5
+msgid "Login With Facebook"
+msgstr "Prihlásenie cez Facebook"
+
+#: templates/account/snippets/social_login_buttons.html:6
+msgid "Login With Google"
+msgstr "Prihlásenie cez Google"
+
+#: templates/account/snippets/social_login_buttons.html:7
+msgid "Login With Twitter"
+msgstr "Prihlásenie cez Twitter"
+
+#: templates/account/snippets/social_login_buttons.html:8
+msgid "Login With LinkedIn"
+msgstr "Prihlásenie cez LinkedIn"
+
+#: templates/main/index.html:5
+msgid "Welcome"
+msgstr "Vitajte"
+
+#: templates/main/base/base.html:11
+msgid "Chcem vedieť"
+msgstr "Chcem vedieť"
+
+#: templates/main/snippets/header.html:17
+msgid "Applications"
+msgstr "Žiadosti"
+
+#: templates/main/snippets/header.html:18
+msgid "Obligees"
+msgstr "Povinné osoby"
+
+#: templates/main/snippets/header.html:25
+msgid "User Profile"
+msgstr "Užívateľský profil"
+
+#: templates/main/snippets/header.html:27
+msgid "Manage E-mails"
+msgstr "Nastaviť e-maily"
+
+#: templates/main/snippets/header.html:28
+msgid "Manage Connections"
+msgstr "Nastaviť prepojenia"
+
+#: templates/main/snippets/header.html:30
+msgid "Log Out"
+msgstr "Odhlásenie"
+
+#: templates/socialaccount/account_inactive.html:4
+#: templates/socialaccount/account_inactive.html:7
+msgid "Account Inactive"
+msgstr "Účet je neaktívny"
+
+#: templates/socialaccount/authentication_error.html:4
+#: templates/socialaccount/authentication_error.html:7
+msgid "Social Network Login Failure"
+msgstr "Prihlásenie cez sociálnu sieť zlyhalo"
+
+#: templates/socialaccount/connections.html:5
+#: templates/socialaccount/connections.html:8
+msgid "Account Connections"
+msgstr "Prepojenia"
+
+#: templates/socialaccount/connections.html:32
+msgid "Remove Connection"
+msgstr "Odober prepojenie"
+
+#: templates/socialaccount/connections.html:39
+msgid "Add a 3rd Party Account"
+msgstr "Pridaj prepojenie"
+
+#: templates/socialaccount/connections.html:42
+msgid "Connect With"
+msgstr "Prepojenie cez"
+
+#: templates/socialaccount/login_cancelled.html:4
+#: templates/socialaccount/login_cancelled.html:7
+msgid "Login Cancelled"
+msgstr "Prihlásenie zrušené"
+
+#: templates/socialaccount/messages/account_connected.txt:2
+msgid "The social account has been connected."
+msgstr "Prepojenie s účtom sociálnej siete bolo vytvorené."
+
+#: templates/socialaccount/messages/account_connected_other.txt:2
+msgid "The social account is already connected to a different account."
+msgstr "Účet sociálnej siete je už prepojený s iným užívateľom."
+
+#: templates/socialaccount/messages/account_disconnected.txt:2
+msgid "The social account has been disconnected."
+msgstr "Prepojenie s účtom sociálnej siete bolo zrušené."

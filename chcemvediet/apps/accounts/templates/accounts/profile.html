@@ -1,30 +1,31 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 
-{% block title %}Profile | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Profile{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>User Profile <small>{{ user.get_full_name }}</small></h1>
+  <h1>{% blocktrans %}User Profile{% endblocktrans %} <small>{{ user.get_full_name }}</small></h1>
   {% include "main/snippets/messages.html" %}
   <div class="row">
-    <p class="span2 text-right">E-mail:</p>
+    <p class="span2 text-right">{% blocktrans %}E-mail{% endblocktrans %}:</p>
     <p class="span10">{{ user.email }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">Street:</p>
+    <p class="span2 text-right">{% blocktrans %}Street{% endblocktrans %}:</p>
     <p class="span10">{{ user.profile.street }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">City:</p>
+    <p class="span2 text-right">{% blocktrans %}City{% endblocktrans %}:</p>
     <p class="span10">{{ user.profile.city }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">Zip:</p>
+    <p class="span2 text-right">{% blocktrans %}Zip{% endblocktrans %}:</p>
     <p class="span10">{{ user.profile.zip }}</p>
   </div>
   <p>
-    <a class="btn" href="{% url 'account_change_password' %}">Change Password</a>
-    <a class="btn" href="{% url 'account_email' %}">Manage E-mails</a>
-    <a class="btn" href="{% url 'socialaccount_connections' %}">Manage Connections</a>
+    <a class="btn" href="{% url 'account_change_password' %}">{% blocktrans %}Change Password{% endblocktrans %}</a>
+    <a class="btn" href="{% url 'account_email' %}">{% blocktrans %}Manage E-mails{% endblocktrans %}</a>
+    <a class="btn" href="{% url 'socialaccount_connections' %}">{% blocktrans %}Manage Connections{% endblocktrans %}</a>
   </p>
 {% endblock %}
 

@@ -1,10 +1,11 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
 {% load lorem from poleno_utils %}
 
-{% block title %}E-mail Addresses | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}E-mail Addresses{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>E-mail Addresses</h1>
+  <h1>{% blocktrans %}E-mail Addresses{% endblocktrans %}</h1>
   {% include "main/snippets/messages.html" %}
   {% if user.emailaddress_set.all %}
     <p>The following e-mail addresses are associated with your account:</p>
@@ -17,34 +18,34 @@
               <input type="radio" name="email" {% if emailaddress.primary %}checked="checked"{%endif %} value="{{emailaddress.email}}">
               {{ emailaddress.email }}
               {% if emailaddress.verified %}
-                <span class="text-success">Verified</span>
+                <span class="text-success">{% blocktrans %}Verified{% endblocktrans %}</span>
               {% else %}
-                <span class="text-error">Unverified</span>
+                <span class="text-error">{% blocktrans %}Unverified{% endblocktrans %}</span>
               {% endif %}
               {% if emailaddress.primary %}
-                <span class="text-info">Primary</span>
+                <span class="text-info">{% blocktrans %}Primary{% endblocktrans %}</span>
               {% endif %}
             </label>
           {% endfor %}
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary" name="action_primary">Make Primary</button>
-        <button type="submit" class="btn" name="action_send">Re-send Verification</button>
-        <button type="submit" class="btn" name="action_remove">Remove</button>
+        <button type="submit" class="btn btn-primary" name="action_primary">{% blocktrans %}Make Primary{% endblocktrans %}</button>
+        <button type="submit" class="btn" name="action_send">{% blocktrans %}Re-send Verification{% endblocktrans %}</button>
+        <button type="submit" class="btn" name="action_remove">{% blocktrans %}Remove{% endblocktrans %}</button>
       </div>
     </form>
   {% else %}
     <p><strong>Warning:</strong> You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc.</p>
   {% endif %}
 
-  <h3>Add E-mail Address</h3>
+  <h3>{% blocktrans %}Add E-mail Address{% endblocktrans %}</h3>
   <p>{% lorem 32 %}</p>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     {% include "main/snippets/form_horizontal.html" with form=form %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary" name="action_add">Add E-mail</button>
+      <button type="submit" class="btn btn-primary" name="action_add">{% blocktrans %}Add E-mail{% endblocktrans %}</button>
     </div>
   </form>
 {% endblock %}
