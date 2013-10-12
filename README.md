@@ -22,7 +22,7 @@ $ git clone https://github.com/martinmacko47/chcemvediet.git
 $ cd chcemvediet
 $ virtualenv env
 $ env/bin/pip install -r requirements.txt
-$ env/bin/python manage.py syncdb --noinput
+$ env/bin/python manage.py syncdb --all --noinput
 $ env/bin/python manage.py loaddata fixtures/*
 ```
 
