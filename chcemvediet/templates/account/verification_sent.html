@@ -1,10 +1,10 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Verify Your E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:email:verify:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Verify Your E-mail Address{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
-  <p>We have sent an e-mail to <a href="mailto:{{ email }}">{{ email }}</a> for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.</p>
+  <h1>{% chunk 'accounts:email:verify:title' %}</h1>
+  {% chunk 'accounts:email:verify:intro' %}
 {% endblock %}

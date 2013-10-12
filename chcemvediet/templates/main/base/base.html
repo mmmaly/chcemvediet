@@ -1,45 +1,49 @@
+{# vim: set filetype=htmldjango :#}
 {% load static from staticfiles %}
 {% load blocktrans from i18n %}
+{% load page_attribute cms_toolbar from cms_tags %}
+{% load addtoblock render_block from sekizai_tags %}
+
+{% addtoblock "css" %}<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">{% endaddtoblock %}
+{% addtoblock "css" %}<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">{% endaddtoblock %}
+{% addtoblock "js" %}<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>{% endaddtoblock %}
+
+{% comment %}
+{% addtoblock "css" %}<link href="{% static "main/3part/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" %}" rel="stylesheet">{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% static "main/3part/bootstrap/2.3.2/css/bootstrap-combined.min.css" %}" rel="stylesheet">{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static "main/3part/jquery/1.10.2/jquery.min.js" %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static "main/3part/jqueryui/1.10.3/jquery-ui.min.js" %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static "main/3part/bootstrap/2.3.2/js/bootstrap.min.js" %}"></script>{% endaddtoblock %}
+{% endcomment %}
+
+{% addtoblock "css" %}<style> @media (min-width: 980px) { body { padding-top: 60px; } } </style>{% endaddtoblock %}
+{% addtoblock "css" %}<style> .cms_toolbar { top: 43px !important; } </style>{% endaddtoblock %}
+{% addtoblock "css" %}<style> #cms_toolbar, .cms_toolbar, #cms_toolbar-toolbar { z-index: 500 !important; } </style>{% endaddtoblock %}
 
 <!DOCTYPE html>
-<html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
   <head>
-    {% block metatags %}
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% blocktrans %}Chcem vedieť{% endblocktrans %}{% endblock %}</title>
-    {% block stylesheets %}
-      <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">
-      <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-      {% comment %}
-      <link href="{% static "main/3part/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" %}" rel="stylesheet">
-      <link href="{% static "main/3part/bootstrap/2.3.2/css/bootstrap-combined.min.css" %}" rel="stylesheet">
-      {% endcomment %}
-      <style> @media (min-width: 980px) { body { padding-top: 60px; } } </style>
-    {% endblock %}
-    {% block javascript %}
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-      <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-      {% comment %}
-      <script src="{% static "main/3part/jquery/1.10.2/jquery.min.js" %}"></script>
-      <script src="{% static "main/3part/jqueryui/1.10.3/jquery-ui.min.js" %}"></script>
-      <script src="{% static "main/3part/bootstrap/2.3.2/js/bootstrap.min.js" %}"></script>
-      {% endcomment %}
-    {% endblock %}
-    {% block head %}{% endblock %}
+    {% render_block "css" %}
   </head>
   <body>
+    {% cms_toolbar %}
     <header>
       {% include "main/snippets/header.html" %}
     </header>
     <div class="container">
+      {% include "main/snippets/messages.html" %}
       {% block content %}{% endblock %}
-      <hr>
-      <footer>
-        {% include "main/snippets/footer.html" %}
-      </footer>
     </div>
+    <footer class="container">
+      <hr>
+      {% include "main/snippets/footer.html" %}
+    </footer>
+    {% render_block "js" %}
   </body>
 </html>
+

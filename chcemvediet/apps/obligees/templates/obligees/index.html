@@ -1,13 +1,14 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem range from poleno_utils %}
+{% load range from poleno.utils %}
+{% load placeholder from cms_tags %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Obligees{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk "obligees:index:title" fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Obligees List{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
-  <p>{% lorem %}</p>
+  <h1>{% chunk "obligees:index:title" %}</h1>
+  {% chunk "obligees:index:intro" %}
   <table class="table table-striped">
     <thead>
       <tr>

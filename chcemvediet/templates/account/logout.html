@@ -1,11 +1,12 @@
 {% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Sign Out{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:logout:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Sign Out{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
-  <p>Are you sure you want to sign out?</p>
+  <h1>{% chunk 'accounts:logout:title' %}</h1>
+  {% chunk 'accounts:logout:intro' %}
   <form method="post" action="{% url 'account_logout' %}">
     {% csrf_token %}
     {% if redirect_field_value %}

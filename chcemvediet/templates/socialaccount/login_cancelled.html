@@ -1,10 +1,10 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Login Cancelled{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:social:cancelled:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Login Cancelled{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
-  <p>You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a href="{% url 'account_login' %}">sign in</a>.</p>
+  <h1>{% chunk 'accounts:social:cancelled:title' %}</h1>
+  {% chunk 'accounts:social:cancelled:intro' %}
 {% endblock %}

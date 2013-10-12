@@ -1,14 +1,14 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno_utils %}
+{% load lorem from poleno.utils %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Account Connections{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:social:list:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Account Connections{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
+  <h1>{% chunk 'accounts:social:list:title' %}</h1>
   {% if form.accounts %}
-    <p>You can sign in to your account using any of the following third party accounts:</p>
+    {% chunk 'accounts:social:list:intro' %}
     <form class="form-horizontal" method="post" action=".">
       {% csrf_token %}
       {% if form.non_field_errors %}
@@ -33,11 +33,11 @@
       </div>
     </form>
   {% else %}
-    <p>You currently have no social network accounts connected to this account.</p>
+    {% chunk 'accounts:social:list:empty' %}
   {% endif %}
 
-  <h3>{% blocktrans %}Add a 3rd Party Account{% endblocktrans %}</h3>
-  <p>{% lorem 37 %}</p>
+  <h3>{% chunk 'accounts:social:add:title' %}</h3>
+  {% chunk 'accounts:social:add:intro' %}
   <div class="row">
     <p class="span2 text-right" style="padding-top: 5px;">{% blocktrans %}Connect With{% endblocktrans %}:</p>
     <p class="span10">

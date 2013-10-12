@@ -1,11 +1,12 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Submitted Applications{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'applications:index:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Submitted Applications{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
+  <h1>{% chunk 'applications:index:title' %}</h1>
+  {% chunk 'applications:index:intro' %}
   {% if application_list %}
     <table class="table table-striped">
       <thead>

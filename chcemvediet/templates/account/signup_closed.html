@@ -1,10 +1,10 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Sign Up Closed{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:signup:closed:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Sign Up Closed{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
-  <p>We are sorry, but the sign up is currently closed.</p>
+  <h1>{% chunk 'accounts:signup:closed:title' %}</h1>
+  {% chunk 'accounts:signup:closed:intro' %}
 {% endblock %}

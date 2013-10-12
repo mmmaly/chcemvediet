@@ -1,0 +1,6205 @@
+[
+{
+  "pk": 1, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 2, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 3, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 4, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 6, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 8, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 10, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 12, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 14, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 16, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 18, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 20, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 22, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 24, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 26, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 28, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 30, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 32, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 34, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 36, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 42, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 44, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 46, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 48, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 50, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 52, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 54, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 56, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 58, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 62, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 64, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 66, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 68, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 70, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 72, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 74, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 76, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 78, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 80, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 82, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 84, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 86, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 88, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 90, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 92, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 94, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 96, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 98, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 100, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 102, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 104, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 106, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 108, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 110, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 112, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 114, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 116, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 118, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 120, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 122, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 124, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 126, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 128, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 130, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "chunk", 
+    "default_width": null
+  }
+},
+{
+  "pk": 1, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-07T02:04:44.064Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:01:38.631Z", 
+    "lft": 1, 
+    "tree_id": 1, 
+    "position": 0, 
+    "placeholder": 1, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 2, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T19:55:00.573Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:01:38.631Z", 
+    "lft": 1, 
+    "tree_id": 2, 
+    "position": 0, 
+    "placeholder": 1, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 3, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-07T02:07:30.003Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 3, 
+    "position": 0, 
+    "placeholder": 2, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 4, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-07T02:07:56.047Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 4, 
+    "position": 0, 
+    "placeholder": 2, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 7, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-07T02:08:10.145Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 7, 
+    "position": 0, 
+    "placeholder": 4, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 8, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-07T02:08:10.176Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 8, 
+    "position": 0, 
+    "placeholder": 4, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 9, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:36:38.690Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:36:26.347Z", 
+    "lft": 1, 
+    "tree_id": 9, 
+    "position": null, 
+    "placeholder": 6, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 10, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:39:05.448Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:38:53.232Z", 
+    "lft": 1, 
+    "tree_id": 10, 
+    "position": null, 
+    "placeholder": 6, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 11, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:44:27.210Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:43:39.527Z", 
+    "lft": 1, 
+    "tree_id": 11, 
+    "position": null, 
+    "placeholder": 8, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 12, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:44:39.999Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:44:34.565Z", 
+    "lft": 1, 
+    "tree_id": 12, 
+    "position": null, 
+    "placeholder": 8, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 14, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:24:28.568Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:53:11.941Z", 
+    "lft": 1, 
+    "tree_id": 13, 
+    "position": 0, 
+    "placeholder": 10, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 15, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:53:33.435Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:53:27.114Z", 
+    "lft": 1, 
+    "tree_id": 14, 
+    "position": null, 
+    "placeholder": 12, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 16, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:54:05.156Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:54:01.377Z", 
+    "lft": 1, 
+    "tree_id": 15, 
+    "position": null, 
+    "placeholder": 10, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 17, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T02:54:20.083Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T02:54:14.361Z", 
+    "lft": 1, 
+    "tree_id": 16, 
+    "position": null, 
+    "placeholder": 12, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 18, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:03:03.895Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:03:00.645Z", 
+    "lft": 1, 
+    "tree_id": 17, 
+    "position": null, 
+    "placeholder": 14, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 19, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:03:35.072Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:03:29.549Z", 
+    "lft": 1, 
+    "tree_id": 18, 
+    "position": null, 
+    "placeholder": 16, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 20, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:03:50.242Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:03:45.923Z", 
+    "lft": 1, 
+    "tree_id": 19, 
+    "position": null, 
+    "placeholder": 16, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 21, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:04:02.919Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:03:59.115Z", 
+    "lft": 1, 
+    "tree_id": 20, 
+    "position": null, 
+    "placeholder": 14, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 22, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:11:09.487Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:10:44.636Z", 
+    "lft": 1, 
+    "tree_id": 21, 
+    "position": null, 
+    "placeholder": 18, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 23, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:11:28.145Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:11:23.536Z", 
+    "lft": 1, 
+    "tree_id": 22, 
+    "position": null, 
+    "placeholder": 20, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 24, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:12:18.744Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:12:14.119Z", 
+    "lft": 1, 
+    "tree_id": 23, 
+    "position": null, 
+    "placeholder": 20, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 25, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:12:31.888Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:12:28.246Z", 
+    "lft": 1, 
+    "tree_id": 24, 
+    "position": null, 
+    "placeholder": 18, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 26, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:18:38.978Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:18:20.906Z", 
+    "lft": 1, 
+    "tree_id": 25, 
+    "position": null, 
+    "placeholder": 22, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 27, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:18:59.928Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:18:54.952Z", 
+    "lft": 1, 
+    "tree_id": 26, 
+    "position": null, 
+    "placeholder": 24, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 28, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:19:57.263Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:19:49.244Z", 
+    "lft": 1, 
+    "tree_id": 27, 
+    "position": null, 
+    "placeholder": 24, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 29, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:20:17.442Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:20:04.259Z", 
+    "lft": 1, 
+    "tree_id": 28, 
+    "position": null, 
+    "placeholder": 22, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 30, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:40:09.607Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:40:05.573Z", 
+    "lft": 1, 
+    "tree_id": 29, 
+    "position": null, 
+    "placeholder": 26, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 31, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:40:42.937Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:40:37.838Z", 
+    "lft": 1, 
+    "tree_id": 30, 
+    "position": null, 
+    "placeholder": 28, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 32, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:41:36.827Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:41:33.035Z", 
+    "lft": 1, 
+    "tree_id": 31, 
+    "position": null, 
+    "placeholder": 32, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 33, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:41:52.720Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:41:47.344Z", 
+    "lft": 1, 
+    "tree_id": 32, 
+    "position": null, 
+    "placeholder": 34, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 34, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:42:58.382Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:42:48.019Z", 
+    "lft": 1, 
+    "tree_id": 33, 
+    "position": null, 
+    "placeholder": 30, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 35, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:43:27.207Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:43:23.800Z", 
+    "lft": 1, 
+    "tree_id": 34, 
+    "position": null, 
+    "placeholder": 26, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 36, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T11:52:10.391Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:43:33.371Z", 
+    "lft": 1, 
+    "tree_id": 35, 
+    "position": null, 
+    "placeholder": 32, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 37, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T11:53:55.144Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:43:44.761Z", 
+    "lft": 1, 
+    "tree_id": 36, 
+    "position": null, 
+    "placeholder": 28, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 38, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T11:58:41.204Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:44:09.147Z", 
+    "lft": 1, 
+    "tree_id": 37, 
+    "position": null, 
+    "placeholder": 30, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 39, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T03:45:03.985Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T03:44:59.913Z", 
+    "lft": 1, 
+    "tree_id": 38, 
+    "position": null, 
+    "placeholder": 34, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 40, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T13:02:50.826Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-09T04:08:12.951Z", 
+    "lft": 1, 
+    "tree_id": 39, 
+    "position": null, 
+    "placeholder": 36, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 41, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-09T04:08:37.138Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-09T04:08:32.797Z", 
+    "lft": 1, 
+    "tree_id": 40, 
+    "position": null, 
+    "placeholder": 36, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 42, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-10T12:42:21.446Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T12:15:10.217Z", 
+    "lft": 1, 
+    "tree_id": 41, 
+    "position": null, 
+    "placeholder": 42, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 43, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T12:16:12.561Z", 
+    "parent": 42, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T12:15:34.516Z", 
+    "lft": 2, 
+    "tree_id": 41, 
+    "position": null, 
+    "placeholder": 42, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 44, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-10T12:17:15.842Z", 
+    "parent": 42, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T12:17:01.162Z", 
+    "lft": 4, 
+    "tree_id": 41, 
+    "position": null, 
+    "placeholder": 42, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 45, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T12:43:54.658Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T12:42:40.924Z", 
+    "lft": 1, 
+    "tree_id": 42, 
+    "position": null, 
+    "placeholder": 44, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 46, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T12:43:21.508Z", 
+    "parent": 45, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T12:43:06.017Z", 
+    "lft": 2, 
+    "tree_id": 42, 
+    "position": null, 
+    "placeholder": 44, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 47, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-10T12:54:48.869Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T12:51:29.606Z", 
+    "lft": 1, 
+    "tree_id": 43, 
+    "position": null, 
+    "placeholder": 42, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 48, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T12:54:09.248Z", 
+    "parent": 47, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T12:54:04.561Z", 
+    "lft": 2, 
+    "tree_id": 43, 
+    "position": null, 
+    "placeholder": 42, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 49, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-10T12:54:36.253Z", 
+    "parent": 47, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T12:54:25.787Z", 
+    "lft": 4, 
+    "tree_id": 43, 
+    "position": null, 
+    "placeholder": 42, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 50, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T12:59:24.728Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T12:55:54.683Z", 
+    "lft": 1, 
+    "tree_id": 44, 
+    "position": null, 
+    "placeholder": 44, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 51, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T12:59:20.379Z", 
+    "parent": 50, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T12:58:27.384Z", 
+    "lft": 2, 
+    "tree_id": 44, 
+    "position": null, 
+    "placeholder": 44, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 52, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T13:30:54.962Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T13:29:25.436Z", 
+    "lft": 1, 
+    "tree_id": 45, 
+    "position": null, 
+    "placeholder": 46, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 53, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T13:31:25.873Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T13:31:05.217Z", 
+    "lft": 1, 
+    "tree_id": 46, 
+    "position": null, 
+    "placeholder": 46, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 54, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-10T13:33:07.425Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T13:32:00.463Z", 
+    "lft": 1, 
+    "tree_id": 47, 
+    "position": null, 
+    "placeholder": 48, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 55, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T13:32:45.028Z", 
+    "parent": 54, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T13:32:35.629Z", 
+    "lft": 2, 
+    "tree_id": 47, 
+    "position": null, 
+    "placeholder": 48, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 56, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-10T13:32:56.235Z", 
+    "parent": 54, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T13:32:49.944Z", 
+    "lft": 4, 
+    "tree_id": 47, 
+    "position": null, 
+    "placeholder": 48, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 57, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-10T13:35:48.170Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T13:33:18.916Z", 
+    "lft": 1, 
+    "tree_id": 48, 
+    "position": null, 
+    "placeholder": 48, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 58, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T13:35:26.812Z", 
+    "parent": 57, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T13:35:18.388Z", 
+    "lft": 2, 
+    "tree_id": 48, 
+    "position": null, 
+    "placeholder": 48, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 59, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-10T13:35:39.958Z", 
+    "parent": 57, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T13:35:32.097Z", 
+    "lft": 4, 
+    "tree_id": 48, 
+    "position": null, 
+    "placeholder": 48, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 60, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:20:54.202Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:20:50.740Z", 
+    "lft": 1, 
+    "tree_id": 49, 
+    "position": null, 
+    "placeholder": 50, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 61, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:21:07.455Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:21:02.428Z", 
+    "lft": 1, 
+    "tree_id": 50, 
+    "position": null, 
+    "placeholder": 52, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 62, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:21:22.669Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:21:18.512Z", 
+    "lft": 1, 
+    "tree_id": 51, 
+    "position": null, 
+    "placeholder": 50, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 63, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:21:45.014Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:21:31.277Z", 
+    "lft": 1, 
+    "tree_id": 52, 
+    "position": null, 
+    "placeholder": 52, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 64, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:30:49.523Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:30:45.455Z", 
+    "lft": 1, 
+    "tree_id": 53, 
+    "position": null, 
+    "placeholder": 54, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 65, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:31:31.419Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:30:56.316Z", 
+    "lft": 1, 
+    "tree_id": 54, 
+    "position": null, 
+    "placeholder": 56, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 66, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:31:49.912Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:31:45.789Z", 
+    "lft": 1, 
+    "tree_id": 55, 
+    "position": null, 
+    "placeholder": 56, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 67, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:32:01.185Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:31:57.712Z", 
+    "lft": 1, 
+    "tree_id": 56, 
+    "position": null, 
+    "placeholder": 54, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 68, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:47:49.060Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:47:43.062Z", 
+    "lft": 1, 
+    "tree_id": 57, 
+    "position": null, 
+    "placeholder": 58, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 69, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T16:48:02.524Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T16:47:56.620Z", 
+    "lft": 1, 
+    "tree_id": 58, 
+    "position": null, 
+    "placeholder": 58, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 70, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-10T17:13:01.399Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:08:53.270Z", 
+    "lft": 1, 
+    "tree_id": 59, 
+    "position": null, 
+    "placeholder": 64, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 71, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T17:10:02.949Z", 
+    "parent": 70, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T17:09:53.990Z", 
+    "lft": 2, 
+    "tree_id": 59, 
+    "position": null, 
+    "placeholder": 64, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 72, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-10T17:10:13.667Z", 
+    "parent": 70, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T17:10:07.336Z", 
+    "lft": 4, 
+    "tree_id": 59, 
+    "position": null, 
+    "placeholder": 64, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 73, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-10T17:36:36.101Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:10:26.505Z", 
+    "lft": 1, 
+    "tree_id": 60, 
+    "position": null, 
+    "placeholder": 64, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 74, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T17:30:51.589Z", 
+    "parent": 73, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T17:10:46.327Z", 
+    "lft": 2, 
+    "tree_id": 60, 
+    "position": null, 
+    "placeholder": 64, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 75, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-10T17:11:04.090Z", 
+    "parent": 73, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T17:10:58.269Z", 
+    "lft": 4, 
+    "tree_id": 60, 
+    "position": null, 
+    "placeholder": 64, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 76, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:33:04.707Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:31:51.121Z", 
+    "lft": 1, 
+    "tree_id": 61, 
+    "position": null, 
+    "placeholder": 62, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 77, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:35:11.592Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:33:28.041Z", 
+    "lft": 1, 
+    "tree_id": 62, 
+    "position": null, 
+    "placeholder": 62, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 78, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:45:21.159Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:45:15.516Z", 
+    "lft": 1, 
+    "tree_id": 63, 
+    "position": null, 
+    "placeholder": 66, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 79, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T17:47:16.398Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:45:40.243Z", 
+    "lft": 1, 
+    "tree_id": 64, 
+    "position": null, 
+    "placeholder": 68, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 80, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T17:46:43.641Z", 
+    "parent": 79, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T17:46:21.169Z", 
+    "lft": 2, 
+    "tree_id": 64, 
+    "position": null, 
+    "placeholder": 68, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 81, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:47:45.204Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:47:41.833Z", 
+    "lft": 1, 
+    "tree_id": 65, 
+    "position": null, 
+    "placeholder": 66, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 82, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T17:48:32.016Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:48:01.241Z", 
+    "lft": 1, 
+    "tree_id": 66, 
+    "position": null, 
+    "placeholder": 68, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 83, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T17:48:23.958Z", 
+    "parent": 82, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T17:48:17.476Z", 
+    "lft": 2, 
+    "tree_id": 66, 
+    "position": null, 
+    "placeholder": 68, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 84, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:55:45.484Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:55:19.856Z", 
+    "lft": 1, 
+    "tree_id": 67, 
+    "position": null, 
+    "placeholder": 70, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 85, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:56:04.928Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:55:59.434Z", 
+    "lft": 1, 
+    "tree_id": 68, 
+    "position": null, 
+    "placeholder": 70, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 86, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:56:28.154Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:56:21.403Z", 
+    "lft": 1, 
+    "tree_id": 69, 
+    "position": null, 
+    "placeholder": 72, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 87, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T17:57:01.581Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T17:56:42.557Z", 
+    "lft": 1, 
+    "tree_id": 70, 
+    "position": null, 
+    "placeholder": 72, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 88, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:26:45.016Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:26:38.957Z", 
+    "lft": 1, 
+    "tree_id": 71, 
+    "position": null, 
+    "placeholder": 74, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 89, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:27:06.575Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:26:58.547Z", 
+    "lft": 1, 
+    "tree_id": 72, 
+    "position": null, 
+    "placeholder": 76, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 90, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:27:50.153Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:27:21.170Z", 
+    "lft": 1, 
+    "tree_id": 73, 
+    "position": null, 
+    "placeholder": 74, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 91, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:28:17.595Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:28:09.882Z", 
+    "lft": 1, 
+    "tree_id": 74, 
+    "position": null, 
+    "placeholder": 76, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 92, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:39:27.801Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:39:23.428Z", 
+    "lft": 1, 
+    "tree_id": 75, 
+    "position": null, 
+    "placeholder": 78, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 93, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:40:20.094Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:39:42.700Z", 
+    "lft": 1, 
+    "tree_id": 76, 
+    "position": null, 
+    "placeholder": 80, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 94, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:40:47.936Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:40:38.704Z", 
+    "lft": 1, 
+    "tree_id": 77, 
+    "position": null, 
+    "placeholder": 78, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 95, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T18:41:19.390Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T18:41:11.809Z", 
+    "lft": 1, 
+    "tree_id": 78, 
+    "position": null, 
+    "placeholder": 80, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 96, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:31:16.897Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:31:13.235Z", 
+    "lft": 1, 
+    "tree_id": 79, 
+    "position": null, 
+    "placeholder": 86, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 97, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:31:32.807Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:31:30.083Z", 
+    "lft": 1, 
+    "tree_id": 80, 
+    "position": null, 
+    "placeholder": 82, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 98, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:31:59.839Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:31:57.037Z", 
+    "lft": 1, 
+    "tree_id": 81, 
+    "position": null, 
+    "placeholder": 84, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 99, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:33:22.794Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:33:20.225Z", 
+    "lft": 1, 
+    "tree_id": 82, 
+    "position": null, 
+    "placeholder": 86, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 100, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:33:39.652Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:33:36.536Z", 
+    "lft": 1, 
+    "tree_id": 83, 
+    "position": null, 
+    "placeholder": 82, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 101, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:34:05.418Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:34:02.732Z", 
+    "lft": 1, 
+    "tree_id": 84, 
+    "position": null, 
+    "placeholder": 84, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 102, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T19:41:38.583Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:40:57.959Z", 
+    "lft": 1, 
+    "tree_id": 85, 
+    "position": null, 
+    "placeholder": 88, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 103, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T19:41:31.347Z", 
+    "parent": 102, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T19:41:28.019Z", 
+    "lft": 2, 
+    "tree_id": 85, 
+    "position": null, 
+    "placeholder": 88, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 104, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:42:27.365Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:42:08.944Z", 
+    "lft": 1, 
+    "tree_id": 86, 
+    "position": null, 
+    "placeholder": 90, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 105, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:43:00.877Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:42:47.973Z", 
+    "lft": 1, 
+    "tree_id": 87, 
+    "position": null, 
+    "placeholder": 92, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 106, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T19:45:58.118Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:45:26.973Z", 
+    "lft": 1, 
+    "tree_id": 88, 
+    "position": null, 
+    "placeholder": 88, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 107, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T19:45:52.448Z", 
+    "parent": 106, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T19:45:42.949Z", 
+    "lft": 2, 
+    "tree_id": 88, 
+    "position": null, 
+    "placeholder": 88, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 108, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:46:32.166Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:46:28.198Z", 
+    "lft": 1, 
+    "tree_id": 89, 
+    "position": null, 
+    "placeholder": 90, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 109, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:46:59.590Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:46:52.070Z", 
+    "lft": 1, 
+    "tree_id": 90, 
+    "position": null, 
+    "placeholder": 92, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 110, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:51:04.691Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:50:53.156Z", 
+    "lft": 1, 
+    "tree_id": 91, 
+    "position": 1, 
+    "placeholder": 1, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 111, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T19:54:29.592Z", 
+    "parent": 2, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T19:53:27.261Z", 
+    "lft": 2, 
+    "tree_id": 2, 
+    "position": 0, 
+    "placeholder": 1, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 112, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:55:09.254Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:01:38.631Z", 
+    "lft": 1, 
+    "tree_id": 92, 
+    "position": 0, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 113, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T19:55:09.276Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:01:38.631Z", 
+    "lft": 1, 
+    "tree_id": 93, 
+    "position": 0, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 114, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T19:55:09.224Z", 
+    "parent": 113, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T19:53:27.261Z", 
+    "lft": 2, 
+    "tree_id": 93, 
+    "position": 0, 
+    "placeholder": 3, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 115, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T19:55:09.291Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:50:53.156Z", 
+    "lft": 1, 
+    "tree_id": 94, 
+    "position": 1, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 116, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T21:16:05.950Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:28:12.972Z", 
+    "lft": 1, 
+    "tree_id": 95, 
+    "position": 0, 
+    "placeholder": 94, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 117, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T20:29:31.605Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:28:30.889Z", 
+    "lft": 1, 
+    "tree_id": 96, 
+    "position": null, 
+    "placeholder": 96, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 118, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T20:29:26.963Z", 
+    "parent": 117, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T20:29:09.810Z", 
+    "lft": 2, 
+    "tree_id": 96, 
+    "position": null, 
+    "placeholder": 96, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 119, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T20:31:56.373Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:31:46.433Z", 
+    "lft": 1, 
+    "tree_id": 97, 
+    "position": null, 
+    "placeholder": 94, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 120, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T20:33:21.159Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:32:24.447Z", 
+    "lft": 1, 
+    "tree_id": 98, 
+    "position": null, 
+    "placeholder": 96, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 121, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T20:33:05.536Z", 
+    "parent": 120, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T20:32:56.086Z", 
+    "lft": 2, 
+    "tree_id": 98, 
+    "position": null, 
+    "placeholder": 96, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 122, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T20:46:18.781Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:46:15.165Z", 
+    "lft": 1, 
+    "tree_id": 99, 
+    "position": null, 
+    "placeholder": 98, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 123, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T20:47:03.279Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:46:33.578Z", 
+    "lft": 1, 
+    "tree_id": 100, 
+    "position": null, 
+    "placeholder": 100, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 124, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T20:47:28.704Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:47:23.262Z", 
+    "lft": 1, 
+    "tree_id": 101, 
+    "position": null, 
+    "placeholder": 100, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 125, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T20:48:01.773Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T20:47:55.451Z", 
+    "lft": 1, 
+    "tree_id": 102, 
+    "position": null, 
+    "placeholder": 98, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 126, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T21:16:20.932Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T21:16:17.781Z", 
+    "lft": 1, 
+    "tree_id": 103, 
+    "position": null, 
+    "placeholder": 102, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 127, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T21:17:38.376Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-10T21:16:35.009Z", 
+    "lft": 1, 
+    "tree_id": 104, 
+    "position": null, 
+    "placeholder": 104, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 128, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T21:17:23.847Z", 
+    "parent": 127, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-10T21:17:15.368Z", 
+    "lft": 2, 
+    "tree_id": 104, 
+    "position": null, 
+    "placeholder": 104, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 129, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-10T21:18:30.993Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T21:18:11.922Z", 
+    "lft": 1, 
+    "tree_id": 105, 
+    "position": null, 
+    "placeholder": 102, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 130, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-10T21:19:28.823Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T21:18:47.397Z", 
+    "lft": 1, 
+    "tree_id": 106, 
+    "position": null, 
+    "placeholder": 104, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 131, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-10T21:19:19.479Z", 
+    "parent": 130, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T21:19:11.960Z", 
+    "lft": 2, 
+    "tree_id": 106, 
+    "position": null, 
+    "placeholder": 104, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 132, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T14:59:28.446Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T14:59:17.520Z", 
+    "lft": 1, 
+    "tree_id": 107, 
+    "position": null, 
+    "placeholder": 106, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 133, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T14:59:49.954Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T14:59:38.969Z", 
+    "lft": 1, 
+    "tree_id": 108, 
+    "position": null, 
+    "placeholder": 108, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 134, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:00:08.278Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:00:04.843Z", 
+    "lft": 1, 
+    "tree_id": 109, 
+    "position": null, 
+    "placeholder": 106, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 135, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:01:00.773Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:00:31.547Z", 
+    "lft": 1, 
+    "tree_id": 110, 
+    "position": null, 
+    "placeholder": 108, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 136, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:15:55.958Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:15:52.665Z", 
+    "lft": 1, 
+    "tree_id": 111, 
+    "position": null, 
+    "placeholder": 110, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 137, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:16:16.757Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:16:10.715Z", 
+    "lft": 1, 
+    "tree_id": 112, 
+    "position": null, 
+    "placeholder": 112, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 138, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:16:37.500Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:16:33.238Z", 
+    "lft": 1, 
+    "tree_id": 113, 
+    "position": null, 
+    "placeholder": 110, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 139, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:18:22.702Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:16:49.397Z", 
+    "lft": 1, 
+    "tree_id": 114, 
+    "position": null, 
+    "placeholder": 112, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 140, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:25:51.658Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:25:47.871Z", 
+    "lft": 1, 
+    "tree_id": 115, 
+    "position": null, 
+    "placeholder": 114, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 141, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-11T15:27:10.463Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:26:03.952Z", 
+    "lft": 1, 
+    "tree_id": 116, 
+    "position": null, 
+    "placeholder": 116, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 142, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-11T15:26:32.599Z", 
+    "parent": 141, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-11T15:26:24.089Z", 
+    "lft": 2, 
+    "tree_id": 116, 
+    "position": null, 
+    "placeholder": 116, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 143, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T15:27:31.651Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:27:22.674Z", 
+    "lft": 1, 
+    "tree_id": 117, 
+    "position": null, 
+    "placeholder": 114, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 144, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-11T15:28:38.258Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T15:28:04.065Z", 
+    "lft": 1, 
+    "tree_id": 118, 
+    "position": null, 
+    "placeholder": 116, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 145, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-11T15:28:21.557Z", 
+    "parent": 144, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-11T15:28:13.532Z", 
+    "lft": 2, 
+    "tree_id": 118, 
+    "position": null, 
+    "placeholder": 116, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 146, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:05:32.690Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:05:28.887Z", 
+    "lft": 1, 
+    "tree_id": 119, 
+    "position": null, 
+    "placeholder": 118, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 147, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:05:57.847Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:05:47.956Z", 
+    "lft": 1, 
+    "tree_id": 120, 
+    "position": null, 
+    "placeholder": 120, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 148, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:06:18.420Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:06:12.920Z", 
+    "lft": 1, 
+    "tree_id": 121, 
+    "position": null, 
+    "placeholder": 122, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 149, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:06:36.986Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:06:33.208Z", 
+    "lft": 1, 
+    "tree_id": 122, 
+    "position": null, 
+    "placeholder": 124, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 150, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:07:11.076Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:06:48.872Z", 
+    "lft": 1, 
+    "tree_id": 123, 
+    "position": null, 
+    "placeholder": 126, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 151, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:07:41.625Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:07:32.644Z", 
+    "lft": 1, 
+    "tree_id": 124, 
+    "position": null, 
+    "placeholder": 118, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 152, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:08:03.092Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:07:58.444Z", 
+    "lft": 1, 
+    "tree_id": 125, 
+    "position": null, 
+    "placeholder": 120, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 153, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:09:04.614Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:08:55.850Z", 
+    "lft": 1, 
+    "tree_id": 126, 
+    "position": null, 
+    "placeholder": 122, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 154, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:09:20.925Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:09:15.965Z", 
+    "lft": 1, 
+    "tree_id": 127, 
+    "position": null, 
+    "placeholder": 124, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 155, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:09:42.739Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:09:36.448Z", 
+    "lft": 1, 
+    "tree_id": 128, 
+    "position": null, 
+    "placeholder": 126, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 156, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:16:48.804Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:16:45.544Z", 
+    "lft": 1, 
+    "tree_id": 129, 
+    "position": null, 
+    "placeholder": 128, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 157, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-11T16:17:47.701Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:17:02.063Z", 
+    "lft": 1, 
+    "tree_id": 130, 
+    "position": null, 
+    "placeholder": 130, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 158, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-11T16:17:28.476Z", 
+    "parent": 157, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-11T16:17:25.439Z", 
+    "lft": 2, 
+    "tree_id": 130, 
+    "position": null, 
+    "placeholder": 130, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 159, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-11T16:17:37.434Z", 
+    "parent": 157, 
+    "language": "en", 
+    "level": 1, 
+    "creation_date": "2013-10-11T16:17:34.409Z", 
+    "lft": 4, 
+    "tree_id": 130, 
+    "position": null, 
+    "placeholder": 130, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 160, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-11T16:18:09.828Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:18:02.311Z", 
+    "lft": 1, 
+    "tree_id": 131, 
+    "position": null, 
+    "placeholder": 128, 
+    "plugin_type": "PlainTextPlugin"
+  }
+},
+{
+  "pk": 161, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 6, 
+    "changed_date": "2013-10-11T16:19:12.980Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-11T16:18:23.338Z", 
+    "lft": 1, 
+    "tree_id": 132, 
+    "position": null, 
+    "placeholder": 130, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 162, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-11T16:18:46.397Z", 
+    "parent": 161, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-11T16:18:43.137Z", 
+    "lft": 2, 
+    "tree_id": 132, 
+    "position": null, 
+    "placeholder": 130, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 163, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 5, 
+    "changed_date": "2013-10-11T16:19:00.989Z", 
+    "parent": 161, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-11T16:18:57.484Z", 
+    "lft": 4, 
+    "tree_id": 132, 
+    "position": null, 
+    "placeholder": 130, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 1, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 2, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-07T02:01:19.391Z", 
+    "lft": 1, 
+    "in_navigation": false, 
+    "reverse_id": "home", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/main_page.html", 
+    "tree_id": 1, 
+    "placeholders": [
+      1
+    ], 
+    "changed_date": "2013-10-10T19:55:09.307Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": null, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-07T02:08:03.392Z", 
+    "publisher_public": 3, 
+    "level": 0, 
+    "changed_by": "admin", 
+    "publisher_is_draft": true, 
+    "published": true
+  }
+},
+{
+  "pk": 2, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 2, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-07T02:06:36.352Z", 
+    "lft": 1, 
+    "in_navigation": false, 
+    "reverse_id": "about", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/single_column.html", 
+    "tree_id": 2, 
+    "placeholders": [
+      2
+    ], 
+    "changed_date": "2013-10-07T02:08:10.222Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": null, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-07T02:08:05.203Z", 
+    "publisher_public": 4, 
+    "level": 0, 
+    "changed_by": "admin", 
+    "publisher_is_draft": true, 
+    "published": true
+  }
+},
+{
+  "pk": 3, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 2, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-07T02:08:08.237Z", 
+    "lft": 1, 
+    "in_navigation": false, 
+    "reverse_id": "home", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/main_page.html", 
+    "tree_id": 3, 
+    "placeholders": [
+      3
+    ], 
+    "changed_date": "2013-10-10T19:55:09.066Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": null, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-07T02:08:03.392Z", 
+    "publisher_public": 1, 
+    "level": 0, 
+    "changed_by": "admin", 
+    "publisher_is_draft": false, 
+    "published": true
+  }
+},
+{
+  "pk": 4, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 2, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-07T02:08:09.785Z", 
+    "lft": 1, 
+    "in_navigation": false, 
+    "reverse_id": "about", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/single_column.html", 
+    "tree_id": 4, 
+    "placeholders": [
+      4
+    ], 
+    "changed_date": "2013-10-07T02:08:09.785Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": null, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-07T02:08:04.773Z", 
+    "publisher_public": 2, 
+    "level": 0, 
+    "changed_by": "admin", 
+    "publisher_is_draft": false, 
+    "published": true
+  }
+},
+{
+  "pk": 2, 
+  "model": "cms.pagemoderatorstate", 
+  "fields": {
+    "action": "ADD", 
+    "message": "", 
+    "created": "2013-10-09T02:28:25.316Z", 
+    "page": 2, 
+    "user": null
+  }
+},
+{
+  "pk": 1, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "Welcome", 
+    "has_url_overwrite": false, 
+    "application_urls": "", 
+    "creation_date": "2013-10-07T02:01:19.454Z", 
+    "page": 1, 
+    "path": "", 
+    "meta_description": "", 
+    "slug": "welcome"
+  }
+},
+{
+  "pk": 2, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": null, 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "Vitajte", 
+    "has_url_overwrite": false, 
+    "application_urls": null, 
+    "creation_date": "2013-10-07T02:06:17.725Z", 
+    "page": 1, 
+    "path": "", 
+    "meta_description": "", 
+    "slug": "vitajte"
+  }
+},
+{
+  "pk": 3, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "About Project", 
+    "has_url_overwrite": false, 
+    "application_urls": "", 
+    "creation_date": "2013-10-07T02:06:36.401Z", 
+    "page": 2, 
+    "path": "about-project", 
+    "meta_description": "", 
+    "slug": "about-project"
+  }
+},
+{
+  "pk": 4, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": null, 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "O projekte", 
+    "has_url_overwrite": false, 
+    "application_urls": null, 
+    "creation_date": "2013-10-07T02:08:03.798Z", 
+    "page": 2, 
+    "path": "o-projekte", 
+    "meta_description": "", 
+    "slug": "o-projekte"
+  }
+},
+{
+  "pk": 5, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "Welcome", 
+    "has_url_overwrite": false, 
+    "application_urls": "", 
+    "creation_date": "2013-10-07T02:01:19.454Z", 
+    "page": 3, 
+    "path": "", 
+    "meta_description": "", 
+    "slug": "welcome"
+  }
+},
+{
+  "pk": 6, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": null, 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "Vitajte", 
+    "has_url_overwrite": false, 
+    "application_urls": null, 
+    "creation_date": "2013-10-07T02:06:17.725Z", 
+    "page": 3, 
+    "path": "", 
+    "meta_description": "", 
+    "slug": "vitajte"
+  }
+},
+{
+  "pk": 7, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "About Project", 
+    "has_url_overwrite": false, 
+    "application_urls": "", 
+    "creation_date": "2013-10-07T02:06:36.401Z", 
+    "page": 4, 
+    "path": "about-project", 
+    "meta_description": "", 
+    "slug": "about-project"
+  }
+},
+{
+  "pk": 8, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": null, 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "O projekte", 
+    "has_url_overwrite": false, 
+    "application_urls": null, 
+    "creation_date": "2013-10-07T02:08:03.798Z", 
+    "page": 4, 
+    "path": "o-projekte", 
+    "meta_description": "", 
+    "slug": "o-projekte"
+  }
+},
+{
+  "pk": 1, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>\n<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, non tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci varius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, non semper turpis. Pellentesque viverra laoreet convallis. Pellentesque consectetur condimentum ante, a scelerisque augue ultricies id. In hac habitasse platea dictumst. Vestibulum nibh urna, condimentum non bibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem, sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, adipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas dui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque pulvinar facilisis interdum. Proin sit amet fringilla tortor, at adipiscing metus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc non tellus tempus, ullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae pretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra justo, sit amet posuere magna metus sit amet arcu. Nam in massa mi. Vivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. Pellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus libero, at viverra quam tortor sit amet massa. Ut id leo vel enim ultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam tempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu laoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor risus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non ultrices leo. Vivamus convallis interdum interdum. Integer fermentum mauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum egestas gravida. </p>\n"
+  }
+},
+{
+  "pk": 2, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p><p><img title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_111\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\"></p>\n\n</div>"
+  }
+},
+{
+  "pk": 3, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+  }
+},
+{
+  "pk": 4, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+  }
+},
+{
+  "pk": 7, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+  }
+},
+{
+  "pk": 8, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+  }
+},
+{
+  "pk": 11, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Autem natus numquam sit obcaecati repudiandae sequi exercitationem sint,\n excepturi numquam sequi nam corrupti ab commodi dolorum, rem maiores \nnon, sint nihil inventore odit esse ipsa voluptates adipisci impedit \nanimi iure consequatur?</p>"
+  }
+},
+{
+  "pk": 12, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Autem natus numquam sit obcaecati repudiandae sequi exercitationem sint,\n excepturi numquam sequi nam corrupti ab commodi dolorum, rem maiores \nnon, sint nihil inventore odit esse ipsa voluptates adipisci impedit \nanimi iure consequatur?</p>"
+  }
+},
+{
+  "pk": 15, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\n tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim \nveniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea \ncommodo consequat. Duis aute irure dolor in reprehenderit in voluptate \nvelit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint \noccaecat cupidatat non proident, sunt in culpa qui officia deserunt \nmollit anim id est laborum.</p>"
+  }
+},
+{
+  "pk": 17, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\n tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim \nveniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea \ncommodo consequat. Duis aute irure dolor in reprehenderit in voluptate \nvelit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint \noccaecat cupidatat non proident, sunt in culpa qui officia deserunt \nmollit anim id est laborum.</p>"
+  }
+},
+{
+  "pk": 19, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at \nmattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. \nSuspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu \nante eu lacus vestibulum convallis a sed eros. Nunc magna purus, \nvolutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo \nconvallis lacinia. </p>"
+  }
+},
+{
+  "pk": 20, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at \nmattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. \nSuspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu \nante eu lacus vestibulum convallis a sed eros. Nunc magna purus, \nvolutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo \nconvallis lacinia. </p>"
+  }
+},
+{
+  "pk": 23, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>"
+  }
+},
+{
+  "pk": 24, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>"
+  }
+},
+{
+  "pk": 27, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+  }
+},
+{
+  "pk": 28, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+  }
+},
+{
+  "pk": 31, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>The following e-mail addresses are associated with your account:</p>"
+  }
+},
+{
+  "pk": 33, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Temporibus maiores error vel ipsam quod, a optio sint exercitationem fugit tempore perferendis minus.</p>"
+  }
+},
+{
+  "pk": 34, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p><strong>Warning:</strong> You currently do not have any e-mail \naddress set up. You should really add an e-mail address so you can \nreceive notifications, reset your password, etc.</p>"
+  }
+},
+{
+  "pk": 37, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>K v\u00e1\u0161mu \u00fa\u010dtu su pripojen\u00e9 nasleduj\u00face e-mailov\u00e9 adresy:</p>"
+  }
+},
+{
+  "pk": 38, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p><strong>Upozornenie:</strong> Moment\u00e1lne nem\u00e1te nastaven\u00fa \u017eiadnu e-mailov\u00fa adresu. E-mailov\u00fa adresu je potrebn\u00e9 nastavi\u0165, aby ste mohli dost\u00e1va\u0165 notifik\u00e1cie, obnovi\u0165 zabudnut\u00e9 heslo a podobne.</p>"
+  }
+},
+{
+  "pk": 39, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Temporibus maiores error vel ipsam quod, a optio sint exercitationem fugit tempore perferendis minus.</p>"
+  }
+},
+{
+  "pk": 42, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Please confirm that\u00a0<img title=\"\ue110a href\ue111\u275emailto:{{confirmation.email_address.email}}\u275e\ue112{{confirmation.email_address.email}}\ue110/a\ue112\" id=\"plugin_obj_43\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275emailto:{{confirmation.email_address.email}}\u275e\ue112{{confirmation.email_address.email}}\ue110/a\ue112\"> is an e-mail address for user <img title=\"{{confirmation.email_address.user.get_full_name}}\" id=\"plugin_obj_44\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{confirmation.email_address.user.get_full_name}}\">.</p>"
+  }
+},
+{
+  "pk": 45, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>This e-mail confirmation link expired or is invalid. Please <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112issue a new e\ue10bmail confirmation request\ue110/a\ue112\" id=\"plugin_obj_46\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112issue a new e\ue10bmail confirmation request\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 47, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Pros\u00edm potvr\u010fte, \u017ee e-mailov\u00e1 adresa <img title=\"\ue110a href\ue111\u275emailto:{{ confirmation.email_address.email }}\u275e\ue112{{ confirmation.email_address.email }}\ue110/a\ue112\" id=\"plugin_obj_48\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275emailto:{{ confirmation.email_address.email }}\u275e\ue112{{ confirmation.email_address.email }}\ue110/a\ue112\"> patr\u00ed u\u017e\u00edvate\u013eovi <img title=\"{{ confirmation.email_address.user.get_full_name }}\" id=\"plugin_obj_49\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ confirmation.email_address.user.get_full_name }}\">.</p>"
+  }
+},
+{
+  "pk": 50, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Tento overovac\u00ed k\u00f3d je neplatn\u00fd, alebo mu vypr\u0161ala platnos\u0165. Pros\u00edm <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112po\u017eiadajte o nov\u00fd overovac\u00ed k\u00f3d\ue110/a\ue112\" id=\"plugin_obj_51\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112po\u017eiadajte o nov\u00fd overovac\u00ed k\u00f3d\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 54, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You have confirmed that\u00a0<img title=\"\ue110a href\ue111\u275emailto:{{ email_address.email }}\u275e\ue112{{ email_address.email }}\ue110/a\ue112\" id=\"plugin_obj_55\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275emailto:{{ email_address.email }}\u275e\ue112{{ email_address.email }}\ue110/a\ue112\"> is an e-mail address for user <img title=\"{{ email_address.user.get_full_name }}\" id=\"plugin_obj_56\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ email_address.user.get_full_name }}\">.</p>"
+  }
+},
+{
+  "pk": 57, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>\u00daspe\u0161ne ste potvrdili, \u017ee e-mailov\u00e1 adresa\u00a0<img title=\"\ue110a href\ue111\u275emailto:{{ email_address.email }}\u275e\ue112{{ email_address.email }}\ue110/a\ue112\" id=\"plugin_obj_58\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275emailto:{{ email_address.email }}\u275e\ue112{{ email_address.email }}\ue110/a\ue112\"> patr\u00ed u\u017e\u00edvate\u013eovi <img title=\"{{ email_address.user.get_full_name }}\" id=\"plugin_obj_59\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ email_address.user.get_full_name }}\">.</p>"
+  }
+},
+{
+  "pk": 61, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Are you sure you want to sign out?</p>"
+  }
+},
+{
+  "pk": 63, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Naozaj sa chcete odhl\u00e1si\u0165?</p>"
+  }
+},
+{
+  "pk": 65, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed diam \nmollis, euismod ligula a, venenatis elit. Fusce scelerisque sagittis \nporttitor. Vestibulum elementum nunc vitae luctus facilisis. Donec \nrhoncus placerat tortor a fringilla. Praesent eu suscipit sapien.</p>"
+  }
+},
+{
+  "pk": 66, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed diam \nmollis, euismod ligula a, venenatis elit. Fusce scelerisque sagittis \nporttitor. Vestibulum elementum nunc vitae luctus facilisis. Donec \nrhoncus placerat tortor a fringilla. Praesent eu suscipit sapien.</p>"
+  }
+},
+{
+  "pk": 70, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Please sign in with one of your existing third party accounts. Or, <img title=\"\ue110a href\ue111\u275e{{ signup_url }}\u275e\ue112sign up\ue110/a\ue112\" id=\"plugin_obj_71\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{{ signup_url }}\u275e\ue112sign up\ue110/a\ue112\"> for a <img title=\"{{ site.name }}\" id=\"plugin_obj_72\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ site.name }}\"> account and sign in below:</p>"
+  }
+},
+{
+  "pk": 73, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Please sign in with one of your existing third party accounts. Or, <img title=\"\ue110a href\ue111\u275e{{ signup_url }}\u275e\ue112sign up\ue110/a\ue112\" id=\"plugin_obj_74\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{{ signup_url }}\u275e\ue112sign up\ue110/a\ue112\"> for a <img title=\"{{ site.name }}\" id=\"plugin_obj_75\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ site.name }}\"> account and sign in below:</p>"
+  }
+},
+{
+  "pk": 76, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h4>Why do I have to register?</h4><p>Architecto quia hic voluptates, eius dolorem quos atque recusandae \nsaepe? Vitae blanditiis dolorum cum quos iure consequatur quod natus \nminus.</p><p>Iusto ab earum labore quasi? Repudiandae eveniet pariatur quae quis? \nPerferendis fugiat quibusdam suscipit nihil alias aut quisquam explicabo\n distinctio minus, deleniti accusantium voluptates repellendus dolorum \naperiam quia accusamus, eaque incidunt consectetur?</p>"
+  }
+},
+{
+  "pk": 77, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h4>Pre\u010do sa m\u00e1m zaregistrova\u0165?</h4><p>Architecto quia hic voluptates, eius dolorem quos atque recusandae \nsaepe? Vitae blanditiis dolorum cum quos iure consequatur quod natus \nminus.</p><p>Iusto ab earum labore quasi? Repudiandae eveniet pariatur quae quis? \nPerferendis fugiat quibusdam suscipit nihil alias aut quisquam explicabo\n distinctio minus, deleniti accusantium voluptates repellendus dolorum \naperiam quia accusamus, eaque incidunt consectetur?</p>"
+  }
+},
+{
+  "pk": 79, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Already have an account? Then please <img title=\"\ue110a href\ue111\u275e{{ login_url }}\u275e\ue112sign in\ue110/a\ue112\" id=\"plugin_obj_80\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{{ login_url }}\u275e\ue112sign in\ue110/a\ue112\">. Or, you can sign up with one of your existing third party accounts.</p>"
+  }
+},
+{
+  "pk": 82, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Already have an account? Then please <img title=\"\ue110a href\ue111\u275e{{ login_url }}\u275e\ue112sign in\ue110/a\ue112\" id=\"plugin_obj_83\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{{ login_url }}\u275e\ue112sign in\ue110/a\ue112\">.\n        Or, you can sign up with one of your existing third party accounts.</p>"
+  }
+},
+{
+  "pk": 86, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>We are sorry, but the sign up is currently closed.</p>"
+  }
+},
+{
+  "pk": 87, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Prep\u00e1\u010dte, registr\u00e1cia je moment\u00e1lne uzatvoren\u00e1.</p>"
+  }
+},
+{
+  "pk": 89, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Forgotten your password? Enter your e-mail address below, and we'll send you an e-mail allowing you to reset it.\n    Please contact us if you have any trouble resetting your password.</p>"
+  }
+},
+{
+  "pk": 91, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Forgotten your password? Enter your e-mail address below, and we'll send you an e-mail allowing you to reset it.\n    Please contact us if you have any trouble resetting your password.</p>"
+  }
+},
+{
+  "pk": 93, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>We have sent you an e-mail. Please contact us if you do not receive it within a few minutes.</p>"
+  }
+},
+{
+  "pk": 95, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>We have sent you an e-mail. Please contact us if you do not receive it within a few minutes.</p>"
+  }
+},
+{
+  "pk": 102, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>The password reset link was invalid, possibly because it has already been used. Please request a <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_reset_password\u275c %}\u275e\ue112new password reset\ue110/a\ue112\" id=\"plugin_obj_103\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_reset_password\u275c %}\u275e\ue112new password reset\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 104, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Donec quis metus eros. Aliquam eu tellus felis. Mauris in neque tempus, \nviverra augue a, commodo purus. Morbi et dapibus justo. Proin adipiscing\n pulvinar lacus in tincidunt. Sed in tempor arcu. Cras at quam lobortis,\n gravida purus eget, posuere ligula.</p>"
+  }
+},
+{
+  "pk": 105, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Your password is now changed.</p>"
+  }
+},
+{
+  "pk": 106, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>The password reset link was invalid, possibly because it has already been used. Please request a <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_reset_password\u275c %}\u275e\ue112new password reset\ue110/a\ue112\" id=\"plugin_obj_107\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_reset_password\u275c %}\u275e\ue112new password reset\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 108, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Donec quis metus eros. Aliquam eu tellus felis. Mauris in neque tempus, \nviverra augue a, commodo purus. Morbi et dapibus justo. Proin adipiscing\n pulvinar lacus in tincidunt. Sed in tempor arcu. Cras at quam lobortis,\n gravida purus eget, posuere ligula.</p>"
+  }
+},
+{
+  "pk": 109, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Your password is now changed.</p>"
+  }
+},
+{
+  "pk": 110, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+  }
+},
+{
+  "pk": 112, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>\n<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, non tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci varius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, non semper turpis. Pellentesque viverra laoreet convallis. Pellentesque consectetur condimentum ante, a scelerisque augue ultricies id. In hac habitasse platea dictumst. Vestibulum nibh urna, condimentum non bibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem, sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, adipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas dui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque pulvinar facilisis interdum. Proin sit amet fringilla tortor, at adipiscing metus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc non tellus tempus, ullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae pretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra justo, sit amet posuere magna metus sit amet arcu. Nam in massa mi. Vivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. Pellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus libero, at viverra quam tortor sit amet massa. Ut id leo vel enim ultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam tempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu laoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor risus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non ultrices leo. Vivamus convallis interdum interdum. Integer fermentum mauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum egestas gravida. </p>\n"
+  }
+},
+{
+  "pk": 113, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p><p><img src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_114\" /></p>\n\n</div>"
+  }
+},
+{
+  "pk": 115, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+  }
+},
+{
+  "pk": 117, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>We have sent an e-mail to\u00a0<img title=\"\ue110a href\ue111\u275emailto:{{ email }}\u275e\ue112{{ email }}\ue110/a\ue112\" id=\"plugin_obj_118\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275emailto:{{ email }}\u275e\ue112{{ email }}\ue110/a\ue112\"> for verification. Follow the link provided to finalize the signup \nprocess. Please contact us if you do not receive it within a few \nminutes.</p>"
+  }
+},
+{
+  "pk": 120, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>We have sent an e-mail to <img title=\"\ue110a href\ue111\u275emailto:{{ email }}\u275e\ue112{{ email }}\ue110/a\ue112\" id=\"plugin_obj_121\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275emailto:{{ email }}\u275e\ue112{{ email }}\ue110/a\ue112\"> for verification. Follow the link provided to finalize the signup \nprocess. Please contact us if you do not receive it within a few \nminutes.</p>"
+  }
+},
+{
+  "pk": 123, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Etiam hendrerit varius nibh, vel lacinia ligula porta et. Integer \nelementum mauris at diam auctor, ut aliquam libero porttitor. Etiam \nvehicula blandit libero sit amet semper. Nam purus nisi, tincidunt sit \namet lorem eu, sollicitudin semper dolor. Nullam libero turpis, \nvulputate vitae libero pellentesque, vulputate rutrum nunc.</p>"
+  }
+},
+{
+  "pk": 124, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Etiam hendrerit varius nibh, vel lacinia ligula porta et. Integer \nelementum mauris at diam auctor, ut aliquam libero porttitor. Etiam \nvehicula blandit libero sit amet semper. Nam purus nisi, tincidunt sit \namet lorem eu, sollicitudin semper dolor. Nullam libero turpis, \nvulputate vitae libero pellentesque, vulputate rutrum nunc.</p>"
+  }
+},
+{
+  "pk": 127, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>This part of the site requires us to verify that you are who you claim to be. For this\n    purpose, we require that you verify ownership of your e-mail address.</p><p>We have sent an e-mail to you for verification. Please click on the link inside this e-mail.\n    Please contact us if you do not receive it within a few minutes.</p><p><strong>Note:</strong> you can still <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112change your e\ue10bmail address\ue110/a\ue112\" id=\"plugin_obj_128\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112change your e\ue10bmail address\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 130, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>This part of the site requires us to verify that you are who you claim to be. For this\n    purpose, we require that you verify ownership of your e-mail address.</p><p>We have sent an e-mail to you for verification. Please click on the link inside this e-mail.\n    Please contact us if you do not receive it within a few minutes.</p><p><strong>Note:</strong> you can still <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112change your e\ue10bmail address\ue110/a\ue112\" id=\"plugin_obj_131\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_email\u275c %}\u275e\ue112change your e\ue10bmail address\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 133, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>This account is inactive.</p>"
+  }
+},
+{
+  "pk": 135, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Tento u\u017e\u00edvatelsk\u00fd \u00fa\u010det je neakt\u00edvny.</p>"
+  }
+},
+{
+  "pk": 137, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>An error occurred while attempting to login via your social network account.</p>"
+  }
+},
+{
+  "pk": 139, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Pri pokuse prihl\u00e1si\u0165 sa cez \u00fa\u010det v soci\u00e1lnej sieti nastala chyba.</p>"
+  }
+},
+{
+  "pk": 141, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You decided to cancel logging in to our site using one of your existing accounts. If this was by a mistake, please proceed to <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_login\u275c %}\u275e\ue112sign in\ue110/a\ue112\" id=\"plugin_obj_142\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_login\u275c %}\u275e\ue112sign in\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 144, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <img title=\"\ue110a href\ue111\u275e{% url \u275caccount_login\u275c %}\u275e\ue112sign in\ue110/a\ue112\" id=\"plugin_obj_145\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"\ue110a href\ue111\u275e{% url \u275caccount_login\u275c %}\u275e\ue112sign in\ue110/a\ue112\">.</p>"
+  }
+},
+{
+  "pk": 147, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You can sign in to your account using any of the following third party accounts:</p>"
+  }
+},
+{
+  "pk": 148, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You currently have no social network accounts connected to this account.</p>"
+  }
+},
+{
+  "pk": 150, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Quod magnam obcaecati ea sint totam eligendi consequuntur distinctio? \nCulpa alias tenetur recusandae aut odio incidunt voluptas accusamus \nrepellendus, quam dolorem iure enim modi soluta perferendis blanditiis. \nEveniet possimus nihil aperiam minus temporibus natus rerum.</p>"
+  }
+},
+{
+  "pk": 152, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You can sign in to your account using any of the following third party accounts:</p>"
+  }
+},
+{
+  "pk": 153, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You currently have no social network accounts connected to this account.</p>"
+  }
+},
+{
+  "pk": 155, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Quod magnam obcaecati ea sint totam eligendi consequuntur distinctio? \nCulpa alias tenetur recusandae aut odio incidunt voluptas accusamus \nrepellendus, quam dolorem iure enim modi soluta perferendis blanditiis. \nEveniet possimus nihil aperiam minus temporibus natus rerum.</p>"
+  }
+},
+{
+  "pk": 157, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You are about to use your\u00a0<img title=\"{{ account.get_provider.name }}\" id=\"plugin_obj_158\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ account.get_provider.name }}\"> account to login to <img title=\"{{ site.name }}\" id=\"plugin_obj_159\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ site.name }}\">. As a final step, please complete the following form:</p>"
+  }
+},
+{
+  "pk": 161, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>You are about to use your <img title=\"{{ account.get_provider.name }}\" id=\"plugin_obj_162\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ account.get_provider.name }}\"> account to login to <img title=\"{{ site.name }}\" id=\"plugin_obj_163\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ site.name }}\">. As a final step, please complete the following form:</p>"
+  }
+},
+{
+  "pk": 9, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "New Application"
+  }
+},
+{
+  "pk": 10, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Nov\u00e1 \u017eiados\u0165"
+  }
+},
+{
+  "pk": 14, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Detail \u017eiadosti"
+  }
+},
+{
+  "pk": 16, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Application Detail"
+  }
+},
+{
+  "pk": 18, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Submitted Applications"
+  }
+},
+{
+  "pk": 21, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Podan\u00e9 \u017eiadosti"
+  }
+},
+{
+  "pk": 22, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "U\u017e\u00edvate\u013esk\u00fd profil"
+  }
+},
+{
+  "pk": 25, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "User Profile"
+  }
+},
+{
+  "pk": 26, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Zoznam povinn\u00fdch os\u00f4b"
+  }
+},
+{
+  "pk": 29, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Obligees List"
+  }
+},
+{
+  "pk": 30, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "E-mail Addresses"
+  }
+},
+{
+  "pk": 32, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Add E-mail Address"
+  }
+},
+{
+  "pk": 35, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "E-mailov\u00e9 adresy"
+  }
+},
+{
+  "pk": 36, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Prida\u0165 e-mailov\u00fa adresu"
+  }
+},
+{
+  "pk": 40, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Potvrdenie e-mailovej adresy"
+  }
+},
+{
+  "pk": 41, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Confirm E-mail Address"
+  }
+},
+{
+  "pk": 52, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "E-mail Address Confirmed"
+  }
+},
+{
+  "pk": 53, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "E-mailov\u00e1 adresa potvrden\u00e1"
+  }
+},
+{
+  "pk": 60, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Sign Out"
+  }
+},
+{
+  "pk": 62, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Odhl\u00e1senie"
+  }
+},
+{
+  "pk": 64, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Change Password"
+  }
+},
+{
+  "pk": 67, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Zmena hesla"
+  }
+},
+{
+  "pk": 68, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Sign In"
+  }
+},
+{
+  "pk": 69, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Prihl\u00e1senie"
+  }
+},
+{
+  "pk": 78, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Sign Up"
+  }
+},
+{
+  "pk": 81, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Registr\u00e1cia"
+  }
+},
+{
+  "pk": 84, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Registr\u00e1cia je uzavret\u00e1"
+  }
+},
+{
+  "pk": 85, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Sign Up Closed"
+  }
+},
+{
+  "pk": 88, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Password Reset"
+  }
+},
+{
+  "pk": 90, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Obnovenie hesla"
+  }
+},
+{
+  "pk": 92, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Password Reset"
+  }
+},
+{
+  "pk": 94, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Obnovenie hesla"
+  }
+},
+{
+  "pk": 96, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Password Reset"
+  }
+},
+{
+  "pk": 97, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Password Reset"
+  }
+},
+{
+  "pk": 98, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Password Reset"
+  }
+},
+{
+  "pk": 99, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Obnovenie hesla"
+  }
+},
+{
+  "pk": 100, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Obnovenie hesla"
+  }
+},
+{
+  "pk": 101, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Obnovenie hesla"
+  }
+},
+{
+  "pk": 116, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Verify Your E-mail Address"
+  }
+},
+{
+  "pk": 119, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Over e-mailov\u00fa adresu"
+  }
+},
+{
+  "pk": 122, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Set Password"
+  }
+},
+{
+  "pk": 125, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Nastavenie hesla"
+  }
+},
+{
+  "pk": 126, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Verify Your E-mail Address"
+  }
+},
+{
+  "pk": 129, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Overenie e-mailovej adresy"
+  }
+},
+{
+  "pk": 132, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Account Inactive"
+  }
+},
+{
+  "pk": 134, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "\u00da\u010det je neakt\u00edvny"
+  }
+},
+{
+  "pk": 136, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Social Network Login Failure"
+  }
+},
+{
+  "pk": 138, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Prihl\u00e1senie cez soci\u00e1lnu sie\u0165 zlyhalo"
+  }
+},
+{
+  "pk": 140, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Login Cancelled"
+  }
+},
+{
+  "pk": 143, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Prihl\u00e1senie zru\u0161en\u00e9"
+  }
+},
+{
+  "pk": 146, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Account Connections"
+  }
+},
+{
+  "pk": 149, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Add a 3rd Party Account"
+  }
+},
+{
+  "pk": 151, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Prepojenia na soci\u00e1lne siete"
+  }
+},
+{
+  "pk": 154, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Pridaj prepojenie"
+  }
+},
+{
+  "pk": 156, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Sign Up"
+  }
+},
+{
+  "pk": 160, 
+  "model": "plaintext.plaintext", 
+  "fields": {
+    "content": "Registr\u00e1cia"
+  }
+},
+{
+  "pk": 43, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"mailto:{{confirmation.email_address.email}}\">{{confirmation.email_address.email}}</a>"
+  }
+},
+{
+  "pk": 44, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{confirmation.email_address.user.get_full_name}}"
+  }
+},
+{
+  "pk": 46, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_email' %}\">issue a new e-mail confirmation request</a>"
+  }
+},
+{
+  "pk": 48, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"mailto:{{ confirmation.email_address.email }}\">{{ confirmation.email_address.email }}</a>"
+  }
+},
+{
+  "pk": 49, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ confirmation.email_address.user.get_full_name }}"
+  }
+},
+{
+  "pk": 51, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_email' %}\">po\u017eiadajte o nov\u00fd overovac\u00ed k\u00f3d</a>"
+  }
+},
+{
+  "pk": 55, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"mailto:{{ email_address.email }}\">{{ email_address.email }}</a>"
+  }
+},
+{
+  "pk": 56, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ email_address.user.get_full_name }}"
+  }
+},
+{
+  "pk": 58, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"mailto:{{ email_address.email }}\">{{ email_address.email }}</a>"
+  }
+},
+{
+  "pk": 59, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ email_address.user.get_full_name }}"
+  }
+},
+{
+  "pk": 71, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{{ signup_url }}\">sign up</a>"
+  }
+},
+{
+  "pk": 72, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ site.name }}"
+  }
+},
+{
+  "pk": 74, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{{ signup_url }}\">sign up</a>"
+  }
+},
+{
+  "pk": 75, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ site.name }}"
+  }
+},
+{
+  "pk": 80, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{{ login_url }}\">sign in</a>"
+  }
+},
+{
+  "pk": 83, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{{ login_url }}\">sign in</a>"
+  }
+},
+{
+  "pk": 103, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_reset_password' %}\">new password reset</a>"
+  }
+},
+{
+  "pk": 107, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_reset_password' %}\">new password reset</a>"
+  }
+},
+{
+  "pk": 111, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{% load page_url from cms_tags %}\r\n<a class=\"btn btn-primary btn-large\" href=\"{% page_url \"about\" %}\">\u010c\u00edtajte viac \u00bb</a>"
+  }
+},
+{
+  "pk": 114, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{% load page_url from cms_tags %}\r\n<a class=\"btn btn-primary btn-large\" href=\"{% page_url \"about\" %}\">\u010c\u00edtajte viac \u00bb</a>"
+  }
+},
+{
+  "pk": 118, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"mailto:{{ email }}\">{{ email }}</a>"
+  }
+},
+{
+  "pk": 121, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"mailto:{{ email }}\">{{ email }}</a>"
+  }
+},
+{
+  "pk": 128, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_email' %}\">change your e-mail address</a>"
+  }
+},
+{
+  "pk": 131, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_email' %}\">change your e-mail address</a>"
+  }
+},
+{
+  "pk": 142, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_login' %}\">sign in</a>"
+  }
+},
+{
+  "pk": 145, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "<a href=\"{% url 'account_login' %}\">sign in</a>"
+  }
+},
+{
+  "pk": 158, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ account.get_provider.name }}"
+  }
+},
+{
+  "pk": 159, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ site.name }}"
+  }
+},
+{
+  "pk": 162, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ account.get_provider.name }}"
+  }
+},
+{
+  "pk": 163, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{{ site.name }}"
+  }
+},
+{
+  "pk": 1, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 1, 
+    "description": "Create new application page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 2, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 1, 
+    "description": "Nadpis str\u00e1nky vytvorenie novej \u017eiadosti. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 3, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 2, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke vytvorenie novej \u017eiadosti.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 4, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 2, 
+    "description": "Create new application page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 5, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 3, 
+    "description": "Nadpis str\u00e1nky podrobnosti o podanej \u017eiadosti. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 6, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 3, 
+    "description": "Submitted application details page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 7, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 4, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke podrobnosti o podanej \u017eiadosti.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 8, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 4, 
+    "description": "Submitted application details page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 9, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 5, 
+    "description": "Nadpis str\u00e1nky zoznam podan\u00fdch \u017eiadosti. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 10, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 5, 
+    "description": "List of submitted applications page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 11, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 6, 
+    "description": "List of submitted applications page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 12, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 6, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zoznam podan\u00fdch \u017eiadosti.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 13, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 7, 
+    "description": "User profile page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 14, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 7, 
+    "description": "Nadpis str\u00e1nky profil u\u017e\u00edvate\u013ea. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 15, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 8, 
+    "description": "User profile page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 16, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 8, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke profil u\u017e\u00edvate\u013ea.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 17, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 9, 
+    "description": "Obligees list page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 18, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 9, 
+    "description": "Nadpis str\u00e1nky zoznam povinn\u00fdch os\u00f4b. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 19, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 10, 
+    "description": "Obligees list page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 20, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 10, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zoznam povinn\u00fdch os\u00f4b.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 21, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 11, 
+    "description": "Associated e-mails page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 22, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 11, 
+    "description": "Nadpis str\u00e1nky zoznam pripojen\u00fdch e-mailov. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 23, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 12, 
+    "description": "Associated e-mails page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 24, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 12, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zoznam pripojen\u00fdch e-mailov.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 25, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 13, 
+    "description": "Associated e-mails page introductory text if the user doesn't have any associated e-mails.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 26, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 13, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zoznam pripojen\u00fdch e-mailov, ak u\u017e\u00edvatel nem\u00e1 pripojen\u00e9 \u017eiadne e-maily.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 27, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 14, 
+    "description": "Associated e-mails page add new e-mail section subtitle. (Section subtitle must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 28, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 14, 
+    "description": "Podnadpis \u010dasti prida\u0165 e-mail na str\u00e1nke zoznam pripojen\u00fdch e-mailov. (Podnadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 29, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 15, 
+    "description": "Associated e-mails page add new e-mail section introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 30, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 15, 
+    "description": "\u00davodn\u00fd popis k \u010dasti prida\u0165 e-mail na str\u00e1nke zoznam pripojen\u00fdch e-mailov.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 31, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 16, 
+    "description": "Confirm e-mail address page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 32, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 16, 
+    "description": "Nadpis str\u00e1nky potvrdenie e-mailovej adresy. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 33, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 17, 
+    "description": "Confirm e-mail address page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 34, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 17, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke potvrdenie e-mailovej adresy.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 35, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 18, 
+    "description": "Confirm e-mail address page invalid confirmation link message.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 36, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 18, 
+    "description": "Oznam na str\u00e1nke potvrdenie e-mailovej adresy, \u017ee potvrdzuj\u00faci link je neplatn\u00fd.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 37, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 19, 
+    "description": "E-mail address confirmed page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 38, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 19, 
+    "description": "Nadpis str\u00e1nky e-mailov\u00e1 adresa potvrden\u00e1. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 39, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 20, 
+    "description": "E-mail address confirmed page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 40, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 20, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke e-mailov\u00e1 adresa potvrden\u00e1.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 41, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 21, 
+    "description": "Logout page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 42, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 21, 
+    "description": "Nadpis str\u00e1nky odhl\u00e1senie. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 43, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 22, 
+    "description": "Logout page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 44, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 22, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke odhl\u00e1senie.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 45, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 23, 
+    "description": "Change password page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 46, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 23, 
+    "description": "Nadpis str\u00e1nky zmena hesla. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 47, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 24, 
+    "description": "Change password page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 48, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 24, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zmena hesla.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 49, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 25, 
+    "description": "Login page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 50, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 25, 
+    "description": "Nadpis str\u00e1nky prihl\u00e1senie. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 53, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 27, 
+    "description": "Why to register article on Sign Up, Social Sign Up and Login pages.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 54, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 27, 
+    "description": "\u010cl\u00e1nok pre\u010do sa zaregistrova\u0165 na str\u00e1nkach registr\u00e1cia, registr\u00e1cia cez soci\u00e1lnu sie\u0165 a prihl\u00e1senie.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 55, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 28, 
+    "description": "Login page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 56, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 28, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke prihl\u00e1senie.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 57, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 29, 
+    "description": "Sign up page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 58, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 29, 
+    "description": "Nadpis str\u00e1nky registr\u00e1cia. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 59, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 30, 
+    "description": "Sign up page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 60, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 30, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke registr\u00e1cia.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 61, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 31, 
+    "description": "Closed sign up page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 62, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 31, 
+    "description": "Nadpis str\u00e1nky registr\u00e1cia, ke\u010f je registr\u00e1cia uzavret\u00e1. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 63, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 32, 
+    "description": "Closed sign up page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 64, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 32, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke registr\u00e1cia, ke\u010f je registr\u00e1cia uzavret\u00e1.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 65, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 33, 
+    "description": "Reset password page title asking the user to enter his e-mail. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 66, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 33, 
+    "description": "Nadpis str\u00e1nky obnovenie hesla \u017eiadaj\u00faci u\u017e\u00edvatela, aby zadal e-mail. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 67, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 34, 
+    "description": "Reset password page introductory text asking the user to enter his e-mail.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 68, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 34, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke obnovenie hesla \u017eiadaj\u00faci u\u017e\u00edvatela, aby zadal e-mail.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 69, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 35, 
+    "description": "Reset password page title after the e-mail was sent. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 70, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 35, 
+    "description": "Nadpis str\u00e1nky obnovenie hesla potom, \u010do bol odoslan\u00fd e-mail. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 71, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 36, 
+    "description": "Reset password page introductory text after the e-mail was sent.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 72, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 36, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke obnovenie hesla potom, \u010do bol odoslan\u00fd e-mail.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 73, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 37, 
+    "description": "Reset password page title after the user clicked on the sent link with an invalid token. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 74, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 37, 
+    "description": "Nadpis str\u00e1nky obnovenie hesla potom, \u010do u\u017e\u00edvatel klikol na odoslan\u00fd link s neplatn\u00fdm tokenom. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 75, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 38, 
+    "description": "Reset password page title after the user clicked on the sent link with a valid token. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 76, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 38, 
+    "description": "Nadpis str\u00e1nky obnovenie hesla potom, \u010do u\u017e\u00edvatel klikol na odoslan\u00fd link s platn\u00fdm tokenom. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 77, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 39, 
+    "description": "Reset password page title after the user set the password. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 78, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 39, 
+    "description": "Nadpis str\u00e1nky obnovenie hesla potom, \u010do u\u017e\u00edvatel nastavil heslo. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 79, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 40, 
+    "description": "Reset password page introductory text after the user clicked on the sent link with an invalid token.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 80, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 40, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke obnovenie hesla potom, \u010do u\u017e\u00edvatel klikol na odoslan\u00fd link s neplatn\u00fdm tokenom.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 81, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 41, 
+    "description": "Reset password page introductory text after the user clicked on the sent link with a valid token.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 82, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 41, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke obnovenie hesla potom, \u010do u\u017e\u00edvatel klikol na odoslan\u00fd link s platn\u00fdm tokenom.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 83, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 42, 
+    "description": "Reset password page introductory text after the user set the password.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 84, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 42, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke obnovenie hesla potom, \u010do u\u017e\u00edvatel nastavil heslo.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 85, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 43, 
+    "description": "Verify e-mail address page title informing the user that the confirmation e-mail was sent. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 86, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 43, 
+    "description": "Nadpis str\u00e1nky potvrdenie e-mailovej adresy informuj\u00faci u\u017e\u00edvatela, \u017ee bol odoslan\u00fd overovac\u00ed e-mail. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 87, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 44, 
+    "description": "Verify e-mail address page introductory text informing the user that the confirmation e-mail was sent.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 88, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 44, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke potvrdenie e-mailovej adresy informuj\u00faci u\u017e\u00edvatela, \u017ee bol odoslan\u00fd overovac\u00ed e-mail.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 89, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 45, 
+    "description": "Set password page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 90, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 45, 
+    "description": "Nadpis str\u00e1nky nastavenie hesla. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 91, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 46, 
+    "description": "Set password page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 92, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 46, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke nastavenie hesla.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 93, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 47, 
+    "description": "E-mail address verification needed page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 94, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 47, 
+    "description": "Nadpis str\u00e1nky nutn\u00e9 overenie e-mailovej adresy. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 95, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 48, 
+    "description": "E-mail address verification needed page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 96, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 48, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke nutn\u00e9 overenie e-mailovej adresy.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 97, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 49, 
+    "description": "Account inactive page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 98, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 49, 
+    "description": "Nadpis str\u00e1nky u\u017e\u00edvate\u013esk\u00fd \u00fa\u010det neakt\u00edvny. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 99, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 50, 
+    "description": "Account inactive page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 100, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 50, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke u\u017e\u00edvate\u013esk\u00fd \u00fa\u010det neakt\u00edvny.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 101, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 51, 
+    "description": "Social network login failture page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 102, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 51, 
+    "description": "Nadpis str\u00e1nky prihl\u00e1senie cez soci\u00e1lnu sie\u0165 zlyhalo. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 103, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 52, 
+    "description": "Social network login failture introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 104, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 52, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke prihl\u00e1senie cez soci\u00e1lnu sie\u0165 zlyhalo.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 105, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 53, 
+    "description": "Social network login cancelled page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 106, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 53, 
+    "description": "Nadpis str\u00e1nky prihl\u00e1senie cez soci\u00e1lnu sie\u0165 zru\u0161en\u00e9. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 107, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 54, 
+    "description": "Social network login cancelled page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 108, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 54, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke prihl\u00e1senie cez soci\u00e1lnu sie\u0165 zru\u0161en\u00e9.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 109, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 55, 
+    "description": "Account connections page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 110, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 55, 
+    "description": "Nadpis str\u00e1nky zoznam prepojen\u00ed na soci\u00e1lne siete. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 111, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 56, 
+    "description": "Account connections page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 112, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 56, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zoznam prepojen\u00ed na soci\u00e1lne siete.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 113, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 57, 
+    "description": "Account connections page introductory text if the user doesn't have any connected accounts.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 114, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 57, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke zoznam prepojen\u00ed na soci\u00e1lne siete, ak u\u017e\u00edvatel nem\u00e1 \u017eiadne prepojenia na soci\u00e1lne siete.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 115, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 58, 
+    "description": "Account connections page add new connection section subtitle. (Section subtitle must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 116, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 58, 
+    "description": "Podnadpis \u010dasti prida\u0165 prepojenie na str\u00e1nke zoznam prepojen\u00ed na soci\u00e1lne siete. (Podnadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 117, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 59, 
+    "description": "Account connections page add new connection section introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 118, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 59, 
+    "description": "\u00davodn\u00fd popis k \u010dasti prida\u0165 prepojenie na str\u00e1nke zoznam prepojen\u00ed na soci\u00e1lne siete.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 119, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 60, 
+    "description": "Social sign up page title. (Page title must be plain text!)", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 120, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 60, 
+    "description": "Nadpis str\u00e1nky registr\u00e1cia cez soci\u00e1lnu sie\u0165. (Nadpis str\u00e1nky mus\u00ed by\u0165 jednoduch\u00fd neform\u00e1tovan\u00fd text!)", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 121, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 61, 
+    "description": "Social sign up page introductory text.", 
+    "language_code": "en"
+  }
+},
+{
+  "pk": 122, 
+  "model": "chunks.chunktranslation", 
+  "fields": {
+    "master": 61, 
+    "description": "\u00davodn\u00fd popis na str\u00e1nke registr\u00e1cia cez soci\u00e1lnu sie\u0165.", 
+    "language_code": "sk"
+  }
+},
+{
+  "pk": 1, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "applications:create:title", 
+    "content": 6
+  }
+},
+{
+  "pk": 2, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "applications:create:intro", 
+    "content": 8
+  }
+},
+{
+  "pk": 3, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "applications:detail:title", 
+    "content": 10
+  }
+},
+{
+  "pk": 4, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "applications:detail:intro", 
+    "content": 12
+  }
+},
+{
+  "pk": 5, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "applications:index:title", 
+    "content": 14
+  }
+},
+{
+  "pk": 6, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "applications:index:intro", 
+    "content": 16
+  }
+},
+{
+  "pk": 7, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:profile:title", 
+    "content": 18
+  }
+},
+{
+  "pk": 8, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:profile:intro", 
+    "content": 20
+  }
+},
+{
+  "pk": 9, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "obligees:index:title", 
+    "content": 22
+  }
+},
+{
+  "pk": 10, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "obligees:index:intro", 
+    "content": 24
+  }
+},
+{
+  "pk": 11, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:list:title", 
+    "content": 26
+  }
+},
+{
+  "pk": 12, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:list:intro", 
+    "content": 28
+  }
+},
+{
+  "pk": 13, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:list:empty", 
+    "content": 30
+  }
+},
+{
+  "pk": 14, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:add:title", 
+    "content": 32
+  }
+},
+{
+  "pk": 15, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:add:intro", 
+    "content": 34
+  }
+},
+{
+  "pk": 16, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:confirm:title", 
+    "content": 36
+  }
+},
+{
+  "pk": 17, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:confirm:intro", 
+    "content": 42
+  }
+},
+{
+  "pk": 18, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:confirm:invalid", 
+    "content": 44
+  }
+},
+{
+  "pk": 19, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:confirmed:title", 
+    "content": 46
+  }
+},
+{
+  "pk": 20, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:confirmed:intro", 
+    "content": 48
+  }
+},
+{
+  "pk": 21, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:logout:title", 
+    "content": 50
+  }
+},
+{
+  "pk": 22, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:logout:intro", 
+    "content": 52
+  }
+},
+{
+  "pk": 23, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:change:title", 
+    "content": 54
+  }
+},
+{
+  "pk": 24, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:change:intro", 
+    "content": 56
+  }
+},
+{
+  "pk": 25, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:login:title", 
+    "content": 58
+  }
+},
+{
+  "pk": 27, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:why_to_register", 
+    "content": 62
+  }
+},
+{
+  "pk": 28, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:login:intro", 
+    "content": 64
+  }
+},
+{
+  "pk": 29, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:signup:title", 
+    "content": 66
+  }
+},
+{
+  "pk": 30, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:signup:intro", 
+    "content": 68
+  }
+},
+{
+  "pk": 31, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:signup:closed:title", 
+    "content": 70
+  }
+},
+{
+  "pk": 32, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:signup:closed:intro", 
+    "content": 72
+  }
+},
+{
+  "pk": 33, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:mail:title", 
+    "content": 74
+  }
+},
+{
+  "pk": 34, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:mail:intro", 
+    "content": 76
+  }
+},
+{
+  "pk": 35, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:sent:title", 
+    "content": 78
+  }
+},
+{
+  "pk": 36, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:sent:intro", 
+    "content": 80
+  }
+},
+{
+  "pk": 37, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:failed:title", 
+    "content": 82
+  }
+},
+{
+  "pk": 38, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:token:title", 
+    "content": 84
+  }
+},
+{
+  "pk": 39, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:done:title", 
+    "content": 86
+  }
+},
+{
+  "pk": 40, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:failed:intro", 
+    "content": 88
+  }
+},
+{
+  "pk": 41, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:token:intro", 
+    "content": 90
+  }
+},
+{
+  "pk": 42, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:reset:done:intro", 
+    "content": 92
+  }
+},
+{
+  "pk": 43, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:verify:title", 
+    "content": 94
+  }
+},
+{
+  "pk": 44, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:verify:intro", 
+    "content": 96
+  }
+},
+{
+  "pk": 45, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:set:title", 
+    "content": 98
+  }
+},
+{
+  "pk": 46, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:password:set:intro", 
+    "content": 100
+  }
+},
+{
+  "pk": 47, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:need-verify:title", 
+    "content": 102
+  }
+},
+{
+  "pk": 48, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:email:need-verify:intro", 
+    "content": 104
+  }
+},
+{
+  "pk": 49, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:inactive:title", 
+    "content": 106
+  }
+},
+{
+  "pk": 50, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:inactive:intro", 
+    "content": 108
+  }
+},
+{
+  "pk": 51, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:failed:title", 
+    "content": 110
+  }
+},
+{
+  "pk": 52, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:failed:intro", 
+    "content": 112
+  }
+},
+{
+  "pk": 53, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:cancelled:title", 
+    "content": 114
+  }
+},
+{
+  "pk": 54, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:cancelled:intro", 
+    "content": 116
+  }
+},
+{
+  "pk": 55, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:list:title", 
+    "content": 118
+  }
+},
+{
+  "pk": 56, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:list:intro", 
+    "content": 120
+  }
+},
+{
+  "pk": 57, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:list:empty", 
+    "content": 122
+  }
+},
+{
+  "pk": 58, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:add:title", 
+    "content": 124
+  }
+},
+{
+  "pk": 59, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:add:intro", 
+    "content": 126
+  }
+},
+{
+  "pk": 60, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:signup:title", 
+    "content": 128
+  }
+},
+{
+  "pk": 61, 
+  "model": "chunks.chunk", 
+  "fields": {
+    "reverse_id": "accounts:social:signup:intro", 
+    "content": 130
+  }
+}
+]

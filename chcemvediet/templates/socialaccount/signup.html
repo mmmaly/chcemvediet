@@ -1,18 +1,18 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno_utils %}
+{% load lorem from poleno.utils %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Sign Up{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:social:signup:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Sign Up{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
+  <h1>{% chunk 'accounts:social:signup:title' %}</h1>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     <div class="row">
-      <p class="span6">
-        You are about to use your {{ account.get_provider.name }} account to login to {{ site.name }}.
-        As a final step, please complete the following form:</p>
+      <div class="span6">
+        {% chunk 'accounts:social:signup:intro' %}
+      </div>
     </div>
     <div class="row">
       <div class="span6">
@@ -23,9 +23,7 @@
       </div>
       <div class="span6">
         <div class="alert alert-block alert-info">
-          <h4>Why do I have to register?</h4>
-          <p>{% lorem 41 %}</p>
-          <p>{% lorem 42 %}</p>
+          {% chunk 'accounts:why_to_register' %}
         </div>
       </div>
     </div>

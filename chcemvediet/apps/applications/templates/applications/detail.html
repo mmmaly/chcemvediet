@@ -1,11 +1,12 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Application Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'applications:detail:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Application Detail{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
+  <h1>{% chunk 'applications:detail:title' %}</h1>
+  {% chunk 'applications:detail:intro' %}
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Applicant{% endblocktrans %}:</p>
     <div class="span10">
@@ -23,11 +24,11 @@
     </div>
   </div>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Send From{% endblocktrans %}:</p>
+    <p class="span2 text-right">{% blocktrans %}Sent From{% endblocktrans %}:</p>
     <p class="span10">{{ application.sender_email }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Send To{% endblocktrans %}:</p>
+    <p class="span2 text-right">{% blocktrans %}Sent To{% endblocktrans %}:</p>
     <p class="span10">{{ application.recepient_email }}</p>
   </div>
   <div class="row">

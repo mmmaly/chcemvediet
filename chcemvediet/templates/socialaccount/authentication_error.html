@@ -1,10 +1,10 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Social Network Login Failure{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:social:failed:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Social Network Login Failure{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
-  <p>An error occurred while attempting to login via your social network account.</p>
+  <h1>{% chunk 'accounts:social:failed:title' %}</h1>
+  {% chunk 'accounts:social:failed:intro' %}
 {% endblock %}

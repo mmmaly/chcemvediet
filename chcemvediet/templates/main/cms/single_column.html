@@ -1,0 +1,9 @@
+{% extends "main/base/single_column.html" %}
+{% load placeholder page_attribute from cms_tags %}
+
+{% block title %}{% page_attribute page_title %} | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>{% page_attribute page_title %}</h1>
+  {% placeholder content %}
+{% endblock %}

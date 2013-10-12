@@ -5,13 +5,14 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
+from allauth.account.decorators import verified_email_required
 
 from chcemvediet.apps.obligees.models import Obligee
 from chcemvediet.apps.applications.models import Application
 
 import forms
 
-@login_required
+@verified_email_required
 def create(request):
     if request.method == 'POST':
         form = forms.ApplicationForm(request.POST)

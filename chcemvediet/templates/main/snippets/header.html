@@ -1,6 +1,9 @@
-{% load blocktrans from i18n %}
+{# vim: set filetype=htmldjango :#}
 {% load static from staticfiles %}
 {% load blocktrans trans from i18n %}
+{% load page_url page_attribute from cms_tags %}
+{% load page_language_url from menu_tags %}
+{% load addtoblock from sekizai_tags %}
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -10,10 +13,11 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="brand" href="{% url 'index' %}">Chcem vedieť</a>
+      <a class="brand" href="{% page_url "home" %}">Chcem vedieť</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li class="divider-vertical"></li>
+          <li><a href="{% page_url "about" %}">{% page_attribute "page_title" "about" %}</a></li>
           <li><a href="{% url 'applications:index' %}">{% blocktrans %}Applications{% endblocktrans %}</a></li>
           <li><a href="{% url 'obligees:index' %}">{% blocktrans %}Obligees{% endblocktrans %}</a></li>
         </ul>
@@ -39,7 +43,7 @@
               {% csrf_token %}
               <ul class="dropdown-menu">
                 {% for lang in LANGUAGES %}
-                  <li><a href="{% url 'set_language' %}" class="post" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-post-language="{{ lang.0 }}" data-post-next="{{ request.get_full_path }}"><img src="{% static 'main/images/languages/'|add:lang.0|add:'.png' %}" alt="{{ lang.0 }}" style="margin: 0px 5px 3px 0px;"> {{ lang.1 }}</a></li>
+                  <li><a href="{% page_language_url lang.0 %}"><img src="{% static 'main/images/languages/'|add:lang.0|add:'.png' %}" alt="{{ lang.0 }}" style="margin: 0px 5px 3px 0px;"> {{ lang.1 }}</a></li>
                 {% endfor %}
               </ul>
           </li>
@@ -49,7 +53,8 @@
   </div>
 </div>
 
-<script>
+{% addtoblock "js" %}{# {{{ #}
+  <script>
 	/* Makes every link with class ``post`` send POST request to its href URL when clicked.
 	 * Data for the request may be supplied by ``data-post-*`` element attributes.
 	 *
@@ -75,4 +80,6 @@
 			form.submit();
 		});
 	});
-</script>
+  </script>
+{% endaddtoblock %}{# }}} #}
+

@@ -1,11 +1,12 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}Profile{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:profile:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}User Profile{% endblocktrans %} <small>{{ user.get_full_name }}</small></h1>
-  {% include "main/snippets/messages.html" %}
+  <h1>{% chunk 'accounts:profile:title' %} <small>{{ user.get_full_name }}</small></h1>
+  {% chunk 'accounts:profile:intro' %}
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}E-mail{% endblocktrans %}:</p>
     <p class="span10">{{ user.email }}</p>

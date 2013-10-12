@@ -1,14 +1,15 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno_utils %}
+{% load addtoblock from sekizai_tags %}
+{% load lorem from poleno.utils %}
+{% load chunk from chunks %}
 
-{% block title %}{% blocktrans %}E-mail Addresses{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% chunk 'accounts:email:list:title' fragile %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}E-mail Addresses{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
+  <h1>{% chunk 'accounts:email:list:title' %}</h1>
   {% if user.emailaddress_set.all %}
-    <p>The following e-mail addresses are associated with your account:</p>
+    {% chunk 'accounts:email:list:intro' %}
     <form class="form-horizontal" method="post" action="{% url 'account_email' %}">
       {% csrf_token %}
       <div class="control-group">
@@ -36,11 +37,11 @@
       </div>
     </form>
   {% else %}
-    <p><strong>Warning:</strong> You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc.</p>
+    {% chunk 'accounts:email:list:empty' %}
   {% endif %}
 
-  <h3>{% blocktrans %}Add E-mail Address{% endblocktrans %}</h3>
-  <p>{% lorem 32 %}</p>
+  <h3>{% chunk 'accounts:email:add:title' %}</h3>
+  {% chunk 'accounts:email:add:intro' %}
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     {% include "main/snippets/form_horizontal.html" with form=form %}
@@ -48,21 +49,22 @@
       <button type="submit" class="btn btn-primary" name="action_add">{% blocktrans %}Add E-mail{% endblocktrans %}</button>
     </div>
   </form>
+  {% addtoblock "js" %}{# {{{ #}
+    <script>
+      (function() {
+        var message = 'Do you really want to remove the selected e-mail address?';
+        var actions = document.getElementsByName('action_remove');
+        if (actions.length) {
+          actions[0].addEventListener("click", function(e) {
+            if (! confirm(message)) {
+              e.preventDefault();
+            }
+          });
+        }
+      })();
+    </script>
+  {% endaddtoblock %}{# }}} #}
 {% endblock %}
 
 
-{% block javascript %}{{ block.super }}
-  <script>
-    (function() {
-      var message = 'Do you really want to remove the selected e-mail address?';
-      var actions = document.getElementsByName('action_remove');
-      if (actions.length) {
-        actions[0].addEventListener("click", function(e) {
-          if (! confirm(message)) {
-            e.preventDefault();
-          }
-        });
-      }
-    })();
-  </script>
-{% endblock %}
+
