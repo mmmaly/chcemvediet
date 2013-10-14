@@ -512,11 +512,43 @@
   }
 },
 {
+  "pk": 135, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 136, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 137, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 138, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
   "pk": 1, 
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-07T02:04:44.064Z", 
+    "changed_date": "2013-10-14T01:38:15.913Z", 
     "parent": null, 
     "language": "en", 
     "level": 0, 
@@ -576,40 +608,6 @@
     "tree_id": 4, 
     "position": 0, 
     "placeholder": 2, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
-  "pk": 7, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 2, 
-    "changed_date": "2013-10-07T02:08:10.145Z", 
-    "parent": null, 
-    "language": "en", 
-    "level": 0, 
-    "creation_date": "2013-10-07T02:06:47.483Z", 
-    "lft": 1, 
-    "tree_id": 7, 
-    "position": 0, 
-    "placeholder": 4, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
-  "pk": 8, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 2, 
-    "changed_date": "2013-10-07T02:08:10.176Z", 
-    "parent": null, 
-    "language": "sk", 
-    "level": 0, 
-    "creation_date": "2013-10-07T02:06:47.483Z", 
-    "lft": 1, 
-    "tree_id": 8, 
-    "position": 0, 
-    "placeholder": 4, 
     "plugin_type": "TextPlugin"
   }
 },
@@ -2348,74 +2346,6 @@
   }
 },
 {
-  "pk": 112, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 2, 
-    "changed_date": "2013-10-10T19:55:09.254Z", 
-    "parent": null, 
-    "language": "en", 
-    "level": 0, 
-    "creation_date": "2013-10-07T02:01:38.631Z", 
-    "lft": 1, 
-    "tree_id": 92, 
-    "position": 0, 
-    "placeholder": 3, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
-  "pk": 113, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 4, 
-    "changed_date": "2013-10-10T19:55:09.276Z", 
-    "parent": null, 
-    "language": "sk", 
-    "level": 0, 
-    "creation_date": "2013-10-07T02:01:38.631Z", 
-    "lft": 1, 
-    "tree_id": 93, 
-    "position": 0, 
-    "placeholder": 3, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
-  "pk": 114, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 3, 
-    "changed_date": "2013-10-10T19:55:09.224Z", 
-    "parent": 113, 
-    "language": "sk", 
-    "level": 1, 
-    "creation_date": "2013-10-10T19:53:27.261Z", 
-    "lft": 2, 
-    "tree_id": 93, 
-    "position": 0, 
-    "placeholder": 3, 
-    "plugin_type": "VariablePlugin"
-  }
-},
-{
-  "pk": 115, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 2, 
-    "changed_date": "2013-10-10T19:55:09.291Z", 
-    "parent": null, 
-    "language": "sk", 
-    "level": 0, 
-    "creation_date": "2013-10-10T19:50:53.156Z", 
-    "lft": 1, 
-    "tree_id": 94, 
-    "position": 1, 
-    "placeholder": 3, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
   "pk": 116, 
   "model": "cms.cmsplugin", 
   "fields": {
@@ -3232,15 +3162,151 @@
   }
 },
 {
+  "pk": 168, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-13T20:04:48.861Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 136, 
+    "position": 0, 
+    "placeholder": 4, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 169, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-13T20:04:48.874Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 137, 
+    "position": 0, 
+    "placeholder": 4, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 174, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-14T01:38:50.124Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-14T01:38:43.236Z", 
+    "lft": 1, 
+    "tree_id": 141, 
+    "position": 1, 
+    "placeholder": 1, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 175, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-14T01:38:58.511Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:01:38.631Z", 
+    "lft": 1, 
+    "tree_id": 142, 
+    "position": 0, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 176, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 4, 
+    "changed_date": "2013-10-14T01:38:58.530Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:01:38.631Z", 
+    "lft": 1, 
+    "tree_id": 143, 
+    "position": 0, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 177, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 3, 
+    "changed_date": "2013-10-14T01:38:58.464Z", 
+    "parent": 176, 
+    "language": "sk", 
+    "level": 1, 
+    "creation_date": "2013-10-10T19:53:27.261Z", 
+    "lft": 2, 
+    "tree_id": 143, 
+    "position": 0, 
+    "placeholder": 3, 
+    "plugin_type": "VariablePlugin"
+  }
+},
+{
+  "pk": 178, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-14T01:38:58.545Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-10T19:50:53.156Z", 
+    "lft": 1, 
+    "tree_id": 144, 
+    "position": 1, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 179, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-14T01:38:58.561Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-14T01:38:43.236Z", 
+    "lft": 1, 
+    "tree_id": 145, 
+    "position": 1, 
+    "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
   "pk": 1, 
   "model": "cms.page", 
   "fields": {
-    "rght": 2, 
+    "rght": 8, 
     "navigation_extenders": "", 
     "site": 1, 
     "creation_date": "2013-10-07T02:01:19.391Z", 
     "lft": 1, 
-    "in_navigation": false, 
+    "in_navigation": true, 
     "reverse_id": "home", 
     "login_required": false, 
     "created_by": "admin", 
@@ -3250,7 +3316,7 @@
     "placeholders": [
       1
     ], 
-    "changed_date": "2013-10-10T19:55:09.307Z", 
+    "changed_date": "2013-10-14T01:38:58.577Z", 
     "limit_visibility_in_menu": null, 
     "parent": null, 
     "publisher_state": 0, 
@@ -3267,29 +3333,29 @@
   "pk": 2, 
   "model": "cms.page", 
   "fields": {
-    "rght": 2, 
+    "rght": 3, 
     "navigation_extenders": "", 
     "site": 1, 
     "creation_date": "2013-10-07T02:06:36.352Z", 
-    "lft": 1, 
-    "in_navigation": false, 
+    "lft": 2, 
+    "in_navigation": true, 
     "reverse_id": "about", 
     "login_required": false, 
     "created_by": "admin", 
     "publication_end_date": null, 
     "template": "main/cms/single_column.html", 
-    "tree_id": 2, 
+    "tree_id": 1, 
     "placeholders": [
       2
     ], 
-    "changed_date": "2013-10-07T02:08:10.222Z", 
+    "changed_date": "2013-10-13T20:04:48.890Z", 
     "limit_visibility_in_menu": null, 
-    "parent": null, 
+    "parent": 1, 
     "publisher_state": 0, 
     "soft_root": false, 
     "publication_date": "2013-10-07T02:08:05.203Z", 
     "publisher_public": 4, 
-    "level": 0, 
+    "level": 1, 
     "changed_by": "admin", 
     "publisher_is_draft": true, 
     "published": true
@@ -3299,12 +3365,12 @@
   "pk": 3, 
   "model": "cms.page", 
   "fields": {
-    "rght": 2, 
+    "rght": 8, 
     "navigation_extenders": "", 
     "site": 1, 
     "creation_date": "2013-10-07T02:08:08.237Z", 
     "lft": 1, 
-    "in_navigation": false, 
+    "in_navigation": true, 
     "reverse_id": "home", 
     "login_required": false, 
     "created_by": "admin", 
@@ -3314,7 +3380,7 @@
     "placeholders": [
       3
     ], 
-    "changed_date": "2013-10-10T19:55:09.066Z", 
+    "changed_date": "2013-10-14T01:38:58.008Z", 
     "limit_visibility_in_menu": null, 
     "parent": null, 
     "publisher_state": 0, 
@@ -3331,43 +3397,160 @@
   "pk": 4, 
   "model": "cms.page", 
   "fields": {
-    "rght": 2, 
+    "rght": 3, 
     "navigation_extenders": "", 
     "site": 1, 
     "creation_date": "2013-10-07T02:08:09.785Z", 
-    "lft": 1, 
-    "in_navigation": false, 
+    "lft": 2, 
+    "in_navigation": true, 
     "reverse_id": "about", 
     "login_required": false, 
     "created_by": "admin", 
     "publication_end_date": null, 
     "template": "main/cms/single_column.html", 
-    "tree_id": 4, 
+    "tree_id": 3, 
     "placeholders": [
       4
     ], 
-    "changed_date": "2013-10-07T02:08:09.785Z", 
+    "changed_date": "2013-10-13T20:04:48.724Z", 
     "limit_visibility_in_menu": null, 
-    "parent": null, 
+    "parent": 3, 
     "publisher_state": 0, 
     "soft_root": false, 
-    "publication_date": "2013-10-07T02:08:04.773Z", 
+    "publication_date": "2013-10-07T02:08:05.203Z", 
     "publisher_public": 2, 
-    "level": 0, 
+    "level": 1, 
     "changed_by": "admin", 
     "publisher_is_draft": false, 
     "published": true
   }
 },
 {
-  "pk": 2, 
-  "model": "cms.pagemoderatorstate", 
+  "pk": 5, 
+  "model": "cms.page", 
   "fields": {
-    "action": "ADD", 
-    "message": "", 
-    "created": "2013-10-09T02:28:25.316Z", 
-    "page": 2, 
-    "user": null
+    "rght": 7, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-14T00:01:52.106Z", 
+    "lft": 6, 
+    "in_navigation": true, 
+    "reverse_id": "obligees", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/single_column.html", 
+    "tree_id": 1, 
+    "placeholders": [
+      135
+    ], 
+    "changed_date": "2013-10-14T00:03:47.256Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": 1, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-14T00:03:37.499Z", 
+    "publisher_public": 6, 
+    "level": 1, 
+    "changed_by": "admin", 
+    "publisher_is_draft": true, 
+    "published": true
+  }
+},
+{
+  "pk": 6, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 7, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-14T00:03:42.413Z", 
+    "lft": 6, 
+    "in_navigation": true, 
+    "reverse_id": "obligees", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/single_column.html", 
+    "tree_id": 3, 
+    "placeholders": [
+      136
+    ], 
+    "changed_date": "2013-10-14T00:03:46.967Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": 3, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-14T00:03:37.499Z", 
+    "publisher_public": 5, 
+    "level": 1, 
+    "changed_by": "admin", 
+    "publisher_is_draft": false, 
+    "published": true
+  }
+},
+{
+  "pk": 7, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 5, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-14T00:31:05.701Z", 
+    "lft": 4, 
+    "in_navigation": true, 
+    "reverse_id": "applications", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/single_column.html", 
+    "tree_id": 1, 
+    "placeholders": [
+      137
+    ], 
+    "changed_date": "2013-10-14T00:42:27.195Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": 1, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-14T00:32:13.452Z", 
+    "publisher_public": 8, 
+    "level": 1, 
+    "changed_by": "admin", 
+    "publisher_is_draft": true, 
+    "published": true
+  }
+},
+{
+  "pk": 8, 
+  "model": "cms.page", 
+  "fields": {
+    "rght": 5, 
+    "navigation_extenders": "", 
+    "site": 1, 
+    "creation_date": "2013-10-14T00:32:18.365Z", 
+    "lft": 4, 
+    "in_navigation": true, 
+    "reverse_id": "applications", 
+    "login_required": false, 
+    "created_by": "admin", 
+    "publication_end_date": null, 
+    "template": "main/cms/single_column.html", 
+    "tree_id": 3, 
+    "placeholders": [
+      138
+    ], 
+    "changed_date": "2013-10-14T00:42:27.080Z", 
+    "limit_visibility_in_menu": null, 
+    "parent": 3, 
+    "publisher_state": 0, 
+    "soft_root": false, 
+    "publication_date": "2013-10-14T00:32:13.452Z", 
+    "publisher_public": 7, 
+    "level": 1, 
+    "changed_by": "admin", 
+    "publisher_is_draft": false, 
+    "published": true
   }
 },
 {
@@ -3379,14 +3562,14 @@
     "meta_keywords": "", 
     "page_title": "", 
     "language": "en", 
-    "title": "Welcome", 
+    "title": "Chcem Vedie\u0165", 
     "has_url_overwrite": false, 
     "application_urls": "", 
     "creation_date": "2013-10-07T02:01:19.454Z", 
     "page": 1, 
     "path": "", 
     "meta_description": "", 
-    "slug": "welcome"
+    "slug": "chcem-vediet"
   }
 },
 {
@@ -3394,18 +3577,18 @@
   "model": "cms.title", 
   "fields": {
     "menu_title": "", 
-    "redirect": null, 
+    "redirect": "", 
     "meta_keywords": "", 
     "page_title": "", 
     "language": "sk", 
-    "title": "Vitajte", 
+    "title": "Chcem Vedie\u0165", 
     "has_url_overwrite": false, 
-    "application_urls": null, 
+    "application_urls": "", 
     "creation_date": "2013-10-07T02:06:17.725Z", 
     "page": 1, 
     "path": "", 
     "meta_description": "", 
-    "slug": "vitajte"
+    "slug": "chcem-vediet"
   }
 },
 {
@@ -3455,14 +3638,14 @@
     "meta_keywords": "", 
     "page_title": "", 
     "language": "en", 
-    "title": "Welcome", 
+    "title": "Chcem Vedie\u0165", 
     "has_url_overwrite": false, 
     "application_urls": "", 
     "creation_date": "2013-10-07T02:01:19.454Z", 
     "page": 3, 
     "path": "", 
     "meta_description": "", 
-    "slug": "welcome"
+    "slug": "chcem-vediet"
   }
 },
 {
@@ -3470,18 +3653,18 @@
   "model": "cms.title", 
   "fields": {
     "menu_title": "", 
-    "redirect": null, 
+    "redirect": "", 
     "meta_keywords": "", 
     "page_title": "", 
     "language": "sk", 
-    "title": "Vitajte", 
+    "title": "Chcem Vedie\u0165", 
     "has_url_overwrite": false, 
-    "application_urls": null, 
+    "application_urls": "", 
     "creation_date": "2013-10-07T02:06:17.725Z", 
     "page": 3, 
     "path": "", 
     "meta_description": "", 
-    "slug": "vitajte"
+    "slug": "chcem-vediet"
   }
 },
 {
@@ -3523,10 +3706,162 @@
   }
 },
 {
+  "pk": 9, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "Obligees", 
+    "has_url_overwrite": false, 
+    "application_urls": "ObligeesApp", 
+    "creation_date": "2013-10-14T00:01:52.171Z", 
+    "page": 5, 
+    "path": "obligees", 
+    "meta_description": "", 
+    "slug": "obligees"
+  }
+},
+{
+  "pk": 10, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "Povinn\u00e9 osoby", 
+    "has_url_overwrite": false, 
+    "application_urls": "ObligeesApp", 
+    "creation_date": "2013-10-14T00:03:31.411Z", 
+    "page": 5, 
+    "path": "povinne-osoby", 
+    "meta_description": "", 
+    "slug": "povinne-osoby"
+  }
+},
+{
+  "pk": 11, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "Obligees", 
+    "has_url_overwrite": false, 
+    "application_urls": "ObligeesApp", 
+    "creation_date": "2013-10-14T00:01:52.171Z", 
+    "page": 6, 
+    "path": "obligees", 
+    "meta_description": "", 
+    "slug": "obligees"
+  }
+},
+{
+  "pk": 12, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "Povinn\u00e9 osoby", 
+    "has_url_overwrite": false, 
+    "application_urls": "ObligeesApp", 
+    "creation_date": "2013-10-14T00:03:31.411Z", 
+    "page": 6, 
+    "path": "povinne-osoby", 
+    "meta_description": "", 
+    "slug": "povinne-osoby"
+  }
+},
+{
+  "pk": 13, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "Applications", 
+    "has_url_overwrite": false, 
+    "application_urls": "ApplicationsApp", 
+    "creation_date": "2013-10-14T00:31:05.791Z", 
+    "page": 7, 
+    "path": "applications", 
+    "meta_description": "", 
+    "slug": "applications"
+  }
+},
+{
+  "pk": 14, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "\u017diadosti", 
+    "has_url_overwrite": false, 
+    "application_urls": "ApplicationsApp", 
+    "creation_date": "2013-10-14T00:32:06.398Z", 
+    "page": 7, 
+    "path": "ziadosti", 
+    "meta_description": "", 
+    "slug": "ziadosti"
+  }
+},
+{
+  "pk": 15, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "en", 
+    "title": "Applications", 
+    "has_url_overwrite": false, 
+    "application_urls": "ApplicationsApp", 
+    "creation_date": "2013-10-14T00:31:05.791Z", 
+    "page": 8, 
+    "path": "applications", 
+    "meta_description": "", 
+    "slug": "applications"
+  }
+},
+{
+  "pk": 16, 
+  "model": "cms.title", 
+  "fields": {
+    "menu_title": "", 
+    "redirect": "", 
+    "meta_keywords": "", 
+    "page_title": "", 
+    "language": "sk", 
+    "title": "\u017diadosti", 
+    "has_url_overwrite": false, 
+    "application_urls": "ApplicationsApp", 
+    "creation_date": "2013-10-14T00:32:06.398Z", 
+    "page": 8, 
+    "path": "ziadosti", 
+    "meta_description": "", 
+    "slug": "ziadosti"
+  }
+},
+{
   "pk": 1, 
   "model": "text.text", 
   "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>\n<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, non tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci varius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, non semper turpis. Pellentesque viverra laoreet convallis. Pellentesque consectetur condimentum ante, a scelerisque augue ultricies id. In hac habitasse platea dictumst. Vestibulum nibh urna, condimentum non bibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem, sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, adipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas dui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque pulvinar facilisis interdum. Proin sit amet fringilla tortor, at adipiscing metus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc non tellus tempus, ullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae pretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra justo, sit amet posuere magna metus sit amet arcu. Nam in massa mi. Vivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. Pellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus libero, at viverra quam tortor sit amet massa. Ut id leo vel enim ultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam tempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu laoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor risus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non ultrices leo. Vivamus convallis interdum interdum. Integer fermentum mauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum egestas gravida. </p>\n"
+    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>"
   }
 },
 {
@@ -3545,20 +3880,6 @@
 },
 {
   "pk": 4, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
-  }
-},
-{
-  "pk": 7, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
-  }
-},
-{
-  "pk": 8, 
   "model": "text.text", 
   "fields": {
     "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
@@ -3880,27 +4201,6 @@
   }
 },
 {
-  "pk": 112, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>\n<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, non tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci varius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, non semper turpis. Pellentesque viverra laoreet convallis. Pellentesque consectetur condimentum ante, a scelerisque augue ultricies id. In hac habitasse platea dictumst. Vestibulum nibh urna, condimentum non bibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem, sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, adipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas dui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque pulvinar facilisis interdum. Proin sit amet fringilla tortor, at adipiscing metus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc non tellus tempus, ullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae pretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra justo, sit amet posuere magna metus sit amet arcu. Nam in massa mi. Vivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. Pellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus libero, at viverra quam tortor sit amet massa. Ut id leo vel enim ultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam tempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu laoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor risus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non ultrices leo. Vivamus convallis interdum interdum. Integer fermentum mauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum egestas gravida. </p>\n"
-  }
-},
-{
-  "pk": 113, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p><p><img src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_114\" /></p>\n\n</div>"
-  }
-},
-{
-  "pk": 115, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
-  }
-},
-{
   "pk": 117, 
   "model": "text.text", 
   "fields": {
@@ -4038,6 +4338,55 @@
   "model": "text.text", 
   "fields": {
     "body": "<p>You are about to use your <img title=\"{{ account.get_provider.name }}\" id=\"plugin_obj_162\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ account.get_provider.name }}\"> account to login to <img title=\"{{ site.name }}\" id=\"plugin_obj_163\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{{ site.name }}\">. As a final step, please complete the following form:</p>"
+  }
+},
+{
+  "pk": 168, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+  }
+},
+{
+  "pk": 169, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+  }
+},
+{
+  "pk": 174, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+  }
+},
+{
+  "pk": 175, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>"
+  }
+},
+{
+  "pk": 176, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p><p><img src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_177\" /></p>\n\n</div>"
+  }
+},
+{
+  "pk": 178, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+  }
+},
+{
+  "pk": 179, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
   }
 },
 {
@@ -4566,13 +4915,6 @@
   }
 },
 {
-  "pk": 114, 
-  "model": "variable.variable", 
-  "fields": {
-    "content": "{% load page_url from cms_tags %}\r\n<a class=\"btn btn-primary btn-large\" href=\"{% page_url \"about\" %}\">\u010c\u00edtajte viac \u00bb</a>"
-  }
-},
-{
   "pk": 118, 
   "model": "variable.variable", 
   "fields": {
@@ -4640,6 +4982,13 @@
   "model": "variable.variable", 
   "fields": {
     "content": "{{ site.name }}"
+  }
+},
+{
+  "pk": 177, 
+  "model": "variable.variable", 
+  "fields": {
+    "content": "{% load page_url from cms_tags %}\r\n<a class=\"btn btn-primary btn-large\" href=\"{% page_url \"about\" %}\">\u010c\u00edtajte viac \u00bb</a>"
   }
 },
 {

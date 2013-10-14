@@ -1,5 +1,7 @@
-{% extends "main/cms/single_column.html" %}
-{% load placeholder from cms_tags %}
+{% extends "main/base/single_column.html" %}
+{% load placeholder page_attribute from cms_tags %}
+
+{% block title %}{{ block.super }}{% endblock %}
 
 {% block main_col %}
   {% placeholder content %}
