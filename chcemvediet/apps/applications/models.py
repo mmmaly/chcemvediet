@@ -10,7 +10,7 @@ class Application(models.Model):
     subject = models.CharField(max_length=255, verbose_name=_('Subject'))
     message = models.TextField(verbose_name=_('Message'))
     submission_date = models.DateTimeField(auto_now_add=True, verbose_name=_('Submission Date'))
-    sender_email = models.EmailField(max_length=255, verbose_name=_('Sender E-mail'))
+    sender_email = models.EmailField(max_length=255, unique=True, verbose_name=_('Sender E-mail'))
     recepient_email = models.EmailField(max_length=255, verbose_name=_('Recepient E-mail'))
     def __unicode__(self):
         return unicode(repr((self.applicant, self.obligee, str(self.submission_date))), 'utf-8')
