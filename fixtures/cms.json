@@ -544,11 +544,75 @@
   }
 },
 {
+  "pk": 139, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 140, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 141, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 142, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 143, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 144, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 145, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
+  "pk": 146, 
+  "model": "cms.placeholder", 
+  "fields": {
+    "slot": "content", 
+    "default_width": null
+  }
+},
+{
   "pk": 1, 
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-14T01:38:15.913Z", 
+    "changed_date": "2013-10-15T17:12:39.938Z", 
     "parent": null, 
     "language": "en", 
     "level": 0, 
@@ -565,7 +629,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 4, 
-    "changed_date": "2013-10-10T19:55:00.573Z", 
+    "changed_date": "2013-10-15T17:04:38.354Z", 
     "parent": null, 
     "language": "sk", 
     "level": 0, 
@@ -582,7 +646,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-07T02:07:30.003Z", 
+    "changed_date": "2013-10-15T17:48:20.013Z", 
     "parent": null, 
     "language": "en", 
     "level": 0, 
@@ -599,7 +663,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-07T02:07:56.047Z", 
+    "changed_date": "2013-10-15T17:38:57.889Z", 
     "parent": null, 
     "language": "sk", 
     "level": 0, 
@@ -2316,7 +2380,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-10T19:51:04.691Z", 
+    "changed_date": "2013-10-15T17:08:54.226Z", 
     "parent": null, 
     "language": "sk", 
     "level": 0, 
@@ -3162,45 +3226,11 @@
   }
 },
 {
-  "pk": 168, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 2, 
-    "changed_date": "2013-10-13T20:04:48.861Z", 
-    "parent": null, 
-    "language": "en", 
-    "level": 0, 
-    "creation_date": "2013-10-07T02:06:47.483Z", 
-    "lft": 1, 
-    "tree_id": 136, 
-    "position": 0, 
-    "placeholder": 4, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
-  "pk": 169, 
-  "model": "cms.cmsplugin", 
-  "fields": {
-    "rght": 2, 
-    "changed_date": "2013-10-13T20:04:48.874Z", 
-    "parent": null, 
-    "language": "sk", 
-    "level": 0, 
-    "creation_date": "2013-10-07T02:06:47.483Z", 
-    "lft": 1, 
-    "tree_id": 137, 
-    "position": 0, 
-    "placeholder": 4, 
-    "plugin_type": "TextPlugin"
-  }
-},
-{
   "pk": 174, 
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-14T01:38:50.124Z", 
+    "changed_date": "2013-10-15T17:29:06.164Z", 
     "parent": null, 
     "language": "en", 
     "level": 0, 
@@ -3217,7 +3247,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-14T01:38:58.511Z", 
+    "changed_date": "2013-10-15T17:29:48.225Z", 
     "parent": null, 
     "language": "en", 
     "level": 0, 
@@ -3234,7 +3264,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 4, 
-    "changed_date": "2013-10-14T01:38:58.530Z", 
+    "changed_date": "2013-10-15T17:29:48.283Z", 
     "parent": null, 
     "language": "sk", 
     "level": 0, 
@@ -3251,7 +3281,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 3, 
-    "changed_date": "2013-10-14T01:38:58.464Z", 
+    "changed_date": "2013-10-15T17:29:48.111Z", 
     "parent": 176, 
     "language": "sk", 
     "level": 1, 
@@ -3268,7 +3298,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-14T01:38:58.545Z", 
+    "changed_date": "2013-10-15T17:29:48.329Z", 
     "parent": null, 
     "language": "sk", 
     "level": 0, 
@@ -3285,7 +3315,7 @@
   "model": "cms.cmsplugin", 
   "fields": {
     "rght": 2, 
-    "changed_date": "2013-10-14T01:38:58.561Z", 
+    "changed_date": "2013-10-15T17:29:48.368Z", 
     "parent": null, 
     "language": "en", 
     "level": 0, 
@@ -3294,6 +3324,40 @@
     "tree_id": 145, 
     "position": 1, 
     "placeholder": 3, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 180, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-15T17:48:29.589Z", 
+    "parent": null, 
+    "language": "en", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 146, 
+    "position": 0, 
+    "placeholder": 4, 
+    "plugin_type": "TextPlugin"
+  }
+},
+{
+  "pk": 181, 
+  "model": "cms.cmsplugin", 
+  "fields": {
+    "rght": 2, 
+    "changed_date": "2013-10-15T17:48:29.624Z", 
+    "parent": null, 
+    "language": "sk", 
+    "level": 0, 
+    "creation_date": "2013-10-07T02:06:47.483Z", 
+    "lft": 1, 
+    "tree_id": 147, 
+    "position": 0, 
+    "placeholder": 4, 
     "plugin_type": "TextPlugin"
   }
 },
@@ -3316,7 +3380,7 @@
     "placeholders": [
       1
     ], 
-    "changed_date": "2013-10-14T01:38:58.577Z", 
+    "changed_date": "2013-10-15T17:29:48.415Z", 
     "limit_visibility_in_menu": null, 
     "parent": null, 
     "publisher_state": 0, 
@@ -3348,7 +3412,7 @@
     "placeholders": [
       2
     ], 
-    "changed_date": "2013-10-13T20:04:48.890Z", 
+    "changed_date": "2013-10-15T17:48:29.668Z", 
     "limit_visibility_in_menu": null, 
     "parent": 1, 
     "publisher_state": 0, 
@@ -3380,7 +3444,7 @@
     "placeholders": [
       3
     ], 
-    "changed_date": "2013-10-14T01:38:58.008Z", 
+    "changed_date": "2013-10-15T17:29:47.460Z", 
     "limit_visibility_in_menu": null, 
     "parent": null, 
     "publisher_state": 0, 
@@ -3412,7 +3476,7 @@
     "placeholders": [
       4
     ], 
-    "changed_date": "2013-10-13T20:04:48.724Z", 
+    "changed_date": "2013-10-15T17:48:29.184Z", 
     "limit_visibility_in_menu": null, 
     "parent": 3, 
     "publisher_state": 0, 
@@ -3551,6 +3615,28 @@
     "changed_by": "admin", 
     "publisher_is_draft": false, 
     "published": true
+  }
+},
+{
+  "pk": 3, 
+  "model": "cms.pagemoderatorstate", 
+  "fields": {
+    "action": "ADD", 
+    "message": "", 
+    "created": "2013-10-15T16:29:53.299Z", 
+    "page": 5, 
+    "user": null
+  }
+},
+{
+  "pk": 4, 
+  "model": "cms.pagemoderatorstate", 
+  "fields": {
+    "action": "ADD", 
+    "message": "", 
+    "created": "2013-10-15T16:29:53.586Z", 
+    "page": 7, 
+    "user": null
   }
 },
 {
@@ -3861,28 +3947,28 @@
   "pk": 1, 
   "model": "text.text", 
   "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>"
+    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> \"I want to know\" -- a server to ease access to information under the <a href=\"http://www.urzd.sk/legislativa/211-00-en.pdf\">Slovak Freedom Of Information Act 211/2000 Coll.</a></p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>"
   }
 },
 {
   "pk": 2, 
   "model": "text.text", 
   "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p><p><img title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_111\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\"></p>\n\n</div>"
+    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p>Infoz\u00e1kon pre leniv\u00fdch -- pohodln\u00e9 pod\u00e1vanie \u017eiadost\u00ed o inform\u00e1cie. </p><p>Umo\u017e\u0148uje poda\u0165 form\u00e1lne spr\u00e1vnu \u017eiados\u0165, odsledova\u0165 cel\u00fd proces, \ndost\u00e1va\u0165 notifik\u00e1cie o uplynut\u00fdch lehot\u00e1ch a zdie\u013ea\u0165 inform\u00e1cie s \nostatn\u00fdmi pou\u017e\u00edvate\u013emi.\n</p><p><img title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_111\" src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\"></p>\n\n</div>"
   }
 },
 {
   "pk": 3, 
   "model": "text.text", 
   "fields": {
-    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+    "body": "<h1>A portal for FOIA requests for the lazy</h1>\n<p>The aim of the project is to guide people \nthrough the process of requesting the information from state \ninstitutions according to the FOIA. Freedom of information requests are \nvery useful for transparency, however, ordinary people may not be aware of all details of the procedure.\n</p>\n<p>\nSuppose a guy named Michal wants to see electricity bill for the August 2011 of Ministry of Industry. However, Michal is not a lawyer, he does not have time to study the law to find out how can he apply for the information and what is necessary to write a lawful, proper request.Our\u00a0 portal enables Michal to simply write his address, select the Ministry of Industry from the menu, and write one line stating what information he needs. The text of the request will be generated automatically. After sending the request, Michal waits until the Ministry respods. After 8 days, he receives a notification from the system, that a time period for the Ministry has\npassed. If Michal has already received the information, he can upload the data to share with other users. If not -- it sometimes happens that an institution simply ignores the request --  Michal can generate a formal appeal with a simple click. The portal also helps Michal with the postal receipt, because the appeal has to be send by snail-mail. A new period for the Ministry to issue a decision is set (15 days). Michal can share the decision of the Ministry with others. The portal also collects statistics about how the institutions respond to the requests. </p>\n<p>We think this will ecourage people to request the information and we also hope this can help to increase the chance the request will be successfull.</p>\n\n"
   }
 },
 {
   "pk": 4, 
   "model": "text.text", 
   "fields": {
-    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
+    "body": "<p>Riadime sa heslom \u201cInfoz\u00e1kon pre leniv\u00fdch\u201d. Z procesu pod\u00e1vania info\u017eiadost\u00ed chceme spravi\u0165 jednoduch\u00fa a \u010do najmenej n\u00e1ro\u010dn\u00fa \u00falohu. ChcemVedie\u0165.sk umo\u017e\u0148uje poda\u0165 info\u017eiadosti poloautomatizovan\u00fdm sp\u00f4sobom - obsahuje \u0161abl\u00f3ny zabezpe\u010duj\u00face form\u00e1lnu spr\u00e1vnos\u0165 \u017eiadost\u00ed a zabudovan\u00fd mechanizmus na ich odosielanie jednotliv\u00fdm in\u0161tit\u00faci\u00e1m. Aplik\u00e1cia \u010falej upozor\u0148uje na term\u00edny prostredn\u00edctvom notifik\u00e1ci\u00ed a umo\u017e\u0148uje proces vybavovania \u017eiadost\u00ed lep\u0161ie sledova\u0165. Pl\u00e1nuje tie\u017e zhroma\u017e\u010fova\u0165 vybaven\u00e9 \u017eiadosti a ich obsah spr\u00edstup\u0148ova\u0165 ostatn\u00fdm ob\u010danom, \u010d\u00edm sa m\u00f4\u017ee pred\u00eds\u0165 zahlcovaniu \u00faradov viacn\u00e1sobn\u00fdmi toto\u017en\u00fdmi info\u017eiados\u0165ami.</p><p>Port\u00e1l je prisp\u00f4soben\u00fd na slovensk\u00e9 legislat\u00edvne podmienky, prevedie u\u017e\u00edvate\u013ea cel\u00fdm procesom. </p><p>Chceli by sme tie\u017e, aby zasielan\u00e9 \u017eiadosti vyhovovali akejsi \"etikete\": aby\u00a0 neboli ur\u00e1\u017eliv\u00e9, ale napr\u00edklad aj, aby to neboli s\u0165a\u017enosti -- tie sa riadia \u00faplne in\u00fdm z\u00e1konom (9/2009 Z.z. o s\u0165a\u017enostiach). In\u00fdmi slovami, aby n\u00e1\u0161 server mal ur\u010dit\u00fa reput\u00e1ciu.</p>"
   }
 },
 {
@@ -4197,7 +4283,7 @@
   "pk": 110, 
   "model": "text.text", 
   "fields": {
-    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+    "body": "<h2>\u010co a ako?</h2>\n<p>Be\u017en\u00fd \u010dlovek nem\u00e1 \u010das \u0161tudova\u0165 z\u00e1kon, nepozn\u00e1 lehoty a potrebn\u00e9 \nformality. Chceme umo\u017eni\u0165 zdie\u013eanie know-how v tejto oblasti -- \nak u\u017e sa niekomu podarilo inform\u00e1ciu podobn\u00e9ho typu z\u00edska\u0165, pom\u00f4\u017ee a \npovzbud\u00ed to ostatn\u00fdch. Mo\u017eno tie\u017e vyh\u013ead\u00e1va\u0165 v z\u00edskan\u00fdch inform\u00e1ciach, \n\u010do pom\u00f4\u017ee informovanosti ob\u010danov a zn\u00ed\u017ei za\u0165a\u017eenie \u00faradn\u00edkov.\n\n<br>\n</p><p>\nProstredn\u00edctvom \u017eiadosti o inform\u00e1cie m\u00f4\u017eete od in\u0161tit\u00facie z\u00edska\u0165 \ninform\u00e1cie, ktor\u00e9 m\u00e1 dan\u00e1 in\u0161tit\u00facia k dispoz\u00edcii. Nepotrebujete \nzd\u00f4vod\u0148ova\u0165, na \u010do v\u00e1m to bude -- o inform\u00e1cie m\u00f4\u017ee po\u017eiada\u0165 ka\u017ed\u00fd.<br>\nAle:\n</p><ul><li>nie osobn\u00e9 \u00fadaje in\u00fdch \u013eud\u00ed, alebo utajen\u00e9 inform\u00e1cie -- tieto bud\u00fa vy\u010diernen\u00e9</li><li>in\u0161tit\u00facia nie je povinn\u00e1 inform\u00e1ciu \"vyr\u00e1ba\u0165\", iba ju vyh\u013eada\u0165 -- nie je povinn\u00e1 napr. vyhotovi\u0165 anal\u00fdzu, ak tak\u00e1to anal\u00fdza u\u017e neexistuje</li><li>nepou\u017e\u00edvajte \u017eiados\u0165 na \"s\u0165a\u017eovanie sa\" -- na to je in\u00fd postup (pod\u013ea z\u00e1kona o s\u0165a\u017enostiach)</li></ul>\n\nPotrebujete:\n<ul><li>vedie\u0165 pop\u00edsa\u0165, \u010do \u017eiadate, m\u00f4\u017ee by\u0165 aj popis, napr\u00edklad \"Zmluva o n\u00e1jme objektu na Ru\u017eovej 1 za rok 2010\". Ak viete priamo eviden\u010dn\u00e9 \u010d\u00edslo\n dokumentu, je dobr\u00e9 ho uvies\u0165.</li><li>od koho to \u017eiadate -- ktor\u00e1 in\u0161tut\u00facia V\u00e1m m\u00e1 odpoveda\u0165. </li><li>Va\u0161e meno a po\u0161tov\u00fa adresu pre pr\u00edpadn\u00e9 zaslanie zamietav\u00e9ho rozhodnutia, ktor\u00e9 je v\u017edy p\u00edsomn\u00e9)</li><li>email (ak chcete \u017eiados\u0165 poda\u0165 elektronicky) - alebo tla\u010diare\u0148 (ak chcete \u017eiados\u0165 posla\u0165 papierovo)</li></ul>\n\nNepotrebujete:\n<ul><li>\u017eiadny formul\u00e1r</li><li>elektronick\u00fd podpis</li></ul>"
   }
 },
 {
@@ -4341,52 +4427,52 @@
   }
 },
 {
-  "pk": 168, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
-  }
-},
-{
-  "pk": 169, 
-  "model": "text.text", 
-  "fields": {
-    "body": "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer molestie libero in risus faucibus, nec consequat orci vestibulum. Vestibulum mollis mauris nisi, blandit fringilla est accumsan nec. Proin eget orci placerat, volutpat mi in, convallis tortor. Vestibulum sit amet tempor arcu. Curabitur ac quam sed justo sagittis mattis ut suscipit risus. Proin et tempor sem. Cras consequat, felis id viverra mattis, lacus nunc ullamcorper mi, ac varius nisi magna eget urna. Donec porttitor nisl eget faucibus aliquam. Aliquam nunc neque, lobortis eget elementum id, pharetra eget nibh. Nam blandit dui orci, tempor sollicitudin velit ullamcorper in. Nulla sed tellus adipiscing, luctus diam sit amet, adipiscing lacus. Cras congue sagittis tellus, ut accumsan nisl aliquam nec. </p>\n<p> Maecenas eget dapibus eros. Quisque varius tincidunt neque a facilisis. Vestibulum metus lacus, ultrices id lobortis eget, ullamcorper non massa. Maecenas et lectus a urna pretium sollicitudin. Integer luctus sed diam ac vehicula. Integer non vestibulum diam. Nunc blandit in dui vitae placerat. Nam vel enim massa. Etiam ut dictum odio, non lobortis erat. Ut dolor nunc, laoreet eget lacus eget, molestie auctor purus. Praesent facilisis augue sit amet arcu consequat, in placerat elit placerat. Sed vestibulum ante non iaculis feugiat. Nullam sapien urna, luctus at neque vel, molestie tempor justo. Etiam in tempus orci. Sed hendrerit malesuada odio. </p>\n<p> Vestibulum ultrices rhoncus urna, ut condimentum odio ultricies at. Sed nec nunc ut augue ornare luctus eu ac nunc. Praesent aliquam dui eu malesuada laoreet. Cras in rhoncus augue. Aenean tincidunt nisi lacus, vitae sodales massa gravida imperdiet. Nulla nisi est, dignissim vel ante quis, rutrum elementum felis. Nam at nulla consequat urna posuere tincidunt a nec augue. Integer ut orci feugiat, imperdiet nunc quis, hendrerit tortor. Vivamus auctor vitae diam sit amet interdum. Phasellus pellentesque erat id lorem iaculis lacinia. </p>"
-  }
-},
-{
   "pk": 174, 
   "model": "text.text", 
   "fields": {
-    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+    "body": "<h2>What and how?</h2><p>An ordinary user does not have time to study the law, does not know the exact legal periods and the necessary formalities. We want to enable sharing of the know -how in this area - if someone is able to obtain information of a specific type, it can help and encourage the others to request the same information . It is also possible through the acquired data, which will help inform citizens and reduce the burden on officials .</p><p>Through requests for information you can obtain the information that the institution posseses . You do not need to justify the reason\u00a0 -- anyone can request the information. However, it is not possible to obtain</p><ul><li>other people's personal information , or confidential information - these are censored out from the institution's answer</li><li>the institution is not required to \"produce\" the information, only look for it. It is, for example, not obliged to prepare an analysis if such an analysis does not exist</li><li>do not use this for complaints - it is a different proces (according to a different law)</li></ul><p>You will need:</p><ul><li>To describe what you are asking for. This can be a description, such as \"Leasing contract of the object at 1 Ruzova St. \" </li><li>If you know the exact document number, it is good to put it into the application (but it is not obligatory).</li><li>To know, who are you requesting the information from.</li><li>It is necessary to provide your \"snail\" mail address: In case of a negative decision, the decision is always sent in a paper.</li></ul><p>You do not need:</p><ul><li>a digital signature/certificate</li><li>any specific form</li></ul>"
   }
 },
 {
   "pk": 175, 
   "model": "text.text", 
   "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>"
+    "body": "<div class=\"hero-unit\">\n<h1>Welcome to \"Chcem vedie\u0165\"</h1>\n<p> \"I want to know\" -- a server to ease access to information under the <a href=\"http://www.urzd.sk/legislativa/211-00-en.pdf\">Slovak Freedom Of Information Act 211/2000 Coll.</a></p>\n<p><a class=\"btn btn-primary btn-large\" href=\"#\">Learn more \u00bb</a></p>\n</div>"
   }
 },
 {
   "pk": 176, 
   "model": "text.text", 
   "fields": {
-    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p> Fusce dignissim urna eget sodales blandit. Fusce imperdiet vel eros at mattis. Morbi sit amet lectus accumsan, congue lorem id, mollis urna. Suspendisse ac orci sed dolor pretium mattis. Nulla facilisi. Duis eu ante eu lacus vestibulum convallis a sed eros. Nunc magna purus, volutpat sed sodales vitae, laoreet non enim. Etiam et ligula in justo convallis lacinia. </p><p><img src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_177\" /></p>\n\n</div>"
+    "body": "<div class=\"hero-unit\">\n<h1>Vitajte na \"Chcem vedie\u0165\"</h1>\n<p>Infoz\u00e1kon pre leniv\u00fdch -- pohodln\u00e9 pod\u00e1vanie \u017eiadost\u00ed o inform\u00e1cie. </p><p>Umo\u017e\u0148uje poda\u0165 form\u00e1lne spr\u00e1vnu \u017eiados\u0165, odsledova\u0165 cel\u00fd proces, \ndost\u00e1va\u0165 notifik\u00e1cie o uplynut\u00fdch lehot\u00e1ch a zdie\u013ea\u0165 inform\u00e1cie s \nostatn\u00fdmi pou\u017e\u00edvate\u013emi.\n</p><p><img src=\"/static/cms/images/plugins/snippet.png\" alt=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" title=\"{% load page_url from cms_tags %}  \ue110a class\ue111\u275ebtn btn\ue10bprimary btn\ue10blarge\u275e href\ue111\u275e{% page_url \u275eabout\u275e %}\u275e\ue112\u010c\u00edtajte viac \u00bb\ue110/a\ue112\" id=\"plugin_obj_177\" /></p>\n\n</div>"
   }
 },
 {
   "pk": 178, 
   "model": "text.text", 
   "fields": {
-    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+    "body": "<h2>\u010co a ako?</h2>\n<p>Be\u017en\u00fd \u010dlovek nem\u00e1 \u010das \u0161tudova\u0165 z\u00e1kon, nepozn\u00e1 lehoty a potrebn\u00e9 \nformality. Chceme umo\u017eni\u0165 zdie\u013eanie know-how v tejto oblasti -- \nak u\u017e sa niekomu podarilo inform\u00e1ciu podobn\u00e9ho typu z\u00edska\u0165, pom\u00f4\u017ee a \npovzbud\u00ed to ostatn\u00fdch. Mo\u017eno tie\u017e vyh\u013ead\u00e1va\u0165 v z\u00edskan\u00fdch inform\u00e1ciach, \n\u010do pom\u00f4\u017ee informovanosti ob\u010danov a zn\u00ed\u017ei za\u0165a\u017eenie \u00faradn\u00edkov.\n\n<br>\n</p><p>\nProstredn\u00edctvom \u017eiadosti o inform\u00e1cie m\u00f4\u017eete od in\u0161tit\u00facie z\u00edska\u0165 \ninform\u00e1cie, ktor\u00e9 m\u00e1 dan\u00e1 in\u0161tit\u00facia k dispoz\u00edcii. Nepotrebujete \nzd\u00f4vod\u0148ova\u0165, na \u010do v\u00e1m to bude -- o inform\u00e1cie m\u00f4\u017ee po\u017eiada\u0165 ka\u017ed\u00fd.<br>\nAle:\n</p><ul><li>nie osobn\u00e9 \u00fadaje in\u00fdch \u013eud\u00ed, alebo utajen\u00e9 inform\u00e1cie -- tieto bud\u00fa vy\u010diernen\u00e9</li><li>in\u0161tit\u00facia nie je povinn\u00e1 inform\u00e1ciu \"vyr\u00e1ba\u0165\", iba ju vyh\u013eada\u0165 -- nie je povinn\u00e1 napr. vyhotovi\u0165 anal\u00fdzu, ak tak\u00e1to anal\u00fdza u\u017e neexistuje</li><li>nepou\u017e\u00edvajte \u017eiados\u0165 na \"s\u0165a\u017eovanie sa\" -- na to je in\u00fd postup (pod\u013ea z\u00e1kona o s\u0165a\u017enostiach)</li></ul>\n\nPotrebujete:\n<ul><li>vedie\u0165 pop\u00edsa\u0165, \u010do \u017eiadate, m\u00f4\u017ee by\u0165 aj popis, napr\u00edklad \"Zmluva o n\u00e1jme objektu na Ru\u017eovej 1 za rok 2010\". Ak viete priamo eviden\u010dn\u00e9 \u010d\u00edslo\n dokumentu, je dobr\u00e9 ho uvies\u0165.</li><li>od koho to \u017eiadate -- ktor\u00e1 in\u0161tut\u00facia V\u00e1m m\u00e1 odpoveda\u0165. </li><li>Va\u0161e meno a po\u0161tov\u00fa adresu pre pr\u00edpadn\u00e9 zaslanie zamietav\u00e9ho rozhodnutia, ktor\u00e9 je v\u017edy p\u00edsomn\u00e9)</li><li>email (ak chcete \u017eiados\u0165 poda\u0165 elektronicky) - alebo tla\u010diare\u0148 (ak chcete \u017eiados\u0165 posla\u0165 papierovo)</li></ul>\n\nNepotrebujete:\n<ul><li>\u017eiadny formul\u00e1r</li><li>elektronick\u00fd podpis</li></ul>"
   }
 },
 {
   "pk": 179, 
   "model": "text.text", 
   "fields": {
-    "body": "<h2>Lorem ipsum dolor sit amet</h2>\n<p>Fusce fringilla, nulla ac porta vulputate, neque arcu dictum erat, \nnon tempor mi mauris et velit. Etiam eu feugiat sapien. Ut eget orci \nvarius, fermentum massa euismod, ornare purus. Aliquam ac aliquet enim, \nnon semper turpis. Pellentesque viverra laoreet convallis. Pellentesque \nconsectetur condimentum ante, a scelerisque augue ultricies id. In hac \nhabitasse platea dictumst. Vestibulum nibh urna, condimentum non \nbibendum vel, placerat sit amet dui. </p>\n<p> Cras vitae cursus ligula, quis gravida sem. Nullam non suscipit sem,\n sollicitudin auctor turpis. Suspendisse potenti. Sed tellus urna, \nadipiscing sed quam quis, pretium luctus lectus. Phasellus ac egestas \ndui. Suspendisse quis nisi vel enim dignissim varius. Pellentesque \npulvinar facilisis interdum. Proin sit amet fringilla tortor, at \nadipiscing metus. Pellentesque habitant morbi tristique senectus et \nnetus et malesuada fames ac turpis egestas. Nunc non tellus tempus, \nullamcorper mauris a, tincidunt turpis. Etiam venenatis eget nunc vitae \npretium. Donec bibendum, orci id luctus sagittis, lorem velit viverra \njusto, sit amet posuere magna metus sit amet arcu. Nam in massa mi. \nVivamus eget massa auctor, dignissim libero in, tincidunt est. </p>\n<p> Quisque eleifend blandit urna, in ultricies turpis blandit varius. \nPellentesque sollicitudin, sem et accumsan dignissim, neque felis cursus\n libero, at viverra quam tortor sit amet massa. Ut id leo vel enim \nultrices accumsan a ac nulla. Proin eget leo a nulla fermentum imperdiet\n eu et arcu. Fusce dapibus eros ut risus mattis, sit amet blandit quam \ntempor. Donec ullamcorper congue felis quis fermentum. Curabitur eu \nlaoreet justo. Duis rhoncus sodales nisi sed tempus. Vestibulum tempor \nrisus mauris, sit amet adipiscing nibh ornare sit amet. Phasellus non \nultrices leo. Vivamus convallis interdum interdum. Integer fermentum \nmauris in dapibus lacinia. Vestibulum cursus metus suscipit ipsum \negestas gravida. </p>"
+    "body": "<h2>What and how?</h2><p>An ordinary user does not have time to study the law, does not know the exact legal periods and the necessary formalities. We want to enable sharing of the know -how in this area - if someone is able to obtain information of a specific type, it can help and encourage the others to request the same information . It is also possible through the acquired data, which will help inform citizens and reduce the burden on officials .</p><p>Through requests for information you can obtain the information that the institution posseses . You do not need to justify the reason\u00a0 -- anyone can request the information. However, it is not possible to obtain</p><ul><li>other people's personal information , or confidential information - these are censored out from the institution's answer</li><li>the institution is not required to \"produce\" the information, only look for it. It is, for example, not obliged to prepare an analysis if such an analysis does not exist</li><li>do not use this for complaints - it is a different proces (according to a different law)</li></ul><p>You will need:</p><ul><li>To describe what you are asking for. This can be a description, such as \"Leasing contract of the object at 1 Ruzova St. \" </li><li>If you know the exact document number, it is good to put it into the application (but it is not obligatory).</li><li>To know, who are you requesting the information from.</li><li>It is necessary to provide your \"snail\" mail address: In case of a negative decision, the decision is always sent in a paper.</li></ul><p>You do not need:</p><ul><li>a digital signature/certificate</li><li>any specific form</li></ul>"
+  }
+},
+{
+  "pk": 180, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<h1>A portal for FOIA requests for the lazy</h1>\n<p>The aim of the project is to guide people \nthrough the process of requesting the information from state \ninstitutions according to the FOIA. Freedom of information requests are \nvery useful for transparency, however, ordinary people may not be aware of all details of the procedure.\n</p>\n<p>\nSuppose a guy named Michal wants to see electricity bill for the August 2011 of Ministry of Industry. However, Michal is not a lawyer, he does not have time to study the law to find out how can he apply for the information and what is necessary to write a lawful, proper request.Our\u00a0 portal enables Michal to simply write his address, select the Ministry of Industry from the menu, and write one line stating what information he needs. The text of the request will be generated automatically. After sending the request, Michal waits until the Ministry respods. After 8 days, he receives a notification from the system, that a time period for the Ministry has\npassed. If Michal has already received the information, he can upload the data to share with other users. If not -- it sometimes happens that an institution simply ignores the request --  Michal can generate a formal appeal with a simple click. The portal also helps Michal with the postal receipt, because the appeal has to be send by snail-mail. A new period for the Ministry to issue a decision is set (15 days). Michal can share the decision of the Ministry with others. The portal also collects statistics about how the institutions respond to the requests. </p>\n<p>We think this will ecourage people to request the information and we also hope this can help to increase the chance the request will be successfull.</p>\n\n"
+  }
+},
+{
+  "pk": 181, 
+  "model": "text.text", 
+  "fields": {
+    "body": "<p>Riadime sa heslom \u201cInfoz\u00e1kon pre leniv\u00fdch\u201d. Z procesu pod\u00e1vania info\u017eiadost\u00ed chceme spravi\u0165 jednoduch\u00fa a \u010do najmenej n\u00e1ro\u010dn\u00fa \u00falohu. ChcemVedie\u0165.sk umo\u017e\u0148uje poda\u0165 info\u017eiadosti poloautomatizovan\u00fdm sp\u00f4sobom - obsahuje \u0161abl\u00f3ny zabezpe\u010duj\u00face form\u00e1lnu spr\u00e1vnos\u0165 \u017eiadost\u00ed a zabudovan\u00fd mechanizmus na ich odosielanie jednotliv\u00fdm in\u0161tit\u00faci\u00e1m. Aplik\u00e1cia \u010falej upozor\u0148uje na term\u00edny prostredn\u00edctvom notifik\u00e1ci\u00ed a umo\u017e\u0148uje proces vybavovania \u017eiadost\u00ed lep\u0161ie sledova\u0165. Pl\u00e1nuje tie\u017e zhroma\u017e\u010fova\u0165 vybaven\u00e9 \u017eiadosti a ich obsah spr\u00edstup\u0148ova\u0165 ostatn\u00fdm ob\u010danom, \u010d\u00edm sa m\u00f4\u017ee pred\u00eds\u0165 zahlcovaniu \u00faradov viacn\u00e1sobn\u00fdmi toto\u017en\u00fdmi info\u017eiados\u0165ami.</p><p>Port\u00e1l je prisp\u00f4soben\u00fd na slovensk\u00e9 legislat\u00edvne podmienky, prevedie u\u017e\u00edvate\u013ea cel\u00fdm procesom. </p><p>Chceli by sme tie\u017e, aby zasielan\u00e9 \u017eiadosti vyhovovali akejsi \"etikete\": aby\u00a0 neboli ur\u00e1\u017eliv\u00e9, ale napr\u00edklad aj, aby to neboli s\u0165a\u017enosti -- tie sa riadia \u00faplne in\u00fdm z\u00e1konom (9/2009 Z.z. o s\u0165a\u017enostiach). In\u00fdmi slovami, aby n\u00e1\u0161 server mal ur\u010dit\u00fa reput\u00e1ciu.</p>"
   }
 },
 {

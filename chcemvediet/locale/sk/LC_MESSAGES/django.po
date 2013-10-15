@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-12 01:30+0200\n"
+"POT-Creation-Date: 2013-10-15 19:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,19 +64,24 @@ msgstr "E-mail"
 #: apps/accounts/templates/accounts/profile.html:27
 #: templates/account/password_change.html:14
 #: templates/account/password_reset_from_key.html:27
-#: templates/main/snippets/header.html:30
+#: templates/main/snippets/header.html:29
 msgid "Change Password"
 msgstr "Zmeniť heslo"
 
 #: apps/accounts/templates/accounts/profile.html:28
-#: templates/main/snippets/header.html:31
+#: templates/main/snippets/header.html:30
 msgid "Manage E-mails"
 msgstr "Nastaviť e-maily"
 
 #: apps/accounts/templates/accounts/profile.html:29
-#: templates/main/snippets/header.html:32
+#: templates/main/snippets/header.html:31
 msgid "Manage Connections"
 msgstr "Nastaviť prepojenia"
+
+#: apps/applications/cms_app.py:11
+#, fuzzy
+msgid "Applications App"
+msgstr "Žiadosti"
 
 #: apps/applications/forms.py:10 apps/applications/forms.py:14
 #: apps/applications/models.py:9
@@ -99,6 +104,16 @@ msgstr "Žiadosť o informáciu"
 #: apps/applications/templates/applications/detail.html:43
 msgid "Request"
 msgstr "Žiadosť"
+
+#: apps/applications/menu.py:9
+#, fuzzy
+msgid "Applications Menu"
+msgstr "Žiadosti"
+
+#: apps/applications/menu.py:13
+#: apps/applications/templates/applications/index.html:30
+msgid "New Application"
+msgstr "Nová žiadosť"
 
 #: apps/applications/models.py:8
 #: apps/applications/templates/applications/detail.html:11
@@ -145,9 +160,15 @@ msgstr "Zoznam žiadosti"
 msgid "Number of submitted applications"
 msgstr "Počet podaných žiadosti"
 
-#: apps/applications/templates/applications/index.html:30
-msgid "New Application"
-msgstr "Nová žiadosť"
+#: apps/obligees/cms_app.py:11
+#, fuzzy
+msgid "Obligees App"
+msgstr "Povinné osoby"
+
+#: apps/obligees/menu.py:9
+#, fuzzy
+msgid "Obligees Menu"
+msgstr "Povinné osoby"
 
 #: apps/obligees/models.py:9
 msgid "Name"
@@ -205,7 +226,7 @@ msgstr "Potvrdiť"
 msgid "Sign In With"
 msgstr "Prihlásenie cez"
 
-#: templates/account/login.html:37 templates/main/snippets/header.html:38
+#: templates/account/login.html:37 templates/main/snippets/header.html:37
 msgid "Sign In"
 msgstr "Prihlásenie"
 
@@ -229,7 +250,7 @@ msgstr "Nastav heslo"
 msgid "Sign Up With"
 msgstr "Registrácia cez"
 
-#: templates/account/signup.html:37 templates/main/snippets/header.html:39
+#: templates/account/signup.html:37 templates/main/snippets/header.html:38
 #: templates/socialaccount/signup.html:31
 msgid "Sign Up"
 msgstr "Registrácia"
@@ -325,23 +346,11 @@ msgstr "Administácia stránky \"Chcem Vedieť\""
 msgid "Frontend Administration"
 msgstr "Administácia frontendu"
 
-#: templates/main/base/base.html:30
-msgid "Chcem vedieť"
-msgstr "Chcem vedieť"
-
-#: templates/main/snippets/header.html:21
-msgid "Applications"
-msgstr "Žiadosti"
-
-#: templates/main/snippets/header.html:22
-msgid "Obligees"
-msgstr "Povinné osoby"
-
-#: templates/main/snippets/header.html:29
+#: templates/main/snippets/header.html:28
 msgid "User Profile"
 msgstr "Užívateľský profil"
 
-#: templates/main/snippets/header.html:34
+#: templates/main/snippets/header.html:33
 msgid "Log Out"
 msgstr "Odhlásenie"
 
@@ -364,3 +373,6 @@ msgstr "Účet sociálnej siete je už prepojený s iným užívateľom."
 #: templates/socialaccount/messages/account_disconnected.txt:2
 msgid "The social account has been disconnected."
 msgstr "Prepojenie s účtom sociálnej siete bolo zrušené."
+
+#~ msgid "Chcem vedieť"
+#~ msgstr "Chcem vedieť"
