@@ -173,7 +173,9 @@ INSTALLED_APPS = (
     # Other 3part apps
     'widget_tweaks',
     'hvad',
+    'django_mailbox',
     # Reused apps
+    'poleno.dummymail',
     'poleno.cms_extra',
     'poleno.cms_extra.plugins.plaintext',
     'poleno.cms_extra.plugins.variable',

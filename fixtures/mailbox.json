@@ -1,0 +1,12 @@
+[
+{
+  "pk": 1, 
+  "model": "django_mailbox.mailbox", 
+  "fields": {
+    "active": true, 
+    "from_email": "", 
+    "name": "Dummy Mail incoming IMAP server", 
+    "uri": "imap://aaa:aaa@127.0.0.1:2143"
+  }
+}
+]

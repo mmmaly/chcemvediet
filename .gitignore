@@ -1,4 +1,5 @@
 *.db
 *.pyc
 env/
+media/mailbox_attachments
 xPRIVATE.*
