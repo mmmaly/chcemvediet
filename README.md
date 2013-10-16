@@ -85,6 +85,8 @@ mails and one for incoming mails. By default, outgoing SMPT server runs on port 
 incoming SMPT server on port number 2025, outgoing IMAP server on port number 1143 and incoming
 IMAP server on port number 2143. You may change these port numbers with options.
 
+![Infrastructure diagram](misc/dummymail.png)
+
 During the development, you may use this infrastructure to simulate the site communication with the
 outside world with no risk of sending any real e-mails to the outside world. In this setting, the
 outside world will be represented by you, the site developer and/or tester. This means that all
