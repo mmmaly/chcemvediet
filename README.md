@@ -75,10 +75,14 @@ update your environment:
 ### 2.3. Dummy e-mail infrastructure ###
 
 Using the command:
-```$ env/bin/python manage.py dummymail```
+```shell
+$ env/bin/python manage.py dummymail
+```
 you can create a dummy e-mail infrastructure for local development. For help on command options
 run:
-```$ env/bin/python manage.py help dummymail```
+```shell
+`$ env/bin/python manage.py help dummymail
+```
 
 This command runs two pairs of dummy SMTP and IMAP servers on localhost. One pair is for outgoing
 mails and one for incoming mails. By default, outgoing SMTP server runs on port number 1025,
