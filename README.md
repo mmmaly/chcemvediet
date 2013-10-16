@@ -39,6 +39,7 @@ update your environment:
 
  1. **Updating the environment if older than 2013/10/16.** New requirements and new database models
     have beed added on 2013/10/16. To update your environment to the changes, run:
+
     ```shell
     $ cd chcemvediet
     $ git pull
