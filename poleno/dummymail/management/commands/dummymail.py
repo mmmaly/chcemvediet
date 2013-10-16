@@ -20,9 +20,9 @@ class Command(NoArgsCommand):
     help = dedent("""\
         Creates a dummy e-mail infrastructure for local development.
 
-        This command runs two pairs of dummy SMPT and IMAP servers on localhost. One
+        This command runs two pairs of dummy SMTP and IMAP servers on localhost. One
         pair is for outgoing mails and one for incoming mails. By default, outgoing
-        SMPT server runs on port number `%(o_smtp)d`, incoming SMPT server on port number
+        SMTP server runs on port number `%(o_smtp)d`, incoming SMTP server on port number
         `%(i_smtp)d`, outgoing IMAP server on port number `%(o_imap)d` and incoming IMAP server on
         port number `%(o_imap)d`. You may change these port numbers with options.
 
@@ -33,17 +33,17 @@ class Command(NoArgsCommand):
         the site will be delivered to your IMAP client instead of their real
         destination.
 
-        The site is expected to send its outgoing mails to the outgoing SMPT server and
+        The site is expected to send its outgoing mails to the outgoing SMTP server and
         fetch its incoming mails from the incoming IMAP server. On the other side, if
         you (representing the outside world) want to send an email to the site, you
-        have to send it to the incoming SMPT server. If you want to read the mails sent
+        have to send it to the incoming SMTP server. If you want to read the mails sent
         by the site, you should fetch them from the outgoing IMAP server. Never try to
-        connect to outgoing SMPT server nor the incoming IMAP server. Only the site
-        should connect to them. We run two separate pairs of SMPT and IMAP servers in
+        connect to outgoing SMTP server nor the incoming IMAP server. Only the site
+        should connect to them. We run two separate pairs of SMTP and IMAP servers in
         order to make sure the messages from the site will not confuse with the
         messages from the outside world.
 
-        You may use any common IMAP e-mail client to connect to the incoming SMPT
+        You may use any common IMAP e-mail client to connect to the incoming SMTP
         server and the outgoing IMAP server. However, some e-mail clients (e.g.
         Thunderbird) get confused when the server infrastructure restarts and refuse to
         fetch the messages any more. Restarting the client should help. Sometimes, some

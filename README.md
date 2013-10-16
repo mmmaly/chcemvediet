@@ -80,27 +80,27 @@ you can create a dummy e-mail infrastructure for local development. For help on 
 run:
 ```$ env/bin/python manage.py help dummymail```
 
-This command runs two pairs of dummy SMPT and IMAP servers on localhost. One pair is for outgoing
-mails and one for incoming mails. By default, outgoing SMPT server runs on port number 1025,
-incoming SMPT server on port number 2025, outgoing IMAP server on port number 1143 and incoming
+This command runs two pairs of dummy SMTP and IMAP servers on localhost. One pair is for outgoing
+mails and one for incoming mails. By default, outgoing SMTP server runs on port number 1025,
+incoming SMTP server on port number 2025, outgoing IMAP server on port number 1143 and incoming
 IMAP server on port number 2143. You may change these port numbers with options.
 
-![Infrastructure diagram](misc/dummymail.png)
+<img align="center" src="misc/dummymail.png" alt="Infrastructure diagram" />
 
 During the development, you may use this infrastructure to simulate the site communication with the
 outside world with no risk of sending any real e-mails to the outside world. In this setting, the
 outside world will be represented by you, the site developer and/or tester. This means that all
 e-mails sent from the site will be delivered to your IMAP client instead of their real destination.
 
-The site sends its outgoing mails to the outgoing SMPT server and fetches its incoming mails from
+The site sends its outgoing mails to the outgoing SMTP server and fetches its incoming mails from
 the incoming IMAP server. On the other side, if you (representing the outside world) want to send
-an email to the site, you have to send it to the incoming SMPT server. If you want to read the
+an email to the site, you have to send it to the incoming SMTP server. If you want to read the
 mails sent by the site, you should fetch them from the outgoing IMAP server. Never try to connect
-to outgoing SMPT server nor the incoming IMAP server. Only the site should connect to them. We run
-two separate pairs of SMPT and IMAP servers in order to make sure the messages from the site will
+to outgoing SMTP server nor the incoming IMAP server. Only the site should connect to them. We run
+two separate pairs of SMTP and IMAP servers in order to make sure the messages from the site will
 not confuse with the messages from the outside world.
 
-You may use any common IMAP e-mail client to connect to the incoming SMPT server and the outgoing
+You may use any common IMAP e-mail client to connect to the incoming SMTP server and the outgoing
 IMAP server. However, some e-mail clients (e.g. Thunderbird) get confused when the server
 infrastructure restarts and refuse to fetch the messages any more. Restarting the client should
 help. Sometimes, some clients (e.g. Thunderbird) refuse to fetch some messages for no apparent
