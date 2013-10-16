@@ -22,7 +22,7 @@ env/ directory or test.db and \*.pyc files.
 
 ### 2.1. Local environment ###
 
-To prepare new clean environment locally on your computer, run the following commands:
+To prepare a new clean environment locally on your computer, run the following commands:
 
 ```shell
 $ git clone https://github.com/martinmacko47/chcemvediet.git
@@ -34,20 +34,18 @@ $ env/bin/python manage.py loaddata fixtures/*
 ```
 
 If you already have your local environment created and you don't want to delete and recreate it
-from scratch, because of your work you have not pushed to the repository, yet, you can update your
-environment.
+from scratch, possibly because of your work you have not pushed to the repository, yet, you can
+update your environment:
 
-#### 2.1.1. Updating the environment if older than 2013/10/16 ####
-
-New requirements and new database models have beed added on 2013/10/16. To update your environment
-to the changes, run:
-```shell
-$ cd chcemvediet
-$ git pull
-$ env/bin/pip install -r requirements.txt
-$ env/bin/python manage.py syncdb --all --noinput
-$ env/bin/python manage.py loaddata fixtures/mailbox.json
-```
+ 1. **Updating the environment if older than 2013/10/16.** New requirements and new database models
+    have beed added on 2013/10/16. To update your environment to the changes, run:
+    ```shell
+    $ cd chcemvediet
+    $ git pull
+    $ env/bin/pip install -r requirements.txt
+    $ env/bin/python manage.py syncdb --all --noinput
+    $ env/bin/python manage.py loaddata fixtures/mailbox.json
+    ```
 
 ### 2.2. Running the project ###
 
