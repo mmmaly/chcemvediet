@@ -85,7 +85,9 @@ mails and one for incoming mails. By default, outgoing SMTP server runs on port 
 incoming SMTP server on port number 2025, outgoing IMAP server on port number 1143 and incoming
 IMAP server on port number 2143. You may change these port numbers with options.
 
-<img align="center" src="misc/dummymail.png" alt="Infrastructure diagram" />
+<p align="center">
+  <img src="misc/dummymail.png" alt="Infrastructure diagram" />
+</p>
 
 During the development, you may use this infrastructure to simulate the site communication with the
 outside world with no risk of sending any real e-mails to the outside world. In this setting, the
