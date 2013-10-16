@@ -29,7 +29,7 @@ class Command(NoArgsCommand):
         During the development, you may use this infrastructure to simulate the site
         communication with the outside world with no risk of sending any real e-mails
         to the outside world. In this setting, the outside world will be represented by
-        you, the side developer and/or tester. This means that all e-mails sent from
+        you, the site developer and/or tester. This means that all e-mails sent from
         the site will be delivered to your IMAP client instead of their real
         destination.
 
@@ -46,7 +46,7 @@ class Command(NoArgsCommand):
         You may use any common IMAP e-mail client to connect to the incoming SMPT
         server and the outgoing IMAP server. However, some e-mail clients (e.g.
         Thunderbird) get confused when the server infrastructure restarts and refuse to
-        fetch any messages any more. Restarting the client should help. Sometimes, some
+        fetch the messages any more. Restarting the client should help. Sometimes, some
         clients (e.g. Thunderbird) refuse to fetch some messages for no apparent
         reason. If such case, try some other client, or try to send the message once
         again.
