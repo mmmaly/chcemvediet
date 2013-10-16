@@ -81,7 +81,7 @@ $ env/bin/python manage.py dummymail
 you can create a dummy e-mail infrastructure for local development. For help on command options
 run:
 ```shell
-`$ env/bin/python manage.py help dummymail
+$ env/bin/python manage.py help dummymail
 ```
 
 This command runs two pairs of dummy SMTP and IMAP servers on localhost. One pair is for outgoing
