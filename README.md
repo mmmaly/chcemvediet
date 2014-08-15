@@ -110,7 +110,7 @@ IMAP server. However, some e-mail clients (e.g. Thunderbird) get confused when t
 infrastructure restarts and refuse to fetch the messages any more. Restarting the client should
 help. Sometimes, some clients (e.g. Thunderbird) refuse to fetch some messages for no apparent
 reason, especially the first message. In such case, try some other client, or try to send the
-message once again.
+message once again. The password for both the incoming SMTP server and the outgoing IMAP server is "aaa".
 
 Note: No real e-mails are sent anywhere. The SMTP server is dummy and will never relay any received
 message to any other SMTP server. Instead, it will store it locally in the memory and make it
