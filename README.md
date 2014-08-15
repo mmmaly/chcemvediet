@@ -23,13 +23,13 @@ You need the following packages installed
 
 To prepare your local development environment, run the following commands:
 
-        $ git clone https://github.com/martinmacko47/chcemvediet.git
-        $ cd chcemvediet
-        $ virtualenv env
-        $ env/bin/pip install -r requirements.txt
-        $ env/bin/python manage.py syncdb --all --noinput
-        $ env/bin/python manage.py migrate --fake
-        $ env/bin/python manage.py loaddata fixtures/*
+	$ git clone https://github.com/martinmacko47/chcemvediet.git
+	$ cd chcemvediet
+	$ virtualenv env
+	$ env/bin/pip install -r requirements.txt
+	$ env/bin/python manage.py syncdb --all --noinput
+	$ env/bin/python manage.py migrate --fake
+	$ env/bin/python manage.py loaddata fixtures/*
 
 
 ### 1.3. Updates
@@ -44,11 +44,11 @@ especially if migrating from a rather old environment.
 
 To migrate to an updated version of the site, run the following commands:
 
-        $ cd chcemvediet
-        $ git pull
-        $ env/bin/pip install -r requirements.txt
-        $ env/bin/python manage.py syncdb --noinput
-        $ env/bin/python manage.py migrate
+	$ cd chcemvediet
+	$ git pull
+	$ env/bin/pip install -r requirements.txt
+	$ env/bin/python manage.py syncdb --noinput
+	$ env/bin/python manage.py migrate
 
 
 ### 1.4. Viewing the site
@@ -71,7 +71,7 @@ To migrate to an updated version of the site, run the following commands:
  4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 
 
-### 1.5. Dummy e-mail infrastructure
+## 2. Dummy e-mail infrastructure
 
 Using the command:
 
@@ -127,13 +127,13 @@ translation, edit the localization `*.po` file stored in the `locale` directory.
 
 After you alter the application code, please, regenerate the localization file:
 
-        $ cd chcemvediet/chcemvediet
-        $ ../env/bin/python ../manage.py makemessages -l sk
+	$ cd chcemvediet/chcemvediet
+	$ ../env/bin/python ../manage.py makemessages -l sk
 
 Update the localization `*.po` file stored in `locale` directory and compile it:
 
-        $ cd chcemvediet/chcemvediet
-        $ ../env/bin/python ../manage.py compilemessages
+	$ cd chcemvediet/chcemvediet
+	$ ../env/bin/python ../manage.py compilemessages
 
 If you only change the localization `.po`file, please, don't regenerate it, just compile it. Don't
 forget to commit and push your changes to the repository.
