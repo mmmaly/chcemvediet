@@ -1,6 +1,6 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno_utils %}
+{% load lorem from poleno.utils %}
 
 {% block title %}{% blocktrans %}Welcome{% endblocktrans %} | {{ block.super }}{% endblock %}
 
@@ -10,7 +10,6 @@
     <p>{% lorem %}</p>
     <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
   </div>
-  {% include "main/snippets/messages.html" %}
   <div class="row">
     <div class="span4">
       <h2>Heading</h2>

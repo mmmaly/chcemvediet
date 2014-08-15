@@ -1,12 +1,11 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno_utils %}
+{% load lorem from poleno.utils %}
 
 {% block title %}{% blocktrans %}Sign Up{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>{% blocktrans %}Sign Up{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     <div class="row">

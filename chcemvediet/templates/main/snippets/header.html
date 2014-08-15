@@ -1,6 +1,7 @@
-{% load blocktrans from i18n %}
+{# vim: set filetype=htmldjango :#}
 {% load static from staticfiles %}
 {% load blocktrans trans from i18n %}
+{% load addtoblock from sekizai_tags %}
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -14,6 +15,7 @@
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li class="divider-vertical"></li>
+          <li><a href="{% url 'about' %}">{% blocktrans %}About{% endblocktrans %}</a></li>
           <li><a href="{% url 'applications:index' %}">{% blocktrans %}Applications{% endblocktrans %}</a></li>
           <li><a href="{% url 'obligees:index' %}">{% blocktrans %}Obligees{% endblocktrans %}</a></li>
         </ul>
@@ -49,7 +51,8 @@
   </div>
 </div>
 
-<script>
+{% addtoblock "js" %}{# {{{ #}
+  <script>
 	/* Makes every link with class ``post`` send POST request to its href URL when clicked.
 	 * Data for the request may be supplied by ``data-post-*`` element attributes.
 	 *
@@ -75,4 +78,5 @@
 			form.submit();
 		});
 	});
-</script>
+  </script>
+{% endaddtoblock %}{# }}} #}

@@ -1,12 +1,11 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno_utils %}
+{% load lorem from poleno.utils %}
 
 {% block title %}{% blocktrans %}Account Connections{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>{% blocktrans %}Account Connections{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
   {% if form.accounts %}
     <p>You can sign in to your account using any of the following third party accounts:</p>
     <form class="form-horizontal" method="post" action=".">

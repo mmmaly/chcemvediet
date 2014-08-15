@@ -1,6 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 
+# Useful workarounds
+import os
+_ = lambda s: s
+PROJECT_PATH = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
+
 # Django settings for chcemvediet project.
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -14,7 +19,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'test.db',                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(PROJECT_PATH, 'test.db'), # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -52,18 +57,18 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(PROJECT_PATH, "media")
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -74,7 +79,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    'chcemvediet/static',
+    os.path.join(PROJECT_PATH, 'chcemvediet/static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -125,6 +130,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
+    'sekizai.context_processors.sekizai',
     'allauth.account.context_processors.account',
     'allauth.socialaccount.context_processors.socialaccount',
 )
@@ -133,10 +139,11 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    'chcemvediet/templates',
+    os.path.join(PROJECT_PATH, 'chcemvediet/templates'),
 )
 
 INSTALLED_APPS = (
+    # For django itself:
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -144,6 +151,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.sitemaps',
+    # For django-allauth:
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -151,8 +160,16 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.twitter',
+    # Other 3part apps
+    'south',
     'widget_tweaks',
-    'chcemvediet.apps.poleno_utils',
+    'hvad',
+    'sekizai',
+    'django_mailbox',
+    # Reused apps
+    'poleno.utils',
+    'poleno.dummymail',
+    # Local to the project
     'chcemvediet.apps.accounts',
     'chcemvediet.apps.obligees',
     'chcemvediet.apps.applications',
@@ -214,7 +231,7 @@ LANGUAGES = (
 
 # Where to search for translations
 LOCALE_PATHS = (
-    './chcemvediet/locale',
-    './chcemvediet/locale/3part/allauth',
+    os.path.join(PROJECT_PATH, 'chcemvediet/locale'),
+    os.path.join(PROJECT_PATH, 'chcemvediet/locale/3part/allauth'),
 )
 

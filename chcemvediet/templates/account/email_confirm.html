@@ -5,7 +5,6 @@
 
 {% block main_col %}
   <h1>{% blocktrans %}Confirm E-mail Address{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
   {% if confirmation %}
     <p>Please confirm that <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> is an e-mail address for user {{ confirmation.email_address.user.get_full_name }}.</p>
     <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">

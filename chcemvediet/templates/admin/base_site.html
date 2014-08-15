@@ -1,9 +1,10 @@
 {% extends "admin/base.html" %}
+{% load blocktrans from i18n %}
 
-{% block title %}{{ title }} | Chcem Vediet site admin{% endblock %}
+{% block title %}{{ title }} | {% blocktrans %}"Chcem Vedieť" site administration{% endblocktrans %}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">Chcem Vediet administration</h1>
+<h1 id="site-name">{% blocktrans %}"Chcem Vedieť" site administration{% endblocktrans %}</h1>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

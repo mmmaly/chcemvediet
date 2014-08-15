@@ -5,7 +5,6 @@
 
 {% block main_col %}
   <h1>{% blocktrans %}User Profile{% endblocktrans %} <small>{{ user.get_full_name }}</small></h1>
-  {% include "main/snippets/messages.html" %}
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}E-mail{% endblocktrans %}:</p>
     <p class="span10">{{ user.email }}</p>

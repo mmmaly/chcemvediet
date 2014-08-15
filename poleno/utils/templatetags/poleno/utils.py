@@ -23,7 +23,7 @@ def range_(a, b):
     """
     try:
         return range(int(a), int(b))
-    except ValueError, TypeError:
+    except (ValueError, TypeError):
         return []
 
 @register.simple_tag

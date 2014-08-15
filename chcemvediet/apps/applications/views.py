@@ -1,17 +1,21 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import random
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
+from django.db import IntegrityError
+from allauth.account.decorators import verified_email_required
 
 from chcemvediet.apps.obligees.models import Obligee
 from chcemvediet.apps.applications.models import Application
 
 import forms
 
-@login_required
+@verified_email_required
 def create(request):
     if request.method == 'POST':
         form = forms.ApplicationForm(request.POST)
@@ -21,8 +25,6 @@ def create(request):
 
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
-            sender_mail = 'todo@mail.chcemvediet.sk'
-            sender_full = request.user.get_full_name() + ' <' + sender_mail + '>'
             recipient_mail = obligee.email
 
             application = Application(
@@ -30,10 +32,22 @@ def create(request):
                     obligee=obligee,
                     subject=subject,
                     message=message,
-                    sender_email=sender_mail,
                     recepient_email=recipient_mail,
                     )
-            application.save()
+
+            # Use unique random sender email address
+            length = 2
+            while True:
+                sender_mail = _random_email_address('mail.chcemvediet.sk', length)
+                application.sender_email = sender_mail
+                try:
+                    application.save()
+                except IntegrityError:
+                    length += 1
+                    continue
+                break
+
+            sender_full = '%s <%s>' % (request.user.get_full_name(), sender_mail)
             send_mail(subject, message, sender_full, [recipient_mail])
             return HttpResponseRedirect(reverse('applications:detail', args=(application.id,)))
     else:
@@ -42,6 +56,33 @@ def create(request):
     return render(request, 'applications/create.html', {
         'form': form,
         })
+
+def _random_email_address(domain, length):
+    """
+    Returns a random e-mail address with `domain` for its domain part.
+
+    The local part of the generated e-mail address has form of
+
+    [:vowel:]? ([:consonant:][:vowel:]){length} [:consonant:]?
+
+    where `[:vowel:]` is the set of all vowels `[aeiouy]` and `['consonant']` is the set of
+    consonants `[bcdfghjklmnprstvxz]`.
+    """
+    vowels = 'aeiouy'
+    consonants = 'bcdfghjklmnprstvxz'
+
+    res = []
+    if random.random() < 0.5:
+        res.append(random.choice(vowels))
+    for i in range(length):
+        res.append(random.choice(consonants))
+        res.append(random.choice(vowels))
+    if random.random() < 0.5:
+        res.append(random.choice(consonants))
+    res.append('@')
+    res.append(domain)
+
+    return ''.join(res)
 
 @login_required
 def index(request):

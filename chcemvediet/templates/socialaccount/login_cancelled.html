@@ -5,6 +5,5 @@
 
 {% block main_col %}
   <h1>{% blocktrans %}Login Cancelled{% endblocktrans %}</h1>
-  {% include "main/snippets/messages.html" %}
   <p>You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a href="{% url 'account_login' %}">sign in</a>.</p>
 {% endblock %}

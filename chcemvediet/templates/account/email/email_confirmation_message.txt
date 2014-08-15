@@ -1,7 +1,9 @@
-{% load account %}
+{% load blocktrans from i18n %}
 
 {% autoescape off %}
-User {% user_display user %} at {{ current_site.name }} has given this as an email address.
+{% blocktrans with user_name=user.get_full_name site_name=current_site.name %}
+User {{ user_name }} at {{ site_name }} has given this as an email address.
 
 To confirm this is correct, go to {{ activate_url }}
+{% endblocktrans %}
 {% endautoescape %}
