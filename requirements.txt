@@ -1,11 +1,11 @@
-unidecode>=0.04.14
-django>=1.5.4
-django-allauth>=0.13.0
-django-widget-tweaks>=1.3
-django-cms>=2.4.2
-django-hvad>=0.3
-django-mailbox>=3.0.2
-South>=0.8.2
+unidecode==0.04.14
+django==1.5.4
+django-allauth==0.13.0
+django-widget-tweaks==1.3
+django-cms==2.4.2
+django-hvad==0.3
+django-mailbox==3.0.2
+South==0.8.2
 
 # for local testing
-localmail>=0.3
+localmail==0.3
