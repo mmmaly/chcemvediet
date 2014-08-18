@@ -1,0 +1,9 @@
+{# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
+{% load active from poleno.utils %}
+
+<li {% if request|active:'index' %}class="active"{% endif %}><a class="brand" href="{% url 'index' %}">Chcem Vedieť</a></li>
+<li class="divider-vertical"></li>
+<li {% if request|active:'about' %}class="active"{% endif %}><a href="{% url 'about' %}">{% blocktrans %}About Project{% endblocktrans %}</a></li>
+<li {% if request|active:'applications' %}class="active"{% endif %}><a href="{% url 'applications:index' %}">{% blocktrans %}Applications{% endblocktrans %}</a></li>
+<li {% if request|active:'obligees' %}class="active"{% endif %}><a href="{% url 'obligees:index' %}">{% blocktrans %}Obligees{% endblocktrans %}</a></li>

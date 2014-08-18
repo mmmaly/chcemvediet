@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-18 05:33+0200\n"
+"POT-Creation-Date: 2014-08-18 17:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,6 +62,7 @@ msgstr "Užívatel"
 
 #: apps/accounts/templates/accounts/profile.html:4
 #: apps/accounts/templates/accounts/profile.html:7
+#: templates/main/snippets/header-account.html:9
 msgid "User Profile"
 msgstr "Užívateľský profil"
 
@@ -79,14 +80,17 @@ msgstr "E-mail"
 #: templates/account/password_reset_from_key.html:17
 #: templates/account/password_reset_from_key_done.html:4
 #: templates/account/password_reset_from_key_done.html:7
+#: templates/main/snippets/header-account.html:10
 msgid "Change Password"
 msgstr "Zmeniť heslo"
 
 #: apps/accounts/templates/accounts/profile.html:26
+#: templates/main/snippets/header-account.html:11
 msgid "Manage E-mails"
 msgstr "Nastaviť e-maily"
 
 #: apps/accounts/templates/accounts/profile.html:27
+#: templates/main/snippets/header-account.html:12
 msgid "Manage Connections"
 msgstr "Nastaviť prepojenia"
 
@@ -300,6 +304,7 @@ msgstr ""
 
 #: templates/account/login.html:4 templates/account/login.html.py:7
 #: templates/account/login.html:33
+#: templates/main/snippets/header-account.html:18
 msgid "Sign In"
 msgstr "Prihlásenie"
 
@@ -386,8 +391,9 @@ msgid "Set Password"
 msgstr "Nastav heslo"
 
 #: templates/account/signup.html:4 templates/account/signup.html.py:7
-#: templates/account/signup.html:33 templates/socialaccount/signup.html:4
-#: templates/socialaccount/signup.html:7
+#: templates/account/signup.html:33
+#: templates/main/snippets/header-account.html:19
+#: templates/socialaccount/signup.html:4 templates/socialaccount/signup.html:7
 #: templates/socialaccount/signup.html:27
 msgid "Sign Up"
 msgstr "Registrácia"
@@ -517,6 +523,22 @@ msgstr "Prihlásenie cez LinkedIn"
 msgid "\"Chcem Vedieť\" site administration"
 msgstr "Administácia stránky \"Chcem Vedieť\""
 
+#: templates/main/snippets/header-account.html:14
+msgid "Log Out"
+msgstr "Odhlásenie"
+
+#: templates/main/snippets/header-menu.html:7
+msgid "About Project"
+msgstr "O projekte"
+
+#: templates/main/snippets/header-menu.html:8
+msgid "Applications"
+msgstr "Žiadosti"
+
+#: templates/main/snippets/header-menu.html:9
+msgid "Obligees"
+msgstr "Povinné osoby"
+
 #: templates/socialaccount/account_inactive.html:4
 #: templates/socialaccount/account_inactive.html:7
 msgid "Account Inactive"
@@ -605,4 +627,3 @@ msgstr "Účet sociálnej siete je už prepojený s iným užívateľom."
 #: templates/socialaccount/messages/account_disconnected.txt:4
 msgid "The social account has been disconnected."
 msgstr "Prepojenie s účtom sociálnej siete bolo zrušené."
-

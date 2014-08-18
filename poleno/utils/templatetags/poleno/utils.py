@@ -28,6 +28,21 @@ def range_(a, b):
     except (ValueError, TypeError):
         return []
 
+@register.filter
+def active(request, view_prefix):
+    """ Tests if the active view name has prefix ``view_prefix``. View name is colon separated list
+        of view namespaces and the actual url name. Thus if the active view is 'namespace:name',
+        then the function returns ``True`` for 'namespace' and 'namespace:name', but not for 'name'
+        or 'namespace:other'.
+    """
+    try:
+        resolved = resolve(request.path)
+    except:
+        return False
+    if not (resolved.view_name + ':').startswith(view_prefix + ':'):
+        return False
+    return True
+
 @register.simple_tag
 def lorem(randseed=None, count=1, method=None):
     """
