@@ -1,6 +1,5 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno.utils %}
 
 {% block title %}{% blocktrans %}Sign In{% endblocktrans %} | {{ block.super }}{% endblock %}
 
@@ -9,9 +8,7 @@
   <form class="form-horizontal" method="post" action="{% url 'account_login' %}">
     {% csrf_token %}
     <div class="row">
-      <p class="span6">
-        Please sign in with one of your existing third party accounts.
-        Or, <a href="{{ signup_url }}">sign up</a> for a {{ site.name }} account and sign in below:</p>
+      <p class="span6">{% blocktrans %}Please sign in with one of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a> for a bew account and sign in below:{% endblocktrans %}</p>
     </div>
     <div class="row">
       <div class="span6">
@@ -28,9 +25,7 @@
       </div>
       <div class="span6">
         <div class="alert alert-block alert-info">
-          <h4>Why do I have to register?</h4>
-          <p>{% lorem 41 %}</p>
-          <p>{% lorem 42 %}</p>
+          {% include "account/snippets/login_why_register.html" %}
         </div>
       </div>
     </div>

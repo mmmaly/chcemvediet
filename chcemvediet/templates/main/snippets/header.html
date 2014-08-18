@@ -1,7 +1,4 @@
 {# vim: set filetype=htmldjango :#}
-{% load static from staticfiles %}
-{% load blocktrans trans from i18n %}
-{% load addtoblock from sekizai_tags %}
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -11,72 +8,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="brand" href="{% url 'index' %}">Chcem vedieť</a>
+      {% include "main/snippets/header-brand.html" %}
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li class="divider-vertical"></li>
-          <li><a href="{% url 'about' %}">{% blocktrans %}About{% endblocktrans %}</a></li>
-          <li><a href="{% url 'applications:index' %}">{% blocktrans %}Applications{% endblocktrans %}</a></li>
-          <li><a href="{% url 'obligees:index' %}">{% blocktrans %}Obligees{% endblocktrans %}</a></li>
+          {% include "main/snippets/header-menu.html" %}
         </ul>
         <ul class="nav pull-right">
-          {% if user.is_authenticated %}
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.email }} <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'accounts:profile' %}">{% blocktrans %}User Profile{% endblocktrans %}</a></li>
-                <li><a href="{% url 'account_change_password' %}">{% blocktrans %}Change Password{% endblocktrans %}</a></li>
-                <li><a href="{% url 'account_email' %}">{% blocktrans %}Manage E-mails{% endblocktrans %}</a></li>
-                <li><a href="{% url 'socialaccount_connections' %}">{% blocktrans %}Manage Connections{% endblocktrans %}</a></li>
-                <li class="divider"></li>
-                <li><a href="{% url 'account_logout' %}" class="post" data-post-csrfmiddlewaretoken="{{ csrf_token }}">{% blocktrans %}Log Out{% endblocktrans %}</a></li>
-              </ul>
-            </li>
-          {% else %}
-            <li><a href="{% url 'account_login' %}">{% blocktrans %}Sign In{% endblocktrans %}</a></li>
-            <li><a href="{% url 'account_signup' %}">{% blocktrans %}Sign Up{% endblocktrans %}</a></li>
-          {% endif %}
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{% static 'main/images/languages/'|add:request.LANGUAGE_CODE|add:'.png' %}" alt="{{ request.LANGUAGE_CODE }}" style="margin: 0px 5px 3px 0px;"> {{ request.LANGUAGE_CODE|upper }} <b class="caret"></b></a>
-              {% csrf_token %}
-              <ul class="dropdown-menu">
-                {% for lang in LANGUAGES %}
-                  <li><a href="{% url 'set_language' %}" class="post" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-post-language="{{ lang.0 }}" data-post-next="{{ request.get_full_path }}"><img src="{% static 'main/images/languages/'|add:lang.0|add:'.png' %}" alt="{{ lang.0 }}" style="margin: 0px 5px 3px 0px;"> {{ lang.1 }}</a></li>
-                {% endfor %}
-              </ul>
-          </li>
+          {% include "main/snippets/header-account.html" %}
+          {% include "main/snippets/header-language.html" %}
         </ul>
       </div>
     </div>
   </div>
 </div>
-
-{% addtoblock "js" %}{# {{{ #}
-  <script>
-	/* Makes every link with class ``post`` send POST request to its href URL when clicked.
-	 * Data for the request may be supplied by ``data-post-*`` element attributes.
-	 *
-	 * Example:
-	 *     <a href="/path/to/location" class="post" data-post-name="value">...</a>
-	 */
-	$(function(){
-		$('a.post').click(function(event){
-			event.preventDefault();
-			var form = $('<form action="" method="post" style="display: none;"></form>');
-			form.attr('action', $(this).attr('href'));
-
-			$.each(this.attributes, function(){
-				if (this.name.substring(0, 10) == "data-post-") {
-					var input = $('<input type="hidden" name="" value="">');
-					input.attr('name', this.name.substring(10));
-					input.attr('value', this.value);
-					input.appendTo(form);
-				}
-			});
-
-			form.appendTo('body');
-			form.submit();
-		});
-	});
-  </script>
-{% endaddtoblock %}{# }}} #}

@@ -1,9 +1,7 @@
-{% load blocktrans from i18n %}
+{# vim: set filetype=htmldjango :#}
 
 {% autoescape off %}
-{% blocktrans with user_name=user.get_full_name site_name=current_site.name %}
-User {{ user_name }} at {{ site_name }} has given this as an email address.
+User {{ user.get_full_name }} at {{ current_site.name }} has given this as an email address.
 
 To confirm this is correct, go to {{ activate_url }}
-{% endblocktrans %}
 {% endautoescape %}

@@ -5,5 +5,5 @@
 
 {% block main_col %}
   <h1>{% blocktrans %}Confirm E-mail Address{% endblocktrans %}</h1>
-  <p>You have confirmed that <a href="mailto:{{ email_address.email }}">{{ email_address.email }}</a> is an e-mail address for user {{ email_address.user.get_full_name }}.</p>
+  <p>{% blocktrans with email_address.email as email and email_address.user.get_full_name as user %}You have confirmed that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user }}.{% endblocktrans %}</p>
 {% endblock %}

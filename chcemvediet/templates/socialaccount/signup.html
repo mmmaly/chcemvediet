@@ -1,6 +1,5 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno.utils %}
 
 {% block title %}{% blocktrans %}Sign Up{% endblocktrans %} | {{ block.super }}{% endblock %}
 
@@ -9,9 +8,7 @@
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     <div class="row">
-      <p class="span6">
-        You are about to use your {{ account.get_provider.name }} account to login to {{ site.name }}.
-        As a final step, please complete the following form:</p>
+      <p class="span6">{% blocktrans with account.get_provider.name as provider %}You are about to use your {{ provider }} account to login to this site. As a final step, please complete the following form:{% endblocktrans %}</p>
     </div>
     <div class="row">
       <div class="span6">
@@ -22,9 +19,7 @@
       </div>
       <div class="span6">
         <div class="alert alert-block alert-info">
-          <h4>Why do I have to register?</h4>
-          <p>{% lorem 41 %}</p>
-          <p>{% lorem 42 %}</p>
+          {% include "account/snippets/login_why_register.html" %}
         </div>
       </div>
     </div>

@@ -2,6 +2,8 @@
 import random
 
 from django import template
+from django.core.urlresolvers import resolve, reverse
+from django.utils.translation import activate, get_language
 from django.contrib.webdesign.lorem_ipsum import paragraphs
 
 
@@ -58,3 +60,24 @@ def lorem(randseed=None, count=1, method=None):
         res = ['<p>%s</p>' % p for p in res]
     return '\n'.join(res)
 
+@register.simple_tag(takes_context=True)
+def change_lang(context, lang=None):
+    """
+    Get active page's url by a specified language
+    Usage: {% change_lang 'en' %}
+
+    Source: https://djangosnippets.org/snippets/2875/
+    """
+
+    path = context['request'].path
+    url_parts = resolve(path)
+
+    url = path
+    cur_language = get_language()
+    try:
+        activate(lang)
+        url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
+    finally:
+        activate(cur_language)
+
+    return '%s' % url

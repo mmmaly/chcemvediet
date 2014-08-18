@@ -1,6 +1,5 @@
 {# vim: set filetype=htmldjango :#}
 {% load static from staticfiles %}
-{% load blocktrans from i18n %}
 {% load addtoblock render_block from sekizai_tags %}
 
 {% addtoblock "css" %}<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">{% endaddtoblock %}
@@ -17,14 +16,12 @@
 {% addtoblock "js" %}<script src="{% static "main/3part/bootstrap/2.3.2/js/bootstrap.min.js" %}"></script>{% endaddtoblock %}
 {% endcomment %}
 
-{% addtoblock "css" %}<style> @media (min-width: 980px) { body { padding-top: 60px; } } </style>{% endaddtoblock %}
-
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en" }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% blocktrans %}Chcem vedieť{% endblocktrans %}{% endblock %}</title>
+    <title>{% block title %}Chcem Vedieť{% endblock %}</title>
     {% render_block "css" %}
   </head>
   <body>
@@ -42,3 +39,53 @@
     {% render_block "js" %}
   </body>
 </html>
+
+{% addtoblock "css" %}{# {{{ #}
+  <style>
+	@media (min-width: 980px) { body { padding-top: 60px; } }
+  </style>
+{% endaddtoblock %}{# }}} #}
+
+{% addtoblock "js" %}{# {{{ #}
+  <script>
+	/* Makes every link with class ``post`` send POST request to its href URL when clicked.
+	 * Data for the request may be supplied by ``data-post-*`` element attributes.
+	 *
+	 * Example:
+	 *     <a href="/path/to/location" class="post" data-post-name="value">...</a>
+	 */
+	$(function(){
+		$('a.post').click(function(event){
+			event.preventDefault();
+			var form = $('<form action="" method="post" style="display: none;"></form>');
+			form.attr('action', $(this).attr('href'));
+
+			$.each(this.attributes, function(){
+				if (this.name.substring(0, 10) == "data-post-") {
+					var input = $('<input type="hidden" name="" value="">');
+					input.attr('name', this.name.substring(10));
+					input.attr('value', this.value);
+					input.appendTo(form);
+				}
+			});
+
+			form.appendTo('body');
+			form.submit();
+		});
+	});
+
+	/* Intercepts clicks on elements with class ``confirm`` and asks user if he is sure he
+	 * wants to proceed. Question to ask is read from ``data-confirm``.
+         *
+	 * Example:
+	 *     <button type="submit" class="confirm" data-confirm="Are you sure?">Submit</button>
+	 */
+	$(function(){
+		$('.confirm').click(function(event){
+			var message = $(this).data('confirm');
+			if (!confirm(message)) event.preventDefault();
+		});
+	});
+  </script>
+{% endaddtoblock %}{# }}} #}
+

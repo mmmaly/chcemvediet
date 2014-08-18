@@ -2,11 +2,11 @@
 {% load blocktrans from i18n %}
 {% load lorem range from poleno.utils %}
 
-{% block title %}{% blocktrans %}Obligees{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Obligees List{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>{% blocktrans %}Obligees List{% endblocktrans %}</h1>
-  <p>{% lorem %}</p>
+  <p>[{% lorem %}]</p>
   <table class="table table-striped">
     <thead>
       <tr>

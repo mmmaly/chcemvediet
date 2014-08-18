@@ -1,1 +1,2 @@
+{# vim: set filetype=htmldjango :#}
 {% include "account/email/email_confirmation_message.txt" %}

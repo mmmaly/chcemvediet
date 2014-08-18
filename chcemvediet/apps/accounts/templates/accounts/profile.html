@@ -1,7 +1,7 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
 
-{% block title %}{% blocktrans %}Profile{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}User Profile{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
   <h1>{% blocktrans %}User Profile{% endblocktrans %} <small>{{ user.get_full_name }}</small></h1>

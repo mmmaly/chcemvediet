@@ -1,0 +1,26 @@
+{% extends "main/base/single_column.html" %}
+
+{% block title %}About Project | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>A portal for FOIA requests for the lazy</h1>
+  <p>The aim of the project is to guide people through the process of requesting the information
+  from state institutions according to the FOIA. Freedom of information requests are very useful
+  for transparency, however, ordinary people may not be aware of all details of the procedure.</p>
+  <p>Suppose a guy named Michal wants to see electricity bill for the August 2011 of Ministry of
+  Industry. However, Michal is not a lawyer, he does not have time to study the law to find out how
+  can he apply for the information and what is necessary to write a lawful, proper
+  request.Our&nbsp; portal enables Michal to simply write his address, select the Ministry of
+  Industry from the menu, and write one line stating what information he needs. The text of the
+  request will be generated automatically. After sending the request, Michal waits until the
+  Ministry respods. After 8 days, he receives a notification from the system, that a time period
+  for the Ministry has passed. If Michal has already received the information, he can upload the
+  data to share with other users. If not -- it sometimes happens that an institution simply ignores
+  the request --  Michal can generate a formal appeal with a simple click. The portal also helps
+  Michal with the postal receipt, because the appeal has to be send by snail-mail. A new period for
+  the Ministry to issue a decision is set (15 days). Michal can share the decision of the Ministry
+  with others. The portal also collects statistics about how the institutions respond to the
+  requests.</p>
+  <p>We think this will ecourage people to request the information and we also hope this can help
+  to increase the chance the request will be successfull.</p>
+{% endblock %}

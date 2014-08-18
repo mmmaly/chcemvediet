@@ -5,7 +5,7 @@
 
 {% block main_col %}
   <h1>{% blocktrans %}Sign Out{% endblocktrans %}</h1>
-  <p>Are you sure you want to sign out?</p>
+  <p>{% blocktrans %}Are you sure you want to sign out?{% endblocktrans %}</p>
   <form method="post" action="{% url 'account_logout' %}">
     {% csrf_token %}
     {% if redirect_field_value %}

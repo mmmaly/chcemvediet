@@ -1,5 +1,5 @@
-{% load blocktrans from i18n %}
+{# vim: set filetype=htmldjango :#}
 
 {% autoescape off %}
-{% blocktrans %}Confirm E-mail Address{% endblocktrans %}
+Confirm E-mail Address
 {% endautoescape %}

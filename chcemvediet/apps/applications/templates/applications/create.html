@@ -8,7 +8,7 @@
 
 {% block main_col %}
   <h1>{% blocktrans %}New Application{% endblocktrans %}</h1>
-  <p>{% lorem 21 %}</p>
+  <p>[{% lorem 21 %}]</p>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     {% include "applications/snippets/form_create.html" with form=form %}

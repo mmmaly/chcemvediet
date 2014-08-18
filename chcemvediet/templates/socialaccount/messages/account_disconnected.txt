@@ -1,2 +1,4 @@
+{# vim: set filetype=htmldjango :#}
 {% load blocktrans from i18n %}
+
 {% blocktrans %}The social account has been disconnected.{% endblocktrans %}
