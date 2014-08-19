@@ -30,10 +30,11 @@ def range_(a, b):
 
 @register.filter
 def active(request, view_prefix):
-    """ Tests if the active view name has prefix ``view_prefix``. View name is colon separated list
-        of view namespaces and the actual url name. Thus if the active view is 'namespace:name',
-        then the function returns ``True`` for 'namespace' and 'namespace:name', but not for 'name'
-        or 'namespace:other'.
+    """
+    Tests if the active view name has prefix ``view_prefix``. View name is colon separated list of
+    view namespaces and the actual url name. Thus if the active view is 'namespace:name', then the
+    function returns ``True`` for 'namespace' and 'namespace:name', but not for 'name' or
+    'namespace:other'.
     """
     try:
         resolved = resolve(request.path)

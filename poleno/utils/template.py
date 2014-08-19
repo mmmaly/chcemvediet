@@ -5,22 +5,23 @@ from django.template.loader import BaseLoader, find_template_loader
 from django.utils.translation import get_language
 
 class TranslationLoader(BaseLoader):
-    """ Wrapper template loader that takes another template loader and uses it to load templates.
-        However, before loading any template the loader tries to load its translated version first.
-        For instance if the current language is 'en' and the loader is asked to load template
-        'dir/file.html', it tries to load 'dir/file.en.html' first. The original template is loaded
-        only if the translated template does not exist.
+    """
+    Wrapper template loader that takes another template loader and uses it to load templates.
+    However, before loading any template the loader tries to load its translated version first. For
+    instance if the current language is 'en' and the loader is asked to load template
+    'dir/file.html', it tries to load 'dir/file.en.html' first. The original template is loaded
+    only if the translated template does not exist.
 
-        The language code is inserted before the last template extenstion. If the template name has
-        no extensions, the language code is appended at its end.
+    The language code is inserted before the last template extenstion. If the template name has no
+    extensions, the language code is appended at its end.
 
-        To use this loader together with default Django template loaders set TEMPLATE_LOADERS in
-        'settings.py' as follows:
+    To use this loader together with default Django template loaders set TEMPLATE_LOADERS in
+    'settings.py' as follows:
 
-            TEMPLATE_LOADERS = (
-                ('poleno.utils.template.TranslationLoader', 'django.template.loaders.filesystem.Loader'),
-                ('poleno.utils.template.TranslationLoader', 'django.template.loaders.app_directories.Loader'),
-            )
+        TEMPLATE_LOADERS = (
+            ('poleno.utils.template.TranslationLoader', 'django.template.loaders.filesystem.Loader'),
+            ('poleno.utils.template.TranslationLoader', 'django.template.loaders.app_directories.Loader'),
+        )
     """
     is_usable = True
 

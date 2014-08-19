@@ -39,7 +39,7 @@
             <td>{% if draft.obligee %}{{ draft.obligee.name }}{% else %}{% blocktrans %}(empty){% endblocktrans %}{% endif %}</a></td>
             <td class="text-right">
               <a class="btn" href="{% url 'applications:create_from_draft' draft.id %}">Edit and Submit</a>
-              <a class="btn post" href="{% url 'applications:delete_draft' draft.id %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}">Delete</a>
+              <a class="btn post confirm" href="{% url 'applications:delete_draft' draft.id %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}">Delete</a>
             </td>
           </tr>
         {% endfor %}

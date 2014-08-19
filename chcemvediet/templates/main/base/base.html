@@ -48,6 +48,25 @@
 
 {% addtoblock "js" %}{# {{{ #}
   <script>
+	/* Intercepts clicks on elements with class ``confirm`` and asks user if he is sure he
+	 * wants to proceed. Question to ask is read from ``data-confirm``.
+	 *
+	 * This function must be defined before any other function attaching handlers to events
+	 * we need to prevent if the user decides not to proceed.
+	 *
+	 * Example:
+	 *     <button type="submit" class="confirm" data-confirm="Are you sure?">Submit</button>
+	 */
+	$(function(){
+		$('.confirm').click(function(event){
+			var message = $(this).data('confirm');
+			if (!confirm(message)) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		});
+	});
+
 	/* Makes every link with class ``post`` send POST request to its href URL when clicked.
 	 * Data for the request may be supplied by ``data-post-*`` element attributes.
 	 *
@@ -74,18 +93,6 @@
 		});
 	});
 
-	/* Intercepts clicks on elements with class ``confirm`` and asks user if he is sure he
-	 * wants to proceed. Question to ask is read from ``data-confirm``.
-         *
-	 * Example:
-	 *     <button type="submit" class="confirm" data-confirm="Are you sure?">Submit</button>
-	 */
-	$(function(){
-		$('.confirm').click(function(event){
-			var message = $(this).data('confirm');
-			if (!confirm(message)) event.preventDefault();
-		});
-	});
   </script>
 {% endaddtoblock %}{# }}} #}
 
