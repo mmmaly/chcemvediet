@@ -3,13 +3,15 @@ import json, re
 from unidecode import unidecode
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.forms.models import model_to_dict
 from django.shortcuts import render
+from django.forms.models import model_to_dict
+from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 from django.db.models import Q
 
 import models
 
+@require_http_methods(['HEAD', 'GET'])
 def index(request):
     obligee_list = models.Obligee.objects.all()
     paginator = Paginator(obligee_list, 25)
@@ -25,6 +27,7 @@ def index(request):
     context = {'obligee_page': obligee_page}
     return render(request, 'obligees/index.html', context)
 
+@require_http_methods(['HEAD', 'GET'])
 def autocomplete(request):
     term = request.GET.get('term', '')
     term = unidecode(term).lower() # transliterate unicode to ascii

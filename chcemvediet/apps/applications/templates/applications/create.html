@@ -13,20 +13,22 @@
     {% csrf_token %}
     {% include "applications/snippets/form_create.html" with form=form %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">{% blocktrans %}Submit Application{% endblocktrans %}</button>
+      <button type="submit" name="submit" class="btn btn-primary">{% blocktrans %}Submit Application{% endblocktrans %}</button>
+      <button type="submit" name="save" class="btn">{% blocktrans %}Save as Draft{% endblocktrans %}</button>
+      <a class="btn pull-right" href="{% url 'applications:index' %}">Cancel</a>
     </div>
   </form>
   {% addtoblock "js" %}{# {{{ #}
     <script>
 	function update_obligee_details(obligee) {
 		if (obligee) {
-			$("#id_obligee_details1").text(obligee.street);
-			$("#id_obligee_details2").text(obligee.zip + ' ' + obligee.city);
-			$("#id_obligee_details3").text('E-mail: ' + obligee.email);
+			$("#id_obligee_street").text(obligee.street);
+			$("#id_obligee_zip").text(obligee.zip);
+			$("#id_obligee_city").text(obligee.city);
+			$("#id_obligee_email").text(obligee.email);
+			$("#id_obligee_details").show();
 		} else {
-			$("#id_obligee_details1").text('');
-			$("#id_obligee_details2").text('');
-			$("#id_obligee_details3").text('');
+			$("#id_obligee_details").hide();
 		}
 	};
 

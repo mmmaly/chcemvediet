@@ -22,7 +22,7 @@ class ApplicationForm(forms.Form):
                 'placeholder': _(u'Subject'),
                 }),
             )
-    message = forms.CharField(
+    content = forms.CharField(
             label=_(u'Request'),
             initial=lorem(1)[0],
             widget=forms.Textarea(attrs={
@@ -30,4 +30,11 @@ class ApplicationForm(forms.Form):
                 'class': 'input-block-level',
                 }),
             )
+
+class ApplicationFormDraft(ApplicationForm):
+    def __init__(self, *args, **kwargs):
+        super(ApplicationFormDraft, self).__init__(*args, **kwargs)
+        self.fields['obligee'].required = False
+        self.fields['subject'].required = False
+        self.fields['content'].required = False
 

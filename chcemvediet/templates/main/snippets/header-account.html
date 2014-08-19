@@ -15,6 +15,6 @@
     </ul>
   </li>
 {% else %}
-  <li{% if request|active:'account_login' %}class="active"{% endif %}><a href="{% url 'account_login' %}">{% blocktrans %}Sign In{% endblocktrans %}</a></li>
-  <li{% if request|active:'account_signup' %}class="active"{% endif %}><a href="{% url 'account_signup' %}">{% blocktrans %}Sign Up{% endblocktrans %}</a></li>
+  <li {% if request|active:'account_login' %}class="active"{% endif %}><a href="{% url 'account_login' %}">{% blocktrans %}Sign In{% endblocktrans %}</a></li>
+  <li {% if request|active:'account_signup' %}class="active"{% endif %}><a href="{% url 'account_signup' %}">{% blocktrans %}Sign Up{% endblocktrans %}</a></li>
 {% endif %}

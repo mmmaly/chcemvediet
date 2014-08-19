@@ -15,3 +15,10 @@ class Application(models.Model):
     def __unicode__(self):
         return unicode(repr((self.applicant, self.obligee, str(self.submission_date))), 'utf-8')
 
+class ApplicationDraft(models.Model):
+    applicant = models.ForeignKey(User, verbose_name=_('Applicant'))
+    obligee = models.ForeignKey('obligees.Obligee', blank=True, null=True, verbose_name=_('Obligee'))
+    subject = models.CharField(blank=True, max_length=255, verbose_name=_('Subject'))
+    content = models.TextField(blank=True, verbose_name=_('Content'))
+    def __unicode__(self):
+        return unicode(repr((self.applicant, self.obligee)), 'utf-8')

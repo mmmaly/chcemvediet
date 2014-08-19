@@ -24,6 +24,28 @@
     </table>
   {% endif %}
   <p>{% blocktrans %}Number of submitted applications{% endblocktrans %}: {{ application_list|length }}</p>
+  {% if draft_list %}
+    <h2>{% blocktrans %}Application Drafts{% endblocktrans %}</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for draft in draft_list %}
+          <tr>
+            <td>{% if draft.obligee %}{{ draft.obligee.name }}{% else %}{% blocktrans %}(empty){% endblocktrans %}{% endif %}</a></td>
+            <td class="text-right">
+              <a class="btn" href="{% url 'applications:create_from_draft' draft.id %}">Edit and Submit</a>
+              <a class="btn post" href="{% url 'applications:delete_draft' draft.id %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
   <p>
     <a class="btn" href="{% url 'applications:create' %}">{% blocktrans %}New Application{% endblocktrans %}</a>
   </p>
