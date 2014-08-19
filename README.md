@@ -50,6 +50,8 @@ To migrate to an updated version of the site, run the following commands:
 	$ env/bin/python manage.py syncdb --noinput
 	$ env/bin/python manage.py migrate
 
+If `migrate` fails, try to run it once or twice again. Sometimes it helps.
+
 
 ### 1.4. Viewing the site
 
