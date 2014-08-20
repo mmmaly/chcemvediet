@@ -74,6 +74,17 @@ If `migrate` fails, try to run it once or twice again. Sometimes it helps.
  4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 
 
+### 1.5. Contributing
+
+If you want to contribute, please, create a new branch for your changes:
+
+	$ git checkout -b <new_branch_name>
+	$ git commit
+	$ git push -u origin <new_branch_name>
+
+And then submit a 'Pull Request' on GitHub.
+
+
 ## 2. Social accounts application keys
 
 ### 2.1. Google OAuth
