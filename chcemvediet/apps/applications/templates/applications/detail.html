@@ -8,39 +8,42 @@
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Applicant{% endblocktrans %}:</p>
     <div class="span10">
-      <p>{{ application.applicant.get_full_name }}</p>
-      <p>{{ application.applicant.profile.street }}<br>
-        {{ application.applicant.profile.zip }} {{ application.applicant.profile.city }}</p>
+      <p>{{ application.applicant_name }}</p>
+      <p>{{ application.applicant_street }}<br>
+        {{ application.applicant_zip }} {{ application.applicant_city }}</p>
     </div>
   </div>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Obligee{% endblocktrans %}:</p>
     <div class="span10">
-      <p>{{ application.obligee.name }}</p>
-      <p>{{ application.obligee.street }}<br>
-        {{ application.obligee.zip }} {{ application.obligee.city }}</p>
+      <p>{{ application.obligee_name }}</p>
+      <p>{{ application.obligee_street }}<br>
+        {{ application.obligee_zip }} {{ application.obligee_city }}</p>
     </div>
   </div>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Sent From{% endblocktrans %}:</p>
-    <p class="span10">{{ application.sender_email }}</p>
-  </div>
-  <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Sent To{% endblocktrans %}:</p>
-    <p class="span10">{{ application.recepient_email }}</p>
+    <p class="span2 text-right">{% blocktrans %}Unique E-mail{% endblocktrans %}:</p>
+    <p class="span10">{{ application.unique_email }}</p>
   </div>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Submission Date{% endblocktrans %}:</p>
     <p class="span10">{{ application.submission_date }}</p>
   </div>
-  <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Subject{% endblocktrans %}:</p>
-    <p class="span10">{{ application.subject }}</p>
-  </div>
-  <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Request{% endblocktrans %}:</p>
-    <p class="span10">{{ application.message }}</p>
-  </div>
+  {% for act in application.act_set.all %}
+    <h2>{{ act.get_type_display }}</h2>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Effective Date{% endblocktrans %}:</p>
+      <p class="span10">{{ act.effective_date }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Subject{% endblocktrans %}:</p>
+      <p class="span10">{{ act.subject }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Content{% endblocktrans %}:</p>
+      <p class="span10">{{ act.content }}</p>
+    </div>
+  {% endfor %}
   <p>
     <a class="btn" href="{% url 'applications:index' %}">{% blocktrans %}Application List{% endblocktrans %}</a>
   </p>

@@ -41,9 +41,15 @@ class ApplicationForm(forms.Form):
 
         obligee_name = self.cleaned_data['obligee']
         application.obligee = Obligee.objects.filter(name=obligee_name)[0]
-        application.subject = self.cleaned_data['subject']
-        application.message = self.cleaned_data['content']
-        application.recipient_mail = application.obligee.email
+
+        application.applicant_name = application.applicant.get_full_name()
+        application.applicant_street = application.applicant.profile.street
+        application.applicant_city = application.applicant.profile.city
+        application.applicant_zip = application.applicant.profile.zip
+        application.obligee_name = application.obligee.name
+        application.obligee_street = application.obligee.street
+        application.obligee_city = application.obligee.city
+        application.obligee_zip = application.obligee.zip
 
         def random_email(domain, length):
             """
@@ -74,15 +80,13 @@ class ApplicationForm(forms.Form):
         # Use unique random sender email address
         length = 2
         while True:
-            application.sender_email = random_email('mail.chcemvediet.sk', length)
+            application.unique_email = random_email('mail.chcemvediet.sk', length)
             try:
                 application.save()
             except IntegrityError:
                 length += 1
                 continue
             break
-
-
 
 class ApplicationFormDraft(ApplicationForm):
 

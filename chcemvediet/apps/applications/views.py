@@ -13,9 +13,9 @@ from allauth.account.decorators import verified_email_required
 
 from poleno.utils.mail import mail_address_with_name
 from chcemvediet.apps.obligees.models import Obligee
-from chcemvediet.apps.applications.models import Application, ApplicationDraft
 
-import forms
+from models import Application, ApplicationDraft, Act
+from forms import ApplicationForm, ApplicationFormDraft
 
 @login_required
 @require_http_methods(['HEAD', 'GET'])
@@ -34,7 +34,7 @@ def create(request, draft_id=None):
 
     if request.method == 'POST':
         if 'save' in request.POST:
-            form = forms.ApplicationFormDraft(request.POST)
+            form = ApplicationFormDraft(request.POST)
             if form.is_valid():
                 if not draft:
                     draft = ApplicationDraft(applicant=request.user)
@@ -42,14 +42,20 @@ def create(request, draft_id=None):
                 return HttpResponseRedirect(reverse('applications:index'))
 
         elif 'submit' in request.POST:
-            form = forms.ApplicationForm(request.POST)
+            form = ApplicationForm(request.POST)
             if form.is_valid():
                 application = Application(applicant=request.user)
                 form.save(application)
 
-                sender_name = request.user.get_full_name()
-                sender_full = mail_address_with_name(sender_name, application.sender_email)
-                send_mail(application.subject, application.message, sender_full, [application.recipient_mail])
+                act = Act()
+                act.type = act.REQUEST
+                act.application = application
+                act.subject = form.cleaned_data['subject']
+                act.content = form.cleaned_data['content']
+                act.save()
+
+                sender_full = mail_address_with_name(application.applicant_name, application.unique_email)
+                send_mail(act.subject, act.content, sender_full, [application.obligee.email])
 
                 if draft:
                     draft.delete()
@@ -60,13 +66,13 @@ def create(request, draft_id=None):
 
     else:
         if draft:
-            form = forms.ApplicationFormDraft(initial={
+            form = ApplicationFormDraft(initial={
                 'obligee': draft.obligee.name if draft.obligee else '',
                 'subject': draft.subject,
                 'content': draft.content,
                 })
         else:
-            form = forms.ApplicationFormDraft()
+            form = ApplicationFormDraft()
 
     if request.method == 'POST':
         try:
@@ -84,7 +90,7 @@ def create(request, draft_id=None):
 @login_required
 @require_http_methods(['HEAD', 'GET'])
 def detail(request, application_id):
-    application = get_object_or_404(Application, pk=application_id)
+    application = get_object_or_404(Application, id=application_id, applicant=request.user)
     return render(request, 'applications/detail.html', {
         'application': application,
         })
