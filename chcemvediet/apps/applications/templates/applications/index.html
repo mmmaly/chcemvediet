@@ -16,7 +16,7 @@
       <tbody>
         {% for application in application_list %}
           <tr>
-            <td><a href="{% url 'applications:detail' application.id %}">{{ application.obligee.name }}</a></td>
+            <td><a href="{% url 'applications:detail' application.id %}">{{ application.obligee_name }}</a></td>
             <td>{{ application.submission_date }}</td>
           </tr>
         {% endfor %}
