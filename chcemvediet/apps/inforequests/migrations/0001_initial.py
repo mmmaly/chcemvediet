@@ -8,21 +8,21 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'InfoRequestDraft'
-        db.create_table(u'info_requests_inforequestdraft', (
+        # Adding model 'InforequestDraft'
+        db.create_table(u'inforequests_inforequestdraft', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('applicant', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('obligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.Obligee'], null=True, blank=True)),
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
         ))
-        db.send_create_signal(u'info_requests', ['InfoRequestDraft'])
+        db.send_create_signal(u'inforequests', ['InforequestDraft'])
 
-        # Adding model 'InfoRequest'
-        db.create_table(u'info_requests_inforequest', (
+        # Adding model 'Inforequest'
+        db.create_table(u'inforequests_inforequest', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('applicant', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('history', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['info_requests.History'], unique=True)),
+            ('history', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['inforequests.History'], unique=True)),
             ('unique_email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=255)),
             ('submission_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('applicant_name', self.gf('django.db.models.fields.CharField')(max_length=255)),
@@ -30,10 +30,10 @@ class Migration(SchemaMigration):
             ('applicant_city', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('applicant_zip', self.gf('django.db.models.fields.CharField')(max_length=10)),
         ))
-        db.send_create_signal(u'info_requests', ['InfoRequest'])
+        db.send_create_signal(u'inforequests', ['Inforequest'])
 
         # Adding model 'History'
-        db.create_table(u'info_requests_history', (
+        db.create_table(u'inforequests_history', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('obligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.Obligee'])),
             ('obligee_name', self.gf('django.db.models.fields.CharField')(max_length=255)),
@@ -41,32 +41,32 @@ class Migration(SchemaMigration):
             ('obligee_city', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('obligee_zip', self.gf('django.db.models.fields.CharField')(max_length=10)),
         ))
-        db.send_create_signal(u'info_requests', ['History'])
+        db.send_create_signal(u'inforequests', ['History'])
 
         # Adding model 'Action'
-        db.create_table(u'info_requests_action', (
+        db.create_table(u'inforequests_action', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('history', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['info_requests.History'])),
+            ('history', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.History'])),
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('content', self.gf('django.db.models.fields.TextField')()),
             ('effective_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
-        db.send_create_signal(u'info_requests', ['Action'])
+        db.send_create_signal(u'inforequests', ['Action'])
 
 
     def backwards(self, orm):
-        # Deleting model 'InfoRequestDraft'
-        db.delete_table(u'info_requests_inforequestdraft')
+        # Deleting model 'InforequestDraft'
+        db.delete_table(u'inforequests_inforequestdraft')
 
-        # Deleting model 'InfoRequest'
-        db.delete_table(u'info_requests_inforequest')
+        # Deleting model 'Inforequest'
+        db.delete_table(u'inforequests_inforequest')
 
         # Deleting model 'History'
-        db.delete_table(u'info_requests_history')
+        db.delete_table(u'inforequests_history')
 
         # Deleting model 'Action'
-        db.delete_table(u'info_requests_action')
+        db.delete_table(u'inforequests_action')
 
 
     models = {
@@ -106,16 +106,16 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'info_requests.action': {
+        u'inforequests.action': {
             'Meta': {'object_name': 'Action'},
             'content': ('django.db.models.fields.TextField', [], {}),
             'effective_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'history': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['info_requests.History']"}),
+            'history': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.History']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'type': ('django.db.models.fields.SmallIntegerField', [], {})
         },
-        u'info_requests.history': {
+        u'inforequests.history': {
             'Meta': {'object_name': 'History'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'obligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.Obligee']"}),
@@ -124,20 +124,20 @@ class Migration(SchemaMigration):
             'obligee_street': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'obligee_zip': ('django.db.models.fields.CharField', [], {'max_length': '10'})
         },
-        u'info_requests.inforequest': {
-            'Meta': {'object_name': 'InfoRequest'},
+        u'inforequests.inforequest': {
+            'Meta': {'object_name': 'Inforequest'},
             'applicant': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'applicant_city': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'applicant_name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'applicant_street': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'applicant_zip': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'history': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['info_requests.History']", 'unique': 'True'}),
+            'history': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['inforequests.History']", 'unique': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'submission_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'unique_email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '255'})
         },
-        u'info_requests.inforequestdraft': {
-            'Meta': {'object_name': 'InfoRequestDraft'},
+        u'inforequests.inforequestdraft': {
+            'Meta': {'object_name': 'InforequestDraft'},
             'applicant': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -156,4 +156,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['info_requests']
+    complete_apps = ['inforequests']

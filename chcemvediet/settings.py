@@ -172,7 +172,7 @@ INSTALLED_APPS = (
     # Local to the project
     u'chcemvediet.apps.accounts',
     u'chcemvediet.apps.obligees',
-    u'chcemvediet.apps.info_requests',
+    u'chcemvediet.apps.inforequests',
 )
 
 # A sample logging configuration. The only tangible logging

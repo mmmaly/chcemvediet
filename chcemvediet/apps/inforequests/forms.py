@@ -11,7 +11,7 @@ from chcemvediet.apps.obligees.models import Obligee, validate_obligee_name_exis
 
 from models import History
 
-class InfoRequestForm(forms.Form):
+class InforequestForm(forms.Form):
     obligee = forms.CharField(
             label=_(u'Obligee'),
             max_length=255,
@@ -37,7 +37,7 @@ class InfoRequestForm(forms.Form):
                 }),
             )
 
-    def save(self, info_request):
+    def save(self, inforequest):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
@@ -51,7 +51,7 @@ class InfoRequestForm(forms.Form):
         history.obligee_zip = history.obligee.zip
         history.save()
 
-        info_request.history = history
+        inforequest.history = history
 
         def random_email(domain, length):
             u"""
@@ -79,12 +79,12 @@ class InfoRequestForm(forms.Form):
 
             return u''.join(res)
 
-        # Generate random ``info_request.unique_email``
+        # Generate random ``inforequest.unique_email``
         length = 2
         while length < 20:
-            info_request.unique_email = random_email(u'mail.chcemvediet.sk', length)
+            inforequest.unique_email = random_email(u'mail.chcemvediet.sk', length)
             try:
-                info_request.save()
+                inforequest.save()
             except IntegrityError:
                 length += 1
                 continue
@@ -92,10 +92,10 @@ class InfoRequestForm(forms.Form):
         else:
             raise RuntimeError(u'Failed to generate unique random e-mail address.')
 
-class InfoRequestDraftForm(InfoRequestForm):
+class InforequestDraftForm(InforequestForm):
 
     def __init__(self, *args, **kwargs):
-        super(InfoRequestDraftForm, self).__init__(*args, **kwargs)
+        super(InforequestDraftForm, self).__init__(*args, **kwargs)
         self.fields[u'obligee'].required = False
         self.fields[u'subject'].required = False
         self.fields[u'content'].required = False

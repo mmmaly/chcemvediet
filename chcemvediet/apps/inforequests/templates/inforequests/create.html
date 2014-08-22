@@ -4,18 +4,18 @@
 {% load addtoblock from sekizai_tags %}
 {% load lorem from poleno.utils %}
 
-{% block title %}{% blocktrans %}New Info Request{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}New Inforequest{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}New Info Request{% endblocktrans %}</h1>
+  <h1>{% blocktrans %}New Inforequest{% endblocktrans %}</h1>
   <p>[{% lorem 21 %}]</p>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
-    {% include "info_requests/snippets/form_create.html" with form=form %}
+    {% include "inforequests/snippets/form_create.html" with form=form %}
     <div class="form-actions">
       <button type="submit" name="submit" class="btn btn-primary">{% blocktrans %}Submit Request{% endblocktrans %}</button>
       <button type="submit" name="save" class="btn">{% blocktrans %}Save as Draft{% endblocktrans %}</button>
-      <a class="btn pull-right" href="{% url 'info_requests:index' %}">Cancel</a>
+      <a class="btn pull-right" href="{% url 'inforequests:index' %}">Cancel</a>
     </div>
   </form>
   {% addtoblock "js" %}{# {{{ #}

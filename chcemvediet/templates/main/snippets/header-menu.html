@@ -5,5 +5,5 @@
 <li {% if request|active:'index' %}class="active"{% endif %}><a class="brand" href="{% url 'index' %}">Chcem Vedieť</a></li>
 <li class="divider-vertical"></li>
 <li {% if request|active:'about' %}class="active"{% endif %}><a href="{% url 'about' %}">{% blocktrans %}About Project{% endblocktrans %}</a></li>
-<li {% if request|active:'info_requests' %}class="active"{% endif %}><a href="{% url 'info_requests:index' %}">{% blocktrans %}Requests{% endblocktrans %}</a></li>
+<li {% if request|active:'inforequests' %}class="active"{% endif %}><a href="{% url 'inforequests:index' %}">{% blocktrans %}Requests{% endblocktrans %}</a></li>
 <li {% if request|active:'obligees' %}class="active"{% endif %}><a href="{% url 'obligees:index' %}">{% blocktrans %}Obligees{% endblocktrans %}</a></li>

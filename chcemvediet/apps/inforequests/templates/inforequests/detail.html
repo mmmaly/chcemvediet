@@ -1,35 +1,35 @@
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
 
-{% block title %}{% blocktrans %}Info Request Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% blocktrans %}Inforequest Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block main_col %}
-  <h1>{% blocktrans %}Info Request Detail{% endblocktrans %}</h1>
+  <h1>{% blocktrans %}Inforequest Detail{% endblocktrans %}</h1>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Applicant{% endblocktrans %}:</p>
     <div class="span10">
-      <p>{{ info_request.applicant_name }}</p>
-      <p>{{ info_request.applicant_street }}<br>
-        {{ info_request.applicant_zip }} {{ info_request.applicant_city }}</p>
+      <p>{{ inforequest.applicant_name }}</p>
+      <p>{{ inforequest.applicant_street }}<br>
+        {{ inforequest.applicant_zip }} {{ inforequest.applicant_city }}</p>
     </div>
   </div>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Obligee{% endblocktrans %}:</p>
     <div class="span10">
-      <p>{{ info_request.history.obligee_name }}</p>
-      <p>{{ info_request.history.obligee_street }}<br>
-        {{ info_request.history.obligee_zip }} {{ info_request.history.obligee_city }}</p>
+      <p>{{ inforequest.history.obligee_name }}</p>
+      <p>{{ inforequest.history.obligee_street }}<br>
+        {{ inforequest.history.obligee_zip }} {{ inforequest.history.obligee_city }}</p>
     </div>
   </div>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Unique E-mail{% endblocktrans %}:</p>
-    <p class="span10">{{ info_request.unique_email }}</p>
+    <p class="span10">{{ inforequest.unique_email }}</p>
   </div>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}Submission Date{% endblocktrans %}:</p>
-    <p class="span10">{{ info_request.submission_date }}</p>
+    <p class="span10">{{ inforequest.submission_date }}</p>
   </div>
-  {% for action in info_request.history.action_set.all %}
+  {% for action in inforequest.history.action_set.all %}
     <h2>{{ action.get_type_display }}</h2>
     <div class="row">
       <p class="span2 text-right">{% blocktrans %}Effective Date{% endblocktrans %}:</p>
@@ -45,6 +45,6 @@
     </div>
   {% endfor %}
   <p>
-    <a class="btn" href="{% url 'info_requests:index' %}">{% blocktrans %}Info Request List{% endblocktrans %}</a>
+    <a class="btn" href="{% url 'inforequests:index' %}">{% blocktrans %}Inforequest List{% endblocktrans %}</a>
   </p>
 {% endblock %}
