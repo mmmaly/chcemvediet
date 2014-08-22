@@ -1,4 +1,5 @@
 # vim: expandtab
+# -*- coding: utf-8 -*-
 import sys
 import time
 from textwrap import dedent

@@ -1,4 +1,5 @@
 # vim: expandtab
+# -*- coding: utf-8 -*-
 import re
 
 def mail_address_with_name(name, address):

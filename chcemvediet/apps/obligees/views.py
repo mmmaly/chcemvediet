@@ -1,4 +1,5 @@
 # vim: expandtab
+# -*- coding: utf-8 -*-
 import json, re
 from unidecode import unidecode
 

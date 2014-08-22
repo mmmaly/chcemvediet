@@ -54,7 +54,7 @@ def create(request, draft_id=None):
                 form.save(inforequest)
 
                 action = Action(
-                        type=Action.REQUEST,
+                        type=Action.TYPES.REQUEST,
                         history=inforequest.history,
                         subject=form.cleaned_data[u'subject'],
                         content=form.cleaned_data[u'content'],

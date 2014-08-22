@@ -1,4 +1,5 @@
 # vim: expandtab
+# -*- coding: utf-8 -*-
 from os.path import splitext
 from django.template.base import TemplateDoesNotExist
 from django.template.loader import BaseLoader, find_template_loader
