@@ -1,0 +1,50 @@
+{% extends "main/base/single_column.html" %}
+{% load blocktrans from i18n %}
+
+{% block title %}{% blocktrans %}Info Request Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
+
+{% block main_col %}
+  <h1>{% blocktrans %}Info Request Detail{% endblocktrans %}</h1>
+  <div class="row">
+    <p class="span2 text-right">{% blocktrans %}Applicant{% endblocktrans %}:</p>
+    <div class="span10">
+      <p>{{ info_request.applicant_name }}</p>
+      <p>{{ info_request.applicant_street }}<br>
+        {{ info_request.applicant_zip }} {{ info_request.applicant_city }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">{% blocktrans %}Obligee{% endblocktrans %}:</p>
+    <div class="span10">
+      <p>{{ info_request.history.obligee_name }}</p>
+      <p>{{ info_request.history.obligee_street }}<br>
+        {{ info_request.history.obligee_zip }} {{ info_request.history.obligee_city }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">{% blocktrans %}Unique E-mail{% endblocktrans %}:</p>
+    <p class="span10">{{ info_request.unique_email }}</p>
+  </div>
+  <div class="row">
+    <p class="span2 text-right">{% blocktrans %}Submission Date{% endblocktrans %}:</p>
+    <p class="span10">{{ info_request.submission_date }}</p>
+  </div>
+  {% for action in info_request.history.action_set.all %}
+    <h2>{{ action.get_type_display }}</h2>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Effective Date{% endblocktrans %}:</p>
+      <p class="span10">{{ action.effective_date }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Subject{% endblocktrans %}:</p>
+      <p class="span10">{{ action.subject }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Content{% endblocktrans %}:</p>
+      <p class="span10">{{ action.content }}</p>
+    </div>
+  {% endfor %}
+  <p>
+    <a class="btn" href="{% url 'info_requests:index' %}">{% blocktrans %}Info Request List{% endblocktrans %}</a>
+  </p>
+{% endblock %}

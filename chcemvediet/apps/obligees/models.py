@@ -6,12 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Obligee(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    street = models.CharField(max_length=255, verbose_name=_('Street'))
-    city = models.CharField(max_length=255, verbose_name=_('City'))
-    zip = models.CharField(max_length=10, verbose_name=_('Zip'))
-    email = models.EmailField(max_length=255, verbose_name=_('E-mail'))
-    slug = models.SlugField(max_length=255, verbose_name=_('Slug'))
+    name = models.CharField(max_length=255, verbose_name=_(u'Name'))
+    street = models.CharField(max_length=255, verbose_name=_(u'Street'))
+    city = models.CharField(max_length=255, verbose_name=_(u'City'))
+    zip = models.CharField(max_length=10, verbose_name=_(u'Zip'))
+    email = models.EmailField(max_length=255, verbose_name=_(u'E-mail'))
+    slug = models.SlugField(max_length=255, verbose_name=_(u'Slug'))
     def __unicode__(self):
         return self.name
 

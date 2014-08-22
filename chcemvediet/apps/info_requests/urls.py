@@ -1,0 +1,14 @@
+# vim: expandtab
+from django.conf.urls import patterns, url
+from django.utils.translation import ugettext_lazy as _
+
+import views
+
+urlpatterns = patterns(u'',
+    url(r'^$', views.index, name=u'index'),
+    url(_(r'^create/$'), views.create, name=u'create'),
+    url(_(r'^create/(?P<draft_id>\d+)/$'), views.create, name=u'create_from_draft'),
+    url(_(r'^detail/(?P<info_request_id>\d+)/$'), views.detail, name=u'detail'),
+    url(_(r'^delete-draft/(?P<draft_id>\d+)/$'), views.delete_draft, name=u'delete_draft'),
+)
+

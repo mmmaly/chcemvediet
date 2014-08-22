@@ -9,24 +9,24 @@ import views
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    url(r'^sitemap[.]xml$', 'django.contrib.sitemaps.views.sitemap'),
+urlpatterns = patterns(u'',
+    url(r'^sitemap[.]xml$', u'django.contrib.sitemaps.views.sitemap'),
 )
 
-urlpatterns += i18n_patterns('',
-    url(r'^$', views.index, name='index'),
-    url(_(r'^about/'), views.about, name='about'),
-    url(_(r'^obligees/'), include('chcemvediet.apps.obligees.urls', namespace='obligees')),
-    url(_(r'^applications/'), include('chcemvediet.apps.applications.urls', namespace='applications')),
-    url(r'^accounts/', include('allauth.urls')),
-    url(r'^accounts/', include('chcemvediet.apps.accounts.urls', namespace='accounts')),
+urlpatterns += i18n_patterns(u'',
+    url(r'^$', views.index, name=u'index'),
+    url(_(r'^about/'), views.about, name=u'about'),
+    url(_(r'^obligees/'), include(u'chcemvediet.apps.obligees.urls', namespace=u'obligees')),
+    url(_(r'^requests/'), include(u'chcemvediet.apps.info_requests.urls', namespace=u'info_requests')),
+    url(r'^accounts/', include(u'allauth.urls')),
+    url(r'^accounts/', include(u'chcemvediet.apps.accounts.urls', namespace=u'accounts')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^i18n/', include(u'django.conf.urls.i18n')),
 )
 
 if settings.DEBUG:
-    urlpatterns = patterns('',
-        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-        url(r'', include('django.contrib.staticfiles.urls')),
+    urlpatterns = patterns(u'',
+        url(r'^media/(?P<path>.*)$', u'django.views.static.serve', {u'document_root': settings.MEDIA_ROOT, u'show_indexes': True}),
+        url(r'', include(u'django.contrib.staticfiles.urls')),
     ) + urlpatterns
 
