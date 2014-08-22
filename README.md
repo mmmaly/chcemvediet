@@ -73,6 +73,11 @@ If `migrate` fails, try to run it once or twice again. Sometimes it helps.
 
  4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 
+ 5. To process received e-mails use (we will make it a cron job in the future):
+
+    	$ cd chcemvediet
+    	$ env/bin/python manage.py getmail
+
 
 ### 1.5. Contributing
 

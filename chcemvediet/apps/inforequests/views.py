@@ -14,7 +14,7 @@ from allauth.account.decorators import verified_email_required
 from poleno.utils.mail import mail_address_with_name
 from chcemvediet.apps.obligees.models import Obligee
 
-from models import Inforequest, InforequestDraft, Action
+from models import Inforequest, InforequestDraft, Action, ReceivedEmail
 from forms import InforequestForm, InforequestDraftForm
 
 @login_required
@@ -98,8 +98,10 @@ def create(request, draft_id=None):
 @require_http_methods([u'HEAD', u'GET'])
 def detail(request, inforequest_id):
     inforequest = get_object_or_404(Inforequest, pk=inforequest_id, applicant=request.user)
+    undecided_emails = inforequest.receivedemail_set.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
     return render(request, u'inforequests/detail.html', {
         u'inforequest': inforequest,
+        u'undecided_emails': undecided_emails,
         })
 
 @login_required

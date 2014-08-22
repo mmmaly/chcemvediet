@@ -1,8 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from django.core.mail import send_mail
 from django.db import models
-from django.contrib.auth.models import User
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
+from django_mailbox.signals import message_received
 
 from poleno.utils.model import FieldChoices
 
@@ -13,7 +16,7 @@ class InforequestDraft(models.Model):
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
     def __unicode__(self):
-        return u'<%s: %s>' % (self.__class__.__name__, (self.applicant, self.obligee))
+        return u'%s' % ((self.applicant, self.obligee),)
 
 class Inforequest(models.Model):
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
@@ -28,8 +31,11 @@ class Inforequest(models.Model):
     applicant_city = models.CharField(max_length=255, verbose_name=_(u'Applicant City'))
     applicant_zip = models.CharField(max_length=10, verbose_name=_(u'Applicant Zip'))
 
+    # Backward relations:
+    #  -- receivedemail_set: by ReceivedEmail.inforequest
+
     def __unicode__(self):
-        return u'<%s: %s>' % (self.__class__.__name__, (self.applicant, self.history.obligee, self.submission_date))
+        return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)
 
 class History(models.Model):
     obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
@@ -47,9 +53,9 @@ class History(models.Model):
 
     def __unicode__(self):
         try:
-            return u'<%s: %s>' % (self.__class__.__name__, (self.inforequest, self.obligee))
+            return u'%s' % ((self.inforequest, self.obligee),)
         except Inforequest.DoesNotExist:
-            return u'<%s: %s>' % (self.__class__.__name__, (self.obligee))
+            return u'%s' % ((self.obligee,),)
 
 class Action(models.Model):
     TYPES = FieldChoices(
@@ -62,5 +68,37 @@ class Action(models.Model):
     effective_date = models.DateTimeField(auto_now_add=True, verbose_name=_(u'Effective Date'))
 
     def __unicode__(self):
-        return u'<%s: %s>' % (self.__class__.__name__, (self.history, self.get_type_display(), self.effective_date))
+        return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)
 
+class ReceivedEmail(models.Model):
+    STATUSES = FieldChoices(
+        (u'UNASSIGNED', 1, _(u'Unassigned')),
+        (u'UNDECIDED', 2, _(u'Undecided')),
+        (u'UNKNOWN', 3, _(u'Unknown')),
+        (u'UNRELATED', 4, _(u'Unrelated')),
+        (u'OBLIGEE_ACTION', 5, _(u'Obligee Action')),
+        )
+    inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
+    raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
+    status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
+
+    def __unicode__(self):
+        return u'%s' % ((self.inforequest, self.get_status_display(), self.raw_email),)
+
+@receiver(message_received)
+def assign_email_on_message_received(sender, message, **kwargs):
+    received_email = ReceivedEmail(raw_email=message)
+    try:
+        inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
+    except (Inforequest.DoesNotExist, Inforequest.MultipleObjectsReturned):
+        received_email.status = received_email.STATUSES.UNASSIGNED
+    else:
+        received_email.inforequest = inforequest
+        received_email.status = received_email.STATUSES.UNDECIDED
+    received_email.save()
+
+    if received_email.inforequest:
+        subject = _(u'New e-mail notification');
+        message = _(u'We got an e-mail from \'%s\' regarding your inforequest to \'%s\'.') % (
+                message.from_header, received_email.inforequest.history.obligee_name)
+        send_mail(subject, message, u'info@chcemvediet.sk', [received_email.inforequest.applicant.email])

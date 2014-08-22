@@ -44,6 +44,28 @@
       <p class="span10">{{ action.content }}</p>
     </div>
   {% endfor %}
+  {% for email in undecided_emails %}
+    <h2>{% blocktrans %}Undecided Received E-mail{% endblocktrans %}</h2>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Subject{% endblocktrans %}:</p>
+      <p class="span10">{{ email.raw_email.subject }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}From{% endblocktrans %}:</p>
+      <p class="span10">{{ email.raw_email.from_header }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}To{% endblocktrans %}:</p>
+      <p class="span10">{{ email.raw_email.to_header }}</p>
+    </div>
+    <div class="row">
+      <p class="span2 text-right">{% blocktrans %}Received{% endblocktrans %}:</p>
+      <p class="span10">{{ email.raw_email.processed }}</p>
+    </div>
+    <div class="row">
+      <p class="span12" style="white-space: pre-line;">{{ email.raw_email.text }}</p>
+    </div>
+  {% endfor %}
   <p>
     <a class="btn" href="{% url 'inforequests:index' %}">{% blocktrans %}Inforequest List{% endblocktrans %}</a>
   </p>

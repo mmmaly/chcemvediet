@@ -13,7 +13,7 @@ class Obligee(models.Model):
     email = models.EmailField(max_length=255, verbose_name=_(u'E-mail'))
     slug = models.SlugField(max_length=255, verbose_name=_(u'Slug'))
     def __unicode__(self):
-        return self.name
+        return u'%s' % ((self.name,),)
 
 def validate_obligee_name_exists(value):
     if not Obligee.objects.filter(name=value).exists():
