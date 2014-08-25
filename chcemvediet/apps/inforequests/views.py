@@ -20,8 +20,8 @@ from forms import InforequestForm, InforequestDraftForm
 @login_required
 @require_http_methods([u'HEAD', u'GET'])
 def index(request):
-    inforequest_list = Inforequest.objects.filter(applicant=request.user)
-    draft_list = InforequestDraft.objects.filter(applicant=request.user)
+    inforequest_list = Inforequest.objects.all().owned_by(request.user)
+    draft_list = InforequestDraft.objects.owned_by(request.user)
     return render(request, u'inforequests/index.html', {
         u'inforequest_list': inforequest_list,
         u'draft_list': draft_list,
@@ -30,7 +30,7 @@ def index(request):
 @verified_email_required
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 def create(request, draft_id=None):
-    draft = get_object_or_404(InforequestDraft, pk=draft_id, applicant=request.user) if draft_id else None
+    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id) if draft_id else None
 
     if request.method == u'POST':
         if u'save' in request.POST:
@@ -83,7 +83,7 @@ def create(request, draft_id=None):
 
     if request.method == u'POST':
         try:
-            obligee = Obligee.objects.filter(name=request.POST[u'obligee'])[0]
+            obligee = Obligee.objects.filter(name=request.POST[u'obligee']).first()
         except:
             obligee = None
     else:
@@ -97,17 +97,15 @@ def create(request, draft_id=None):
 @login_required
 @require_http_methods([u'HEAD', u'GET'])
 def detail(request, inforequest_id):
-    inforequest = get_object_or_404(Inforequest, pk=inforequest_id, applicant=request.user)
-    undecided_emails = inforequest.receivedemail_set.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     return render(request, u'inforequests/detail.html', {
         u'inforequest': inforequest,
-        u'undecided_emails': undecided_emails,
         })
 
 @login_required
 @require_http_methods([u'POST'])
 def delete_draft(request, draft_id):
-    draft = get_object_or_404(InforequestDraft, pk=draft_id, applicant=request.user)
+    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id)
     draft.delete()
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 

@@ -44,7 +44,7 @@ class InforequestForm(forms.Form):
         obligee_name = self.cleaned_data[u'obligee']
 
         history = History()
-        history.obligee = Obligee.objects.filter(name=obligee_name)[0]
+        history.obligee = Obligee.objects.filter(name=obligee_name).first()
         history.obligee_name = history.obligee.name
         history.obligee_street = history.obligee.street
         history.obligee_city = history.obligee.city
@@ -105,7 +105,7 @@ class InforequestDraftForm(InforequestForm):
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
         obligee_name = self.cleaned_data[u'obligee']
-        draft.obligee = Obligee.objects.filter(name=obligee_name)[0] if obligee_name else None
+        draft.obligee = Obligee.objects.filter(name=obligee_name).first() if obligee_name else None
         draft.subject = self.cleaned_data[u'subject']
         draft.content = self.cleaned_data[u'content']
         draft.save()

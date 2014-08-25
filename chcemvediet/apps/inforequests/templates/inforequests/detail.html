@@ -44,7 +44,7 @@
       <p class="span10">{{ action.content }}</p>
     </div>
   {% endfor %}
-  {% for email in undecided_emails %}
+  {% for email in inforequest.receivedemail_set.undecided %}
     <h2>{% blocktrans %}Undecided Received E-mail{% endblocktrans %}</h2>
     <div class="row">
       <p class="span2 text-right">{% blocktrans %}Subject{% endblocktrans %}:</p>

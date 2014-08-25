@@ -7,7 +7,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django_mailbox.signals import message_received
 
-from poleno.utils.model import FieldChoices
+from poleno.utils.model import FieldChoices, QuerySet
+
+
+
+
+class InforequestDraftQuerySet(QuerySet):
+    def owned_by(self, user):
+        return self.filter(applicant=user)
 
 class InforequestDraft(models.Model):
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
@@ -15,8 +22,14 @@ class InforequestDraft(models.Model):
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
+    objects = InforequestDraftQuerySet.as_manager()
+
     def __unicode__(self):
         return u'%s' % ((self.applicant, self.obligee),)
+
+class InforequestQuerySet(QuerySet):
+    def owned_by(self, user):
+        return self.filter(applicant=user)
 
 class Inforequest(models.Model):
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
@@ -33,6 +46,8 @@ class Inforequest(models.Model):
 
     # Backward relations:
     #  -- receivedemail_set: by ReceivedEmail.inforequest
+
+    objects = InforequestQuerySet.as_manager()
 
     def __unicode__(self):
         return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)
@@ -70,6 +85,10 @@ class Action(models.Model):
     def __unicode__(self):
         return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)
 
+class ReceivedEmailQuerySet(QuerySet):
+    def undecided(self):
+        return self.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
+
 class ReceivedEmail(models.Model):
     STATUSES = FieldChoices(
         (u'UNASSIGNED', 1, _(u'Unassigned')),
@@ -81,6 +100,8 @@ class ReceivedEmail(models.Model):
     inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
     raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
     status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
+
+    objects = ReceivedEmailQuerySet.as_manager()
 
     def __unicode__(self):
         return u'%s' % ((self.inforequest, self.get_status_display(), self.raw_email),)
