@@ -10,8 +10,6 @@ from django_mailbox.signals import message_received
 from poleno.utils.model import FieldChoices, QuerySet
 
 
-
-
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
         return self.filter(applicant=user)
@@ -72,15 +70,33 @@ class History(models.Model):
         except Inforequest.DoesNotExist:
             return u'%s' % ((self.obligee,),)
 
+class ActionQuerySet(QuerySet):
+    def requests(self):
+        return self.filter(type=Action.TYPES.REQUEST)
+    def confirmations(self):
+        return self.filter(type=Action.TYPES.CONFIRMATION)
+    def extensions(self):
+        return self.filter(type=Action.TYPES.EXTENSION)
+    def advancements(self):
+        return self.filter(type=Action.TYPES.ADVANCEMENT)
+    def clarification_requests(self):
+        return self.filter(type=Action.TYPES.CLARIFICATION_REQUEST)
+
 class Action(models.Model):
     TYPES = FieldChoices(
         (u'REQUEST', 1, _(u'Request')),
+        (u'CONFIRMATION', 2, _(u'Confirmation')),
+        (u'EXTENSION', 3, _(u'Extension')),
+        (u'ADVANCEMENT', 4, _(u'Advancement')),
+        (u'CLARIFICATION_REQUEST', 5, _(u'Clarification Request')),
         )
     history = models.ForeignKey(u'History', verbose_name=_(u'History'))
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
     subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(verbose_name=_(u'Content'))
-    effective_date = models.DateTimeField(auto_now_add=True, verbose_name=_(u'Effective Date'))
+    effective_date = models.DateTimeField(verbose_name=_(u'Effective Date'))
+
+    objects = ActionQuerySet.as_manager()
 
     def __unicode__(self):
         return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)

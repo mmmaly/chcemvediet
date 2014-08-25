@@ -54,10 +54,11 @@ def create(request, draft_id=None):
                 form.save(inforequest)
 
                 action = Action(
-                        type=Action.TYPES.REQUEST,
                         history=inforequest.history,
+                        type=Action.TYPES.REQUEST,
                         subject=form.cleaned_data[u'subject'],
                         content=form.cleaned_data[u'content'],
+                        effective_date=inforequest.submission_date,
                         )
                 action.save()
 
@@ -109,3 +110,69 @@ def delete_draft(request, draft_id):
     draft.delete()
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 
+@login_required
+@require_http_methods([u'POST'])
+def decide_email(request, inforequest_id, receivedemail_id):
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+    receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
+
+    # We don't check whether ``receivedemail`` is the oldest ``inforequest`` undecided e-mail or
+    # not. Although the frontend forces the user to decide the e-mails in the order they were
+    # received, it is not a mistake to decide them in any other order. In the future we may even
+    # add an advanced frontend to allow the user to decide the e-mails in any order, but to keep
+    # the frontend simple, we don't do it now.
+
+    operation = request.POST[u'operation'] if u'operation' in request.POST else None
+    anchor = u'#undecided'
+
+    if (operation == u'unrelated'):
+        receivedemail.status = receivedemail.STATUSES.UNRELATED
+        receivedemail.save()
+
+    elif (operation == u'unknown'):
+        receivedemail.status = receivedemail.STATUSES.UNKNOWN
+        receivedemail.save()
+
+    elif (operation == u'confirmation'):
+        action = Action(
+                history=inforequest.history,
+                type=Action.TYPES.CONFIRMATION,
+                subject=receivedemail.raw_email.subject,
+                content=receivedemail.raw_email.text,
+                effective_date=receivedemail.raw_email.processed,
+                )
+        action.save()
+        receivedemail.status = receivedemail.STATUSES.OBLIGEE_ACTION
+        receivedemail.save()
+        anchor = u'#action-%d' % action.id
+
+    elif (operation == u'extension'):
+        action = Action(
+                history=inforequest.history,
+                type=Action.TYPES.EXTENSION,
+                subject=receivedemail.raw_email.subject,
+                content=receivedemail.raw_email.text,
+                effective_date=receivedemail.raw_email.processed,
+                )
+        action.save()
+        receivedemail.status = receivedemail.STATUSES.OBLIGEE_ACTION
+        receivedemail.save()
+        anchor = u'#action-%d' % action.id
+
+    elif (operation == u'clarification-request'):
+        action = Action(
+                history=inforequest.history,
+                type=Action.TYPES.CLARIFICATION_REQUEST,
+                subject=receivedemail.raw_email.subject,
+                content=receivedemail.raw_email.text,
+                effective_date=receivedemail.raw_email.processed,
+                )
+        action.save()
+        receivedemail.status = receivedemail.STATUSES.OBLIGEE_ACTION
+        receivedemail.save()
+        anchor = u'#action-%d' % action.id
+
+    else:
+        raise PermissionDenied
+
+    return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.id,)) + anchor)
