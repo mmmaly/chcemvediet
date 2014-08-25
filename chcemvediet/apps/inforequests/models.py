@@ -22,6 +22,9 @@ class InforequestDraft(models.Model):
 
     objects = InforequestDraftQuerySet.as_manager()
 
+    class Meta:
+        ordering = [u'pk']
+
     def __unicode__(self):
         return u'%s' % ((self.applicant, self.obligee),)
 
@@ -46,6 +49,9 @@ class Inforequest(models.Model):
     #  -- receivedemail_set: by ReceivedEmail.inforequest
 
     objects = InforequestQuerySet.as_manager()
+
+    class Meta:
+        ordering = [u'submission_date', u'pk']
 
     def __unicode__(self):
         return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)
@@ -98,6 +104,9 @@ class Action(models.Model):
 
     objects = ActionQuerySet.as_manager()
 
+    class Meta:
+        ordering = [u'effective_date', u'pk']
+
     def __unicode__(self):
         return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)
 
@@ -118,6 +127,9 @@ class ReceivedEmail(models.Model):
     status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
 
     objects = ReceivedEmailQuerySet.as_manager()
+
+    class Meta:
+        ordering = [u'raw_email__processed', u'pk']
 
     def __unicode__(self):
         return u'%s' % ((self.inforequest, self.get_status_display(), self.raw_email),)
