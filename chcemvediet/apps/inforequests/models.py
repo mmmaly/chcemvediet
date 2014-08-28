@@ -60,7 +60,7 @@ class Inforequest(models.Model):
             # Freeze applicant contact information
             if self.applicant:
                 self.applicant_name = self.applicant.get_full_name()
-                self.applicant_name = self.applicant.profile.street
+                self.applicant_street = self.applicant.profile.street
                 self.applicant_city = self.applicant.profile.city
                 self.applicant_zip = self.applicant.profile.zip
 
