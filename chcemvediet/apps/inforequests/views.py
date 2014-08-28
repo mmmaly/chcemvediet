@@ -13,13 +13,14 @@ from allauth.account.decorators import verified_email_required
 
 from poleno.utils.mail import mail_address_with_name
 from poleno.utils.http import Jdot
+from poleno.utils.views import require_ajax
 from chcemvediet.apps.obligees.models import Obligee
 
 from models import Inforequest, InforequestDraft, Action
 from forms import InforequestForm, InforequestDraftForm, ExtensionEmailForm
 
-@login_required
 @require_http_methods([u'HEAD', u'GET'])
+@login_required
 def index(request):
     inforequest_list = Inforequest.objects.all().owned_by(request.user)
     draft_list = InforequestDraft.objects.owned_by(request.user)
@@ -28,8 +29,8 @@ def index(request):
         u'draft_list': draft_list,
         })
 
-@verified_email_required
 @require_http_methods([u'HEAD', u'GET', u'POST'])
+@verified_email_required
 def create(request, draft_id=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id) if draft_id else None
 
@@ -92,8 +93,8 @@ def create(request, draft_id=None):
         u'obligee': obligee,
         })
 
-@login_required
 @require_http_methods([u'HEAD', u'GET'])
+@login_required
 def detail(request, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     return render(request, u'inforequests/detail.html', {
@@ -101,15 +102,16 @@ def detail(request, inforequest_id):
         u'extension_email_form': ExtensionEmailForm(),
         })
 
-@login_required
 @require_http_methods([u'POST'])
+@login_required
 def delete_draft(request, draft_id):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id)
     draft.delete()
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 
-@login_required
 @require_http_methods([u'POST'])
+@require_ajax
+@login_required
 def decide_email(request, inforequest_id, receivedemail_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
