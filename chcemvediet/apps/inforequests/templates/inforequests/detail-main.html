@@ -1,0 +1,30 @@
+{# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- extension_email_form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %
+{% endcomment %}
+
+<h1>{% blocktrans %}Inforequest Detail{% endblocktrans %}</h1>
+<div id="request">
+  {% include "inforequests/detail-request.html" with inforequest=inforequest %}
+</div>
+<div id="actions">
+  {% for action in inforequest.history.action_set.all %}
+    <div id="action-{{ action.id }}">
+      {% include "inforequests/detail-action.html" with inforequest=inforequest action=action %}
+    </div>
+  {% endfor %}
+</div>
+<div id="decide">
+  {% if inforequest.receivedemail_set.undecided.count %}
+    {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first extension_email_form=extension_email_form %}
+  {% endif %}
+</div>
+<div id="waiting">
+  {% include "inforequests/detail-waiting.html" with inforequest=inforequest %}
+</div>

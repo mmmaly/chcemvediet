@@ -10,9 +10,9 @@ from django.contrib.webdesign.lorem_ipsum import paragraphs
 
 register = template.Library()
 
-@register.filter(name='range')
+@register.filter(name=u'range')
 def range_(a, b):
-    """
+    u"""
     Returns python range list.
 
     Usage format:
@@ -31,7 +31,7 @@ def range_(a, b):
 
 @register.filter
 def active(request, view_prefix):
-    """
+    u"""
     Tests if the active view name has prefix ``view_prefix``. View name is colon separated list of
     view namespaces and the actual url name. Thus if the active view is 'namespace:name', then the
     function returns ``True`` for 'namespace' and 'namespace:name', but not for 'name' or
@@ -41,13 +41,13 @@ def active(request, view_prefix):
         resolved = resolve(request.path)
     except:
         return False
-    if not (resolved.view_name + ':').startswith(view_prefix + ':'):
+    if not (resolved.view_name + u':').startswith(view_prefix + u':'):
         return False
     return True
 
 @register.simple_tag
 def lorem(randseed=None, count=1, method=None):
-    """
+    u"""
     Creates Lorem Ipsum text.
 
     Usage format:
@@ -73,20 +73,20 @@ def lorem(randseed=None, count=1, method=None):
     res = paragraphs(count, common=(randseed is None))
     random.setstate(state)
 
-    if method == 'p':
-        res = ['<p>%s</p>' % p for p in res]
+    if method == u'p':
+        res = [u'<p>%s</p>' % p for p in res]
     return '\n'.join(res)
 
 @register.simple_tag(takes_context=True)
 def change_lang(context, lang=None):
-    """
+    u"""
     Get active page's url by a specified language
     Usage: {% change_lang 'en' %}
 
     Source: https://djangosnippets.org/snippets/2875/
     """
 
-    path = context['request'].path
+    path = context[u'request'].path
     url_parts = resolve(path)
 
     url = path
@@ -97,4 +97,4 @@ def change_lang(context, lang=None):
     finally:
         activate(cur_language)
 
-    return '%s' % url
+    return u'%s' % url

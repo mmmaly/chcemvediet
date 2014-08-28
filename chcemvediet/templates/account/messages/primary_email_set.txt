@@ -1,4 +1,11 @@
 {# vim: set filetype=htmldjango :#}
 {% load blocktrans from i18n %}
 
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
 {% blocktrans %}Primary e-mail address set.{% endblocktrans %}

@@ -1,5 +1,13 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Verify Your E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
 

@@ -3,7 +3,7 @@
 import re
 
 def mail_address_with_name(name, address):
-    """
+    u"""
     To/From e-mail headers may contain sender's/recepient's name alongside his e-mail address. To
     prevent any unexpected e-mail behaviour, we filter all special characters from the ``name``
     part. Moreover we merge all consecutive whitespace into a single spaces. This will remove all
@@ -19,5 +19,5 @@ def mail_address_with_name(name, address):
         name: "<bad@name.com>,", address: "john.down@example.com" -> "bad name com <john.down@example.com>"
     """
     name = re.sub(r'[()<>@,;:\\".\[\]\s]+', ' ', name, flags=re.U).strip()
-    return '%s <%s>' % (name, address)
+    return u'%s <%s>' % (name, address)
 

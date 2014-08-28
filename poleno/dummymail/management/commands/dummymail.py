@@ -18,7 +18,7 @@ class Command(NoArgsCommand):
     default_incoming_smtp_port = 2025
     default_incoming_imap_port = 2143
 
-    help = dedent("""\
+    help = dedent(u"""\
         Creates a dummy e-mail infrastructure for local development.
 
         This command runs two pairs of dummy SMTP and IMAP servers on localhost. One
@@ -66,25 +66,25 @@ class Command(NoArgsCommand):
             ))
 
     option_list = NoArgsCommand.option_list + (
-        make_option('--out-smtp-port', action='store', type='int', dest='outgoing_smtp_port',
+        make_option(u'--out-smtp-port', action=u'store', type=u'int', dest=u'outgoing_smtp_port',
             default=default_outgoing_smtp_port,
-            help='Port to use for the outgoing SMTP server. Defaults to %d.' % default_outgoing_smtp_port),
-        make_option('--out-imap-port', action='store', type='int', dest='outgoing_imap_port',
+            help=u'Port to use for the outgoing SMTP server. Defaults to %d.' % default_outgoing_smtp_port),
+        make_option(u'--out-imap-port', action=u'store', type=u'int', dest=u'outgoing_imap_port',
             default=default_outgoing_imap_port,
-            help='Port to use for the outgoing IMAP server. Defaults to %d.' % default_outgoing_imap_port),
-        make_option('--in-smtp-port', action='store', type='int', dest='incoming_smtp_port',
+            help=u'Port to use for the outgoing IMAP server. Defaults to %d.' % default_outgoing_imap_port),
+        make_option(u'--in-smtp-port', action=u'store', type=u'int', dest=u'incoming_smtp_port',
             default=default_incoming_smtp_port,
-            help='Port to use for the incoming SMTP server. Defaults to %d.' % default_incoming_smtp_port),
-        make_option('--in-imap-port', action='store', type='int', dest='incoming_imap_port',
+            help=u'Port to use for the incoming SMTP server. Defaults to %d.' % default_incoming_smtp_port),
+        make_option(u'--in-imap-port', action=u'store', type=u'int', dest=u'incoming_imap_port',
             default=default_incoming_imap_port,
-            help='Port to use for the incoming IMAP server. Defaults to %d.' % default_incoming_imap_port),
+            help=u'Port to use for the incoming IMAP server. Defaults to %d.' % default_incoming_imap_port),
         )
 
     def handle_noargs(self, **options):
-        outgoing_smtp_port = options['outgoing_smtp_port']
-        outgoing_imap_port = options['outgoing_imap_port']
-        incoming_smtp_port = options['incoming_smtp_port']
-        incoming_imap_port = options['incoming_imap_port']
+        outgoing_smtp_port = options[u'outgoing_smtp_port']
+        outgoing_imap_port = options[u'outgoing_imap_port']
+        incoming_smtp_port = options[u'incoming_smtp_port']
+        incoming_imap_port = options[u'incoming_imap_port']
 
         log.startLogging(sys.stdout)
 

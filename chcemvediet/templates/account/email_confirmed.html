@@ -1,5 +1,14 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- email_address: allauth.account.models.EmailAddress (not sure)
+ %  -- confirmation: allauth.account.models.EmailConfirmation (not sure)
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Confirm E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
 

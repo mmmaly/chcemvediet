@@ -1,8 +1,17 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
 {% load static from staticfiles %}
 {% load addtoblock from sekizai_tags %}
 {% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: chcemvediet.apps.inforequests.forms.InforequestForm | chcemvediet.apps.inforequests.forms.InforequestDraftForm
+ %  -- obligee: chcemvediet.apps.obligees.models.Obligee
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}New Inforequest{% endblocktrans %} | {{ block.super }}{% endblock %}
 

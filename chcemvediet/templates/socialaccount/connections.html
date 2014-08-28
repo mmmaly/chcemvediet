@@ -1,6 +1,14 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
 {% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: allauth.socialaccount.forms.DisconnectForm
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Account Connections{% endblocktrans %} | {{ block.super }}{% endblock %}
 

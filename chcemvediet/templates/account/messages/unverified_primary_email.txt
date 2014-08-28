@@ -1,4 +1,11 @@
 {# vim: set filetype=htmldjango :#}
 {% load blocktrans from i18n %}
 
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
 {% blocktrans %}Your primary e-mail address must be verified.{% endblocktrans %}

@@ -3,6 +3,13 @@
 {% load provider_login_url from socialaccount %}
 {% load static from staticfiles %}
 
+{% comment %}
+ %
+ % Context:
+ %  -- process: 'login' | 'connect'
+ %
+{% endcomment %}
+
 <a href="{% provider_login_url "facebook" process=process %}"><img src="{% static 'main/images/social/facebook.png' %}" title="{% blocktrans %}Login With Facebook{% endblocktrans %}"></a>
 <a href="{% provider_login_url "google" process=process %}"><img src="{% static 'main/images/social/googleplus.png' %}" title="{% blocktrans %}Login With Google{% endblocktrans %}"></a>
 <a href="{% provider_login_url "twitter" process=process %}"><img src="{% static 'main/images/social/twitter.png' %}" title="{% blocktrans %}Login With Twitter{% endblocktrans %}"></a>

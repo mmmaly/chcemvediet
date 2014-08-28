@@ -1,5 +1,13 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/snippets/form_horizontal.html" %}
 {% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: chcemvediet.apps.inforequests.forms.InforequestForm | chcemvediet.apps.inforequests.forms.InforequestDraftForm
+ %
+{% endcomment %}
 
 {% block before_fields %}
   <div class="control-group">

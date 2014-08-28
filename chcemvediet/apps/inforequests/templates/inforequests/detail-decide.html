@@ -1,0 +1,45 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
+ %  -- extension_email_form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %
+{% endcomment %}
+
+<h2>Undecided Received E-mail</h2>
+<div class="well">
+  {% include "inforequests/detail-email.html" with inforequest=inforequest email=email %}
+  <h4>Please, read the e-mail and decide what it is:</h4>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmation-email-modal">Confirmation</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#extension-email-modal">Extension</button>
+    <button type="button" class="btn" disabled>Advancement</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clarification-request-email-modal">Clarification Request</button>
+    <button type="button" class="btn" disabled>Disclosure</button>
+    <button type="button" class="btn" disabled>Refusal</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#unrelated-email-modal">Unrelated e-mail, or SPAM</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-inverse" data-toggle="modal" data-target="#unknown-email-modal">I don't know</button>
+  </div>
+  <div id="confirmation-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/confirmation-email.html" with inforequest=inforequest email=email %}
+  </div>
+  <div id="extension-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/extension-email.html" with inforequest=inforequest email=email form=extension_email_form %}
+  </div>
+  <div id="clarification-request-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/clarification-request-email.html" with inforequest=inforequest email=email %}
+  </div>
+  <div id="unrelated-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/unrelated-email.html" with inforequest=inforequest email=email %}
+  </div>
+  <div id="unknown-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/unknown-email.html" with inforequest=inforequest email=email %}
+  </div>
+</div>

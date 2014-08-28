@@ -1,21 +1,22 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import re
-
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect
+from django.template import  RequestContext
+from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
 from poleno.utils.mail import mail_address_with_name
+from poleno.utils.http import Jdot
 from chcemvediet.apps.obligees.models import Obligee
 
-from models import Inforequest, InforequestDraft, Action, ReceivedEmail
-from forms import InforequestForm, InforequestDraftForm
+from models import Inforequest, InforequestDraft, Action
+from forms import InforequestForm, InforequestDraftForm, ExtensionEmailForm
 
 @login_required
 @require_http_methods([u'HEAD', u'GET'])
@@ -39,19 +40,15 @@ def create(request, draft_id=None):
                 if not draft:
                     draft = InforequestDraft(applicant=request.user)
                 form.save(draft)
+                draft.save()
                 return HttpResponseRedirect(reverse(u'inforequests:index'))
 
         elif u'submit' in request.POST:
             form = InforequestForm(request.POST)
             if form.is_valid():
-                inforequest = Inforequest(
-                        applicant=request.user,
-                        applicant_name=request.user.get_full_name(),
-                        applicant_street=request.user.profile.street,
-                        applicant_city=request.user.profile.city,
-                        applicant_zip=request.user.profile.zip,
-                        )
+                inforequest = Inforequest(applicant=request.user)
                 form.save(inforequest)
+                inforequest.save()
 
                 action = Action(
                         history=inforequest.history,
@@ -101,6 +98,7 @@ def detail(request, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     return render(request, u'inforequests/detail.html', {
         u'inforequest': inforequest,
+        u'extension_email_form': ExtensionEmailForm(),
         })
 
 @login_required
@@ -122,57 +120,60 @@ def decide_email(request, inforequest_id, receivedemail_id):
     # add an advanced frontend to allow the user to decide the e-mails in any order, but to keep
     # the frontend simple, we don't do it now.
 
-    operation = request.POST[u'operation'] if u'operation' in request.POST else None
-    anchor = u'#undecided'
-
-    if (operation == u'unrelated'):
-        receivedemail.status = receivedemail.STATUSES.UNRELATED
-        receivedemail.save()
-
-    elif (operation == u'unknown'):
-        receivedemail.status = receivedemail.STATUSES.UNKNOWN
-        receivedemail.save()
-
-    elif (operation == u'confirmation'):
-        action = Action(
-                history=inforequest.history,
-                type=Action.TYPES.CONFIRMATION,
-                subject=receivedemail.raw_email.subject,
-                content=receivedemail.raw_email.text,
-                effective_date=receivedemail.raw_email.processed,
+    def do_decision(email_status, action_type=None, form_class=None, selector=None, template=None):
+        action = None
+        if action_type is not None:
+            form = None
+            if form_class is not None:
+                form = form_class(request.POST)
+                if not form.is_valid():
+                    return Jdot().content(selector, request, template, {
+                            u'inforequest': inforequest,
+                            u'email': receivedemail,
+                            u'form': form,
+                        })
+            action = Action(
+                    history=inforequest.history,
+                    type=action_type,
+                    subject=receivedemail.raw_email.subject,
+                    content=receivedemail.raw_email.text,
+                    effective_date=receivedemail.raw_email.processed,
                 )
-        action.save()
-        receivedemail.status = receivedemail.STATUSES.OBLIGEE_ACTION
-        receivedemail.save()
-        anchor = u'#action-%d' % action.id
+            if form:
+                form.save(action)
+            action.save()
 
-    elif (operation == u'extension'):
-        action = Action(
-                history=inforequest.history,
-                type=Action.TYPES.EXTENSION,
-                subject=receivedemail.raw_email.subject,
-                content=receivedemail.raw_email.text,
-                effective_date=receivedemail.raw_email.processed,
-                )
-        action.save()
-        receivedemail.status = receivedemail.STATUSES.OBLIGEE_ACTION
+        # FIXME: comment this if you are lazy to send e-mails while testing
+        receivedemail.status = email_status
         receivedemail.save()
-        anchor = u'#action-%d' % action.id
 
-    elif (operation == u'clarification-request'):
-        action = Action(
-                history=inforequest.history,
-                type=Action.TYPES.CLARIFICATION_REQUEST,
-                subject=receivedemail.raw_email.subject,
-                content=receivedemail.raw_email.text,
-                effective_date=receivedemail.raw_email.processed,
-                )
-        action.save()
-        receivedemail.status = receivedemail.STATUSES.OBLIGEE_ACTION
-        receivedemail.save()
-        anchor = u'#action-%d' % action.id
+        # Close popup, redraw the page and scroll to the added action.
+        return Jdot().js(ur"""
+                $.hideBootstrapModal(function(){
+                    $('#content').html(args.html);
+                    $(args.scroll_to).scrollTo();
+                });
+            """, args={
+                u'scroll_to': u'#action-%d' % action.id if action else u'',
+                u'html': render_to_string(u'inforequests/detail-main.html', {
+                        u'inforequest': inforequest,
+                        u'extension_email_form': ExtensionEmailForm(),
+                    }, RequestContext(request)),
+            })
 
-    else:
+    available_decisions = {
+        u'unrelated': (receivedemail.STATUSES.UNRELATED,),
+        u'unknown': (receivedemail.STATUSES.UNKNOWN,),
+        u'confirmation': (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CONFIRMATION),
+        u'extension': (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.EXTENSION, ExtensionEmailForm, u'#extension-email-modal', u'inforequests/actions/extension-email.html'),
+        u'clarification-request': (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CLARIFICATION_REQUEST),
+        }
+
+    try:
+        decision = available_decisions[request.POST[u'decision']]
+    except KeyError:
         raise PermissionDenied
 
-    return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.id,)) + anchor)
+    jdot = do_decision(*decision)
+    return jdot.as_response()
+

@@ -1,5 +1,17 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: allauth.account.forms.LoginForm
+ %  -- signup_url: string
+ %  -- site: django.contrib.sites.models.Site
+ %  -- redirect_field_name: string
+ %  -- redirect_field_value: string
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Sign In{% endblocktrans %} | {{ block.super }}{% endblock %}
 

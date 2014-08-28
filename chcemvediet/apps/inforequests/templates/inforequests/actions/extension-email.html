@@ -1,0 +1,37 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
+ %  -- form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %
+{% endcomment %}
+
+<form class="form-horizontal jdot" method="post" action="{% url 'inforequests:decide_email' inforequest.id email.id %}">
+  {% csrf_token %}
+  <input type="hidden" name="decision" value="extension">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3>Deadline Extension</h3>
+  </div>
+  <div class="modal-body">
+    {% if inforequest.history.action_set.extensions.count %}
+      <div class="alert">
+        <strong>Warning!</strong> There already is a deadline extension in this inforequest
+        history. Obligees usually don't send multiplne deadline extensions.
+      </div>
+    {% endif %}
+    <p>Are you sure you want to mark this e-mail as a deadline extension of your inforequest?</p>
+    <p>[{% lorem 7 %}]</p>
+    <div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Mark as Deadline Extension</button>
+    <button type="button" class="btn" data-dismiss="modal">Close</button>
+  </div>
+</form>

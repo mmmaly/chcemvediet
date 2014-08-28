@@ -1,6 +1,14 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
 {% load lorem range from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- obligee_page: django.core.paginator.Paginator(chcemvediet.apps.obligees.models.Obligee.objects)
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Obligees List{% endblocktrans %} | {{ block.super }}{% endblock %}
 

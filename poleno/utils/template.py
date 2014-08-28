@@ -6,7 +6,7 @@ from django.template.loader import BaseLoader, find_template_loader
 from django.utils.translation import get_language
 
 class TranslationLoader(BaseLoader):
-    """
+    u"""
     Wrapper template loader that takes another template loader and uses it to load templates.
     However, before loading any template the loader tries to load its translated version first. For
     instance if the current language is 'en' and the loader is asked to load template
@@ -41,7 +41,7 @@ class TranslationLoader(BaseLoader):
         language = get_language()
         template_base, template_ext = splitext(template_name)
         try:
-            return self.loader(template_base + '.' + language + template_ext, template_dirs)
+            return self.loader(u'%s.%s%s' % (template_base, language, template_ext), template_dirs)
         except TemplateDoesNotExist:
             return self.loader(template_name, template_dirs)
 

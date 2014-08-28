@@ -1,7 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import random
-
 from django import forms
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
@@ -9,7 +7,7 @@ from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
 from chcemvediet.apps.obligees.models import Obligee, validate_obligee_name_exists
 
-from models import History
+from models import History, Action
 
 class InforequestForm(forms.Form):
     obligee = forms.CharField(
@@ -42,55 +40,11 @@ class InforequestForm(forms.Form):
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
         obligee_name = self.cleaned_data[u'obligee']
+        obligee = Obligee.objects.filter(name=obligee_name).first()
 
-        history = History()
-        history.obligee = Obligee.objects.filter(name=obligee_name).first()
-        history.obligee_name = history.obligee.name
-        history.obligee_street = history.obligee.street
-        history.obligee_city = history.obligee.city
-        history.obligee_zip = history.obligee.zip
-        history.save()
-
+        history = History(obligee=obligee)
+        history.save() # FIXME: treba? nesavne sa samo, ked sa savne inforequest?
         inforequest.history = history
-
-        def random_email(domain, length):
-            u"""
-            Returns a random e-mail address with ``domain`` for its domain part. The local part of
-            the generated e-mail address has form of
-
-            [:vowel:]? ([:consonant:][:vowel:]){length} [:consonant:]?
-
-            where `[:vowel:]` is the set of all vowels `[aeiouy]` and `['consonant']` is the set of
-            consonants `[bcdfghjklmnprstvxz]`.
-            """
-            vowels = u'aeiouy'
-            consonants = u'bcdfghjklmnprstvxz'
-
-            res = []
-            if random.random() < 0.5:
-                res.append(random.choice(vowels))
-            for i in range(length):
-                res.append(random.choice(consonants))
-                res.append(random.choice(vowels))
-            if random.random() < 0.5:
-                res.append(random.choice(consonants))
-            res.append(u'@')
-            res.append(domain)
-
-            return u''.join(res)
-
-        # Generate random ``inforequest.unique_email``
-        length = 2
-        while length < 20:
-            inforequest.unique_email = random_email(u'mail.chcemvediet.sk', length)
-            try:
-                inforequest.save()
-            except IntegrityError:
-                length += 1
-                continue
-            break
-        else:
-            raise RuntimeError(u'Failed to generate unique random e-mail address.')
 
 class InforequestDraftForm(InforequestForm):
 
@@ -108,5 +62,21 @@ class InforequestDraftForm(InforequestForm):
         draft.obligee = Obligee.objects.filter(name=obligee_name).first() if obligee_name else None
         draft.subject = self.cleaned_data[u'subject']
         draft.content = self.cleaned_data[u'content']
-        draft.save()
+
+class ExtensionEmailForm(forms.Form):
+    deadline = forms.IntegerField(
+            label=_(u'New Deadline'),
+            initial=Action.DEFAULT_DEADLINES.EXTENSION,
+            min_value=2,
+            max_value=100,
+            widget=forms.NumberInput(attrs={
+                u'placeholder': _(u'Deadline'),
+                }),
+            )
+
+    def save(self, action):
+        if not self.is_valid():
+            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+        action.deadline = self.cleaned_data[u'deadline']
 

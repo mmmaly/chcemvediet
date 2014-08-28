@@ -1,6 +1,14 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
 {% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: allauth.account.forms.AddEmailForm
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}E-mail Addresses{% endblocktrans %} | {{ block.super }}{% endblock %}
 

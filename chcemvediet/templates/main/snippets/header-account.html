@@ -2,6 +2,13 @@
 {% load blocktrans from i18n %}
 {% load active from poleno.utils %}
 
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
 {% if user.is_authenticated %}
   <li class="dropdown {% if request|active:'accounts' %}active{% endif %}">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.email }} <b class="caret"></b></a>

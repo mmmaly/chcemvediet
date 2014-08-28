@@ -1,5 +1,13 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- oauth_client: allauth.socialaccount.providers.oauth.client.OAuthClient (optional)
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Social Network Login Failure{% endblocktrans %} | {{ block.super }}{% endblock %}
 

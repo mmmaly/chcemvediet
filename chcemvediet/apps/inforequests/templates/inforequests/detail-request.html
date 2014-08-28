@@ -1,0 +1,34 @@
+{# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+<div class="row">
+  <p class="span2 text-right">{% blocktrans %}Applicant{% endblocktrans %}:</p>
+  <div class="span10">
+    <p>{{ inforequest.applicant_name }}</p>
+    <p>{{ inforequest.applicant_street }}<br>
+      {{ inforequest.applicant_zip }} {{ inforequest.applicant_city }}</p>
+  </div>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% blocktrans %}Obligee{% endblocktrans %}:</p>
+  <div class="span10">
+    <p>{{ inforequest.history.obligee_name }}</p>
+    <p>{{ inforequest.history.obligee_street }}<br>
+      {{ inforequest.history.obligee_zip }} {{ inforequest.history.obligee_city }}</p>
+  </div>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% blocktrans %}Unique E-mail{% endblocktrans %}:</p>
+  <p class="span10">{{ inforequest.unique_email }}</p>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% blocktrans %}Submission Date{% endblocktrans %}:</p>
+  <p class="span10">{{ inforequest.submission_date }}</p>
+</div>

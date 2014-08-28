@@ -1,4 +1,11 @@
 {# vim: set filetype=htmldjango :#}
 {% load blocktrans from i18n %}
 
+{% comment %}
+ %
+ % Context:
+ %  -- email: string
+ %
+{% endcomment %}
+
 {% blocktrans %}You cannot remove your primary e-mail address ({{ email }}).{% endblocktrans %}

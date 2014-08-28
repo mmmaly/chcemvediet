@@ -1,3 +1,12 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: django.forms.Form
+ %
+{% endcomment %}
+
 {% block before_errors %}{% endblock %}
 {% if form.non_field_errors %}
   <div class="control-group error">

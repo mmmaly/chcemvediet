@@ -1,5 +1,14 @@
+{# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest_list: chcemvediet.apps.inforequests.models.Inforequest.objects
+ %  -- draft_list: chcemvediet.apps.inforequests.models.InforequestDraft.objects
+ %
+{% endcomment %}
 
 {% block title %}{% blocktrans %}Submitted Inforequests{% endblocktrans %} | {{ block.super }}{% endblock %}
 
