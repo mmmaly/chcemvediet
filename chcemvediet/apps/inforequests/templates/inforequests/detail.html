@@ -7,14 +7,16 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- extension_email_form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- forms.extension_email: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- forms.disclosure_email: chcemvediet.apps.inforequests.forms.DisclosureEmailForm
+ %  -- forms.refusal_email: chcemvediet.apps.inforequests.forms.RefusalEmailForm
  %
 {% endcomment %}
 
 {% block title %}{% blocktrans %}Inforequest Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  {% include "inforequests/detail-main.html" with inforequest=inforequest extension_email_form=extension_email_form %}
+  {% include "inforequests/detail-main.html" with inforequest=inforequest forms=forms %}
 
   {% addtoblock "js" %}{# {{{ #}
     <script>

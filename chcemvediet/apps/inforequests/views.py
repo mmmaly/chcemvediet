@@ -17,7 +17,7 @@ from poleno.utils.views import require_ajax
 from chcemvediet.apps.obligees.models import Obligee
 
 from models import Inforequest, InforequestDraft, Action
-from forms import InforequestForm, InforequestDraftForm, ExtensionEmailForm
+from forms import InforequestForm, InforequestDraftForm, ExtensionEmailForm, DisclosureEmailForm, RefusalEmailForm
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
@@ -101,7 +101,10 @@ def detail(request, inforequest_id):
 
     ctx = {}
     ctx[u'inforequest'] = inforequest
-    ctx[u'extension_email_form'] = ExtensionEmailForm()
+    ctx[u'forms'] = {}
+    ctx[u'forms'][u'extension_email'] = ExtensionEmailForm()
+    ctx[u'forms'][u'disclosure_email'] = DisclosureEmailForm()
+    ctx[u'forms'][u'refusal_email'] = RefusalEmailForm()
     return render(request, u'inforequests/detail.html', ctx)
 
 @require_http_methods([u'POST'])
@@ -162,7 +165,10 @@ def decide_email(request, inforequest_id, receivedemail_id):
 
         ctx = {}
         ctx[u'inforequest'] = inforequest
-        ctx[u'extension_email_form'] = ExtensionEmailForm()
+        ctx[u'forms'] = {}
+        ctx[u'forms'][u'extension_email'] = ExtensionEmailForm()
+        ctx[u'forms'][u'disclosure_email'] = DisclosureEmailForm()
+        ctx[u'forms'][u'refusal_email'] = RefusalEmailForm()
         content = render_to_string(u'inforequests/detail-main.html', ctx, RequestContext(request))
 
         res = {}
@@ -177,6 +183,8 @@ def decide_email(request, inforequest_id, receivedemail_id):
     available_decisions[u'confirmation'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CONFIRMATION)
     available_decisions[u'extension'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.EXTENSION, ExtensionEmailForm, u'inforequests/actions/extension-email.html')
     available_decisions[u'clarification-request'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CLARIFICATION_REQUEST)
+    available_decisions[u'disclosure'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.DISCLOSURE, DisclosureEmailForm, u'inforequests/actions/disclosure-email.html')
+    available_decisions[u'refusal'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.REFUSAL, RefusalEmailForm, u'inforequests/actions/refusal-email.html')
 
     try:
         decision = available_decisions[request.POST[u'decision']]

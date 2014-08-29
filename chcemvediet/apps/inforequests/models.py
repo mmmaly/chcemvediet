@@ -129,26 +129,55 @@ class ActionQuerySet(QuerySet):
         return self.filter(type=Action.TYPES.CLARIFICATION_REQUEST)
 
 class Action(models.Model):
+    history = models.ForeignKey(u'History', verbose_name=_(u'History'))
+    subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
+    content = models.TextField(verbose_name=_(u'Content'))
+    effective_date = models.DateTimeField(verbose_name=_(u'Effective Date'))
+
     TYPES = FieldChoices(
             (u'REQUEST', 1, _(u'Request')),
             (u'CONFIRMATION', 2, _(u'Confirmation')),
             (u'EXTENSION', 3, _(u'Extension')),
             (u'ADVANCEMENT', 4, _(u'Advancement')),
             (u'CLARIFICATION_REQUEST', 5, _(u'Clarification Request')),
+            (u'DISCLOSURE', 6, _(u'Disclosure')),
+            (u'REFUSAL', 7, _(u'Refusal')),
             )
+    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
+
+    # Default value determined in save() when creating an object
     DEFAULT_DEADLINES = Bunch(
             REQUEST=8,
             CONFIRMATION=8,
             EXTENSION=10,
             ADVANCEMENT=None,
             CLARIFICATION_REQUEST=7,
+            DISCLOSURE=15,
+            REFUSAL=15,
             )
-    history = models.ForeignKey(u'History', verbose_name=_(u'History'))
-    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
-    subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
-    content = models.TextField(verbose_name=_(u'Content'))
-    effective_date = models.DateTimeField(verbose_name=_(u'Effective Date'))
-    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline')) # default value computed in save()
+    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
+
+    # Applicable for: DISCLOSURE
+    DISCLOSURE_LEVELS = FieldChoices(
+            (u'NONE', 1, _(u'No Disclosure at All')),
+            (u'PARTIAL', 2, _(u'Partial Disclosure')),
+            (u'FULL', 3, _(u'Full Disclosure')),
+            )
+    disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
+
+    # Applicable for: REFUSAL
+    REFUSAL_REASONS = FieldChoices(
+            (u'DOES_NOT_HAVE', 3, _(u'Does not Have Information')),
+            (u'DOES_NOT_PROVIDE', 4, _(u'Does not Provide Information')),
+            (u'DOES_NOT_CREATE', 5, _(u'Does not Create Information')),
+            (u'COPYRIGHT', 6, _(u'Copyright Restriction')),
+            (u'BUSINESS_SECRET', 7, _(u'Business Secret')),
+            (u'PERSONAL', 8, _(u'Personal Information')),
+            (u'CONFIDENTIAL', 9, _(u'Confidential Information')),
+            (u'NO_REASON', -1, _(u'No Reason Specified')),
+            (u'OTHER_REASON', -2, _(u'Other Reason')),
+            )
+    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
     objects = ActionQuerySet.as_manager()
 
@@ -170,6 +199,9 @@ class ReceivedEmailQuerySet(QuerySet):
         return self.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
 
 class ReceivedEmail(models.Model):
+    inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
+    raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
+
     STATUSES = FieldChoices(
         (u'UNASSIGNED', 1, _(u'Unassigned')),
         (u'UNDECIDED', 2, _(u'Undecided')),
@@ -177,8 +209,6 @@ class ReceivedEmail(models.Model):
         (u'UNRELATED', 4, _(u'Unrelated')),
         (u'OBLIGEE_ACTION', 5, _(u'Obligee Action')),
         )
-    inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
-    raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
     status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
 
     objects = ReceivedEmailQuerySet.as_manager()

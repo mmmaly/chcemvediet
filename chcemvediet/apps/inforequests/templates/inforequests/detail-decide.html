@@ -5,7 +5,9 @@
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
- %  -- extension_email_form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- forms.extension_email: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- forms.disclosure_email: chcemvediet.apps.inforequests.forms.DisclosureEmailForm
+ %  -- forms.refusal_email: chcemvediet.apps.inforequests.forms.RefusalEmailForm
  %
 {% endcomment %}
 
@@ -18,8 +20,8 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#extension-email-modal">Extension</button>
     <button type="button" class="btn" disabled>Advancement</button>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clarification-request-email-modal">Clarification Request</button>
-    <button type="button" class="btn" disabled>Disclosure</button>
-    <button type="button" class="btn" disabled>Refusal</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#disclosure-email-modal">Disclosure</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#refusal-email-modal">Refusal</button>
   </div>
   <div class="btn-group">
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#unrelated-email-modal">Unrelated e-mail, or SPAM</button>
@@ -31,7 +33,7 @@
     {% include "inforequests/actions/confirmation-email.html" with inforequest=inforequest email=email %}
   </div>
   <div id="extension-email-modal" class="modal hide fade">
-    {% include "inforequests/actions/extension-email.html" with inforequest=inforequest email=email form=extension_email_form %}
+    {% include "inforequests/actions/extension-email.html" with inforequest=inforequest email=email form=forms.extension_email %}
   </div>
   <div id="clarification-request-email-modal" class="modal hide fade">
     {% include "inforequests/actions/clarification-request-email.html" with inforequest=inforequest email=email %}
@@ -41,5 +43,11 @@
   </div>
   <div id="unknown-email-modal" class="modal hide fade">
     {% include "inforequests/actions/unknown-email.html" with inforequest=inforequest email=email %}
+  </div>
+  <div id="disclosure-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/disclosure-email.html" with inforequest=inforequest email=email form=forms.disclosure_email %}
+  </div>
+  <div id="refusal-email-modal" class="modal hide fade">
+    {% include "inforequests/actions/refusal-email.html" with inforequest=inforequest email=email form=forms.refusal_email %}
   </div>
 </div>

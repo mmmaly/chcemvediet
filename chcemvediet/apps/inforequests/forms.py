@@ -80,3 +80,27 @@ class ExtensionEmailForm(forms.Form):
 
         action.deadline = self.cleaned_data[u'deadline']
 
+class DisclosureEmailForm(forms.Form):
+    level = forms.ChoiceField(
+            label=_(u'Disclosure Level'),
+            choices=[(u'', u'')] + Action.DISCLOSURE_LEVELS._choices,
+            )
+
+    def save(self, action):
+        if not self.is_valid():
+            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+        action.disclosure_level = self.cleaned_data[u'level']
+
+class RefusalEmailForm(forms.Form):
+    reason = forms.ChoiceField(
+            label=_(u'Refusal Reason'),
+            choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
+            )
+
+    def save(self, action):
+        if not self.is_valid():
+            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+        action.refusal_reason = self.cleaned_data[u'reason']
+

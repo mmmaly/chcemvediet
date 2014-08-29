@@ -18,6 +18,18 @@
     <p class="span2 text-right">Subject:</p>
     <p class="span10">{{ action.subject }}</p>
   </div>
+  {% if action.disclosure_level %}
+    <div class="row-fluid">
+      <p class="span2 text-right">Disclosure Level:</p>
+      <p class="span10">{{ action.get_disclosure_level_display }}</p>
+    </div>
+  {% endif %}
+  {% if action.refusal_reason %}
+    <div class="row-fluid">
+      <p class="span2 text-right">Refusal Reason:</p>
+      <p class="span10">{{ action.get_refusal_reason_display }}</p>
+    </div>
+  {% endif %}
   <div class="row-fluid">
     <p class="span12" style="white-space: pre-line;">{{ action.content }}</p>
   </div>

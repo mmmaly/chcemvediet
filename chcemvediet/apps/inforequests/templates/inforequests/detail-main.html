@@ -5,7 +5,9 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- extension_email_form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- forms.extension_email: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- forms.disclosure_email: chcemvediet.apps.inforequests.forms.DisclosureEmailForm
+ %  -- forms.refusal_email: chcemvediet.apps.inforequests.forms.RefusalEmailForm
  %
 {% endcomment %}
 
@@ -22,7 +24,7 @@
 </div>
 <div id="decide">
   {% if inforequest.receivedemail_set.undecided.count %}
-    {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first extension_email_form=extension_email_form %}
+    {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first forms=forms %}
   {% endif %}
 </div>
 <div id="waiting">
