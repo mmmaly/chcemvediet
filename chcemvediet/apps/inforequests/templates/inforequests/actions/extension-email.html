@@ -10,7 +10,7 @@
  %
 {% endcomment %}
 
-<form class="form-horizontal jdot" method="post" action="{% url 'inforequests:decide_email' inforequest.id email.id %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' inforequest.id email.id %}">
   {% csrf_token %}
   <input type="hidden" name="decision" value="extension">
   <div class="modal-header">

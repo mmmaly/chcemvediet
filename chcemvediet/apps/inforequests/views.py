@@ -12,7 +12,7 @@ from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
 from poleno.utils.mail import mail_address_with_name
-from poleno.utils.http import Jdot
+from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax
 from chcemvediet.apps.obligees.models import Obligee
 
@@ -125,43 +125,48 @@ def decide_email(request, inforequest_id, receivedemail_id):
     def do_decision(email_status, action_type=None, form_class=None, selector=None, template=None):
         action = None
         if action_type is not None:
+
             form = None
             if form_class is not None:
                 form = form_class(request.POST)
                 if not form.is_valid():
-                    return Jdot().content(selector, request, template, {
-                            u'inforequest': inforequest,
-                            u'email': receivedemail,
-                            u'form': form,
-                        })
+
+                    ctx = {}
+                    ctx[u'inforequest'] = inforequest
+                    ctx[u'email'] = receivedemail
+                    ctx[u'form'] = form
+                    content = render_to_string(template, ctx, RequestContext(request))
+
+                    res = {}
+                    res[u'result'] = u'invalid'
+                    res[u'content'] = content
+                    return res
+
             action = Action(
                     history=inforequest.history,
                     type=action_type,
                     subject=receivedemail.raw_email.subject,
                     content=receivedemail.raw_email.text,
                     effective_date=receivedemail.raw_email.processed,
-                )
+                    )
             if form:
                 form.save(action)
             action.save()
 
         # FIXME: comment this if you are lazy to send e-mails while testing
-        receivedemail.status = email_status
-        receivedemail.save()
+        #receivedemail.status = email_status
+        #receivedemail.save()
 
-        # Close popup, redraw the page and scroll to the added action.
-        return Jdot().js(ur"""
-                $.hideBootstrapModal(function(){
-                    $('#content').html(args.html);
-                    $(args.scroll_to).scrollTo();
-                });
-            """, args={
-                u'scroll_to': u'#action-%d' % action.id if action else u'',
-                u'html': render_to_string(u'inforequests/detail-main.html', {
-                        u'inforequest': inforequest,
-                        u'extension_email_form': ExtensionEmailForm(),
-                    }, RequestContext(request)),
-            })
+        ctx = {}
+        ctx[u'inforequest'] = inforequest
+        ctx[u'extension_email_form'] = ExtensionEmailForm()
+        content = render_to_string(u'inforequests/detail-main.html', ctx, RequestContext(request))
+
+        res = {}
+        res[u'result'] = u'success'
+        res[u'content'] = content
+        res[u'scroll_to'] = u'#action-%d' % action.id if action else u''
+        return res
 
     available_decisions = {
         u'unrelated': (receivedemail.STATUSES.UNRELATED,),
@@ -176,6 +181,6 @@ def decide_email(request, inforequest_id, receivedemail_id):
     except KeyError:
         raise PermissionDenied
 
-    jdot = do_decision(*decision)
-    return jdot.as_response()
+    res = do_decision(*decision)
+    return JsonResponse(res)
 

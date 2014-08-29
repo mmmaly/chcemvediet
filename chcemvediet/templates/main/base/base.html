@@ -148,6 +148,8 @@
 	 *     <form class="jdot" method="post" action="...">...</form>
 	 *     <button class="jdot" action="...">...</button>
 	 *     <a class="jdot" href="..." method="post">...</a>
+	 *
+	 * FIXME: Deprecated?
 	 */
 	$(function(){
 		function handler(event){
@@ -165,6 +167,34 @@
 		}
 		$(document).on('submit', 'form.jdot', handler);
 		$(document).on('click', ':not(form).jdot', handler);
+	});
+
+	/* Performs AJAX request when clicking on an element or submitting a form. Response data
+	 * are returned by ``ajax-done`` event which is triggered on the element when the request
+	 * finishes.
+	 *
+	 * Example:
+	 *     <form class="ajax" method="post" action="...">...</form>
+	 *     <button class="ajax" action="...">...</button>
+	 *     <a class="ajax" href="..." method="post">...</a>
+	 *
+	 *     $('form').on('ajax-done', function(event, data){...})
+	 */
+	$(function(){
+		function handler(event){
+			event.preventDefault();
+			var that = this;
+			$.ajax({
+				type: $(this).attr('method') || 'get',
+				url: $(this).attr('action') || $(this).attr('href'),
+				data: $(this).serialize(),
+				dataType: 'json',
+			}).done(function(data){
+				$(that).trigger('ajax-done', [data]);
+			});
+		}
+		$(document).on('submit', 'form.ajax', handler);
+		$(document).on('click', ':not(form).ajax', handler);
 	});
 
   </script>

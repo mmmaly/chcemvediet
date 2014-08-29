@@ -19,6 +19,8 @@ class JsonResponse(HttpResponse):
 class Jdot(object):
     u"""
     JDOT = JSON DOM Transition
+
+    FIXME: DEPRECATED?
     """
     def __init__(self):
         self.list = []

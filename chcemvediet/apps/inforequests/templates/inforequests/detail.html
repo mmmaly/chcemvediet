@@ -1,6 +1,7 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
+{% load addtoblock from sekizai_tags %}
 
 {% comment %}
  %
@@ -14,4 +15,25 @@
 
 {% block main_col %}
   {% include "inforequests/detail-main.html" with inforequest=inforequest extension_email_form=extension_email_form %}
+
+  {% addtoblock "js" %}{# {{{ #}
+    <script>
+	$(function(){
+		$('#decide').on('ajax-done', '.modal', function(event, data){
+			switch (data.result) {
+				case 'invalid':
+					$(this).html(data.content);
+					break;
+				case 'success':
+					$.hideBootstrapModal(function(){
+						$('#content').html(data.content);
+						$(data.scroll_to).scrollTo();
+					});
+					break;
+			}
+		});
+	});
+    </script>
+  {% endaddtoblock %}{# }}} #}
 {% endblock %}
+
