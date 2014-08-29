@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% load active from poleno.utils %}
 
 {% comment %}
  %
@@ -15,6 +16,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <a class="brand {% if request|active:'index' %}active{% endif %}" href="{% url 'index' %}">Chcem Vedieť</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
           {% include "main/snippets/header-menu.html" %}
