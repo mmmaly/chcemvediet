@@ -11,7 +11,7 @@
 
 {% block title %}{% blocktrans %}Confirm E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
 
-{% block main_col %}
+{% block content %}
   <h1>{% blocktrans %}Confirm E-mail Address{% endblocktrans %}</h1>
   {% if confirmation %}
     <p>{% blocktrans with confirmation.email_address.email as email and confirmation.email_address.user.get_full_name as user %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user }}.{% endblocktrans %}</p>

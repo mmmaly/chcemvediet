@@ -12,7 +12,7 @@
 
 {% block title %}{% blocktrans %}Sign Out{% endblocktrans %} | {{ block.super }}{% endblock %}
 
-{% block main_col %}
+{% block content %}
   <h1>{% blocktrans %}Sign Out{% endblocktrans %}</h1>
   <p>{% blocktrans %}Are you sure you want to sign out?{% endblocktrans %}</p>
   <form method="post" action="{% url 'account_logout' %}">

@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import json, re
+import re
 from unidecode import unidecode
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -9,6 +9,8 @@ from django.forms.models import model_to_dict
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 from django.db.models import Q
+
+from poleno.utils.http import JsonResponse
 
 import models
 
@@ -25,8 +27,9 @@ def index(request):
     except EmptyPage:
         obligee_page = paginator.page(paginator.num_pages)
 
-    context = {u'obligee_page': obligee_page}
-    return render(request, u'obligees/index.html', context)
+    ctx = {}
+    ctx[u'obligee_page'] = obligee_page
+    return render(request, u'obligees/index.html', ctx)
 
 @require_http_methods([u'HEAD', u'GET'])
 def autocomplete(request):
@@ -42,5 +45,5 @@ def autocomplete(request):
         u'obligee': model_to_dict(obligee),
     } for obligee in obligee_list]
 
-    return HttpResponse(json.dumps(data), content_type=u'application/json')
+    return JsonResponse(data)
 

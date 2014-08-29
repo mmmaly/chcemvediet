@@ -24,10 +24,11 @@ from forms import InforequestForm, InforequestDraftForm, ExtensionEmailForm
 def index(request):
     inforequest_list = Inforequest.objects.all().owned_by(request.user)
     draft_list = InforequestDraft.objects.owned_by(request.user)
-    return render(request, u'inforequests/index.html', {
-        u'inforequest_list': inforequest_list,
-        u'draft_list': draft_list,
-        })
+
+    ctx = {}
+    ctx[u'inforequest_list'] = inforequest_list
+    ctx[u'draft_list'] = draft_list
+    return render(request, u'inforequests/index.html', ctx)
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @verified_email_required
@@ -72,11 +73,11 @@ def create(request, draft_id=None):
 
     else:
         if draft:
-            form = InforequestDraftForm(initial={
-                u'obligee': draft.obligee.name if draft.obligee else u'',
-                u'subject': draft.subject,
-                u'content': draft.content,
-                })
+            initial = {}
+            initial[u'obligee'] = draft.obligee.name if draft.obligee else u''
+            initial[u'subject'] = draft.subject
+            initial[u'content'] = draft.content
+            form = InforequestDraftForm(initial=initial)
         else:
             form = InforequestDraftForm()
 
@@ -88,25 +89,27 @@ def create(request, draft_id=None):
     else:
         obligee = draft.obligee if draft else None
 
-    return render(request, u'inforequests/create.html', {
-        u'form': form,
-        u'obligee': obligee,
-        })
+    ctx = {}
+    ctx[u'form'] = form
+    ctx[u'obligee'] = obligee
+    return render(request, u'inforequests/create.html', ctx)
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def detail(request, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
-    return render(request, u'inforequests/detail.html', {
-        u'inforequest': inforequest,
-        u'extension_email_form': ExtensionEmailForm(),
-        })
+
+    ctx = {}
+    ctx[u'inforequest'] = inforequest
+    ctx[u'extension_email_form'] = ExtensionEmailForm()
+    return render(request, u'inforequests/detail.html', ctx)
 
 @require_http_methods([u'POST'])
 @login_required
 def delete_draft(request, draft_id):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id)
     draft.delete()
+
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 
 @require_http_methods([u'POST'])
@@ -122,7 +125,7 @@ def decide_email(request, inforequest_id, receivedemail_id):
     # add an advanced frontend to allow the user to decide the e-mails in any order, but to keep
     # the frontend simple, we don't do it now.
 
-    def do_decision(email_status, action_type=None, form_class=None, selector=None, template=None):
+    def do_decision(email_status, action_type=None, form_class=None, template=None):
         action = None
         if action_type is not None:
 
@@ -168,13 +171,12 @@ def decide_email(request, inforequest_id, receivedemail_id):
         res[u'scroll_to'] = u'#action-%d' % action.id if action else u''
         return res
 
-    available_decisions = {
-        u'unrelated': (receivedemail.STATUSES.UNRELATED,),
-        u'unknown': (receivedemail.STATUSES.UNKNOWN,),
-        u'confirmation': (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CONFIRMATION),
-        u'extension': (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.EXTENSION, ExtensionEmailForm, u'#extension-email-modal', u'inforequests/actions/extension-email.html'),
-        u'clarification-request': (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CLARIFICATION_REQUEST),
-        }
+    available_decisions = {}
+    available_decisions[u'unrelated'] = (receivedemail.STATUSES.UNRELATED,)
+    available_decisions[u'unknown'] = (receivedemail.STATUSES.UNKNOWN,)
+    available_decisions[u'confirmation'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CONFIRMATION)
+    available_decisions[u'extension'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.EXTENSION, ExtensionEmailForm, u'inforequests/actions/extension-email.html')
+    available_decisions[u'clarification-request'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CLARIFICATION_REQUEST)
 
     try:
         decision = available_decisions[request.POST[u'decision']]

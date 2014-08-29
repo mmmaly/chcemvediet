@@ -13,7 +13,7 @@
 
 {% block title %}{% blocktrans %}Inforequest Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
 
-{% block main_col %}
+{% block content %}
   {% include "inforequests/detail-main.html" with inforequest=inforequest extension_email_form=extension_email_form %}
 
   {% addtoblock "js" %}{# {{{ #}

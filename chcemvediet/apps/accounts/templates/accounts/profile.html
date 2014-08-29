@@ -11,7 +11,7 @@
 
 {% block title %}{% blocktrans %}User Profile{% endblocktrans %} | {{ block.super }}{% endblock %}
 
-{% block main_col %}
+{% block content %}
   <h1>{% blocktrans %}User Profile{% endblocktrans %} <small>{{ user.get_full_name }}</small></h1>
   <div class="row">
     <p class="span2 text-right">{% blocktrans %}E-mail{% endblocktrans %}:</p>

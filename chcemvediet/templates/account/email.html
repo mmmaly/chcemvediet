@@ -12,7 +12,7 @@
 
 {% block title %}{% blocktrans %}E-mail Addresses{% endblocktrans %} | {{ block.super }}{% endblock %}
 
-{% block main_col %}
+{% block content %}
   <h1>{% blocktrans %}E-mail Addresses{% endblocktrans %}</h1>
   {% if user.emailaddress_set.all %}
     <p>{% blocktrans %}The following e-mail addresses are associated with your account:{% endblocktrans %}</p>

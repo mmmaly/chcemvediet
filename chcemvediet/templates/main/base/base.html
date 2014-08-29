@@ -37,9 +37,7 @@
     </header>
     <div class="container">
       {% include "main/snippets/messages.html" %}
-      <div id="content">
-        {% block content %}{% endblock %}
-      </div>
+      {% block container %}{% endblock %}
     </div>
     <footer class="container">
       <hr>

@@ -15,7 +15,7 @@
 
 {% block title %}{% blocktrans %}Sign In{% endblocktrans %} | {{ block.super }}{% endblock %}
 
-{% block main_col %}
+{% block content %}
   <h1>{% blocktrans %}Sign In{% endblocktrans %}</h1>
   <form class="form-horizontal" method="post" action="{% url 'account_login' %}">
     {% csrf_token %}
