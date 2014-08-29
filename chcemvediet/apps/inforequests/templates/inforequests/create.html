@@ -20,7 +20,7 @@
   <p>[{% lorem 21 %}]</p>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
-    {% include "inforequests/snippets/form_create.html" with form=form %}
+    {% include "inforequests/create-form.html" with form=form %}
     <div class="form-actions">
       <button type="submit" name="submit" class="btn btn-primary">{% blocktrans %}Submit Request{% endblocktrans %}</button>
       <button type="submit" name="save" class="btn">{% blocktrans %}Save as Draft{% endblocktrans %}</button>
