@@ -7,21 +7,18 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- forms.extension_email: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
- %  -- forms.disclosure_email: chcemvediet.apps.inforequests.forms.DisclosureEmailForm
- %  -- forms.refusal_email: chcemvediet.apps.inforequests.forms.RefusalEmailForm
  %
 {% endcomment %}
 
 {% block title %}{% blocktrans %}Inforequest Detail{% endblocktrans %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  {% include "inforequests/detail-main.html" with inforequest=inforequest forms=forms %}
+  {% include "inforequests/detail-main.html" with inforequest=inforequest %}
 
   {% addtoblock "js" %}{# {{{ #}
     <script>
 	$(function(){
-		$(document).on('ajax-done', '#decide .modal', function(event, data){
+		$(document).on('ajax-done', '.modal', function(event, data){
 			switch (data.result) {
 				case 'invalid':
 					$(this).html(data.content);

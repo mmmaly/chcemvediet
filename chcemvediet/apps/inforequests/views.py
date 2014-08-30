@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.template import  RequestContext
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
@@ -73,11 +73,11 @@ def create(request, draft_id=None):
 
     else:
         if draft:
-            initial = {}
-            initial[u'obligee'] = draft.obligee.name if draft.obligee else u''
-            initial[u'subject'] = draft.subject
-            initial[u'content'] = draft.content
-            form = InforequestDraftForm(initial=initial)
+            form = InforequestDraftForm(initial={
+                    u'obligee': draft.obligee.name if draft.obligee else u'',
+                    u'subject': draft.subject,
+                    u'content': draft.content,
+                    })
         else:
             form = InforequestDraftForm()
 
@@ -89,36 +89,30 @@ def create(request, draft_id=None):
     else:
         obligee = draft.obligee if draft else None
 
-    ctx = {}
-    ctx[u'form'] = form
-    ctx[u'obligee'] = obligee
-    return render(request, u'inforequests/create.html', ctx)
+    return render(request, u'inforequests/create.html', {
+            u'form': form,
+            u'obligee': obligee,
+            })
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def detail(request, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
-
-    ctx = {}
-    ctx[u'inforequest'] = inforequest
-    ctx[u'forms'] = {}
-    ctx[u'forms'][u'extension_email'] = ExtensionEmailForm()
-    ctx[u'forms'][u'disclosure_email'] = DisclosureEmailForm()
-    ctx[u'forms'][u'refusal_email'] = RefusalEmailForm()
-    return render(request, u'inforequests/detail.html', ctx)
+    return render(request, u'inforequests/detail.html', {
+            u'inforequest': inforequest,
+            })
 
 @require_http_methods([u'POST'])
 @login_required
 def delete_draft(request, draft_id):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id)
     draft.delete()
-
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 
-@require_http_methods([u'POST'])
+@require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required
-def decide_email(request, inforequest_id, receivedemail_id):
+def decide_email(request, inforequest_id, receivedemail_id, action):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
 
@@ -128,69 +122,98 @@ def decide_email(request, inforequest_id, receivedemail_id):
     # add an advanced frontend to allow the user to decide the e-mails in any order, but to keep
     # the frontend simple, we don't do it now.
 
-    def do_decision(email_status, action_type=None, form_class=None, template=None):
-        action = None
-        if action_type is not None:
+    def do_action(template, email_status, action_type=None, form_class=None):
+        if request.method == u'POST':
+            action = None
+            if action_type is not None:
+                form = None
+                if form_class is not None:
+                    form = form_class(request.POST)
+                    if not form.is_valid():
+                        return JsonResponse({
+                                u'result': u'invalid',
+                                u'content': render_to_string(template, context_instance=RequestContext(request), dictionary={
+                                    u'inforequest': inforequest,
+                                    u'email': receivedemail,
+                                    u'form': form,
+                                    }),
+                                })
+                action = Action(
+                        history=inforequest.history,
+                        type=action_type,
+                        subject=receivedemail.raw_email.subject,
+                        content=receivedemail.raw_email.text,
+                        effective_date=receivedemail.raw_email.processed,
+                        )
+                if form:
+                    form.save(action)
+                action.save()
 
+            # FIXME: comment this if you are lazy to send e-mails while testing
+            #receivedemail.status = email_status
+            #receivedemail.save()
+
+            return JsonResponse({
+                    u'result': u'success',
+                    u'scroll_to': u'#action-%d' % action.id if action else u'',
+                    u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
+                        u'inforequest': inforequest,
+                        }),
+                    })
+
+        else:
             form = None
             if form_class is not None:
-                form = form_class(request.POST)
-                if not form.is_valid():
+                form = form_class()
+            return render(request, template, {
+                    u'inforequest': inforequest,
+                    u'email': receivedemail,
+                    u'form': form,
+                    })
 
-                    ctx = {}
-                    ctx[u'inforequest'] = inforequest
-                    ctx[u'email'] = receivedemail
-                    ctx[u'form'] = form
-                    content = render_to_string(template, ctx, RequestContext(request))
-
-                    res = {}
-                    res[u'result'] = u'invalid'
-                    res[u'content'] = content
-                    return res
-
-            action = Action(
-                    history=inforequest.history,
-                    type=action_type,
-                    subject=receivedemail.raw_email.subject,
-                    content=receivedemail.raw_email.text,
-                    effective_date=receivedemail.raw_email.processed,
-                    )
-            if form:
-                form.save(action)
-            action.save()
-
-        # FIXME: comment this if you are lazy to send e-mails while testing
-        #receivedemail.status = email_status
-        #receivedemail.save()
-
-        ctx = {}
-        ctx[u'inforequest'] = inforequest
-        ctx[u'forms'] = {}
-        ctx[u'forms'][u'extension_email'] = ExtensionEmailForm()
-        ctx[u'forms'][u'disclosure_email'] = DisclosureEmailForm()
-        ctx[u'forms'][u'refusal_email'] = RefusalEmailForm()
-        content = render_to_string(u'inforequests/detail-main.html', ctx, RequestContext(request))
-
-        res = {}
-        res[u'result'] = u'success'
-        res[u'content'] = content
-        res[u'scroll_to'] = u'#action-%d' % action.id if action else u''
-        return res
-
-    available_decisions = {}
-    available_decisions[u'unrelated'] = (receivedemail.STATUSES.UNRELATED,)
-    available_decisions[u'unknown'] = (receivedemail.STATUSES.UNKNOWN,)
-    available_decisions[u'confirmation'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CONFIRMATION)
-    available_decisions[u'extension'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.EXTENSION, ExtensionEmailForm, u'inforequests/actions/extension-email.html')
-    available_decisions[u'clarification-request'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.CLARIFICATION_REQUEST)
-    available_decisions[u'disclosure'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.DISCLOSURE, DisclosureEmailForm, u'inforequests/actions/disclosure-email.html')
-    available_decisions[u'refusal'] = (receivedemail.STATUSES.OBLIGEE_ACTION, Action.TYPES.REFUSAL, RefusalEmailForm, u'inforequests/actions/refusal-email.html')
+    available_actions = {
+            u'unrelated': {
+                u'template': u'inforequests/actions/unrelated-email.html',
+                u'email_status': receivedemail.STATUSES.UNRELATED,
+                },
+            u'unknown': {
+                u'template': u'inforequests/actions/unknown-email.html',
+                u'email_status': receivedemail.STATUSES.UNKNOWN,
+                },
+            u'confirmation': {
+                u'template': u'inforequests/actions/confirmation-email.html',
+                u'email_status': receivedemail.STATUSES.OBLIGEE_ACTION,
+                u'action_type': Action.TYPES.CONFIRMATION,
+                },
+            u'extension': {
+                u'template': u'inforequests/actions/extension-email.html',
+                u'email_status': receivedemail.STATUSES.OBLIGEE_ACTION,
+                u'action_type': Action.TYPES.EXTENSION,
+                u'form_class': ExtensionEmailForm,
+                },
+            u'clarification-request': {
+                u'template': u'inforequests/actions/clarification_request-email.html',
+                u'email_status': receivedemail.STATUSES.OBLIGEE_ACTION,
+                u'action_type': Action.TYPES.CLARIFICATION_REQUEST,
+                },
+            u'disclosure': {
+                u'template': u'inforequests/actions/disclosure-email.html',
+                u'email_status': receivedemail.STATUSES.OBLIGEE_ACTION,
+                u'action_type': Action.TYPES.DISCLOSURE,
+                u'form_class': DisclosureEmailForm,
+                },
+            u'refusal': {
+                u'template': u'inforequests/actions/refusal-email.html',
+                u'email_status': receivedemail.STATUSES.OBLIGEE_ACTION,
+                u'action_type': Action.TYPES.REFUSAL,
+                u'form_class': RefusalEmailForm,
+                },
+            }
 
     try:
-        decision = available_decisions[request.POST[u'decision']]
+        kwargs = available_actions[action]
     except KeyError:
-        raise PermissionDenied
+        raise Http404(u'Invalid action.')
 
-    res = do_decision(*decision)
-    return JsonResponse(res)
+    return do_action(**kwargs)
 

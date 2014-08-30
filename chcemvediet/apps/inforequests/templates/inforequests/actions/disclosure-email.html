@@ -10,9 +10,8 @@
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' inforequest.id email.id %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' inforequest.id email.id 'disclosure' %}">
   {% csrf_token %}
-  <input type="hidden" name="decision" value="disclosure">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
     <h3>Information Disclosure</h3>

@@ -1,0 +1,25 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+<h2>Add Received Regular Mail</h2>
+<div class="well">
+  <p>[{% lorem 20 %}]</p>
+  <div class="btn-group">
+    <button type="button" class="btn" disabled>Confirmation</button>
+    <button type="button" class="btn" disabled>Extension</button>
+    <button type="button" class="btn" disabled>Advancement</button>
+    <button type="button" class="btn" disabled>Clarification Request</button>
+    <button type="button" class="btn" disabled>Disclosure</button>
+    <button type="button" class="btn" disabled>Refusal</button>
+    <button type="button" class="btn" disabled>Affirmation</button>
+    <button type="button" class="btn" disabled>Reversion</button>
+    <button type="button" class="btn" disabled>Remandment</button>
+  </div>
+</div>
