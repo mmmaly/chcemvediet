@@ -5,22 +5,24 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
+ %  -- form: chcemvediet.apps.inforequests.forms.DisclosureSmailForm
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' 'unknown' inforequest.id email.id %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:add_smail' 'disclosure' inforequest.id %}">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>I don't Know, What This E-mail Is</h3>
+    <h3>Information Disclosure</h3>
   </div>
   <div class="modal-body">
-    <p>Are you sure you don't know how to decide and you want ask our admin for help?</p>
     <p>[{% lorem 7 %}]</p>
+    <div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Ask Admin for Help</button>
+    <button type="submit" class="btn btn-primary">Add an Information Disclosure</button>
     <button type="button" class="btn" data-dismiss="modal">Close</button>
   </div>
 </form>

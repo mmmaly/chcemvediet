@@ -5,26 +5,30 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
- %  -- form: chcemvediet.apps.inforequests.forms.RefusalEmailForm
+ %  -- form: chcemvediet.apps.inforequests.forms.ConfirmationSmailForm
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' 'refusal' inforequest.id email.id %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:add_smail' 'confirmation' inforequest.id %}">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>Refusal to Disclose Information</h3>
+    <h3>Inforequest Confirmation</h3>
   </div>
   <div class="modal-body">
-    <p>Are you sure you want to mark this e-mail as a refusal to disclose information for your inforequest?</p>
+    {% if inforequest.history.action_set.confirmations.count %}
+      <div class="alert">
+        <strong>Warning!</strong> There already is a confirmation in this inforequest history.
+        Obligees usually don't send multiplne confirmations.
+      </div>
+    {% endif %}
     <p>[{% lorem 7 %}]</p>
     <div>
       {% include "main/snippets/form_horizontal.html" with form=form %}
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Mark as Refusal to Disclose Information</button>
+    <button type="submit" class="btn btn-primary">Add an Inforequest Confirmation</button>
     <button type="button" class="btn" data-dismiss="modal">Close</button>
   </div>
 </form>

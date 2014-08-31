@@ -9,11 +9,19 @@
  %
 {% endcomment %}
 
-{% addtoblock "css" %}<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">{% endaddtoblock %}
-{% addtoblock "css" %}<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">{% endaddtoblock %}
+{# JQuery #}
 {% addtoblock "js" %}<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>{% endaddtoblock %}
+
+{# JQuery UI #}
+{% addtoblock "css" %}<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet">{% endaddtoblock %}
 {% addtoblock "js" %}<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'main/3part/jqueryui/1.10.3/datepicker-sk.js' %}"></script>{% endaddtoblock %}
+
+{# Bootstrap #}
+{% addtoblock "css" %}<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">{% endaddtoblock %}
 {% addtoblock "js" %}<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>{% endaddtoblock %}
+
+
 
 {% comment %}
 {% addtoblock "css" %}<link href="{% static "main/3part/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" %}" rel="stylesheet">{% endaddtoblock %}
@@ -49,8 +57,32 @@
 
 {% addtoblock "css" %}{# {{{ #}
   <style>
+	/* Make sure fixed menu won't overlap page top. */
 	@media (min-width: 980px) { body { padding-top: 60px; } }
+
+	/* Add active state for navbar brand. */
 	.brand.active { color: white; }
+
+	/* Large Bootstrap modals */
+	@media (min-width: 768px) { .modal.modal-large { width: 660px; margin-left: -330px; } }
+	@media (min-width: 980px) { .modal.modal-large { width: 870px; margin-left: -435px; } }
+	@media (min-width: 1200px) { .modal.modal-large { width: 1100px; margin-left: -550px; } }
+
+	/* Naive workaround for responsive tall modals */
+	@media (min-height: 650px) { .modal-body { max-height: 450px; } }
+	@media (min-height: 700px) { .modal-body { max-height: 500px; } }
+	@media (min-height: 750px) { .modal-body { max-height: 550px; } }
+	@media (min-height: 800px) { .modal-body { max-height: 600px; } }
+	@media (min-height: 850px) { .modal-body { max-height: 650px; } }
+	@media (min-height: 900px) { .modal-body { max-height: 700px; } }
+	@media (min-height: 950px) { .modal-body { max-height: 750px; } }
+	@media (min-height: 1000px) { .modal-body { max-height: 800px; } }
+	@media (min-width: 768px) and (min-height: 750px) { .modal-body { max-height: 450px; } }
+	@media (min-width: 768px) and (min-height: 800px) { .modal-body { max-height: 500px; } }
+	@media (min-width: 768px) and (min-height: 850px) { .modal-body { max-height: 550px; } }
+	@media (min-width: 768px) and (min-height: 900px) { .modal-body { max-height: 600px; } }
+	@media (min-width: 768px) and (min-height: 950px) { .modal-body { max-height: 650px; } }
+	@media (min-width: 768px) and (min-height: 1000px) { .modal-body { max-height: 700px; } }
   </style>
 {% endaddtoblock %}{# }}} #}
 
@@ -135,6 +167,25 @@
 
 			form.appendTo('body');
 			form.submit();
+		});
+	});
+
+	/* Attaches JQuery Datepicker to all elements (usually input boxes) with class
+	 * ``datepicker``. Datepicker is attached when the user clicks the element for the first
+	 * time. We cannot just attach it to elements with correct class when the page loads,
+	 * because some elements may be inserted to the page later, e.g. with AJAX. The Datepicker
+	 * is configured to have current locale.
+	 *
+	 * Example:
+	 *     <input type="text" class="datepicker" value="12/31/2014">
+	 */
+	$(function(){
+		$(document).on('click', '.datepicker', function(event){
+			if (!$(this).hasClass('hasDatepicker')) {
+				var lang = $('html').attr('lang');
+				$(this).datepicker($.datepicker.regional[lang == 'en' ? '' : lang]);
+				$(this).datepicker('show');
+			}
 		});
 	});
 

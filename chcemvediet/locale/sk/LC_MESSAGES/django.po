@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-18 17:50+0200\n"
+"POT-Creation-Date: 2014-08-31 01:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,172 +18,440 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: urls.py:18
+#: urls.py:19
 msgid "^about/"
 msgstr "^o-projekte/"
 
-#: urls.py:19
+#: urls.py:20
 msgid "^obligees/"
 msgstr "^povinne-osoby/"
 
-#: urls.py:20
-msgid "^applications/"
-msgstr "^ziadosti/"
+#: urls.py:21
+#, fuzzy
+msgid "^inforequests/"
+msgstr "Žiadosť o informáciu"
 
-#: apps/accounts/forms.py:8 apps/accounts/forms.py:9
+#: apps/accounts/forms.py:9 apps/accounts/forms.py:10
 msgid "First name"
 msgstr "Meno"
 
-#: apps/accounts/forms.py:13 apps/accounts/forms.py:14
+#: apps/accounts/forms.py:14 apps/accounts/forms.py:15
 msgid "Last name"
 msgstr "Priezvisko"
 
-#: apps/accounts/forms.py:18 apps/accounts/forms.py:19
-#: apps/accounts/models.py:10 apps/accounts/templates/accounts/profile.html:13
+#: apps/accounts/forms.py:19 apps/accounts/forms.py:20
+#: apps/accounts/models.py:11 apps/accounts/templates/accounts/profile.html:21
 #: apps/obligees/models.py:10
 msgid "Street"
 msgstr "Ulica"
 
-#: apps/accounts/forms.py:23 apps/accounts/forms.py:24
-#: apps/accounts/models.py:11 apps/accounts/templates/accounts/profile.html:17
+#: apps/accounts/forms.py:24 apps/accounts/forms.py:25
+#: apps/accounts/models.py:12 apps/accounts/templates/accounts/profile.html:25
 #: apps/obligees/models.py:11
 msgid "City"
 msgstr "Mesto"
 
-#: apps/accounts/forms.py:28 apps/accounts/forms.py:29
-#: apps/accounts/models.py:12 apps/accounts/templates/accounts/profile.html:21
+#: apps/accounts/forms.py:29 apps/accounts/forms.py:30
+#: apps/accounts/models.py:13 apps/accounts/templates/accounts/profile.html:29
 #: apps/obligees/models.py:12
 msgid "Zip"
 msgstr "PSČ"
 
-#: apps/accounts/models.py:9
+#: apps/accounts/models.py:10
 msgid "User"
 msgstr "Užívatel"
 
-#: apps/accounts/templates/accounts/profile.html:4
-#: apps/accounts/templates/accounts/profile.html:7
-#: templates/main/snippets/header-account.html:9
+#: apps/accounts/templates/accounts/profile.html:12
+#: apps/accounts/templates/accounts/profile.html:15
+#: templates/main/snippets/header-account.html:16
 msgid "User Profile"
 msgstr "Užívateľský profil"
 
-#: apps/accounts/templates/accounts/profile.html:9 apps/obligees/models.py:13
-#: apps/obligees/templates/obligees/index.html:15
+#: apps/accounts/templates/accounts/profile.html:17
+#: apps/inforequests/templates/inforequests/create-form.html:30
+#: apps/obligees/models.py:13 apps/obligees/templates/obligees/index.html:23
 msgid "E-mail"
 msgstr "E-mail"
 
-#: apps/accounts/templates/accounts/profile.html:25
-#: templates/account/password_change.html:4
-#: templates/account/password_change.html:7
+#: apps/accounts/templates/accounts/profile.html:33
 #: templates/account/password_change.html:12
-#: templates/account/password_reset_from_key.html:4
-#: templates/account/password_reset_from_key.html:7
-#: templates/account/password_reset_from_key.html:17
-#: templates/account/password_reset_from_key_done.html:4
-#: templates/account/password_reset_from_key_done.html:7
-#: templates/main/snippets/header-account.html:10
+#: templates/account/password_change.html:15
+#: templates/account/password_change.html:20
+#: templates/account/password_reset_from_key.html:13
+#: templates/account/password_reset_from_key.html:16
+#: templates/account/password_reset_from_key.html:26
+#: templates/account/password_reset_from_key_done.html:12
+#: templates/account/password_reset_from_key_done.html:15
+#: templates/main/snippets/header-account.html:17
 msgid "Change Password"
 msgstr "Zmeniť heslo"
 
-#: apps/accounts/templates/accounts/profile.html:26
-#: templates/main/snippets/header-account.html:11
+#: apps/accounts/templates/accounts/profile.html:34
+#: templates/main/snippets/header-account.html:18
 msgid "Manage E-mails"
 msgstr "Nastaviť e-maily"
 
-#: apps/accounts/templates/accounts/profile.html:27
-#: templates/main/snippets/header-account.html:12
+#: apps/accounts/templates/accounts/profile.html:35
+#: templates/main/snippets/header-account.html:19
 msgid "Manage Connections"
 msgstr "Nastaviť prepojenia"
 
-#: apps/applications/forms.py:10 apps/applications/forms.py:14
-#: apps/applications/models.py:9
-#: apps/applications/templates/applications/detail.html:17
-#: apps/applications/templates/applications/index.html:12
+#: apps/inforequests/forms.py:14 apps/inforequests/forms.py:18
+#: apps/inforequests/models.py:19 apps/inforequests/models.py:87
+#: apps/inforequests/templates/inforequests/detail-request.html:20
+#: apps/inforequests/templates/inforequests/index.html:21
+#: apps/inforequests/templates/inforequests/index.html:43
 msgid "Obligee"
 msgstr "Povinná osoba"
 
-#: apps/applications/forms.py:18 apps/applications/forms.py:22
-#: apps/applications/models.py:10
-#: apps/applications/templates/applications/detail.html:37
+#: apps/inforequests/forms.py:22 apps/inforequests/forms.py:26
+#: apps/inforequests/forms.py:137 apps/inforequests/forms.py:140
+#: apps/inforequests/models.py:20 apps/inforequests/models.py:133
+#: apps/inforequests/templates/inforequests/detail-email.html:13
 msgid "Subject"
 msgstr "Vec (subject)"
 
-#: apps/applications/forms.py:19
+#: apps/inforequests/forms.py:23
 msgid "Information request"
 msgstr "Žiadosť o informáciu"
 
-#: apps/applications/forms.py:26 apps/applications/forms.py:29
-#: apps/applications/templates/applications/detail.html:41
+#: apps/inforequests/forms.py:30 apps/inforequests/forms.py:33
+#: apps/inforequests/models.py:138
 msgid "Request"
 msgstr "Žiadosť"
 
-#: apps/applications/models.py:8
-#: apps/applications/templates/applications/detail.html:9
-#: apps/applications/templates/applications/snippets/form_create.html:6
-#: apps/applications/templates/applications/snippets/form_create.html:8
+#: apps/inforequests/forms.py:74
+msgid "New Deadline"
+msgstr ""
+
+#: apps/inforequests/forms.py:79 apps/inforequests/models.py:164
+msgid "Deadline"
+msgstr ""
+
+#: apps/inforequests/forms.py:89 apps/inforequests/models.py:172
+msgid "Disclosure Level"
+msgstr ""
+
+#: apps/inforequests/forms.py:99 apps/inforequests/models.py:186
+msgid "Refusal Reason"
+msgstr ""
+
+#: apps/inforequests/forms.py:129 apps/inforequests/models.py:135
+msgid "Effective Date"
+msgstr ""
+
+#: apps/inforequests/forms.py:130
+msgctxt "Form Date Format"
+msgid "%m/%d/%Y"
+msgstr "%d.%m.%Y"
+
+#: apps/inforequests/forms.py:132
+msgctxt "Form Date Placeholder"
+msgid "mm/dd/yyyy"
+msgstr "dd.mm.rrrr"
+
+#: apps/inforequests/forms.py:144 apps/inforequests/forms.py:146
+#: apps/inforequests/models.py:21 apps/inforequests/models.py:134
+msgid "Content"
+msgstr ""
+
+#: apps/inforequests/models.py:18 apps/inforequests/models.py:36
+#: apps/inforequests/templates/inforequests/create-form.html:14
+#: apps/inforequests/templates/inforequests/create-form.html:16
+#: apps/inforequests/templates/inforequests/detail-request.html:12
 msgid "Applicant"
 msgstr "Žiadatel"
 
-#: apps/applications/models.py:11
-msgid "Message"
-msgstr "Správa"
+#: apps/inforequests/models.py:37 apps/inforequests/models.py:132
+msgid "History"
+msgstr ""
 
-#: apps/applications/models.py:12
-#: apps/applications/templates/applications/detail.html:33
-#: apps/applications/templates/applications/index.html:13
+#: apps/inforequests/models.py:38
+#: apps/inforequests/templates/inforequests/detail-request.html:28
+#, fuzzy
+msgid "Unique E-mail"
+msgstr "E-mail odosielateľa"
+
+#: apps/inforequests/models.py:39
+#: apps/inforequests/templates/inforequests/detail-request.html:32
+#: apps/inforequests/templates/inforequests/index.html:22
 msgid "Submission Date"
 msgstr "Dátum podania"
 
-#: apps/applications/models.py:13
-msgid "Sender E-mail"
-msgstr "E-mail odosielateľa"
+#: apps/inforequests/models.py:44
+#, fuzzy
+msgid "Applicant Name"
+msgstr "Žiadatel"
 
-#: apps/applications/models.py:14
-msgid "Recepient E-mail"
-msgstr "E-mail adresáta"
+#: apps/inforequests/models.py:45
+#, fuzzy
+msgid "Applicant Street"
+msgstr "Žiadatel"
 
-#: apps/applications/urls.py:9
+#: apps/inforequests/models.py:46
+#, fuzzy
+msgid "Applicant City"
+msgstr "Žiadatel"
+
+#: apps/inforequests/models.py:47
+#, fuzzy
+msgid "Applicant Zip"
+msgstr "Žiadatel"
+
+#: apps/inforequests/models.py:92
+#, fuzzy
+msgid "Obligee Name"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/models.py:93
+#, fuzzy
+msgid "Obligee Street"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/models.py:94
+#, fuzzy
+msgid "Obligee City"
+msgstr "Zoznam povinných osôb"
+
+#: apps/inforequests/models.py:95
+#, fuzzy
+msgid "Obligee Zip"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/models.py:139
+#, fuzzy
+msgid "Confirmation"
+msgstr "Potvrď"
+
+#: apps/inforequests/models.py:140
+msgid "Extension"
+msgstr ""
+
+#: apps/inforequests/models.py:141
+msgid "Advancement"
+msgstr ""
+
+#: apps/inforequests/models.py:142
+#, fuzzy
+msgid "Clarification Request"
+msgstr "Žiadosť o informáciu"
+
+#: apps/inforequests/models.py:143
+msgid "Disclosure"
+msgstr ""
+
+#: apps/inforequests/models.py:144
+msgid "Refusal"
+msgstr ""
+
+#: apps/inforequests/models.py:145
+#, fuzzy
+msgid "Affirmation"
+msgstr "Žiadosti"
+
+#: apps/inforequests/models.py:146
+msgid "Reversion"
+msgstr ""
+
+#: apps/inforequests/models.py:147
+msgid "Remandment"
+msgstr ""
+
+#: apps/inforequests/models.py:149
+msgid "Type"
+msgstr ""
+
+#: apps/inforequests/models.py:168
+msgid "No Disclosure at All"
+msgstr ""
+
+#: apps/inforequests/models.py:169
+msgid "Partial Disclosure"
+msgstr ""
+
+#: apps/inforequests/models.py:170
+msgid "Full Disclosure"
+msgstr ""
+
+#: apps/inforequests/models.py:176
+msgid "Does not Have Information"
+msgstr ""
+
+#: apps/inforequests/models.py:177
+msgid "Does not Provide Information"
+msgstr ""
+
+#: apps/inforequests/models.py:178
+msgid "Does not Create Information"
+msgstr ""
+
+#: apps/inforequests/models.py:179
+msgid "Copyright Restriction"
+msgstr ""
+
+#: apps/inforequests/models.py:180
+msgid "Business Secret"
+msgstr ""
+
+#: apps/inforequests/models.py:181
+msgid "Personal Information"
+msgstr ""
+
+#: apps/inforequests/models.py:182
+msgid "Confidential Information"
+msgstr ""
+
+#: apps/inforequests/models.py:183
+msgid "No Reason Specified"
+msgstr ""
+
+#: apps/inforequests/models.py:184
+msgid "Other Reason"
+msgstr ""
+
+#: apps/inforequests/models.py:208
+#, fuzzy
+msgid "Inforequest"
+msgstr "Žiadosť o informáciu"
+
+#: apps/inforequests/models.py:209
+#, fuzzy
+msgid "Raw E-mail"
+msgstr "E-mail"
+
+#: apps/inforequests/models.py:212
+msgid "Unassigned"
+msgstr ""
+
+#: apps/inforequests/models.py:213
+msgid "Undecided"
+msgstr ""
+
+#: apps/inforequests/models.py:214
+msgid "Unknown"
+msgstr ""
+
+#: apps/inforequests/models.py:215
+msgid "Unrelated"
+msgstr ""
+
+#: apps/inforequests/models.py:216
+#, fuzzy
+msgid "Obligee Action"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/models.py:218
+msgid "Status"
+msgstr ""
+
+#: apps/inforequests/models.py:241
+#, fuzzy
+msgid "New e-mail notification"
+msgstr "Nová žiadosť"
+
+#: apps/inforequests/models.py:242
+#, python-format
+msgid "We got an e-mail from '%s' regarding your inforequest to '%s'."
+msgstr ""
+
+#: apps/inforequests/urls.py:10
 msgid "^create/$"
 msgstr "^vytvorit/$"
 
-#: apps/applications/urls.py:10
-msgid "^detail/(?P<application_id>\\d+)/$"
+#: apps/inforequests/urls.py:11
+#, fuzzy
+msgid "^create/(?P<draft_id>\\d+)/$"
 msgstr "^detail/(?P<application_id>\\d+)/$"
 
-#: apps/applications/templates/applications/create.html:7
-#: apps/applications/templates/applications/create.html:10
-#: apps/applications/templates/applications/index.html:28
-msgid "New Application"
-msgstr "Nová žiadosť"
+#: apps/inforequests/urls.py:12
+#, fuzzy
+msgid "^detail/(?P<inforequest_id>\\d+)/$"
+msgstr "^detail/(?P<application_id>\\d+)/$"
 
-#: apps/applications/templates/applications/create.html:16
-msgid "Submit Application"
-msgstr "Podať žiadosť"
+#: apps/inforequests/urls.py:13
+#, fuzzy
+msgid "^delete-draft/(?P<draft_id>\\d+)/$"
+msgstr "^detail/(?P<application_id>\\d+)/$"
 
-#: apps/applications/templates/applications/detail.html:4
-#: apps/applications/templates/applications/detail.html:7
-msgid "Application Detail"
-msgstr "Detail žiadosti"
+#: apps/inforequests/urls.py:14
+msgid ""
+"^decide-email/(?P<action>[\\w-]+)/(?P<inforequest_id>\\d+)/(?"
+"P<receivedemail_id>\\d+)/$"
+msgstr ""
 
-#: apps/applications/templates/applications/detail.html:25
-msgid "Sent From"
+#: apps/inforequests/urls.py:15
+msgid "^add-smail/(?P<action>[\\w-]+)/(?P<inforequest_id>\\d+)/$"
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/create.html:16
+#: apps/inforequests/templates/inforequests/create.html:19
+#: apps/inforequests/templates/inforequests/index.html:61
+#, fuzzy
+msgid "New Inforequest"
+msgstr "Žiadosť o informáciu"
+
+#: apps/inforequests/templates/inforequests/create.html:25
+#, fuzzy
+msgid "Submit Request"
+msgstr "Žiadosť"
+
+#: apps/inforequests/templates/inforequests/create.html:26
+msgid "Save as Draft"
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/detail-email.html:17
+#, fuzzy
+msgid "From"
 msgstr "Odoslané z"
 
-#: apps/applications/templates/applications/detail.html:29
-msgid "Sent To"
-msgstr "Odoslané na"
+#: apps/inforequests/templates/inforequests/detail-email.html:21
+msgid "To"
+msgstr ""
 
-#: apps/applications/templates/applications/detail.html:45
-msgid "Application List"
-msgstr "Zoznam žiadosti"
+#: apps/inforequests/templates/inforequests/detail-email.html:25
+msgid "Received"
+msgstr ""
 
-#: apps/applications/templates/applications/index.html:4
-#: apps/applications/templates/applications/index.html:7
-msgid "Submitted Applications"
-msgstr "Podané žiadosti"
+#: apps/inforequests/templates/inforequests/detail-main.html:11
+#: apps/inforequests/templates/inforequests/detail.html:13
+msgid "Inforequest Detail"
+msgstr ""
 
-#: apps/applications/templates/applications/index.html:26
-msgid "Number of submitted applications"
+#: apps/inforequests/templates/inforequests/detail-waiting.html:15
+#, python-format
+msgid ""
+"%(count)s other e-mails are waiting\n"
+"      for your decision. First decide the above e-mail and then the rest. "
+"You must decide them\n"
+"      in the order they were received."
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/detail-waiting.html:19
+msgid "Show them"
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/index.html:13
+#: apps/inforequests/templates/inforequests/index.html:16
+msgid "Submitted Inforequests"
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/index.html:37
+#, fuzzy
+msgid "Number of submitted inforequests"
 msgstr "Počet podaných žiadosti"
+
+#: apps/inforequests/templates/inforequests/index.html:39
+msgid "Inforequest Drafts"
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/index.html:50
+msgid "(empty)"
+msgstr ""
+
+#: apps/inforequests/templates/inforequests/index.html:53
+#, fuzzy
+msgid "Are you sure you want to delete this draft?"
+msgstr "[Are you sure you want to sign out?]"
 
 #: apps/obligees/models.py:9
 msgid "Name"
@@ -197,56 +465,56 @@ msgstr "Slug"
 msgid "Invalid obligee name. Select one form the menu."
 msgstr "Neznáma povinná osoba. Vyber povinnú osobu z menu."
 
-#: apps/obligees/templates/obligees/index.html:5
-#: apps/obligees/templates/obligees/index.html:8
+#: apps/obligees/templates/obligees/index.html:13
+#: apps/obligees/templates/obligees/index.html:16
 msgid "Obligees List"
 msgstr "Zoznam povinných osôb"
 
-#: apps/obligees/templates/obligees/index.html:13
+#: apps/obligees/templates/obligees/index.html:21
 msgid "Organization"
 msgstr "Organizácia"
 
-#: apps/obligees/templates/obligees/index.html:14
+#: apps/obligees/templates/obligees/index.html:22
 msgid "Address"
 msgstr "Adresa"
 
-#: templates/account/email.html:5 templates/account/email.html.py:8
+#: templates/account/email.html:13 templates/account/email.html.py:16
 msgid "E-mail Addresses"
 msgstr "E-mailové adresy"
 
-#: templates/account/email.html:10
+#: templates/account/email.html:18
 msgid "The following e-mail addresses are associated with your account:"
 msgstr "K vášmu účtu su pripojené nasledujúce e-mailové adresy:"
 
-#: templates/account/email.html:20
+#: templates/account/email.html:28
 msgid "Verified"
 msgstr "Overená"
 
-#: templates/account/email.html:22
+#: templates/account/email.html:30
 msgid "Unverified"
 msgstr "Neoverená"
 
-#: templates/account/email.html:25
+#: templates/account/email.html:33
 msgid "Primary"
 msgstr "Primárna"
 
-#: templates/account/email.html:32
+#: templates/account/email.html:40
 msgid "Make Primary"
 msgstr "Nastav ako primárnu"
 
-#: templates/account/email.html:33
+#: templates/account/email.html:41
 msgid "Re-send Verification"
 msgstr "Prepošli overovací kód"
 
-#: templates/account/email.html:34
+#: templates/account/email.html:42
 msgid "Do you really want to remove the selected e-mail address?"
 msgstr "Naozaj chcete odobrať zvolenú e-mailovú adresu?"
 
-#: templates/account/email.html:34
+#: templates/account/email.html:42
 msgid "Remove"
 msgstr "Odober"
 
-#: templates/account/email.html:38
+#: templates/account/email.html:46
 msgid ""
 "<strong>Warning:</strong> You currently do not have any e-mail address set "
 "up. You should really add an e-mail address so you can receive "
@@ -256,22 +524,22 @@ msgstr ""
 "up. You should really add an e-mail address so you can receive "
 "notifications, reset your password, etc.]"
 
-#: templates/account/email.html:41
+#: templates/account/email.html:49
 msgid "Add E-mail Address"
 msgstr "Pridaj e-mailovú adresu"
 
-#: templates/account/email.html:47
+#: templates/account/email.html:55
 msgid "Add E-mail"
 msgstr "Pridaj e-mail"
 
-#: templates/account/email_confirm.html:4
-#: templates/account/email_confirm.html:7
-#: templates/account/email_confirmed.html:4
-#: templates/account/email_confirmed.html:7
+#: templates/account/email_confirm.html:12
+#: templates/account/email_confirm.html:15
+#: templates/account/email_confirmed.html:13
+#: templates/account/email_confirmed.html:16
 msgid "Confirm E-mail Address"
 msgstr "Potvrď e-mailovú adresu"
 
-#: templates/account/email_confirm.html:9
+#: templates/account/email_confirm.html:17
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
@@ -280,11 +548,11 @@ msgstr ""
 "[Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
 "address for user %(user)s.]"
 
-#: templates/account/email_confirm.html:13
+#: templates/account/email_confirm.html:21
 msgid "Confirm"
 msgstr "Potvrď"
 
-#: templates/account/email_confirm.html:18
+#: templates/account/email_confirm.html:26
 #, python-format
 msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a href="
@@ -293,7 +561,7 @@ msgstr ""
 "[This e-mail confirmation link expired or is invalid. Please <a href="
 "\"%(email_url)s\">issue a new e-mail confirmation request</a>.]"
 
-#: templates/account/email_confirmed.html:8
+#: templates/account/email_confirmed.html:17
 #, python-format
 msgid ""
 "You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-"
@@ -302,13 +570,13 @@ msgstr ""
 "[You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-"
 "mail address for user %(user)s.]"
 
-#: templates/account/login.html:4 templates/account/login.html.py:7
-#: templates/account/login.html:33
-#: templates/main/snippets/header-account.html:18
+#: templates/account/login.html:16 templates/account/login.html.py:19
+#: templates/account/login.html:45
+#: templates/main/snippets/header-account.html:25
 msgid "Sign In"
 msgstr "Prihlásenie"
 
-#: templates/account/login.html:11
+#: templates/account/login.html:23
 #, python-format
 msgid ""
 "Please sign in with one of your existing third party accounts. Or, <a href="
@@ -317,37 +585,37 @@ msgstr ""
 "[Please sign in with one of your existing third party accounts. Or, <a href="
 "\"%(signup_url)s\">sign up</a> for a bew account and sign in below:]"
 
-#: templates/account/login.html:20
+#: templates/account/login.html:32
 msgid "Sign In With"
 msgstr "Prihlásenie cez"
 
-#: templates/account/login.html:34
+#: templates/account/login.html:46
 msgid "Forgot Password?"
 msgstr "Zabudnuté heslo?"
 
-#: templates/account/logout.html:4 templates/account/logout.html.py:7
-#: templates/account/logout.html:15
+#: templates/account/logout.html:13 templates/account/logout.html.py:16
+#: templates/account/logout.html:24
 msgid "Sign Out"
 msgstr "Odhlásenie"
 
-#: templates/account/logout.html:8
+#: templates/account/logout.html:17
 msgid "Are you sure you want to sign out?"
 msgstr "[Are you sure you want to sign out?]"
 
-#: templates/account/password_reset.html:4
-#: templates/account/password_reset.html:7
-#: templates/account/password_reset_done.html:4
-#: templates/account/password_reset_done.html:7
+#: templates/account/password_reset.html:12
+#: templates/account/password_reset.html:15
+#: templates/account/password_reset_done.html:12
+#: templates/account/password_reset_done.html:15
 msgid "Password Reset"
 msgstr "Zrušenie hesla"
 
-#: templates/account/password_reset.html:9
-#: templates/account/password_reset_done.html:9
+#: templates/account/password_reset.html:17
+#: templates/account/password_reset_done.html:17
 #, python-format
 msgid "<strong>Note:</strong> you are already logged in as %(name)s."
 msgstr "[<strong>Note:</strong> you are already logged in as %(name)s.]"
 
-#: templates/account/password_reset.html:11
+#: templates/account/password_reset.html:19
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it. Please contact us if you have any "
@@ -357,15 +625,15 @@ msgstr ""
 "you an e-mail allowing you to reset it. Please contact us if you have any "
 "trouble resetting your password.]"
 
-#: templates/account/password_reset.html:16
+#: templates/account/password_reset.html:24
 msgid "Reset My Password"
 msgstr "Zmeň heslo"
 
-#: templates/account/password_reset_from_key.html:7
+#: templates/account/password_reset_from_key.html:16
 msgid "Bad Token"
 msgstr "Nesplatný token"
 
-#: templates/account/password_reset_from_key.html:10
+#: templates/account/password_reset_from_key.html:19
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
@@ -376,29 +644,31 @@ msgstr ""
 "used. Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
 "a>.]"
 
-#: templates/account/password_reset_from_key.html:21
-#: templates/account/password_reset_from_key_done.html:8
+#: templates/account/password_reset_from_key.html:30
+#: templates/account/password_reset_from_key_done.html:16
 msgid "Your password is now changed."
 msgstr "Heslo bolo úspešne zmenené."
 
-#: templates/account/password_set.html:4 templates/account/password_set.html:7
+#: templates/account/password_set.html:12
+#: templates/account/password_set.html:15
 msgid "Set Password"
 msgstr "Nastavenie hesla"
 
-#: templates/account/password_set.html:12
+#: templates/account/password_set.html:20
 msgctxt "button"
 msgid "Set Password"
 msgstr "Nastav heslo"
 
-#: templates/account/signup.html:4 templates/account/signup.html.py:7
-#: templates/account/signup.html:33
-#: templates/main/snippets/header-account.html:19
-#: templates/socialaccount/signup.html:4 templates/socialaccount/signup.html:7
-#: templates/socialaccount/signup.html:27
+#: templates/account/signup.html:15 templates/account/signup.html.py:18
+#: templates/account/signup.html:44
+#: templates/main/snippets/header-account.html:26
+#: templates/socialaccount/signup.html:16
+#: templates/socialaccount/signup.html:19
+#: templates/socialaccount/signup.html:39
 msgid "Sign Up"
 msgstr "Registrácia"
 
-#: templates/account/signup.html:11
+#: templates/account/signup.html:22
 #, python-format
 msgid ""
 "Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>. "
@@ -407,27 +677,27 @@ msgstr ""
 "[Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>. "
 "Or, you can sign up with one of your existing third party accounts.]"
 
-#: templates/account/signup.html:20
+#: templates/account/signup.html:31
 msgid "Sign Up With"
 msgstr "Registrácia cez"
 
-#: templates/account/signup_closed.html:4
-#: templates/account/signup_closed.html:7
+#: templates/account/signup_closed.html:12
+#: templates/account/signup_closed.html:15
 msgid "Sign Up Closed"
 msgstr "Registrácia je pozastavená"
 
-#: templates/account/signup_closed.html:8
+#: templates/account/signup_closed.html:16
 msgid "We are sorry, but the sign up is currently closed."
 msgstr "[We are sorry, but the sign up is currently closed.]"
 
-#: templates/account/verification_sent.html:4
-#: templates/account/verification_sent.html:7
-#: templates/account/verified_email_required.html:4
-#: templates/account/verified_email_required.html:7
+#: templates/account/verification_sent.html:12
+#: templates/account/verification_sent.html:15
+#: templates/account/verified_email_required.html:12
+#: templates/account/verified_email_required.html:15
 msgid "Verify Your E-mail Address"
 msgstr "Over e-maiilovú adresu"
 
-#: templates/account/verification_sent.html:8
+#: templates/account/verification_sent.html:16
 #, python-format
 msgid ""
 "We have sent an e-mail to <a href=\"mailto:%(email)s\">%(email)s</a> for "
@@ -438,7 +708,7 @@ msgstr ""
 "verification. Follow the link provided to finalize the signup process. "
 "Please contact us if you do not receive it within a few minutes.]"
 
-#: templates/account/verified_email_required.html:8
+#: templates/account/verified_email_required.html:16
 msgid ""
 "This part of the site requires us to verify that you are who you claim to "
 "be. For this purpose, we require that you verify ownership of your e-mail "
@@ -448,7 +718,7 @@ msgstr ""
 "be. For this purpose, we require that you verify ownership of your e-mail "
 "address.]"
 
-#: templates/account/verified_email_required.html:9
+#: templates/account/verified_email_required.html:17
 msgid ""
 "We have sent an e-mail to you for verification. Please click on the link "
 "inside this e-mail. Please contact us if you do not receive it within a few "
@@ -458,7 +728,7 @@ msgstr ""
 "inside this e-mail. Please contact us if you do not receive it within a few "
 "minutes.]"
 
-#: templates/account/verified_email_required.html:11
+#: templates/account/verified_email_required.html:19
 #, python-format
 msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
@@ -467,105 +737,106 @@ msgstr ""
 "[<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
 "e-mail address</a>.]"
 
-#: templates/account/messages/cannot_delete_primary_email.txt:4
+#: templates/account/messages/cannot_delete_primary_email.txt:11
 #, python-format
 msgid "You cannot remove your primary e-mail address (%(email)s)."
 msgstr "Primárnu e-mailovú adresu (%(email)s) nie je možné odobrať."
 
-#: templates/account/messages/email_confirmation_sent.txt:4
+#: templates/account/messages/email_confirmation_sent.txt:11
 #, python-format
 msgid "Confirmation e-mail sent to %(email)s."
 msgstr "Overovací e-mail bol odoslaný na %(email)s."
 
-#: templates/account/messages/email_confirmed.txt:4
+#: templates/account/messages/email_confirmed.txt:11
 #, python-format
 msgid "You have confirmed %(email)s."
 msgstr "Overili ste adresu %(email)s."
 
-#: templates/account/messages/email_deleted.txt:4
+#: templates/account/messages/email_deleted.txt:11
 #, python-format
 msgid "Removed e-mail address %(email)s."
 msgstr "E-mailová adresa bola %(email)s odobrana."
 
-#: templates/account/messages/password_changed.txt:4
+#: templates/account/messages/password_changed.txt:11
 msgid "Password successfully changed."
 msgstr "Heslo bolo úspešne zmenené."
 
-#: templates/account/messages/password_set.txt:4
+#: templates/account/messages/password_set.txt:11
 msgid "Password successfully set."
 msgstr "Heslo bolo úspešne nastavené."
 
-#: templates/account/messages/primary_email_set.txt:4
+#: templates/account/messages/primary_email_set.txt:11
 msgid "Primary e-mail address set."
 msgstr "Primárny e-mail bol nastavený."
 
-#: templates/account/messages/unverified_primary_email.txt:4
+#: templates/account/messages/unverified_primary_email.txt:11
 msgid "Your primary e-mail address must be verified."
 msgstr "Vaša primárna e-mailová adresa musí byť overená."
 
-#: templates/account/snippets/social_login_buttons.html:6
+#: templates/account/snippets/social_login_buttons.html:13
 msgid "Login With Facebook"
 msgstr "Prihlásenie cez Facebook"
 
-#: templates/account/snippets/social_login_buttons.html:7
+#: templates/account/snippets/social_login_buttons.html:14
 msgid "Login With Google"
 msgstr "Prihlásenie cez Google"
 
-#: templates/account/snippets/social_login_buttons.html:8
+#: templates/account/snippets/social_login_buttons.html:15
 msgid "Login With Twitter"
 msgstr "Prihlásenie cez Twitter"
 
-#: templates/account/snippets/social_login_buttons.html:9
+#: templates/account/snippets/social_login_buttons.html:16
 msgid "Login With LinkedIn"
 msgstr "Prihlásenie cez LinkedIn"
 
-#: templates/admin/base_site.html:4 templates/admin/base_site.html.py:7
+#: templates/admin/base_site.html:12 templates/admin/base_site.html.py:15
 msgid "\"Chcem Vedieť\" site administration"
 msgstr "Administácia stránky \"Chcem Vedieť\""
 
-#: templates/main/snippets/header-account.html:14
+#: templates/main/snippets/header-account.html:21
 msgid "Log Out"
 msgstr "Odhlásenie"
 
-#: templates/main/snippets/header-menu.html:7
+#: templates/main/snippets/header-menu.html:12
 msgid "About Project"
 msgstr "O projekte"
 
-#: templates/main/snippets/header-menu.html:8
-msgid "Applications"
-msgstr "Žiadosti"
+#: templates/main/snippets/header-menu.html:13
+#, fuzzy
+msgid "Requests"
+msgstr "Žiadosť"
 
-#: templates/main/snippets/header-menu.html:9
+#: templates/main/snippets/header-menu.html:14
 msgid "Obligees"
 msgstr "Povinné osoby"
 
-#: templates/socialaccount/account_inactive.html:4
-#: templates/socialaccount/account_inactive.html:7
+#: templates/socialaccount/account_inactive.html:12
+#: templates/socialaccount/account_inactive.html:15
 msgid "Account Inactive"
 msgstr "Účet je neaktívny"
 
-#: templates/socialaccount/account_inactive.html:8
+#: templates/socialaccount/account_inactive.html:16
 msgid "This account is inactive."
 msgstr "Tento účet je neaktívny"
 
-#: templates/socialaccount/authentication_error.html:4
-#: templates/socialaccount/authentication_error.html:7
+#: templates/socialaccount/authentication_error.html:12
+#: templates/socialaccount/authentication_error.html:15
 msgid "Social Network Login Failure"
 msgstr "Prihlásenie cez sociálnu sieť zlyhalo"
 
-#: templates/socialaccount/authentication_error.html:8
+#: templates/socialaccount/authentication_error.html:16
 msgid ""
 "An error occurred while attempting to login via your social network account."
 msgstr ""
 "[An error occurred while attempting to login via your social network "
 "account.]"
 
-#: templates/socialaccount/connections.html:5
-#: templates/socialaccount/connections.html:8
+#: templates/socialaccount/connections.html:13
+#: templates/socialaccount/connections.html:16
 msgid "Account Connections"
 msgstr "Prepojenia"
 
-#: templates/socialaccount/connections.html:10
+#: templates/socialaccount/connections.html:18
 msgid ""
 "You can sign in to your account using any of the following third party "
 "accounts:"
@@ -573,30 +844,30 @@ msgstr ""
 "[You can sign in to your account using any of the following third party "
 "accounts:]"
 
-#: templates/socialaccount/connections.html:31
+#: templates/socialaccount/connections.html:39
 msgid "Remove Connection"
 msgstr "Odober prepojenie"
 
-#: templates/socialaccount/connections.html:35
+#: templates/socialaccount/connections.html:43
 msgid ""
 "You currently have no social network accounts connected to this account."
 msgstr ""
 "[You currently have no social network accounts connected to this account.]"
 
-#: templates/socialaccount/connections.html:38
+#: templates/socialaccount/connections.html:46
 msgid "Add a 3rd Party Account"
 msgstr "Pridaj prepojenie"
 
-#: templates/socialaccount/connections.html:41
+#: templates/socialaccount/connections.html:49
 msgid "Connect With"
 msgstr "Prepojenie cez"
 
-#: templates/socialaccount/login_cancelled.html:4
-#: templates/socialaccount/login_cancelled.html:7
+#: templates/socialaccount/login_cancelled.html:12
+#: templates/socialaccount/login_cancelled.html:15
 msgid "Login Cancelled"
 msgstr "Prihlásenie zrušené"
 
-#: templates/socialaccount/login_cancelled.html:9
+#: templates/socialaccount/login_cancelled.html:17
 #, python-format
 msgid ""
 "You decided to cancel logging in to our site using one of your existing "
@@ -607,7 +878,7 @@ msgstr ""
 "accounts. If this was a mistake, please proceed to <a href=\"%(login_url)s"
 "\">sign in</a>.]"
 
-#: templates/socialaccount/signup.html:11
+#: templates/socialaccount/signup.html:23
 #, python-format
 msgid ""
 "You are about to use your %(provider)s account to login to this site. As a "
@@ -616,14 +887,38 @@ msgstr ""
 "[You are about to use your %(provider)s account to login to this site. As a "
 "final step, please complete the following form:]"
 
-#: templates/socialaccount/messages/account_connected.txt:4
+#: templates/socialaccount/messages/account_connected.txt:11
 msgid "The social account has been connected."
 msgstr "Prepojenie s účtom sociálnej siete bolo vytvorené."
 
-#: templates/socialaccount/messages/account_connected_other.txt:4
+#: templates/socialaccount/messages/account_connected_other.txt:11
 msgid "The social account is already connected to a different account."
 msgstr "Účet sociálnej siete je už prepojený s iným užívateľom."
 
-#: templates/socialaccount/messages/account_disconnected.txt:4
+#: templates/socialaccount/messages/account_disconnected.txt:11
 msgid "The social account has been disconnected."
 msgstr "Prepojenie s účtom sociálnej siete bolo zrušené."
+
+#~ msgid "^applications/"
+#~ msgstr "^ziadosti/"
+
+#~ msgid "Message"
+#~ msgstr "Správa"
+
+#~ msgid "Recepient E-mail"
+#~ msgstr "E-mail adresáta"
+
+#~ msgid "Submit Application"
+#~ msgstr "Podať žiadosť"
+
+#~ msgid "Application Detail"
+#~ msgstr "Detail žiadosti"
+
+#~ msgid "Sent To"
+#~ msgstr "Odoslané na"
+
+#~ msgid "Application List"
+#~ msgstr "Zoznam žiadosti"
+
+#~ msgid "Submitted Applications"
+#~ msgstr "Podané žiadosti"

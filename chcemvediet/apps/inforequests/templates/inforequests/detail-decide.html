@@ -15,31 +15,24 @@
   <h4>Please, read the e-mail and decide what it is:</h4>
   <p>[{% lorem 10 %}]</p>
   <div class="btn-group">
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'confirmation' %}" data-type="html" data-toggle="modal" data-target="#confirmation-email-modal">Confirmation</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'extension' %}" data-type="html" data-toggle="modal" data-target="#extension-email-modal">Extension</button>
+    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'confirmation' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#confirmation-email-modal">Confirmation</button>
+    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'extension' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#extension-email-modal">Extension</button>
     <button type="button" class="btn" disabled>Advancement</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'clarification-request' %}" data-type="html" data-toggle="modal" data-target="#clarification-request-email-modal">Clarification Request</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'disclosure' %}" data-type="html" data-toggle="modal" data-target="#disclosure-email-modal">Disclosure</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'refusal' %}" data-type="html" data-toggle="modal" data-target="#refusal-email-modal">Refusal</button>
+    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'clarification-request' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#clarification-request-email-modal">Clarification Request</button>
+    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'disclosure' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#disclosure-email-modal">Disclosure</button>
+    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'refusal' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#refusal-email-modal">Refusal</button>
   </div>
   <div class="btn-group">
-    <button type="button" class="btn btn-danger ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'unrelated' %}" data-type="html" data-toggle="modal" data-target="#unrelated-email-modal">Unrelated e-mail, or SPAM</button>
+    <button type="button" class="btn btn-danger ajax ajax-once" action="{% url 'inforequests:decide_email' 'unrelated' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#unrelated-email-modal">Unrelated e-mail, or SPAM</button>
   </div>
   <div class="btn-group">
-    <button type="button" class="btn btn-inverse ajax ajax-once" action="{% url 'inforequests:decide_email' inforequest.id email.id 'unknown' %}" data-type="html" data-toggle="modal" data-target="#unknown-email-modal">I don't know</button>
+    <button type="button" class="btn btn-inverse ajax ajax-once" action="{% url 'inforequests:decide_email' 'unknown' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#unknown-email-modal">I don't know</button>
   </div>
-  <div id="confirmation-email-modal" class="modal hide fade">
-  </div>
-  <div id="extension-email-modal" class="modal hide fade">
-  </div>
-  <div id="clarification-request-email-modal" class="modal hide fade">
-  </div>
-  <div id="unrelated-email-modal" class="modal hide fade">
-  </div>
-  <div id="unknown-email-modal" class="modal hide fade">
-  </div>
-  <div id="disclosure-email-modal" class="modal hide fade">
-  </div>
-  <div id="refusal-email-modal" class="modal hide fade">
-  </div>
+  <div id="confirmation-email-modal" class="modal hide fade"></div>
+  <div id="extension-email-modal" class="modal hide fade"></div>
+  <div id="clarification-request-email-modal" class="modal hide fade"></div>
+  <div id="unrelated-email-modal" class="modal hide fade"></div>
+  <div id="unknown-email-modal" class="modal hide fade"></div>
+  <div id="disclosure-email-modal" class="modal hide fade"></div>
+  <div id="refusal-email-modal" class="modal hide fade"></div>
 </div>

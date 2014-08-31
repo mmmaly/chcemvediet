@@ -11,6 +11,7 @@ urlpatterns = patterns(u'',
     url(_(r'^create/(?P<draft_id>\d+)/$'), views.create, name=u'create_from_draft'),
     url(_(r'^detail/(?P<inforequest_id>\d+)/$'), views.detail, name=u'detail'),
     url(_(r'^delete-draft/(?P<draft_id>\d+)/$'), views.delete_draft, name=u'delete_draft'),
-    url(_(r'^decide-email/(?P<inforequest_id>\d+)/(?P<receivedemail_id>\d+)/(?P<action>[\w-]+)/$'), views.decide_email, name=u'decide_email'),
+    url(_(r'^decide-email/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/(?P<receivedemail_id>\d+)/$'), views.decide_email, name=u'decide_email'),
+    url(_(r'^add-smail/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.add_smail, name=u'add_smail'),
 )
 

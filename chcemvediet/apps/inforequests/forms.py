@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.db import IntegrityError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
 from chcemvediet.apps.obligees.models import Obligee, validate_obligee_name_exists
@@ -63,7 +63,18 @@ class InforequestDraftForm(InforequestForm):
         draft.subject = self.cleaned_data[u'subject']
         draft.content = self.cleaned_data[u'content']
 
-class ExtensionEmailForm(forms.Form):
+
+class ActionAbstractForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(ActionAbstractForm, self).__init__(*args, **kwargs)
+        if not self.prefix:
+            self.prefix = self.__class__.__name__.lower()
+
+    def save(self, action):
+        if not self.is_valid():
+            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
             label=_(u'New Deadline'),
             initial=Action.DEFAULT_DEADLINES.EXTENSION,
@@ -75,32 +86,99 @@ class ExtensionEmailForm(forms.Form):
             )
 
     def save(self, action):
-        if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
-
+        super(DeadlineMixin, self).save(action)
         action.deadline = self.cleaned_data[u'deadline']
 
-class DisclosureEmailForm(forms.Form):
-    level = forms.ChoiceField(
+class DisclosureLevelMixin(ActionAbstractForm):
+    disclosure_level = forms.ChoiceField(
             label=_(u'Disclosure Level'),
             choices=[(u'', u'')] + Action.DISCLOSURE_LEVELS._choices,
             )
 
     def save(self, action):
-        if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+        super(DisclosureLevelMixin, self).save(action)
+        action.disclosure_level = self.cleaned_data[u'disclosure_level']
 
-        action.disclosure_level = self.cleaned_data[u'level']
-
-class RefusalEmailForm(forms.Form):
-    reason = forms.ChoiceField(
+class RefusalReasonMixin(ActionAbstractForm):
+    refusal_reason = forms.ChoiceField(
             label=_(u'Refusal Reason'),
             choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
             )
 
     def save(self, action):
-        if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+        super(RefusalReasonMixin, self).save(action)
+        action.refusal_reason = self.cleaned_data[u'refusal_reason']
 
-        action.refusal_reason = self.cleaned_data[u'reason']
 
+class DecideEmailCommonForm(ActionAbstractForm):
+    pass
+
+class ConfirmationEmailForm(DecideEmailCommonForm):
+    pass
+
+class ExtensionEmailForm(DecideEmailCommonForm, DeadlineMixin):
+    pass
+
+class ClarificationRequestEmailForm(DecideEmailCommonForm):
+    pass
+
+class DisclosureEmailForm(DecideEmailCommonForm, DisclosureLevelMixin):
+    pass
+
+class RefusalEmailForm(DecideEmailCommonForm, RefusalReasonMixin):
+    pass
+
+
+class AddSmailCommonForm(ActionAbstractForm):
+    effective_date = forms.DateField(
+            label=_(u'Effective Date'),
+            localize=True,
+            widget=forms.DateInput(attrs={
+                u'placeholder': pgettext_lazy(u'Form Date Placeholder', u'mm/dd/yyyy'),
+                u'class': u'datepicker',
+                }),
+            )
+    subject = forms.CharField(
+            label=_(u'Subject'),
+            max_length=255,
+            widget=forms.TextInput(attrs={
+                u'placeholder': _(u'Subject'),
+                }),
+            )
+    content = forms.CharField(
+            label=_(u'Content'),
+            widget=forms.Textarea(attrs={
+                u'placeholder': _(u'Content'),
+                u'class': u'input-block-level',
+                }),
+            )
+
+    def save(self, action):
+        super(AddSmailCommonForm, self).save(action)
+        action.effective_date = self.cleaned_data[u'effective_date']
+        action.subject = self.cleaned_data[u'subject']
+        action.content = self.cleaned_data[u'content']
+
+class ConfirmationSmailForm(AddSmailCommonForm):
+    pass
+
+class ExtensionSmailForm(AddSmailCommonForm, DeadlineMixin):
+    pass
+
+class ClarificationRequestSmailForm(AddSmailCommonForm):
+    pass
+
+class DisclosureSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+    pass
+
+class RefusalSmailForm(AddSmailCommonForm, RefusalReasonMixin):
+    pass
+
+class AffirmationSmailForm(AddSmailCommonForm, RefusalReasonMixin):
+    pass
+
+class ReversionSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+    pass
+
+class RemandmentSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+    pass

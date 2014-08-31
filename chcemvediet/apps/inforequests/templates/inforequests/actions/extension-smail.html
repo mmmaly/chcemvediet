@@ -5,12 +5,11 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
- %  -- form: chcemvediet.apps.inforequests.forms.ExtensionEmailForm
+ %  -- form: chcemvediet.apps.inforequests.forms.ExtensionSmailForm
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' 'extension' inforequest.id email.id %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:add_smail' 'extension' inforequest.id %}">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -23,14 +22,13 @@
         history. Obligees usually don't send multiplne deadline extensions.
       </div>
     {% endif %}
-    <p>Are you sure you want to mark this e-mail as a deadline extension of your inforequest?</p>
     <p>[{% lorem 7 %}]</p>
     <div>
       {% include "main/snippets/form_horizontal.html" with form=form %}
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Mark as Deadline Extension</button>
+    <button type="submit" class="btn btn-primary">Add a Deadline Extension</button>
     <button type="button" class="btn" data-dismiss="modal">Close</button>
   </div>
 </form>

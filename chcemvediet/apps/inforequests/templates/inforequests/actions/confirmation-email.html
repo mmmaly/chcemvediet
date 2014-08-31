@@ -6,10 +6,11 @@
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- email: chcemvediet.apps.inforequests.models.ReceivedEmail
+ %  -- form: chcemvediet.apps.inforequests.forms.ConfirmationEmailForm
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' inforequest.id email.id 'confirmation' %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:decide_email' 'confirmation' inforequest.id email.id %}">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -24,6 +25,9 @@
     {% endif %}
     <p>Are you sure you want to mark this e-mail as a confirmation of your inforequest?</p>
     <p>[{% lorem 7 %}]</p>
+    <div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+    </div>
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary">Mark as Inforequest Confirmation</button>

@@ -142,6 +142,9 @@ class Action(models.Model):
             (u'CLARIFICATION_REQUEST', 5, _(u'Clarification Request')),
             (u'DISCLOSURE', 6, _(u'Disclosure')),
             (u'REFUSAL', 7, _(u'Refusal')),
+            (u'AFFIRMATION', 8, _(u'Affirmation')),
+            (u'REVERSION', 9, _(u'Reversion')),
+            (u'REMANDMENT', 10, _(u'Remandment')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -154,6 +157,9 @@ class Action(models.Model):
             CLARIFICATION_REQUEST=7,
             DISCLOSURE=15,
             REFUSAL=15,
+            AFFIRMATION=None,
+            REVERSION=None,
+            REMANDMENT=13,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
