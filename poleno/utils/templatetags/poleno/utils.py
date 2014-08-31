@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 import random
 
-from django import template
+from django.template import Library
+from django.template.defaultfilters import stringfilter
 from django.core.urlresolvers import resolve, reverse
 from django.utils.translation import activate, get_language
 from django.contrib.webdesign.lorem_ipsum import paragraphs
 
+from poleno.utils.misc import squeeze as squeeze_func
 
-register = template.Library()
+register = Library()
 
 @register.filter(name=u'range')
 def range_(a, b):
@@ -45,6 +47,25 @@ def active(request, view_prefix):
         return False
     return True
 
+@register.filter(is_safe=True)
+@stringfilter
+def squeeze(text):
+    u"""
+    Substitutes all whitespace including new lines with single spaces, striping any leading or
+    trailing whitespace. Beware that the filter does not treat HTML tags specially and it will
+    replace all whitespace in them as well.
+
+    Example:
+        "   text   with\nspaces\n\n" -> "text with spaces"
+
+    Example:
+        {% filter squeeze %}
+          Long text you want
+          to squeeze
+        {% endfilter %}
+    """
+    return squeeze_func(text)
+
 @register.simple_tag
 def lorem(randseed=None, count=1, method=None):
     u"""
@@ -80,8 +101,10 @@ def lorem(randseed=None, count=1, method=None):
 @register.simple_tag(takes_context=True)
 def change_lang(context, lang=None):
     u"""
-    Get active page's url by a specified language
-    Usage: {% change_lang 'en' %}
+    Get active page's url with laguage changed to the specified language.
+
+    Example:
+        {% change_lang 'en' %}
 
     Source: https://djangosnippets.org/snippets/2875/
     """

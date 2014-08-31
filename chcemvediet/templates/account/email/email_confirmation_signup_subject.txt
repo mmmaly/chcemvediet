@@ -1,4 +1,4 @@
-{# vim: set filetype=htmldjango :#}
+{# vim: set filetype=django :#}
 {% include "account/email/email_confirmation_subject.txt" %}
 
 {% comment %}

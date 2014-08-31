@@ -1,5 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from email.utils import formataddr
+
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
@@ -11,10 +13,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
-from poleno.utils.mail import mail_address_with_name
 from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax
-from poleno.utils.misc import Bunch
+from poleno.utils.misc import Bunch, squeeze
 from chcemvediet.apps.obligees.models import Obligee
 
 from models import Inforequest, InforequestDraft, Action
@@ -62,7 +63,7 @@ def create(request, draft_id=None):
                         )
                 action.save()
 
-                sender_full = mail_address_with_name(inforequest.applicant_name, inforequest.unique_email)
+                sender_full = formataddr((squeeze(inforequest.applicant_name), inforequest.unique_email))
                 send_mail(action.subject, action.content, sender_full, [inforequest.history.obligee.email])
 
                 if draft:

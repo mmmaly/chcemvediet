@@ -1,4 +1,4 @@
-{# vim: set filetype=htmldjango :#}
+{# vim: set filetype=django :#}
 
 {% comment %}
  %

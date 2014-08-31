@@ -37,3 +37,12 @@ def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprs
             res.append(random.choice(vowels))
     return u''.join(res)
 
+def squeeze(s):
+    u"""
+    Substitutes all whitespace including new lines with single spaces, striping any leading or
+    trailing whitespace.
+
+    Example:
+        "   text   with\nspaces\n\n" -> "text with spaces"
+    """
+    return u' '.join(s.split())

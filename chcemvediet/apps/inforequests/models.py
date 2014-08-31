@@ -1,14 +1,16 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, activate
 from django.contrib.auth.models import User
+
 from django_mailbox.signals import message_received
 
 from poleno.utils.misc import Bunch, random_readable_string
 from poleno.utils.model import FieldChoices, QuerySet
+from poleno.utils.mail import render_mail
 
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
@@ -231,18 +233,29 @@ class ReceivedEmail(models.Model):
 
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
-    receivedemail = ReceivedEmail(raw_email=message)
     try:
-        inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
-    except (Inforequest.DoesNotExist, Inforequest.MultipleObjectsReturned):
-        receivedemail.status = receivedemail.STATUSES.UNASSIGNED
-    else:
-        receivedemail.inforequest = inforequest
-        receivedemail.status = receivedemail.STATUSES.UNDECIDED
-    receivedemail.save()
+        receivedemail = ReceivedEmail(raw_email=message)
+        try:
+            inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
+        except (Inforequest.DoesNotExist, Inforequest.MultipleObjectsReturned):
+            receivedemail.status = receivedemail.STATUSES.UNASSIGNED
+        else:
+            receivedemail.inforequest = inforequest
+            receivedemail.status = receivedemail.STATUSES.UNDECIDED
+        receivedemail.save()
 
-    if receivedemail.inforequest:
-        subject = _(u'New e-mail notification');
-        message = _(u'We got an e-mail from \'%s\' regarding your inforequest to \'%s\'.') % (
-                message.from_header, receivedemail.inforequest.history.obligee_name)
-        send_mail(subject, message, u'info@chcemvediet.sk', [receivedemail.inforequest.applicant.email])
+        if receivedemail.inforequest:
+            activate(u'en') # We need to select active locale ('en-us' is selected by default)
+            decide_url = u'http://127.0.0.1:8000%s#decide' % reverse(u'inforequests:detail', args=(receivedemail.inforequest.id,))
+            msg = render_mail(u'inforequests/mails/new_mail_notification',
+                    from_email=u'info@chcemvediet.sk',
+                    to=[receivedemail.inforequest.applicant.email],
+                    dictionary={
+                        u'receivedemail': receivedemail,
+                        u'inforequest': receivedemail.inforequest,
+                        u'decide_url': decide_url,
+                        })
+            msg.send()
+    except Exception as e:
+        print(e)
+        raise
