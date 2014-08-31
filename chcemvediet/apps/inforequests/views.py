@@ -195,6 +195,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                     subject=receivedemail.raw_email.subject,
                     content=receivedemail.raw_email.text,
                     effective_date=receivedemail.raw_email.processed,
+                    receivedemail=receivedemail,
                     )
             form.save(action)
             action.save()

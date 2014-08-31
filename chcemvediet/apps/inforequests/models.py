@@ -95,7 +95,7 @@ class History(models.Model):
     obligee_zip = models.CharField(max_length=10, verbose_name=_(u'Obligee Zip'))
 
     # Backward relations:
-    #  -- inforequest: by Inforequest.history; Raises DoesNotExist of it's not main history
+    #  -- inforequest: by Inforequest.history; Raises DoesNotExist if it's not main history
     #  -- action_set: by Action.history
 
     def save(self, *args, **kwargs):
@@ -133,6 +133,7 @@ class Action(models.Model):
     subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(verbose_name=_(u'Content'))
     effective_date = models.DateTimeField(verbose_name=_(u'Effective Date'))
+    receivedemail = models.OneToOneField(u'ReceivedEmail', blank=True, null=True, verbose_name=_(u'Received E-mail'))
 
     TYPES = FieldChoices(
             (u'REQUEST', 1, _(u'Request')),
@@ -163,7 +164,7 @@ class Action(models.Model):
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
-    # Applicable for: DISCLOSURE
+    # Applicable for: DISCLOSURE, REVERSION, REMANDMENT; None for others
     DISCLOSURE_LEVELS = FieldChoices(
             (u'NONE', 1, _(u'No Disclosure at All')),
             (u'PARTIAL', 2, _(u'Partial Disclosure')),
@@ -171,7 +172,7 @@ class Action(models.Model):
             )
     disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
 
-    # Applicable for: REFUSAL
+    # Applicable for: REFUSAL, AFFIRMATION; None for others
     REFUSAL_REASONS = FieldChoices(
             (u'DOES_NOT_HAVE', 3, _(u'Does not Have Information')),
             (u'DOES_NOT_PROVIDE', 4, _(u'Does not Provide Information')),
@@ -217,6 +218,9 @@ class ReceivedEmail(models.Model):
         )
     status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
 
+    # Backward relations:
+    #  -- action: by Action.receivedemail; Raises DoesNotExist if it's not owned by any action
+
     objects = ReceivedEmailQuerySet.as_manager()
 
     class Meta:
@@ -227,18 +231,18 @@ class ReceivedEmail(models.Model):
 
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
-    received_email = ReceivedEmail(raw_email=message)
+    receivedemail = ReceivedEmail(raw_email=message)
     try:
         inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
     except (Inforequest.DoesNotExist, Inforequest.MultipleObjectsReturned):
-        received_email.status = received_email.STATUSES.UNASSIGNED
+        receivedemail.status = receivedemail.STATUSES.UNASSIGNED
     else:
-        received_email.inforequest = inforequest
-        received_email.status = received_email.STATUSES.UNDECIDED
-    received_email.save()
+        receivedemail.inforequest = inforequest
+        receivedemail.status = receivedemail.STATUSES.UNDECIDED
+    receivedemail.save()
 
-    if received_email.inforequest:
+    if receivedemail.inforequest:
         subject = _(u'New e-mail notification');
         message = _(u'We got an e-mail from \'%s\' regarding your inforequest to \'%s\'.') % (
-                message.from_header, received_email.inforequest.history.obligee_name)
-        send_mail(subject, message, u'info@chcemvediet.sk', [received_email.inforequest.applicant.email])
+                message.from_header, receivedemail.inforequest.history.obligee_name)
+        send_mail(subject, message, u'info@chcemvediet.sk', [receivedemail.inforequest.applicant.email])
