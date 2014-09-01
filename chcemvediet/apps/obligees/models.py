@@ -15,7 +15,3 @@ class Obligee(models.Model):
     def __unicode__(self):
         return u'%s' % ((self.name,),)
 
-def validate_obligee_name_exists(value):
-    if not Obligee.objects.filter(name=value).exists():
-        raise ValidationError(_(u'Invalid obligee name. Select one form the menu.'))
-

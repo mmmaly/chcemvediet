@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
-from django.db import models
+from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, activate
 from django.contrib.auth.models import User
@@ -69,18 +69,18 @@ class Inforequest(models.Model):
             # Generate unique random email
             if not self.unique_email:
                 length = 4
-                while length < 20:
+                while True:
                     self.unique_email = u'%s@mail.chcemvediet.sk' % random_readable_string(length)
                     try:
                         super(Inforequest, self).save(*args, **kwargs)
                     except IntegrityError:
+                        if length > 10:
+                            raise # Give up
                         length += 1
                         continue
-                    return # object is successfully saved
-                else:
-                    raise RuntimeError(u'Failed to generate unique random e-mail address.')
-
-        super(Inforequest, self).save(*args, **kwargs)
+                    break
+            else:
+                super(Inforequest, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)

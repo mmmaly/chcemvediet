@@ -1,15 +1,12 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load static from staticfiles %}
-{% load addtoblock from sekizai_tags %}
 {% load lorem from poleno.utils %}
 
 {% comment %}
  %
  % Context:
  %  -- form: chcemvediet.apps.inforequests.forms.InforequestForm | chcemvediet.apps.inforequests.forms.InforequestDraftForm
- %  -- obligee: chcemvediet.apps.obligees.models.Obligee
  %
 {% endcomment %}
 
@@ -20,49 +17,19 @@
   <p>[{% lorem 21 %}]</p>
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
-    {% include "inforequests/create-form.html" with form=form %}
+    <div class="control-group">
+      <label class="control-label">{% blocktrans %}Applicant{% endblocktrans %}:</label>
+      <div class="controls" style="padding: 5px 0px 0px 5px;">
+        {{ user.get_full_name }}<br>
+        {{ user.profile.street }}<br>
+        {{ user.profile.zip }} {{ user.profile.city }}
+      </div>
+    </div>
+    {% include "main/snippets/form_horizontal.html" with form=form %}
     <div class="form-actions">
       <button type="submit" name="submit" class="btn btn-primary">{% blocktrans %}Submit Request{% endblocktrans %}</button>
       <button type="submit" name="save" class="btn">{% blocktrans %}Save as Draft{% endblocktrans %}</button>
       <a class="btn pull-right" href="{% url 'inforequests:index' %}">Cancel</a>
     </div>
   </form>
-  {% addtoblock "js" %}{# {{{ #}
-    <script>
-	function update_obligee_details(obligee) {
-		if (obligee) {
-			$("#id_obligee_street").text(obligee.street);
-			$("#id_obligee_zip").text(obligee.zip);
-			$("#id_obligee_city").text(obligee.city);
-			$("#id_obligee_email").text(obligee.email);
-			$("#id_obligee_details").show();
-		} else {
-			$("#id_obligee_details").hide();
-		}
-	};
-
-	$(function() {
-		$("#id_obligee").autocomplete({
-			source: "{% url 'obligees:autocomplete' %}",
-			minLength: 2,
-			select: function(event, ui) {
-				update_obligee_details(ui.item ? ui.item.obligee : null);
-			},
-			change: function(event, ui) {
-				update_obligee_details(ui.item ? ui.item.obligee : null);
-			},
-		});
-		$("#id_obligee").click(function(event){
-			$("#id_obligee").autocomplete("search");
-		});
-	});
-    </script>
-  {% endaddtoblock %}{# }}} #}
-  {% addtoblock "css" %}{# {{{ #}
-    <style>
-	.ui-autocomplete-loading {
-		background: white url("{% static 'main/images/ui-anim_basic_16x16.gif' %}") right center no-repeat;
-	}
-    </style>
-  {% endaddtoblock %}{# }}} #}
 {% endblock %}

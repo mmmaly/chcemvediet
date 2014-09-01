@@ -74,26 +74,12 @@ def create(request, draft_id=None):
             raise PermissionDenied
 
     else:
+        form = forms.InforequestDraftForm()
         if draft:
-            form = forms.InforequestDraftForm(initial={
-                    u'obligee': draft.obligee.name if draft.obligee else u'',
-                    u'subject': draft.subject,
-                    u'content': draft.content,
-                    })
-        else:
-            form = forms.InforequestDraftForm()
-
-    if request.method == u'POST':
-        try:
-            obligee = Obligee.objects.filter(name=request.POST[u'obligee']).first()
-        except:
-            obligee = None
-    else:
-        obligee = draft.obligee if draft else None
+            form.load(draft)
 
     return render(request, u'inforequests/create.html', {
             u'form': form,
-            u'obligee': obligee,
             })
 
 @require_http_methods([u'HEAD', u'GET'])

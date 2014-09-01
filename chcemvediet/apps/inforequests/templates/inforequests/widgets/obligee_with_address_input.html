@@ -1,0 +1,19 @@
+{# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- textinput: html string
+ %  -- obligee: chcemvediet.apps.obligees.models.Obligee | None
+ %
+{% endcomment %}
+
+<div class="obligee_with_address_input">
+  {{ textinput }}
+  <div class="obligee_with_address_input_details {% if not obligee %}obligee_with_address_input_hide{% endif %}">
+    <span class="obligee_with_address_input_street">{{ obligee.street|default:'' }}</span><br>
+    <span class="obligee_with_address_input_zip">{{ obligee.zip|default:'' }}</span> <span class="obligee_with_address_input_city">{{ obligee.city|default:'' }}</span><br>
+    {% blocktrans %}E-mail{% endblocktrans %}: <span class="obligee_with_address_input_email">{{ obligee.email|default:'' }}</span>
+  </div>
+</div>

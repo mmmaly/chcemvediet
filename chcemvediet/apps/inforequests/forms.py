@@ -1,20 +1,18 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django import forms
-from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
-from chcemvediet.apps.obligees.models import Obligee, validate_obligee_name_exists
+from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
 from models import History, Action
 
+
 class InforequestForm(forms.Form):
-    obligee = forms.CharField(
+    obligee = ObligeeAutocompleteField(
             label=_(u'Obligee'),
-            max_length=255,
-            validators=[validate_obligee_name_exists],
-            widget=forms.TextInput(attrs={
+            widget=ObligeeWithAddressInput(attrs={
                 u'placeholder': _(u'Obligee'),
                 }),
             )
@@ -39,11 +37,8 @@ class InforequestForm(forms.Form):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
-        obligee_name = self.cleaned_data[u'obligee']
-        obligee = Obligee.objects.filter(name=obligee_name).first()
-
-        history = History(obligee=obligee)
-        history.save() # FIXME: treba? nesavne sa samo, ked sa savne inforequest?
+        history = History(obligee=self.cleaned_data[u'obligee'])
+        history.save()
         inforequest.history = history
 
 class InforequestDraftForm(InforequestForm):
@@ -58,10 +53,14 @@ class InforequestDraftForm(InforequestForm):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
-        obligee_name = self.cleaned_data[u'obligee']
-        draft.obligee = Obligee.objects.filter(name=obligee_name).first() if obligee_name else None
+        draft.obligee = self.cleaned_data[u'obligee']
         draft.subject = self.cleaned_data[u'subject']
         draft.content = self.cleaned_data[u'content']
+
+    def load(self, draft):
+        self.initial[u'obligee'] = draft.obligee
+        self.initial[u'subject'] = draft.subject
+        self.initial[u'content'] = draft.content
 
 
 class ActionAbstractForm(forms.Form):
