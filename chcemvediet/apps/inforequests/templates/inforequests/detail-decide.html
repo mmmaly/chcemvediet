@@ -17,7 +17,7 @@
   <div class="btn-group">
     <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'confirmation' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#confirmation-email-modal">Confirmation</button>
     <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'extension' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#extension-email-modal">Extension</button>
-    <button type="button" class="btn" disabled>Advancement</button>
+    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'advancement' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#advancement-email-modal">Advancement</button>
     <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'clarification-request' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#clarification-request-email-modal">Clarification Request</button>
     <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'disclosure' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#disclosure-email-modal">Disclosure</button>
     <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:decide_email' 'refusal' inforequest.id email.id %}" data-type="html" data-toggle="modal" data-target="#refusal-email-modal">Refusal</button>
@@ -30,6 +30,7 @@
   </div>
   <div id="confirmation-email-modal" class="modal hide fade"></div>
   <div id="extension-email-modal" class="modal hide fade"></div>
+  <div id="advancement-email-modal" class="modal hide fade"></div>
   <div id="clarification-request-email-modal" class="modal hide fade"></div>
   <div id="unrelated-email-modal" class="modal hide fade"></div>
   <div id="unknown-email-modal" class="modal hide fade"></div>

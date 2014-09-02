@@ -54,15 +54,7 @@ def create(request, draft_id=None):
                 form.save(inforequest)
                 inforequest.save()
 
-                action = Action(
-                        history=inforequest.history,
-                        type=Action.TYPES.REQUEST,
-                        subject=form.cleaned_data[u'subject'],
-                        content=form.cleaned_data[u'content'],
-                        effective_date=inforequest.submission_date,
-                        )
-                action.save()
-
+                action = inforequest.history.action_set.requests().first()
                 sender_full = formataddr((squeeze(inforequest.applicant_name), inforequest.unique_email))
                 send_mail(action.subject, action.content, sender_full, [inforequest.history.obligee.email])
 
@@ -135,6 +127,12 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                 action_type = Action.TYPES.EXTENSION,
                 form_class = forms.ExtensionEmailForm,
                 ),
+            u'advancement': Bunch(
+                template = u'inforequests/actions/advancement-email.html',
+                email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
+                action_type = Action.TYPES.ADVANCEMENT,
+                form_class = forms.AdvancementEmailForm,
+                ),
             u'clarification-request': Bunch(
                 template = u'inforequests/actions/clarification_request-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
@@ -166,7 +164,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
     if request.method == u'POST':
         action = None
         if action_type is not None:
-            form = form_class(request.POST)
+            form = form_class(request.POST, history_set=inforequest.history_set)
             if not form.is_valid():
                 return JsonResponse({
                         u'result': u'invalid',
@@ -177,12 +175,11 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                             }),
                         })
             action = Action(
-                    history=inforequest.history,
-                    type=action_type,
                     subject=receivedemail.raw_email.subject,
                     content=receivedemail.raw_email.text,
                     effective_date=receivedemail.raw_email.processed,
                     receivedemail=receivedemail,
+                    type=action_type,
                     )
             form.save(action)
             action.save()
@@ -200,7 +197,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class() if form_class else None
+        form = form_class(history_set=inforequest.history_set) if form_class else None
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'email': receivedemail,
@@ -227,6 +224,11 @@ def add_smail(request, action, inforequest_id):
                 template = u'inforequests/actions/extension-smail.html',
                 action_type = Action.TYPES.EXTENSION,
                 form_class = forms.ExtensionSmailForm,
+                ),
+            u'advancement': Bunch(
+                template = u'inforequests/actions/advancement-smail.html',
+                action_type = Action.TYPES.ADVANCEMENT,
+                form_class = forms.AdvancementSmailForm,
                 ),
             u'clarification-request': Bunch(
                 template = u'inforequests/actions/clarification_request-smail.html',
@@ -268,7 +270,7 @@ def add_smail(request, action, inforequest_id):
         raise Http404(u'Invalid action.')
 
     if request.method == u'POST':
-        form = form_class(request.POST)
+        form = form_class(request.POST, history_set=inforequest.history_set)
         if not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -278,7 +280,6 @@ def add_smail(request, action, inforequest_id):
                         }),
                     })
         action = Action(
-                history=inforequest.history,
                 type=action_type,
                 )
         form.save(action)
@@ -293,7 +294,7 @@ def add_smail(request, action, inforequest_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class()
+        form = form_class(history_set=inforequest.history_set)
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'form': form,

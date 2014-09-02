@@ -15,7 +15,7 @@
 <div id="actions">
   {% for action in inforequest.history.action_set.all %}
     <div id="action-{{ action.id }}">
-      {% include "inforequests/detail-action.html" with inforequest=inforequest action=action %}
+      {% include "inforequests/detail-action.html" with inforequest=inforequest history=inforequest.history action=action %}
     </div>
   {% endfor %}
 </div>

@@ -22,7 +22,9 @@
   {% else %}
     <div class="control-group {% if field.errors %}error{% endif %}">
       {% block before_field %}{% endblock %}
-      <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}:</label>
+      {% if field.label %}
+        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}:</label>
+      {% endif %}
       <div class="controls">
         {{ field }}
         <span class="help-inline">{{ field.errors|join:" " }}</span>

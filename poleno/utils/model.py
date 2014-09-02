@@ -2,9 +2,44 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404
 
 from misc import Bunch
+
+def after_saved(model):
+    u"""
+    Decorator which registers given function to be called after the ``model`` instance is saved
+    using ``post_save`` signal. The function is called just once, when the instance is saved for
+    the first time, then it is unregistered. If the ``model`` instance is never saved the function
+    is never called.
+
+    It is useful if you need to use a reference to a model that is not saved yet, but it will be
+    soon. You cannot make a reference to such model now, because it has no ``pk`` defined yet, you
+    must wait until it's saved and has defined its ``pk``.
+
+    Example:
+        def save_book(author):
+            book = Book(title="The Book")
+
+            if author.pk is None:
+                @after_saved(author)
+                def deferred:
+                    book.author = author
+                    book.save()
+            else:
+                book.author = author
+                book.save()
+    """
+    def _decorator(func):
+        uid=(id(func), id(model))
+        def receiver(sender, instance, **kwargs):
+            if instance is model:
+                func()
+                post_save.disconnect(sender=model.__class__, dispatch_uid=uid)
+        post_save.connect(receiver, sender=model.__class__, weak=False, dispatch_uid=uid)
+        return func
+    return _decorator
 
 class FieldChoices(object):
     u"""
@@ -105,4 +140,6 @@ class QuerySet(models.query.QuerySet):
         one object is found.
         """
         return get_object_or_404(self, *args, **kwargs)
+
+
 

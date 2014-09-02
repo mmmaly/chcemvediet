@@ -36,7 +36,6 @@ class InforequestQuerySet(QuerySet):
 
 class Inforequest(models.Model):
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
-    history = models.OneToOneField(u'History', verbose_name=_(u'History'))
     unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail')) # Default value computed in save()
     submission_date = models.DateTimeField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
@@ -49,12 +48,17 @@ class Inforequest(models.Model):
     applicant_zip = models.CharField(max_length=10, verbose_name=_(u'Applicant Zip'))
 
     # Backward relations:
+    #  -- history_set: by History.inforequest; Must be non-empty with exactly one main history
     #  -- receivedemail_set: by ReceivedEmail.inforequest
 
     objects = InforequestQuerySet.as_manager()
 
     class Meta:
         ordering = [u'submission_date', u'pk']
+
+    @property
+    def history(self):
+        return self.history_set.get(advanced_by=None)
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
@@ -78,15 +82,20 @@ class Inforequest(models.Model):
                             raise # Give up
                         length += 1
                         continue
-                    break
-            else:
-                super(Inforequest, self).save(*args, **kwargs)
+                    return # object is already saved
+
+        super(Inforequest, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)
 
 class History(models.Model):
     obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
+    inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
+
+    # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
+    # main history. Inforequest must contain exactly one history with ``advanced_by`` set to None.
+    advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, verbose_name=_(u'Advanced By'))
 
     # Frozen Obligee contact information at the time the Inforequest was submitted if this is its
     # main History, or the time the Inforequest was advanced to this Obligee otherwise. The
@@ -97,8 +106,10 @@ class History(models.Model):
     obligee_zip = models.CharField(max_length=10, verbose_name=_(u'Obligee Zip'))
 
     # Backward relations:
-    #  -- inforequest: by Inforequest.history; Raises DoesNotExist if it's not main history
     #  -- action_set: by Action.history
+
+    class Meta:
+        ordering = [u'obligee_name', u'pk']
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
@@ -148,6 +159,7 @@ class Action(models.Model):
             (u'AFFIRMATION', 8, _(u'Affirmation')),
             (u'REVERSION', 9, _(u'Reversion')),
             (u'REMANDMENT', 10, _(u'Remandment')),
+            (u'ADVANCED_REQUEST', 11, _(u'Advanced Request')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -163,6 +175,7 @@ class Action(models.Model):
             AFFIRMATION=None,
             REVERSION=None,
             REMANDMENT=13,
+            ADVANCED_REQUEST=13,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
@@ -189,6 +202,9 @@ class Action(models.Model):
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
     objects = ActionQuerySet.as_manager()
+
+    # Backward relations:
+    #  -- advanced_to_set: by History.advanced_by; Applicable for: ADVANCEMENT; empty for others
 
     class Meta:
         ordering = [u'effective_date', u'pk']

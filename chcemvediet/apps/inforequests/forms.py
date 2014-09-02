@@ -4,9 +4,16 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
+from poleno.utils.model import after_saved
+from poleno.utils.form import AutoSuppressedSelect
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
 from models import History, Action
+
+
+class HistoryChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, history):
+        return history.obligee_name;
 
 
 class InforequestForm(forms.Form):
@@ -37,9 +44,22 @@ class InforequestForm(forms.Form):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
-        history = History(obligee=self.cleaned_data[u'obligee'])
-        history.save()
-        inforequest.history = history
+        @after_saved(inforequest)
+        def deferred():
+            history = History(
+                    obligee=self.cleaned_data[u'obligee'],
+                    inforequest=inforequest,
+                    )
+            history.save()
+
+            action = Action(
+                    history=history,
+                    subject=self.cleaned_data[u'subject'],
+                    content=self.cleaned_data[u'content'],
+                    effective_date=inforequest.submission_date,
+                    type=Action.TYPES.REQUEST,
+                    )
+            action.save()
 
 class InforequestDraftForm(InforequestForm):
 
@@ -64,14 +84,32 @@ class InforequestDraftForm(InforequestForm):
 
 
 class ActionAbstractForm(forms.Form):
+    history = HistoryChoiceField(
+            queryset=History.objects.none(),
+            label=_(u'Obligee'),
+            empty_label=u'',
+            widget=AutoSuppressedSelect(suppressed_attrs={
+                u'class': u'suppressed-control',
+                }),
+            )
+
     def __init__(self, *args, **kwargs):
+        history_set = kwargs.pop(u'history_set')
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
+
+        field = self.fields[u'history']
+        field.queryset = history_set
+        if history_set.count() == 1:
+            field.empty_label = None
+
         if not self.prefix:
             self.prefix = self.__class__.__name__.lower()
 
     def save(self, action):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+        action.history = self.cleaned_data[u'history']
 
 class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
@@ -87,6 +125,50 @@ class DeadlineMixin(ActionAbstractForm):
     def save(self, action):
         super(DeadlineMixin, self).save(action)
         action.deadline = self.cleaned_data[u'deadline']
+
+class AdvancedToMixin(ActionAbstractForm):
+    advanced_to_1 = ObligeeAutocompleteField(
+            label=_(u'Advanced To'),
+            widget=ObligeeWithAddressInput(attrs={
+                u'placeholder': _(u'Obligee'),
+                }),
+            )
+    advanced_to_2 = ObligeeAutocompleteField(
+            label=u'',
+            required=False,
+            widget=ObligeeWithAddressInput(attrs={
+                u'placeholder': _(u'Obligee'),
+                }),
+            )
+    advanced_to_3 = ObligeeAutocompleteField(
+            label=u'',
+            required=False,
+            widget=ObligeeWithAddressInput(attrs={
+                u'placeholder': _(u'Obligee'),
+                }),
+            )
+
+    def save(self, action):
+        super(AdvancedToMixin, self).save(action)
+
+        @after_saved(action)
+        def deferred():
+            for field in [u'advanced_to_1', u'advanced_to_2', u'advanced_to_3']:
+                obligee = self.cleaned_data[field]
+                if obligee:
+                    sub_history = History(
+                            obligee=obligee,
+                            inforequest=action.history.inforequest,
+                            advanced_by=action,
+                            )
+                    sub_history.save()
+
+                    sub_action = Action(
+                            history=sub_history,
+                            effective_date=action.effective_date,
+                            type=Action.TYPES.ADVANCED_REQUEST,
+                            )
+                    sub_action.save()
 
 class DisclosureLevelMixin(ActionAbstractForm):
     disclosure_level = forms.ChoiceField(
@@ -116,6 +198,9 @@ class ConfirmationEmailForm(DecideEmailCommonForm):
     pass
 
 class ExtensionEmailForm(DecideEmailCommonForm, DeadlineMixin):
+    pass
+
+class AdvancementEmailForm(DecideEmailCommonForm, AdvancedToMixin):
     pass
 
 class ClarificationRequestEmailForm(DecideEmailCommonForm):
@@ -162,6 +247,9 @@ class ConfirmationSmailForm(AddSmailCommonForm):
     pass
 
 class ExtensionSmailForm(AddSmailCommonForm, DeadlineMixin):
+    pass
+
+class AdvancementSmailForm(AddSmailCommonForm, AdvancedToMixin):
     pass
 
 class ClarificationRequestSmailForm(AddSmailCommonForm):

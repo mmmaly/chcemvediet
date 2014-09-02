@@ -60,8 +60,10 @@
 	/* Make sure fixed menu won't overlap page top. */
 	@media (min-width: 980px) { body { padding-top: 60px; } }
 
-	/* Add active state for navbar brand. */
+	/* Some tweaks for Bootstrap. */
 	.brand.active { color: white; }
+	.well-inverse { background-color: white; }
+	.suppressed-control { padding: 5px; height: 20px; line-height: 20px; display: inline-block; vertical-align: center; }
 
 	/* Large Bootstrap modals */
 	@media (min-width: 768px) { .modal.modal-large { width: 660px; margin-left: -330px; } }
@@ -84,8 +86,9 @@
 	@media (min-width: 768px) and (min-height: 950px) { .modal-body { max-height: 650px; } }
 	@media (min-width: 768px) and (min-height: 1000px) { .modal-body { max-height: 700px; } }
 
-	/* Loading icon for JQuery Autocomplete */
+	/* Loading icon and fixing z-index for JQuery Autocomplete */
 	.ui-autocomplete-loading { background: white url("{% static 'main/images/ui-anim_basic_16x16.gif' %}") right center no-repeat; }
+	.ui-autocomplete { z-index: 1100 !important; /* Must be higher than 1050, what's Bootstrap modal z-index. */ }
 
 	/* For chcemvediet.apps.obligees.forms.ObligeeWithAddressInput */
 	.obligee_with_address_input { display: inline-block; vertical-align: top; }
