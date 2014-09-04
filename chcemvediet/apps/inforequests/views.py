@@ -180,9 +180,8 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
             form.save(action)
             action.save()
 
-        # FIXME: comment this if you are lazy to send e-mails while testing
-        #receivedemail.status = email_status
-        #receivedemail.save()
+        receivedemail.status = email_status
+        receivedemail.save()
 
         return JsonResponse({
                 u'result': u'success',
