@@ -52,6 +52,7 @@ class Inforequest(models.Model):
 
     # Backward relations:
     #  -- history_set: by History.inforequest; Must be non-empty with exactly one main history
+    #  -- actiondraft_set: by ActionDraft.inforequest
     #  -- receivedemail_set: by ReceivedEmail.inforequest
 
     objects = InforequestQuerySet.as_manager()
@@ -233,6 +234,32 @@ class Action(models.Model):
 
     def __unicode__(self):
         return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)
+
+class ActionDraft(models.Model):
+    inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
+    history = models.ForeignKey(u'History', blank=True, null=True, verbose_name=_(u'History'))
+    subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
+    content = models.TextField(verbose_name=_(u'Content'))
+    effective_date = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Effective Date'))
+
+    TYPES = Action.TYPES
+    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
+
+    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
+
+    DISCLOSURE_LEVELS = Action.DISCLOSURE_LEVELS
+    disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
+
+    REFUSAL_REASONS = Action.REFUSAL_REASONS
+    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
+
+    obligee_set = models.ManyToManyField(u'obligees.Obligee', verbose_name=_(u'Obligee Set'))
+
+    class Meta:
+        ordering = [u'pk']
+
+    def __unicode__(self):
+        return u'%s' % ((self.inforequest, self.get_type_display()),)
 
 class ReceivedEmailQuerySet(QuerySet):
     def undecided(self):

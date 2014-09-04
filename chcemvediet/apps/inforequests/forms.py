@@ -40,6 +40,15 @@ class InforequestForm(forms.Form):
                 }),
             )
 
+    def __init__(self, *args, **kwargs):
+        self.draft = kwargs.pop(u'draft', False)
+        super(InforequestForm, self).__init__(*args, **kwargs)
+
+        if self.draft:
+            self.fields[u'obligee'].required = False
+            self.fields[u'subject'].required = False
+            self.fields[u'content'].required = False
+
     def save(self, inforequest):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
@@ -61,15 +70,7 @@ class InforequestForm(forms.Form):
                     )
             action.save()
 
-class InforequestDraftForm(InforequestForm):
-
-    def __init__(self, *args, **kwargs):
-        super(InforequestDraftForm, self).__init__(*args, **kwargs)
-        self.fields[u'obligee'].required = False
-        self.fields[u'subject'].required = False
-        self.fields[u'content'].required = False
-
-    def save(self, draft):
+    def save_to_draft(self, draft):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
@@ -77,7 +78,7 @@ class InforequestDraftForm(InforequestForm):
         draft.subject = self.cleaned_data[u'subject']
         draft.content = self.cleaned_data[u'content']
 
-    def load(self, draft):
+    def load_from_draft(self, draft):
         self.initial[u'obligee'] = draft.obligee
         self.initial[u'subject'] = draft.subject
         self.initial[u'content'] = draft.content
@@ -94,6 +95,7 @@ class ActionAbstractForm(forms.Form):
             )
 
     def __init__(self, *args, **kwargs):
+        self.draft = kwargs.pop(u'draft', False)
         history_set = kwargs.pop(u'history_set')
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
 
@@ -105,11 +107,23 @@ class ActionAbstractForm(forms.Form):
         if not self.prefix:
             self.prefix = self.__class__.__name__.lower()
 
+        if self.draft:
+            self.fields[u'history'].required = False
+
     def save(self, action):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
         action.history = self.cleaned_data[u'history']
+
+    def save_to_draft(self, draft):
+        if not self.is_valid():
+            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+        draft.history = self.cleaned_data[u'history']
+
+    def load_from_draft(self, draft):
+        self.initial[u'history'] = draft.history
 
 class EffectiveDateMixin(ActionAbstractForm):
     effective_date = forms.DateField(
@@ -121,9 +135,22 @@ class EffectiveDateMixin(ActionAbstractForm):
                 }),
             )
 
+    def __init__(self, *args, **kwargs):
+        super(EffectiveDateMixin, self).__init__(*args, **kwargs)
+        if self.draft:
+            self.fields[u'effective_date'].required = False
+
     def save(self, action):
         super(EffectiveDateMixin, self).save(action)
         action.effective_date = self.cleaned_data[u'effective_date']
+
+    def save_to_draft(self, draft):
+        super(EffectiveDateMixin, self).save_to_draft(draft)
+        draft.effective_date = self.cleaned_data[u'effective_date']
+
+    def load_from_draft(self, draft):
+        super(EffectiveDateMixin, self).load_from_draft(draft)
+        self.initial[u'effective_date'] = draft.effective_date
 
 class SubjectContentMixin(ActionAbstractForm):
     subject = forms.CharField(
@@ -141,10 +168,26 @@ class SubjectContentMixin(ActionAbstractForm):
                 }),
             )
 
+    def __init__(self, *args, **kwargs):
+        super(SubjectContentMixin, self).__init__(*args, **kwargs)
+        if self.draft:
+            self.fields[u'subject'].required = False
+            self.fields[u'content'].required = False
+
     def save(self, action):
         super(SubjectContentMixin, self).save(action)
         action.subject = self.cleaned_data[u'subject']
         action.content = self.cleaned_data[u'content']
+
+    def save_to_draft(self, draft):
+        super(SubjectContentMixin, self).save_to_draft(draft)
+        draft.subject = self.cleaned_data[u'subject']
+        draft.content = self.cleaned_data[u'content']
+
+    def load_from_draft(self, draft):
+        super(SubjectContentMixin, self).load_from_draft(draft)
+        self.initial[u'subject'] = draft.subject
+        self.initial[u'content'] = draft.content
 
 class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
@@ -157,9 +200,22 @@ class DeadlineMixin(ActionAbstractForm):
                 }),
             )
 
+    def __init__(self, *args, **kwargs):
+        super(DeadlineMixin, self).__init__(*args, **kwargs)
+        if self.draft:
+            self.fields[u'deadline'].required = False
+
     def save(self, action):
         super(DeadlineMixin, self).save(action)
         action.deadline = self.cleaned_data[u'deadline']
+
+    def save_to_draft(self, draft):
+        super(DeadlineMixin, self).save_to_draft(draft)
+        draft.deadline = self.cleaned_data[u'deadline']
+
+    def load_from_draft(self, draft):
+        super(DeadlineMixin, self).load_from_draft(draft)
+        self.initial[u'deadline'] = draft.deadline
 
 class AdvancedToMixin(ActionAbstractForm):
     advanced_to_1 = ObligeeAutocompleteField(
@@ -182,13 +238,20 @@ class AdvancedToMixin(ActionAbstractForm):
                 u'placeholder': _(u'Obligee'),
                 }),
             )
+    ADVANCED_TO_FIELDS = [u'advanced_to_1', u'advanced_to_2', u'advanced_to_3']
+
+    def __init__(self, *args, **kwargs):
+        super(AdvancedToMixin, self).__init__(*args, **kwargs)
+        if self.draft:
+            for field in self.ADVANCED_TO_FIELDS:
+                self.fields[field].required = False
 
     def save(self, action):
         super(AdvancedToMixin, self).save(action)
 
         @after_saved(action)
         def deferred():
-            for field in [u'advanced_to_1', u'advanced_to_2', u'advanced_to_3']:
+            for field in self.ADVANCED_TO_FIELDS:
                 obligee = self.cleaned_data[field]
                 if obligee:
                     sub_history = History(
@@ -205,15 +268,44 @@ class AdvancedToMixin(ActionAbstractForm):
                             )
                     sub_action.save()
 
+    def save_to_draft(self, draft):
+        super(AdvancedToMixin, self).save_to_draft(draft)
+
+        @after_saved(draft)
+        def deferred():
+            draft.obligee_set.clear()
+            for field in self.ADVANCED_TO_FIELDS:
+                obligee = self.cleaned_data[field]
+                if obligee:
+                    draft.obligee_set.add(obligee)
+
+    def load_from_draft(self, draft):
+        super(AdvancedToMixin, self).load_from_draft(draft)
+        for field, obligee in zip(self.ADVANCED_TO_FIELDS, draft.obligee_set.all()):
+            self.initial[field] = obligee
+
 class DisclosureLevelMixin(ActionAbstractForm):
     disclosure_level = forms.ChoiceField(
             label=_(u'Disclosure Level'),
             choices=[(u'', u'')] + Action.DISCLOSURE_LEVELS._choices,
             )
 
+    def __init__(self, *args, **kwargs):
+        super(DisclosureLevelMixin, self).__init__(*args, **kwargs)
+        if self.draft:
+            self.fields[u'disclosure_level'].required = False
+
     def save(self, action):
         super(DisclosureLevelMixin, self).save(action)
         action.disclosure_level = self.cleaned_data[u'disclosure_level']
+
+    def save_to_draft(self, draft):
+        super(DisclosureLevelMixin, self).save_to_draft(draft)
+        draft.disclosure_level = self.cleaned_data[u'disclosure_level'] if self.cleaned_data[u'disclosure_level'] != u'' else None
+
+    def load_from_draft(self, draft):
+        super(DisclosureLevelMixin, self).load_from_draft(draft)
+        self.initial[u'disclosure_level'] = draft.disclosure_level
 
 class RefusalReasonMixin(ActionAbstractForm):
     refusal_reason = forms.ChoiceField(
@@ -221,9 +313,22 @@ class RefusalReasonMixin(ActionAbstractForm):
             choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
             )
 
+    def __init__(self, *args, **kwargs):
+        super(RefusalReasonMixin, self).__init__(*args, **kwargs)
+        if self.draft:
+            self.fields[u'refusal_reason'].required = False
+
     def save(self, action):
         super(RefusalReasonMixin, self).save(action)
         action.refusal_reason = self.cleaned_data[u'refusal_reason']
+
+    def save_to_draft(self, draft):
+        super(RefusalReasonMixin, self).save_to_draft(draft)
+        draft.refusal_reason = self.cleaned_data[u'refusal_reason'] if self.cleaned_data[u'refusal_reason'] != u'' else None
+
+    def load_from_draft(self, draft):
+        super(RefusalReasonMixin, self).load_from_draft(draft)
+        self.initial[u'refusal_reason'] = draft.refusal_reason
 
 
 class DecideEmailCommonForm(ActionAbstractForm):

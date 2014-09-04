@@ -17,7 +17,7 @@ from poleno.utils.misc import Bunch
 from poleno.utils.form import clean_button
 from chcemvediet.apps.obligees.models import Obligee
 
-from models import Inforequest, InforequestDraft, Action
+from models import Inforequest, InforequestDraft, Action, ActionDraft
 import forms
 
 @require_http_methods([u'HEAD', u'GET'])
@@ -37,18 +37,18 @@ def create(request, draft_id=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id) if draft_id else None
 
     if request.method == u'POST':
-        button = clean_button(request.POST, [u'submit', u'save'])
-        if button == u'save':
-            form = forms.InforequestDraftForm(request.POST)
+        button = clean_button(request.POST, [u'submit', u'draft'])
+        form = forms.InforequestForm(request.POST, draft=(button == u'draft'))
+
+        if button == u'draft':
             if form.is_valid():
                 if not draft:
                     draft = InforequestDraft(applicant=request.user)
-                form.save(draft)
+                form.save_to_draft(draft)
                 draft.save()
                 return HttpResponseRedirect(reverse(u'inforequests:index'))
 
-        elif button == u'submit':
-            form = forms.InforequestForm(request.POST)
+        if button == u'submit':
             if form.is_valid():
                 inforequest = Inforequest(applicant=request.user)
                 form.save(inforequest)
@@ -61,13 +61,10 @@ def create(request, draft_id=None):
                     draft.delete()
                 return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.id,)))
 
-        else:
-            raise PermissionDenied
-
     else:
-        form = forms.InforequestDraftForm()
+        form = forms.InforequestForm()
         if draft:
-            form.load(draft)
+            form.load_from_draft(draft)
 
     return render(request, u'inforequests/create.html', {
             u'form': form,
@@ -95,11 +92,11 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
 
-    # We don't check whether ``receivedemail`` is the oldest ``inforequest`` undecided e-mail or
-    # not. Although the frontend forces the user to decide the e-mails in the order they were
-    # received, it is not necessarily a mistake to decide them in any other order. In the future we
-    # may even add an advanced frontend to allow the user to decide the e-mails in any order, but
-    # to keep the frontend simple, we don't do it now.
+    # FIXME: We don't check whether ``receivedemail`` is the oldest ``inforequest`` undecided
+    # e-mail or not. Although the frontend forces the user to decide the e-mails in the order they
+    # were received, it is not necessarily a mistake to decide them in any other order. In the
+    # future we may even add an advanced frontend to allow the user to decide the e-mails in any
+    # order, but to keep the frontend simple, we don't do it now.
 
     available_actions = {
             u'unrelated': Bunch(
@@ -209,7 +206,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
 def add_smail(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
-    # We don't check whether there are any undecided received e-mails waiting for this
+    # FIXME: We don't check whether there are any undecided received e-mails waiting for this
     # ``inforequest``. Although the frontend may force the user to decide the e-mails before he can
     # add s-mails, it is not necessarily a mistake to add a s-mail before deciding waiting e-mails.
 
@@ -268,9 +265,12 @@ def add_smail(request, action, inforequest_id):
     except KeyError:
         raise Http404(u'Invalid action.')
 
+    draft = inforequest.actiondraft_set.filter(type=action_type).first()
+
     if request.method == u'POST':
-        form = form_class(request.POST, history_set=inforequest.history_set)
-        if not form.is_valid():
+        button = clean_button(request.POST, [u'add', u'draft'])
+        form = form_class(request.POST, history_set=inforequest.history_set, draft=(button == u'draft'))
+        if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
                     u'content': render_to_string(template, context_instance=RequestContext(request), dictionary={
@@ -278,6 +278,19 @@ def add_smail(request, action, inforequest_id):
                         u'form': form,
                         }),
                     })
+
+        if button == u'draft':
+            if not draft:
+                draft = ActionDraft(
+                        inforequest=inforequest,
+                        type=action_type
+                        )
+            form.save_to_draft(draft)
+            draft.save()
+            return JsonResponse({
+                    u'result': u'success',
+                    })
+
         action = Action(
                 type=action_type,
                 )
@@ -294,6 +307,8 @@ def add_smail(request, action, inforequest_id):
 
     else: # request.method != u'POST'
         form = form_class(history_set=inforequest.history_set)
+        if draft:
+            form.load_from_draft(draft)
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'form': form,
@@ -305,12 +320,12 @@ def add_smail(request, action, inforequest_id):
 def new_action(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
-    # We don't check whether there are any undecided received e-mails waiting for this
+    # FIXME: We don't check whether there are any undecided received e-mails waiting for this
     # ``inforequest``. Although the frontend may force the user to decide the e-mails before he can
     # add new action, it is not necessarily a mistake to add a new action before deciding waiting
     # e-mails.
 
-    # Moreover, we don't check which actions may only be send by e-mail and/on s-mail, yet.
+    # FIXME: Moreover, we don't check which actions may only be send by e-mail and/on s-mail, yet.
 
     available_actions = {
             u'clarification-response': Bunch(
@@ -332,9 +347,11 @@ def new_action(request, action, inforequest_id):
     except KeyError:
         raise Http404(u'Invalid action.')
 
+    draft = inforequest.actiondraft_set.filter(type=action_type).first()
+
     if request.method == u'POST':
-        button = clean_button(request.POST, [u'email', u'print'])
-        form = form_class(request.POST, history_set=inforequest.history_set)
+        button = clean_button(request.POST, [u'email', u'print', u'draft'])
+        form = form_class(request.POST, history_set=inforequest.history_set, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -342,6 +359,18 @@ def new_action(request, action, inforequest_id):
                         u'inforequest': inforequest,
                         u'form': form,
                         }),
+                    })
+
+        if button == u'draft':
+            if not draft:
+                draft = ActionDraft(
+                        inforequest=inforequest,
+                        type=action_type
+                        )
+            form.save_to_draft(draft)
+            draft.save()
+            return JsonResponse({
+                    u'result': u'success',
                     })
 
         action = Action(
@@ -353,6 +382,9 @@ def new_action(request, action, inforequest_id):
 
         if button == u'email':
             action.send_by_email()
+
+        if draft:
+            draft.delete()
 
         json = {
                 u'result': u'success',
@@ -372,6 +404,8 @@ def new_action(request, action, inforequest_id):
 
     else: # request.method != u'POST'
         form = form_class(history_set=inforequest.history_set)
+        if draft:
+            form.load_from_draft(draft)
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'form': form,

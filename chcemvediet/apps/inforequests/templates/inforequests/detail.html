@@ -25,14 +25,14 @@
 
 			} else if (data.result == 'success' && data.print) {
 				$('.modal.in').removeClass('fade').modal('hide');
-				$('#content').html(data.content);
-				$(data.scroll_to).scrollTo();
+				if (data.content) $('#content').html(data.content);
+				if (data.scroll_to) $(data.scroll_to).scrollTo();
 				$('#print-modal').html(data.print).modal('show');
 
 			} else if (data.result == 'success') {
 				$.hideBootstrapModal(function(){
-					$('#content').html(data.content);
-					$(data.scroll_to).scrollTo();
+					if (data.content) $('#content').html(data.content);
+					if (data.scroll_to) $(data.scroll_to).scrollTo();
 				});
 			}
 		});

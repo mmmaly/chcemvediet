@@ -17,12 +17,6 @@
     <h3>Deadline Extension</h3>
   </div>
   <div class="modal-body">
-    {% if inforequest.history.action_set.extensions.count %}
-      <div class="alert">
-        <strong>Warning!</strong> There already is a deadline extension in this inforequest
-        history. Obligees usually don't send multiplne deadline extensions.
-      </div>
-    {% endif %}
     <p>Are you sure you want to mark this e-mail as a deadline extension of your inforequest?</p>
     <p>[{% lorem 7 %}]</p>
     <div>
@@ -30,7 +24,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Mark as Deadline Extension</button>
+    <button type="submit" class="btn btn-primary" name="button" value="decide">Mark as Deadline Extension</button>
     <button type="button" class="btn" data-dismiss="modal">Close</button>
   </div>
 </form>
