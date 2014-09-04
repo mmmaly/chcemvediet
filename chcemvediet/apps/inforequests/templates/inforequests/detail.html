@@ -19,16 +19,21 @@
     <script>
 	$(function(){
 		$(document).on('ajax-done', '.modal', function(event, data){
-			switch (data.result) {
-				case 'invalid':
-					$(this).html(data.content);
-					break;
-				case 'success':
-					$.hideBootstrapModal(function(){
-						$('#content').html(data.content);
-						$(data.scroll_to).scrollTo();
-					});
-					break;
+
+			if (data.result == 'invalid') {
+				$(this).html(data.content);
+
+			} else if (data.result == 'success' && data.print) {
+				$('.modal.in').removeClass('fade').modal('hide');
+				$('#content').html(data.content);
+				$(data.scroll_to).scrollTo();
+				$('#print-modal').html(data.print).modal('show');
+
+			} else if (data.result == 'success') {
+				$.hideBootstrapModal(function(){
+					$('#content').html(data.content);
+					$(data.scroll_to).scrollTo();
+				});
 			}
 		});
 	});

@@ -111,6 +111,41 @@ class ActionAbstractForm(forms.Form):
 
         action.history = self.cleaned_data[u'history']
 
+class EffectiveDateMixin(ActionAbstractForm):
+    effective_date = forms.DateField(
+            label=_(u'Effective Date'),
+            localize=True,
+            widget=forms.DateInput(attrs={
+                u'placeholder': pgettext_lazy(u'Form Date Placeholder', u'mm/dd/yyyy'),
+                u'class': u'datepicker',
+                }),
+            )
+
+    def save(self, action):
+        super(EffectiveDateMixin, self).save(action)
+        action.effective_date = self.cleaned_data[u'effective_date']
+
+class SubjectContentMixin(ActionAbstractForm):
+    subject = forms.CharField(
+            label=_(u'Subject'),
+            max_length=255,
+            widget=forms.TextInput(attrs={
+                u'placeholder': _(u'Subject'),
+                }),
+            )
+    content = forms.CharField(
+            label=_(u'Content'),
+            widget=forms.Textarea(attrs={
+                u'placeholder': _(u'Content'),
+                u'class': u'input-block-level',
+                }),
+            )
+
+    def save(self, action):
+        super(SubjectContentMixin, self).save(action)
+        action.subject = self.cleaned_data[u'subject']
+        action.content = self.cleaned_data[u'content']
+
 class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
             label=_(u'New Deadline'),
@@ -213,35 +248,8 @@ class RefusalEmailForm(DecideEmailCommonForm, RefusalReasonMixin):
     pass
 
 
-class AddSmailCommonForm(ActionAbstractForm):
-    effective_date = forms.DateField(
-            label=_(u'Effective Date'),
-            localize=True,
-            widget=forms.DateInput(attrs={
-                u'placeholder': pgettext_lazy(u'Form Date Placeholder', u'mm/dd/yyyy'),
-                u'class': u'datepicker',
-                }),
-            )
-    subject = forms.CharField(
-            label=_(u'Subject'),
-            max_length=255,
-            widget=forms.TextInput(attrs={
-                u'placeholder': _(u'Subject'),
-                }),
-            )
-    content = forms.CharField(
-            label=_(u'Content'),
-            widget=forms.Textarea(attrs={
-                u'placeholder': _(u'Content'),
-                u'class': u'input-block-level',
-                }),
-            )
-
-    def save(self, action):
-        super(AddSmailCommonForm, self).save(action)
-        action.effective_date = self.cleaned_data[u'effective_date']
-        action.subject = self.cleaned_data[u'subject']
-        action.content = self.cleaned_data[u'content']
+class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, ActionAbstractForm):
+    pass
 
 class ConfirmationSmailForm(AddSmailCommonForm):
     pass
@@ -268,4 +276,14 @@ class ReversionSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
     pass
 
 class RemandmentSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+    pass
+
+
+class NewActionCommonForm(SubjectContentMixin, ActionAbstractForm):
+    pass
+
+class ClarificationResponseForm(NewActionCommonForm):
+    pass
+
+class AppealForm(NewActionCommonForm):
     pass

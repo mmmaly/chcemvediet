@@ -13,5 +13,6 @@ urlpatterns = patterns(u'',
     url(_(r'^delete-draft/(?P<draft_id>\d+)/$'), views.delete_draft, name=u'delete_draft'),
     url(_(r'^decide-email/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/(?P<receivedemail_id>\d+)/$'), views.decide_email, name=u'decide_email'),
     url(_(r'^add-smail/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.add_smail, name=u'add_smail'),
+    url(_(r'^new-action/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.new_action, name=u'new_action'),
 )
 

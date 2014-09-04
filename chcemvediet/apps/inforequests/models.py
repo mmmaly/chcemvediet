@@ -1,6 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from email.utils import formataddr
+
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, activate
@@ -8,7 +11,7 @@ from django.contrib.auth.models import User
 
 from django_mailbox.signals import message_received
 
-from poleno.utils.misc import Bunch, random_readable_string
+from poleno.utils.misc import Bunch, random_readable_string, squeeze
 from poleno.utils.model import FieldChoices, QuerySet
 from poleno.utils.mail import render_mail
 
@@ -160,6 +163,8 @@ class Action(models.Model):
             (u'REVERSION', 9, _(u'Reversion')),
             (u'REMANDMENT', 10, _(u'Remandment')),
             (u'ADVANCED_REQUEST', 11, _(u'Advanced Request')),
+            (u'CLARIFICATION_RESPONSE', 12, _(u'Clarification Response')),
+            (u'APPEAL', 13, _(u'Appeal')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -176,6 +181,8 @@ class Action(models.Model):
             REVERSION=None,
             REMANDMENT=13,
             ADVANCED_REQUEST=13,
+            CLARIFICATION_RESPONSE=8,
+            APPEAL=30,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
@@ -215,6 +222,14 @@ class Action(models.Model):
                 type = self.TYPES._inverse[self.type]
                 self.deadline = getattr(self.DEFAULT_DEADLINES, type)
         super(Action, self).save(*args, **kwargs)
+
+    def send_by_email(self):
+        # FIXME: We should assert, this is an Applicant Action!
+        sender_name = self.history.inforequest.applicant_name
+        sender_address = self.history.inforequest.unique_email
+        sender_full = formataddr((squeeze(sender_name), sender_address))
+        recipient_address = self.history.obligee.email
+        send_mail(self.subject, self.content, sender_full, [recipient_address])
 
     def __unicode__(self):
         return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)

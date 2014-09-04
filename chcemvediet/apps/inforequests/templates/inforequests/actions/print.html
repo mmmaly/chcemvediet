@@ -1,0 +1,47 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <h3>Print {{ action.get_type_display }}</h3>
+</div>
+<div class="modal-body">
+  <p>[{% lorem 20 %}]</p>
+  <div style="margin: 5%; padding: 5%; border: solid 1px black;">
+    <div id="print-area">
+      <div style="border-bottom: solid 1px black;">
+        {{ inforequest.applicant_name }}, {{ inforequest.applicant_street }}, {{ inforequest.applicant_city }} {{ inforequest.applicant_zip }}
+      </div>
+      <div style="margin: 10% 0 0 50%;">
+        {{ action.history.obligee.name }}<br>
+        {{ action.history.obligee.street }}<br>
+        {{ action.history.obligee.zip }} {{ action.history.obligee.city }}
+      </div>
+      <div style="margin: 10% 0 0 0; text-align: right;">
+        {{ inforequest.applicant_city }}, {{ action.effective_date }}
+      </div>
+      <div style="margin: 2% 0 0 0;">
+        <b>VEC:</b> <u>{{ action.subject }}</u>
+      </div>
+      <div style="margin: 2% 0 0 0;">
+        {{ action.content }}
+      </div>
+      <div style="margin: 10% 10% 10% 0; text-align: right;">
+        {{ inforequest.applicant_name }}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary print" data-target="#print-area">Print</button>
+  <button type="button" class="btn" data-dismiss="modal">Close</button>
+</div>
+

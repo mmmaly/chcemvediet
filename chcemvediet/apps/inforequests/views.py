@@ -1,21 +1,20 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from email.utils import formataddr
-
 from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
 from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax
-from poleno.utils.misc import Bunch, squeeze
+from poleno.utils.misc import Bunch
+from poleno.utils.form import clean_button
 from chcemvediet.apps.obligees.models import Obligee
 
 from models import Inforequest, InforequestDraft, Action
@@ -55,8 +54,7 @@ def create(request, draft_id=None):
                 inforequest.save()
 
                 action = inforequest.history.action_set.requests().first()
-                sender_full = formataddr((squeeze(inforequest.applicant_name), inforequest.unique_email))
-                send_mail(action.subject, action.content, sender_full, [inforequest.history.obligee.email])
+                action.send_by_email()
 
                 if draft:
                     draft.delete()
@@ -211,7 +209,7 @@ def add_smail(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
     # We don't check whether there are any undecided received e-mails waiting for this
-    # ``inforequest``. Although the frontend forces the user to decide the e-mails before he can
+    # ``inforequest``. Although the frontend may force the user to decide the e-mails before he can
     # add s-mails, it is not necessarily a mistake to add a s-mail before deciding waiting e-mails.
 
     available_actions = {
@@ -299,3 +297,82 @@ def add_smail(request, action, inforequest_id):
                 u'inforequest': inforequest,
                 u'form': form,
                 })
+
+@require_http_methods([u'HEAD', u'GET', u'POST'])
+@require_ajax
+@login_required
+def new_action(request, action, inforequest_id):
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+
+    # We don't check whether there are any undecided received e-mails waiting for this
+    # ``inforequest``. Although the frontend may force the user to decide the e-mails before he can
+    # add new action, it is not necessarily a mistake to add a new action before deciding waiting
+    # e-mails.
+
+    # Moreover, we don't check which actions may only be send by e-mail and/on s-mail, yet.
+
+    available_actions = {
+            u'clarification-response': Bunch(
+                template = u'inforequests/actions/clarification_response.html',
+                action_type = Action.TYPES.CLARIFICATION_RESPONSE,
+                form_class = forms.ClarificationResponseForm,
+                ),
+            u'appeal': Bunch(
+                template = u'inforequests/actions/appeal.html',
+                action_type = Action.TYPES.APPEAL,
+                form_class = forms.AppealForm,
+                ),
+            }
+
+    try:
+        template = available_actions[action].template
+        action_type = available_actions[action].action_type
+        form_class = available_actions[action].form_class
+    except KeyError:
+        raise Http404(u'Invalid action.')
+
+    if request.method == u'POST':
+        button = clean_button(request.POST, [u'email', u'print'])
+        form = form_class(request.POST, history_set=inforequest.history_set)
+        if not button or not form.is_valid():
+            return JsonResponse({
+                    u'result': u'invalid',
+                    u'content': render_to_string(template, context_instance=RequestContext(request), dictionary={
+                        u'inforequest': inforequest,
+                        u'form': form,
+                        }),
+                    })
+
+        action = Action(
+                effective_date=timezone.now(),
+                type=action_type,
+                )
+        form.save(action)
+        action.save()
+
+        if button == u'email':
+            action.send_by_email()
+
+        json = {
+                u'result': u'success',
+                u'scroll_to': u'#action-%d' % action.id,
+                u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
+                    u'inforequest': inforequest,
+                    }),
+                }
+        if button == u'print':
+            json.update({
+                    u'print': render_to_string(u'inforequests/actions/print.html', context_instance=RequestContext(request), dictionary={
+                        u'inforequest': inforequest,
+                        u'action': action,
+                        }),
+                    })
+        return JsonResponse(json)
+
+    else: # request.method != u'POST'
+        form = form_class(history_set=inforequest.history_set)
+        return render(request, template, {
+                u'inforequest': inforequest,
+                u'form': form,
+                })
+

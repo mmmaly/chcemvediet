@@ -6,6 +6,24 @@ from django import forms
 from django.forms.util import flatatt
 from django.utils.html import format_html
 
+def clean_button(post, clean_values, default_value=None, key=u'button'):
+    u"""
+    Djago forms do not care about buttons. To distinguish which submit button was pressed, we need
+    to give them names and values. This function filters ``request.POST`` values set by submit
+    buttons for allowed values. Default button name is "button".
+
+    Example:
+        <button type="submit" name="button" value="email">...</button>
+        <button type="submit" name="button" value="print">...</button>
+
+        button = clean_button(request.POST, ['email', 'print'], default_value='email')
+    """
+    if key not in post:
+        return default_value
+    if post[key] not in clean_values:
+        return default_value
+    return post[key]
+
 class AutoSuppressedSelect(forms.Select):
     u"""
     Selectbox that replaces itself with a static text if there is only one choice available. Actual
