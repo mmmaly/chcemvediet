@@ -235,7 +235,7 @@ class ConfirmationEmailForm(DecideEmailCommonForm):
 class ExtensionEmailForm(DecideEmailCommonForm, DeadlineMixin):
     pass
 
-class AdvancementEmailForm(DecideEmailCommonForm, AdvancedToMixin):
+class AdvancementEmailForm(DecideEmailCommonForm, DisclosureLevelMixin, AdvancedToMixin):
     pass
 
 class ClarificationRequestEmailForm(DecideEmailCommonForm):
@@ -257,7 +257,7 @@ class ConfirmationSmailForm(AddSmailCommonForm):
 class ExtensionSmailForm(AddSmailCommonForm, DeadlineMixin):
     pass
 
-class AdvancementSmailForm(AddSmailCommonForm, AdvancedToMixin):
+class AdvancementSmailForm(AddSmailCommonForm, DisclosureLevelMixin, AdvancedToMixin):
     pass
 
 class ClarificationRequestSmailForm(AddSmailCommonForm):
