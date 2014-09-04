@@ -37,7 +37,8 @@ def create(request, draft_id=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id) if draft_id else None
 
     if request.method == u'POST':
-        if u'save' in request.POST:
+        button = clean_button(request.POST, [u'submit', u'save'])
+        if button == u'save':
             form = forms.InforequestDraftForm(request.POST)
             if form.is_valid():
                 if not draft:
@@ -46,7 +47,7 @@ def create(request, draft_id=None):
                 draft.save()
                 return HttpResponseRedirect(reverse(u'inforequests:index'))
 
-        elif u'submit' in request.POST:
+        elif button == u'submit':
             form = forms.InforequestForm(request.POST)
             if form.is_valid():
                 inforequest = Inforequest(applicant=request.user)
