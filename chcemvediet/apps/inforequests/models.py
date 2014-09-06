@@ -40,7 +40,7 @@ class InforequestQuerySet(QuerySet):
 class Inforequest(models.Model):
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
     unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail')) # Default value computed in save()
-    submission_date = models.DateTimeField(auto_now_add=True, verbose_name=_(u'Submission Date'))
+    submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
     # Frozen Applicant contact information at the time the Inforequest was submitted, in case that
     # the contact information changes in the future. The information is frozen in save() when
@@ -149,7 +149,7 @@ class Action(models.Model):
     history = models.ForeignKey(u'History', verbose_name=_(u'History'))
     subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(verbose_name=_(u'Content'))
-    effective_date = models.DateTimeField(verbose_name=_(u'Effective Date'))
+    effective_date = models.DateField(verbose_name=_(u'Effective Date'))
     receivedemail = models.OneToOneField(u'ReceivedEmail', blank=True, null=True, verbose_name=_(u'Received E-mail'))
 
     TYPES = FieldChoices(
@@ -240,7 +240,7 @@ class ActionDraft(models.Model):
     history = models.ForeignKey(u'History', blank=True, null=True, verbose_name=_(u'History'))
     subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(verbose_name=_(u'Content'))
-    effective_date = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Effective Date'))
+    effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))
 
     TYPES = Action.TYPES
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))

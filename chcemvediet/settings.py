@@ -235,3 +235,6 @@ LOCALE_PATHS = (
     os.path.join(PROJECT_PATH, u'chcemvediet/locale/3part/allauth'),
 )
 
+# Where to search for formats localization
+FORMAT_MODULE_PATH = u'chcemvediet.locale'
+
