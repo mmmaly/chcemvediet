@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import datetime
 from email.utils import formataddr
 
 from django.core.urlresolvers import reverse
@@ -216,6 +217,18 @@ class Action(models.Model):
 
     class Meta:
         ordering = [u'effective_date', u'pk']
+
+    @property
+    def deadline_remaining(self):
+        if self.deadline is None:
+            return None
+        days = (datetime.date.today() - self.effective_date).days
+        return self.deadline - days
+
+    @property
+    def deadline_missed(self):
+        # self.deadline_remaining is 0 on the last day of deadline
+        return self.deadline_remaining < 0
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object

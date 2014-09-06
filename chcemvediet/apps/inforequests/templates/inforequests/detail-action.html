@@ -7,6 +7,7 @@
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- history: chcemvediet.apps.inforequests.models.History
  %  -- action: chcemvediet.apps.inforequests.models.Action
+ %  -- forloop
  %
 {% endcomment %}
 
@@ -14,7 +15,16 @@
   <h4>{{ action.get_type_display }}</h4>
   <div class="row-fluid">
     <p class="span2 text-right">Effective Date:</p>
-    <p class="span10">{{ action.effective_date }}{% if action.deadline %} (Deadline: {{ action.deadline }} WD){% endif %}</p>
+    <p class="span10">{{ action.effective_date }}
+      {% if forloop.last and action.deadline %} (
+        Deadline: {{ action.deadline }} WD,
+        {% if action.deadline_missed %}
+          <span class="text-warning">MISSED</span>
+        {% else %}
+          {{ action.deadline_remaining }} WD remains
+        {% endif %}
+      ){% endif %}
+    </p>
   </div>
   {% if action.subject %}
     <div class="row-fluid">
@@ -53,7 +63,7 @@
         <div id="action-{{ sub_action.id }}">
           {# Workaround for Django bug causing infinite recursion #}
           {% with template_name="inforequests/detail-action.html" %}
-            {% include template_name with inforequest=inforequest history=sub_history action=sub_action %}
+            {% include template_name with inforequest=inforequest history=sub_history action=sub_action forloop=forloop %}
           {% endwith %}
         </div>
       {% endfor %}
