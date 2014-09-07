@@ -69,14 +69,12 @@ class HolidaySet(object):
         """
         self.holidays = args
 
-    def between(self, after, before, skip_weekends=False):
+    def between(self, after, before):
         u"""
-        Set of unique holidays in interval (after, before]. If ``skip_weekends`` is ``True``, then
-        all holidays that are during weekends are skipped in the returned set.
+        Set of unique holidays in interval (after, before].
         """
         return set(d for h in self.holidays
-                     for d in h.between(after, before)
-                     if not skip_weekends or d.weekday() not in WEEKEND)
+                     for d in h.between(after, before))
 
     def __repr__(self):
         return u'%s%s' % (self.__class__.__name__, repr(self.holidays))
@@ -110,7 +108,7 @@ def between(after, before, holiday_set=None):
     res = (days/7)*(7-len(WEEKEND)) # Full weeks
     res += len([1 for d in range(days%7) # At most 6 iterations for the remaining partial week
                   if (before - datetime.timedelta(days=d)).weekday() not in WEEKEND])
-    res -= len(holiday_set.between(after, before, skip_weekends=True))
+    res -= len([1 for d in holiday_set.between(after, before)
+                  if d.weekday() not in WEEKEND])
     return res
-
 
