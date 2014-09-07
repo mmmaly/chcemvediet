@@ -15,6 +15,7 @@ from django_mailbox.signals import message_received
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
 from poleno.utils.model import FieldChoices, QuerySet
 from poleno.utils.mail import render_mail
+from poleno.workdays import workdays
 
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
@@ -222,7 +223,7 @@ class Action(models.Model):
     def deadline_remaining(self):
         if self.deadline is None:
             return None
-        days = (datetime.date.today() - self.effective_date).days
+        days = workdays.between(self.effective_date, datetime.date.today())
         return self.deadline - days
 
     @property

@@ -238,3 +238,6 @@ LOCALE_PATHS = (
 # Where to search for formats localization
 FORMAT_MODULE_PATH = u'chcemvediet.locale'
 
+# Where to look for holidays definition
+HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
+
