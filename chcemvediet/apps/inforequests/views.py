@@ -100,49 +100,49 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
 
     available_actions = {
             u'unrelated': Bunch(
-                template = u'inforequests/actions/unrelated-email.html',
+                template = u'inforequests/modals/unrelated-email.html',
                 email_status = receivedemail.STATUSES.UNRELATED,
                 action_type = None,
                 form_class = None,
                 ),
             u'unknown': Bunch(
-                template = u'inforequests/actions/unknown-email.html',
+                template = u'inforequests/modals/unknown-email.html',
                 email_status = receivedemail.STATUSES.UNKNOWN,
                 action_type = None,
                 form_class = None,
                 ),
             u'confirmation': Bunch(
-                template = u'inforequests/actions/confirmation-email.html',
+                template = u'inforequests/modals/confirmation-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.CONFIRMATION,
                 form_class = forms.ConfirmationEmailForm,
                 ),
             u'extension': Bunch(
-                template = u'inforequests/actions/extension-email.html',
+                template = u'inforequests/modals/extension-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.EXTENSION,
                 form_class = forms.ExtensionEmailForm,
                 ),
             u'advancement': Bunch(
-                template = u'inforequests/actions/advancement-email.html',
+                template = u'inforequests/modals/advancement-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.ADVANCEMENT,
                 form_class = forms.AdvancementEmailForm,
                 ),
             u'clarification-request': Bunch(
-                template = u'inforequests/actions/clarification_request-email.html',
+                template = u'inforequests/modals/clarification_request-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.CLARIFICATION_REQUEST,
                 form_class = forms.ClarificationRequestEmailForm,
                 ),
             u'disclosure': Bunch(
-                template = u'inforequests/actions/disclosure-email.html',
+                template = u'inforequests/modals/disclosure-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.DISCLOSURE,
                 form_class = forms.DisclosureEmailForm,
                 ),
             u'refusal': Bunch(
-                template = u'inforequests/actions/refusal-email.html',
+                template = u'inforequests/modals/refusal-email.html',
                 email_status = receivedemail.STATUSES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.REFUSAL,
                 form_class = forms.RefusalEmailForm,
@@ -211,47 +211,47 @@ def add_smail(request, action, inforequest_id):
 
     available_actions = {
             u'confirmation': Bunch(
-                template = u'inforequests/actions/confirmation-smail.html',
+                template = u'inforequests/modals/confirmation-smail.html',
                 action_type = Action.TYPES.CONFIRMATION,
                 form_class = forms.ConfirmationSmailForm,
                 ),
             u'extension': Bunch(
-                template = u'inforequests/actions/extension-smail.html',
+                template = u'inforequests/modals/extension-smail.html',
                 action_type = Action.TYPES.EXTENSION,
                 form_class = forms.ExtensionSmailForm,
                 ),
             u'advancement': Bunch(
-                template = u'inforequests/actions/advancement-smail.html',
+                template = u'inforequests/modals/advancement-smail.html',
                 action_type = Action.TYPES.ADVANCEMENT,
                 form_class = forms.AdvancementSmailForm,
                 ),
             u'clarification-request': Bunch(
-                template = u'inforequests/actions/clarification_request-smail.html',
+                template = u'inforequests/modals/clarification_request-smail.html',
                 action_type = Action.TYPES.CLARIFICATION_REQUEST,
                 form_class = forms.ClarificationRequestSmailForm,
                 ),
             u'disclosure': Bunch(
-                template = u'inforequests/actions/disclosure-smail.html',
+                template = u'inforequests/modals/disclosure-smail.html',
                 action_type = Action.TYPES.DISCLOSURE,
                 form_class = forms.DisclosureSmailForm,
                 ),
             u'refusal': Bunch(
-                template = u'inforequests/actions/refusal-smail.html',
+                template = u'inforequests/modals/refusal-smail.html',
                 action_type = Action.TYPES.REFUSAL,
                 form_class = forms.RefusalSmailForm,
                 ),
             u'affirmation': Bunch(
-                template = u'inforequests/actions/affirmation-smail.html',
+                template = u'inforequests/modals/affirmation-smail.html',
                 action_type = Action.TYPES.AFFIRMATION,
                 form_class = forms.AffirmationSmailForm,
                 ),
             u'reversion': Bunch(
-                template = u'inforequests/actions/reversion-smail.html',
+                template = u'inforequests/modals/reversion-smail.html',
                 action_type = Action.TYPES.REVERSION,
                 form_class = forms.ReversionSmailForm,
                 ),
             u'remandment': Bunch(
-                template = u'inforequests/actions/remandment-smail.html',
+                template = u'inforequests/modals/remandment-smail.html',
                 action_type = Action.TYPES.REMANDMENT,
                 form_class = forms.RemandmentSmailForm,
                 ),
@@ -328,12 +328,12 @@ def new_action(request, action, inforequest_id):
 
     available_actions = {
             u'clarification-response': Bunch(
-                template = u'inforequests/actions/clarification_response.html',
+                template = u'inforequests/modals/clarification_response.html',
                 action_type = Action.TYPES.CLARIFICATION_RESPONSE,
                 form_class = forms.ClarificationResponseForm,
                 ),
             u'appeal': Bunch(
-                template = u'inforequests/actions/appeal.html',
+                template = u'inforequests/modals/appeal.html',
                 action_type = Action.TYPES.APPEAL,
                 form_class = forms.AppealForm,
                 ),
@@ -394,7 +394,7 @@ def new_action(request, action, inforequest_id):
                 }
         if button == u'print':
             json.update({
-                    u'print': render_to_string(u'inforequests/actions/print.html', context_instance=RequestContext(request), dictionary={
+                    u'print': render_to_string(u'inforequests/modals/print.html', context_instance=RequestContext(request), dictionary={
                         u'inforequest': inforequest,
                         u'action': action,
                         }),
