@@ -12,6 +12,16 @@ from poleno.utils.misc import squeeze as squeeze_func
 
 register = Library()
 
+@register.filter
+def subtract(value, arg):
+    u"""
+    Subtracting variables in Django templates.
+
+    Example:
+        {{ value|subtract:arg }}
+    """
+    return value - arg
+
 @register.filter(name=u'range')
 def range_(a, b):
     u"""

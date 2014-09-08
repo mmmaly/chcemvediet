@@ -16,7 +16,14 @@ class HistoryChoiceField(forms.ModelChoiceField):
         return history.obligee_name;
 
 
-class InforequestForm(forms.Form):
+class PrefixedForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(PrefixedForm, self).__init__(*args, **kwargs)
+        if not self.prefix:
+            self.prefix = self.__class__.__name__.lower()
+
+
+class InforequestForm(PrefixedForm):
     obligee = ObligeeAutocompleteField(
             label=_(u'Obligee'),
             widget=ObligeeWithAddressInput(attrs={
@@ -84,7 +91,7 @@ class InforequestForm(forms.Form):
         self.initial[u'content'] = draft.content
 
 
-class ActionAbstractForm(forms.Form):
+class ActionAbstractForm(PrefixedForm):
     history = HistoryChoiceField(
             queryset=History.objects.none(),
             label=_(u'Obligee'),
@@ -103,9 +110,6 @@ class ActionAbstractForm(forms.Form):
         field.queryset = history_set
         if history_set.count() == 1:
             field.empty_label = None
-
-        if not self.prefix:
-            self.prefix = self.__class__.__name__.lower()
 
         if self.draft:
             self.fields[u'history'].required = False
@@ -392,3 +396,23 @@ class ClarificationResponseForm(NewActionCommonForm):
 
 class AppealForm(NewActionCommonForm):
     pass
+
+
+class ExtendDeadlineForm(PrefixedForm):
+    extension = forms.IntegerField(
+            label=_(u'Deadline Extension'),
+            min_value=2,
+            max_value=100,
+            widget=forms.NumberInput(attrs={
+                u'placeholder': _(u'Working Days'),
+                }),
+            )
+
+    def save(self, action):
+        if not self.is_valid():
+            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+
+        action.extension = self.cleaned_data[u'extension']
+
+    def load(self, action):
+        self.initial[u'extension'] = action.extension or 5

@@ -1,0 +1,32 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem subtract from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- history: chcemvediet.apps.inforequests.models.History
+ %  -- action: chcemvediet.apps.inforequests.models.Action
+ %  -- form: chcemvediet.apps.inforequests.forms.ExtendDeadlineForm
+ %
+{% endcomment %}
+
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}">
+  {% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3>Deadline Extension</h3>
+  </div>
+  <div class="modal-body">
+    <p>Extend deadline of {{ action.get_type_display }} regarding your inforequest to {{ inforequest.history.obligee_name }}{% if inforequest.history != history %} advanced to {{ history.obligee_name }}{% endif %}.</p>
+    <p>Its original deadline was {{ action.deadline }} working days since {{ action.effective_date }}{% if action.extension %} extended by another {{ action.extension }} working days by you{% endif %}. Up to today {{ action.days_passed }} working days passed.</p>
+    <p>[{% lorem 7 %}]</p>
+    <div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" name="button" value="extend">Extend Deadline</button>
+    <button type="button" class="btn" data-dismiss="modal">Close</button>
+  </div>
+</form>

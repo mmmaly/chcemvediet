@@ -14,5 +14,6 @@ urlpatterns = patterns(u'',
     url(_(r'^decide-email/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/(?P<receivedemail_id>\d+)/$'), views.decide_email, name=u'decide_email'),
     url(_(r'^add-smail/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.add_smail, name=u'add_smail'),
     url(_(r'^new-action/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.new_action, name=u'new_action'),
+    url(_(r'^extend-deadline/(?P<inforequest_id>\d+)/(?P<history_id>\d+)/(?P<action_id>\d+)/$'), views.extend_deadline, name=u'extend_deadline'),
 )
 

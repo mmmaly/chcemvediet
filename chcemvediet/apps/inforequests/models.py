@@ -114,6 +114,8 @@ class History(models.Model):
     # Backward relations:
     #  -- action_set: by Action.history
 
+    objects = QuerySet.as_manager()
+
     class Meta:
         ordering = [u'obligee_name', u'pk']
 
@@ -188,6 +190,7 @@ class Action(models.Model):
             APPEAL=30,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
+    extension = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline Extension'))
 
     # Applicable for: DISCLOSURE, REVERSION, REMANDMENT; None for others
     DISCLOSURE_LEVELS = FieldChoices(
@@ -220,16 +223,21 @@ class Action(models.Model):
         ordering = [u'effective_date', u'pk']
 
     @property
+    def days_passed(self):
+        return workdays.between(self.effective_date, datetime.date.today())
+
+    @property
     def deadline_remaining(self):
         if self.deadline is None:
             return None
-        days = workdays.between(self.effective_date, datetime.date.today())
-        return self.deadline - days
+        deadline = self.deadline + (self.extension or 0)
+        return deadline - self.days_passed
 
     @property
     def deadline_missed(self):
         # self.deadline_remaining is 0 on the last day of deadline
-        return self.deadline_remaining < 0
+        remaining = self.deadline_remaining
+        return remaining is not None and remaining < 0
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
@@ -268,6 +276,8 @@ class ActionDraft(models.Model):
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
     obligee_set = models.ManyToManyField(u'obligees.Obligee', verbose_name=_(u'Obligee Set'))
+
+    objects = QuerySet.as_manager()
 
     class Meta:
         ordering = [u'pk']

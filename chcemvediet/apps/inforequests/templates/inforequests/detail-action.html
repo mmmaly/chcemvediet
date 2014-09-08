@@ -16,14 +16,15 @@
   <div class="row-fluid">
     <p class="span2 text-right">Effective Date:</p>
     <p class="span10">{{ action.effective_date }}
-      {% if forloop.last and action.deadline %} (
-        Deadline: {{ action.deadline }} WD,
+      {% if forloop.last and action.deadline %}&mdash;
+        Deadline: {{ action.deadline }} WD{% if action.extension %} + {{ action.extension }} WD{% endif %},
         {% if action.deadline_missed %}
-          <span class="text-warning">MISSED</span>
+          <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}" data-type="html" data-toggle="modal" data-target="#extend-deadline-{{ action.pk }}-modal">Deadline is Missed, Extend it</button>
+          <span id="extend-deadline-{{ action.pk }}-modal" class="modal hide fade"></span>
         {% else %}
           {{ action.deadline_remaining }} WD remains
         {% endif %}
-      ){% endif %}
+      {% endif %}
     </p>
   </div>
   {% if action.subject %}

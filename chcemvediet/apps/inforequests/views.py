@@ -410,3 +410,47 @@ def new_action(request, action, inforequest_id):
                 u'form': form,
                 })
 
+@require_http_methods([u'HEAD', u'GET', u'POST'])
+@require_ajax
+@login_required
+def extend_deadline(request, inforequest_id, history_id, action_id):
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+    history = inforequest.history_set.get_or_404(pk=history_id)
+    action = history.action_set.get_or_404(pk=action_id)
+
+    # FIXME: We don't check whether ``action`` is the last history action, nor whether it is an
+    # obligee action, yet. Moreover, we don't check whether its deadline is already missed, nor if
+    # it is set at all, yet.
+
+    if request.method == u'POST':
+        form = forms.ExtendDeadlineForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({
+                    u'result': u'invalid',
+                    u'content': render_to_string(u'inforequests/modals/extend-deadline.html', context_instance=RequestContext(request), dictionary={
+                        u'inforequest': inforequest,
+                        u'history': history,
+                        u'action': action,
+                        u'form': form,
+                        }),
+                    })
+        form.save(action)
+        action.save()
+
+        return JsonResponse({
+                u'result': u'success',
+                u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
+                    u'inforequest': inforequest,
+                    }),
+                })
+
+    else: # request.method != u'POST'
+        form = forms.ExtendDeadlineForm()
+        form.load(action)
+        return render(request, u'inforequests/modals/extend-deadline.html', {
+                u'inforequest': inforequest,
+                u'history': history,
+                u'action': action,
+                u'form': form,
+                })
+
