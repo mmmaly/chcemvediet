@@ -19,8 +19,7 @@ class HistoryChoiceField(forms.ModelChoiceField):
 class PrefixedForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PrefixedForm, self).__init__(*args, **kwargs)
-        if not self.prefix:
-            self.prefix = self.__class__.__name__.lower()
+        self.prefix = u'%s%s%s' % (self.prefix or u'', u'-' if self.prefix else u'', self.__class__.__name__.lower())
 
 
 class InforequestForm(PrefixedForm):

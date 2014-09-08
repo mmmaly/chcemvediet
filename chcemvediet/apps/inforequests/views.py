@@ -423,7 +423,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
     # it is set at all, yet.
 
     if request.method == u'POST':
-        form = forms.ExtendDeadlineForm(request.POST)
+        form = forms.ExtendDeadlineForm(request.POST, prefix=action.id)
         if not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -445,7 +445,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
                 })
 
     else: # request.method != u'POST'
-        form = forms.ExtendDeadlineForm()
+        form = forms.ExtendDeadlineForm(prefix=action.id)
         form.load(action)
         return render(request, u'inforequests/modals/extend-deadline.html', {
                 u'inforequest': inforequest,
