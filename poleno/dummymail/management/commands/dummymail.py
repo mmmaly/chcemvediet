@@ -5,6 +5,7 @@ import time
 from textwrap import dedent
 from optparse import make_option
 from multiprocessing import Process
+from email.Utils import formatdate
 
 import localmail
 from twisted.python import log
@@ -87,6 +88,21 @@ class Command(NoArgsCommand):
         incoming_imap_port = options[u'incoming_imap_port']
 
         log.startLogging(sys.stdout)
+
+        # ``localmail`` crashes with many IMAP clients (e.g. mutt) because it does not set ``date``
+        # property of ``localmail.inbox.Message`` and then crashes because the ``date`` is
+        # ``None``. Our workaround wraps ``MemoryIMAPMailbox`` method ``addMessage`` and force
+        # today date if no date is given. The workaround is an ugly hack messing with ``localmail``
+        # internals, but I don't see any other war how to fix it besides directly fixing
+        # ``localmail`` sources.
+        #
+        # NOTE: As of 2014-07-24, the bug is fixed in ``localmail`` trunk version, but there is no
+        # fixed package on pypi, yet. (2014-09-09)
+        addMessage_wrapped = localmail.inbox.MemoryIMAPMailbox.addMessage
+        def addMessage(self, msg_fp, flags=None, date=None):
+            date = date or formatdate()
+            addMessage_wrapped(self, msg_fp, flags, date)
+        localmail.inbox.MemoryIMAPMailbox.addMessage = addMessage
 
         p1 = Process(target=localmail.run, args=(outgoing_smtp_port, outgoing_imap_port))
         p1.daemon = True
