@@ -22,8 +22,13 @@ class InforequestDraftQuerySet(QuerySet):
         return self.filter(applicant=user)
 
 class InforequestDraft(models.Model):
+    # Mandatory
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
+
+    # Optional
     obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True, verbose_name=_(u'Obligee'))
+
+    # May be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
@@ -40,22 +45,33 @@ class InforequestQuerySet(QuerySet):
         return self.filter(applicant=user)
 
 class Inforequest(models.Model):
+    # Mandatory
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
-    unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail')) # Default value computed in save()
-    submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
     # Frozen Applicant contact information at the time the Inforequest was submitted, in case that
-    # the contact information changes in the future. The information is frozen in save() when
-    # creating a new object.
+    # the contact information changes in the future. The information is mandatory and automaticly
+    # frozen in save() when creating a new object.
     applicant_name = models.CharField(max_length=255, verbose_name=_(u'Applicant Name'))
     applicant_street = models.CharField(max_length=255, verbose_name=_(u'Applicant Street'))
     applicant_city = models.CharField(max_length=255, verbose_name=_(u'Applicant City'))
     applicant_zip = models.CharField(max_length=10, verbose_name=_(u'Applicant Zip'))
 
-    # Backward relations:
-    #  -- history_set: by History.inforequest; Must be non-empty with exactly one main history
+    # Mandatory and unique; Automaticly computed in save() when creating a new object.
+    unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail'))
+
+    # Mandatory; Automaticly computed by Django when creating a new object.
+    submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
+
+    # Backward relation:
+    #
+    #  -- history_set: by History.inforequest
+    #     May NOT be empty
+    #
     #  -- actiondraft_set: by ActionDraft.inforequest
+    #     May be empty; May contain at most one instance for every ActionDraft.TYPES
+    #
     #  -- receivedemail_set: by ReceivedEmail.inforequest
+    #     May be empty
 
     objects = InforequestQuerySet.as_manager()
 
@@ -96,8 +112,11 @@ class Inforequest(models.Model):
         return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)
 
 class History(models.Model):
-    obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
+    # Mandatory
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
+
+    # Mandatory
+    obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
 
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
     # main history. Inforequest must contain exactly one history with ``advanced_by`` set to None.
@@ -105,14 +124,17 @@ class History(models.Model):
 
     # Frozen Obligee contact information at the time the Inforequest was submitted if this is its
     # main History, or the time the Inforequest was advanced to this Obligee otherwise. The
-    # information is frozen in save() when creating a new object.
+    # information is mandatory and automaticly frozen in save() when creating a new object.
     obligee_name = models.CharField(max_length=255, verbose_name=_(u'Obligee Name'))
     obligee_street = models.CharField(max_length=255, verbose_name=_(u'Obligee Street'))
     obligee_city = models.CharField(max_length=255, verbose_name=_(u'Obligee City'))
     obligee_zip = models.CharField(max_length=10, verbose_name=_(u'Obligee Zip'))
 
     # Backward relations:
+    #
     #  -- action_set: by Action.history
+    #     May NOT be empty; The first action of every main history must be REQUEST and the first
+    #     action of every advanced history ADVANCED_REQUEST.
 
     objects = QuerySet.as_manager()
 
@@ -137,6 +159,40 @@ class History(models.Model):
         except Inforequest.DoesNotExist:
             return u'%s' % ((self.obligee,),)
 
+class ReceivedEmailQuerySet(QuerySet):
+    def undecided(self):
+        return self.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
+
+class ReceivedEmail(models.Model):
+    # None for UNASSIGNED emails; Mandatory otherwise
+    inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
+
+    # Mandatory
+    raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
+
+    # Mandatory choice
+    STATUSES = FieldChoices(
+        (u'UNASSIGNED', 1, _(u'Unassigned')),
+        (u'UNDECIDED', 2, _(u'Undecided')),
+        (u'UNKNOWN', 3, _(u'Unknown')),
+        (u'UNRELATED', 4, _(u'Unrelated')),
+        (u'OBLIGEE_ACTION', 5, _(u'Obligee Action')),
+        )
+    status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
+
+    # Backward relations:
+    #
+    #  -- action: by Action.receivedemail
+    #     Mandatory for OBLIGEE_ACTION; Raises DoesNotExist otherwise
+
+    objects = ReceivedEmailQuerySet.as_manager()
+
+    class Meta:
+        ordering = [u'raw_email__processed', u'pk']
+
+    def __unicode__(self):
+        return u'%s' % ((self.inforequest, self.get_status_display(), self.raw_email),)
+
 class ActionQuerySet(QuerySet):
     def requests(self):
         return self.filter(type=Action.TYPES.REQUEST)
@@ -150,14 +206,19 @@ class ActionQuerySet(QuerySet):
         return self.filter(type=Action.TYPES.CLARIFICATION_REQUEST)
 
 class Action(models.Model):
+    # Mandatory
     history = models.ForeignKey(u'History', verbose_name=_(u'History'))
-    subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
-    content = models.TextField(verbose_name=_(u'Content'))
-    effective_date = models.DateField(verbose_name=_(u'Effective Date'))
+
+    # Mandatory for actions received by email; None otherwise
     receivedemail = models.OneToOneField(u'ReceivedEmail', blank=True, null=True, verbose_name=_(u'Received E-mail'))
 
+    # Mandatory choice
     TYPES = FieldChoices(
+            # Applicant actions
             (u'REQUEST', 1, _(u'Request')),
+            (u'CLARIFICATION_RESPONSE', 12, _(u'Clarification Response')),
+            (u'APPEAL', 13, _(u'Appeal')),
+            # Obligee actions
             (u'CONFIRMATION', 2, _(u'Confirmation')),
             (u'EXTENSION', 3, _(u'Extension')),
             (u'ADVANCEMENT', 4, _(u'Advancement')),
@@ -167,32 +228,46 @@ class Action(models.Model):
             (u'AFFIRMATION', 8, _(u'Affirmation')),
             (u'REVERSION', 9, _(u'Reversion')),
             (u'REMANDMENT', 10, _(u'Remandment')),
+            # Implicit actions
             (u'ADVANCED_REQUEST', 11, _(u'Advanced Request')),
-            (u'CLARIFICATION_RESPONSE', 12, _(u'Clarification Response')),
-            (u'APPEAL', 13, _(u'Appeal')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
-    # Default value determined in save() when creating an object
+    # May be empty for implicit actions; Should NOT be empty for other actions
+    subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
+    content = models.TextField(blank=True, verbose_name=_(u'Content'))
+
+    # Mandatory
+    effective_date = models.DateField(verbose_name=_(u'Effective Date'))
+
+    # Mandatory for actions that set deadline; Must be NULL otherwise. Default value is determined
+    # and automaticly set in save() when creating a new object. All actions that set deadlines
+    # except CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the obligee.
+    # CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the applicant.
     DEFAULT_DEADLINES = Bunch(
+            # Applicant actions
             REQUEST=8,
+            CLARIFICATION_RESPONSE=8,
+            APPEAL=30,
+            # Obligee actions
             CONFIRMATION=8,
             EXTENSION=10,
             ADVANCEMENT=None,
-            CLARIFICATION_REQUEST=7,
-            DISCLOSURE=15,
-            REFUSAL=15,
+            CLARIFICATION_REQUEST=7, # Deadline for the applicant
+            DISCLOSURE=15,           # Deadline for the applicant
+            REFUSAL=15,              # Deadline for the applicant
             AFFIRMATION=None,
             REVERSION=None,
             REMANDMENT=13,
+            # Implicit actions
             ADVANCED_REQUEST=13,
-            CLARIFICATION_RESPONSE=8,
-            APPEAL=30,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
+
+    # Optional
     extension = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline Extension'))
 
-    # Applicable for: DISCLOSURE, REVERSION, REMANDMENT; None for others
+    # Mandatory for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be NULL otherwise
     DISCLOSURE_LEVELS = FieldChoices(
             (u'NONE', 1, _(u'No Disclosure at All')),
             (u'PARTIAL', 2, _(u'Partial Disclosure')),
@@ -200,7 +275,7 @@ class Action(models.Model):
             )
     disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
 
-    # Applicable for: REFUSAL, AFFIRMATION; None for others
+    # Mandatory for REFUSAL, AFFIRMATION; Must be None otherwise
     REFUSAL_REASONS = FieldChoices(
             (u'DOES_NOT_HAVE', 3, _(u'Does not Have Information')),
             (u'DOES_NOT_PROVIDE', 4, _(u'Does not Provide Information')),
@@ -214,10 +289,12 @@ class Action(models.Model):
             )
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
-    objects = ActionQuerySet.as_manager()
-
     # Backward relations:
-    #  -- advanced_to_set: by History.advanced_by; Applicable for: ADVANCEMENT; empty for others
+    #
+    #  -- advanced_to_set: by History.advanced_by
+    #     Mandatory for ADVANCEMENT; Must be empty otherwise
+
+    objects = ActionQuerySet.as_manager()
 
     class Meta:
         ordering = [u'effective_date', u'pk']
@@ -258,23 +335,35 @@ class Action(models.Model):
         return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)
 
 class ActionDraft(models.Model):
+    # Mandatory
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
-    history = models.ForeignKey(u'History', blank=True, null=True, verbose_name=_(u'History'))
-    subject = models.CharField(max_length=255, verbose_name=_(u'Subject'))
-    content = models.TextField(verbose_name=_(u'Content'))
-    effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))
 
+    # Optional; Must be owned by the inforequest if set.
+    history = models.ForeignKey(u'History', blank=True, null=True, verbose_name=_(u'History'))
+
+    # Mandatory choice
     TYPES = Action.TYPES
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
+    # May be empty
+    subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
+    content = models.TextField(blank=True, verbose_name=_(u'Content'))
+
+    # Optional
+    effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))
+
+    # Optional for EXTENSION; Must be None otherwise
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
+    # Optional for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be None otherwise
     DISCLOSURE_LEVELS = Action.DISCLOSURE_LEVELS
     disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
 
+    # Optional for REFUSAL and AFFIRMATION; Must be None otherwise
     REFUSAL_REASONS = Action.REFUSAL_REASONS
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
+    # May be empty for ADVANCEMENT; Must be empty otherwise
     obligee_set = models.ManyToManyField(u'obligees.Obligee', verbose_name=_(u'Obligee Set'))
 
     objects = QuerySet.as_manager()
@@ -284,34 +373,6 @@ class ActionDraft(models.Model):
 
     def __unicode__(self):
         return u'%s' % ((self.inforequest, self.get_type_display()),)
-
-class ReceivedEmailQuerySet(QuerySet):
-    def undecided(self):
-        return self.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
-
-class ReceivedEmail(models.Model):
-    inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
-    raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
-
-    STATUSES = FieldChoices(
-        (u'UNASSIGNED', 1, _(u'Unassigned')),
-        (u'UNDECIDED', 2, _(u'Undecided')),
-        (u'UNKNOWN', 3, _(u'Unknown')),
-        (u'UNRELATED', 4, _(u'Unrelated')),
-        (u'OBLIGEE_ACTION', 5, _(u'Obligee Action')),
-        )
-    status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
-
-    # Backward relations:
-    #  -- action: by Action.receivedemail; Raises DoesNotExist if it's not owned by any action
-
-    objects = ReceivedEmailQuerySet.as_manager()
-
-    class Meta:
-        ordering = [u'raw_email__processed', u'pk']
-
-    def __unicode__(self):
-        return u'%s' % ((self.inforequest, self.get_status_display(), self.raw_email),)
 
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
