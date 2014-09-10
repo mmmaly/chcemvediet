@@ -400,6 +400,7 @@ class AppealForm(NewActionCommonForm):
 class ExtendDeadlineForm(PrefixedForm):
     extension = forms.IntegerField(
             label=_(u'Deadline Extension'),
+            initial=5,
             min_value=2,
             max_value=100,
             widget=forms.NumberInput(attrs={
@@ -411,7 +412,6 @@ class ExtendDeadlineForm(PrefixedForm):
         if not self.is_valid():
             raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
 
-        action.extension = self.cleaned_data[u'extension']
-
-    def load(self, action):
-        self.initial[u'extension'] = action.extension or 5
+        # User sets the extended deadline relative to today.
+        if action.deadline is not None:
+            action.extension = action.days_passed - action.deadline + self.cleaned_data[u'extension']

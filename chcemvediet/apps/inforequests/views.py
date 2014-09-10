@@ -446,7 +446,6 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
 
     else: # request.method != u'POST'
         form = forms.ExtendDeadlineForm(prefix=action.id)
-        form.load(action)
         return render(request, u'inforequests/modals/extend-deadline.html', {
                 u'inforequest': inforequest,
                 u'history': history,
