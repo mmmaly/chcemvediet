@@ -1,0 +1,66 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "main/base/single_column.html" %}
+{% load addtoblock from sekizai_tags %}
+
+{% comment %}
+ %
+ % Context:
+ %
+{% endcomment %}
+
+{% block title %}Timewarp | {{ block.super }}{% endblock %}
+
+{% block content %}
+  <p>Real time: <span class="timewarp" data-timestamp="{{ time_real }}"></span></p>
+  {% if is_warped %}
+    <p>Warped time: <span class="timewarp" data-timestamp="{{ time_warped }}" data-speedup="{{ speedup }}"></span></p>
+    <p>Speedup: {{ speedup }}x</p>
+  {% else %}
+    <p>Warped time: &mdash;</p>
+    <p>Speedup: &mdash;</p>
+  {% endif %}
+  <hr>
+  <form class="form-horizontal" method="post" action="{% url 'timewarp:index' %}">
+    {% csrf_token %}
+    {% include "main/snippets/form_horizontal.html" with form=form %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" name="button" value="jump">Jump</button>
+      <button type="submit" class="btn" name="button" value="reset">Reset</button>
+    </div>
+  </form>
+
+  {% addtoblock "js" %}{# {{{ #}
+    <script>
+	$(function(){
+		function pad(val){
+			return (val < 10 ? '0' + val : val);
+		}
+		function update(){
+			$('.timewarp').each(function(){
+				var now = Date.now();
+				var base = $(this).data('timestamp');
+				var speedup = $(this).data('speedup') || 1;
+				var started = $(this).data('started');
+				var result = (base * 1000) + (now - started) * speedup;
+
+				var date = new Date(result);
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+				var hours = date.getHours();
+				var minutes = date.getMinutes();
+				var seconds = date.getSeconds();
+
+				var date = year + '-' + pad(month) + '-' + pad(day);
+				var time = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+				$(this).html(date + ' ' + time);
+			});
+		}
+
+		$('.timewarp').data('started', Date.now());
+		setInterval(update, 200);
+		update();
+	});
+    </script>
+  {% endaddtoblock %}{# }}} #}
+{% endblock %}

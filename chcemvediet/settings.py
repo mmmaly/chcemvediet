@@ -175,6 +175,11 @@ INSTALLED_APPS = (
     u'chcemvediet.apps.inforequests',
 )
 
+if DEBUG:
+    INSTALLED_APPS += (
+        u'poleno.timewarp',
+        )
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

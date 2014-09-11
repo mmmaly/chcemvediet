@@ -27,6 +27,7 @@ urlpatterns += i18n_patterns(u'',
 
 if settings.DEBUG:
     urlpatterns = patterns(u'',
+        url(r'^timewarp/', include(u'poleno.timewarp.urls', namespace=u'timewarp')),
         url(r'^media/(?P<path>.*)$', u'django.views.static.serve', {u'document_root': settings.MEDIA_ROOT, u'show_indexes': True}),
         url(r'', include(u'django.contrib.staticfiles.urls')),
     ) + urlpatterns
