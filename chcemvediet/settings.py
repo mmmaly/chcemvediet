@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     u'hvad',
     u'sekizai',
     u'django_mailbox',
+    u'adminplus',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',

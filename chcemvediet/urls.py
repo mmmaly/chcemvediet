@@ -5,9 +5,11 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from adminplus.sites import AdminSitePlus
 
 import views
 
+admin.site = AdminSitePlus()
 admin.autodiscover()
 
 urlpatterns = patterns(u'',
@@ -27,7 +29,6 @@ urlpatterns += i18n_patterns(u'',
 
 if settings.DEBUG:
     urlpatterns = patterns(u'',
-        url(r'^timewarp/', include(u'poleno.timewarp.urls', namespace=u'timewarp')),
         url(r'^media/(?P<path>.*)$', u'django.views.static.serve', {u'document_root': settings.MEDIA_ROOT, u'show_indexes': True}),
         url(r'', include(u'django.contrib.staticfiles.urls')),
     ) + urlpatterns

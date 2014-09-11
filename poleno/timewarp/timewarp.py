@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import sys
 import time as time_orig
 import datetime as datetime_orig
 
@@ -94,8 +93,28 @@ class _WarpedDatetime(object):
 
 
 def init():
-    sys.modules['time'] = _WarpedTime()
-    sys.modules['datetime'] = _WarpedDatetime()
+    import os
+    import sys
+    import warnings
+    from django.utils.importlib import import_module
+
+    env_name = u'DJANGO_SETTINGS_MODULE'
+    try:
+        settings_path = os.environ[env_name]
+    except KeyError:
+        warnings.warn(RuntimeWarning(u'Timewarp could not find `%s` environment variable. Timewarp disabled.' % env_name))
+        return
+
+    try:
+        settings = import_module(settings_path)
+    except ImportError:
+        warnings.warn(RuntimeWarning(u'Timewarp could not import settings module. Timewarp disabled.'))
+        return
+
+    # Timewarp MUST NOT be enabled if DEBUG is not True.
+    if settings.DEBUG:
+        sys.modules[u'time'] = _WarpedTime()
+        sys.modules[u'datetime'] = _WarpedDatetime()
 
 def jump(date=None, speed=None):
     global warped_from, warped_to, speedup

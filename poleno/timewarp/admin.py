@@ -4,12 +4,15 @@ from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.form import clean_button
 
 import timewarp
 import forms
 
+@admin.site.register_view(u'timewarp/', name=_(u'Timewarp'), urlname=u'timewarp')
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 def index(request):
     if request.method == u'POST':
@@ -22,18 +25,19 @@ def index(request):
                 speedup = form.cleaned_data[u'speedup']
                 if jumpto is not None or speedup is not None:
                     timewarp.jump(jumpto, speedup)
-                return HttpResponseRedirect(reverse(u'timewarp:index'))
+                return HttpResponseRedirect(reverse(u'admin:timewarp'))
 
         if button == u'reset':
             timewarp.reset()
-            return HttpResponseRedirect(reverse(u'timewarp:index'))
+            return HttpResponseRedirect(reverse(u'admin:timewarp'))
     else:
         form = forms.WarpForm()
 
-    return render(request, u'timewarp/index.html', {
+    return render(request, u'timewarp/timewarp.html', {
             u'is_warped': timewarp.is_warped(),
             u'time_real': timewarp.time_real(),
             u'time_warped': timewarp.time_warped(),
             u'speedup': timewarp.speedup,
             u'form': form,
+            u'title': _(u'Timewarp'),
             })

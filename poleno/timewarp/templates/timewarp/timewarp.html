@@ -1,0 +1,87 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- is_warped; bool
+ %  -- time_real: float (timestamp)
+ %  -- time_warped: float (timestamp)
+ %  -- speedup: float
+ %  -- form: poleno.utils.timewarp.forms.WarpForm
+ %  -- title: string
+ %
+{% endcomment %}
+
+{% block extrahead %}{{ block.super }}
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script> {# {{{ #}
+	$(function(){
+		function pad(val){
+			return (val < 10 ? '0' + val : val);
+		}
+		function update(){
+			$('.timewarp').each(function(){
+				var now = Date.now();
+				var base = $(this).data('timestamp');
+				var speedup = $(this).data('speedup') || 1;
+				var started = $(this).data('started');
+				var result = (base * 1000) + (now - started) * speedup;
+
+				var date = new Date(result);
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+				var hours = date.getHours();
+				var minutes = date.getMinutes();
+				var seconds = date.getSeconds();
+
+				var date = year + '-' + pad(month) + '-' + pad(day);
+				var time = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+				$(this).html(date + ' ' + time);
+			});
+		}
+
+		$('.timewarp').data('started', Date.now());
+		setInterval(update, 200);
+		update();
+	});
+  </script> {# }}} #}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+{% endblock %}
+
+{% block content %}
+  <p>Real time: <span class="timewarp" data-timestamp="{{ time_real|stringformat:"f" }}"></span></p>
+  {% if is_warped %}
+    <p>Warped time: <span class="timewarp" data-timestamp="{{ time_warped|stringformat:"f" }}" data-speedup="{{ speedup|stringformat:"f" }}"></span></p>
+    <p>Speedup: {{ speedup }}x</p>
+  {% else %}
+    <p>Warped time: &mdash;</p>
+    <p>Speedup: &mdash;</p>
+  {% endif %}
+  <form id="site_form" method="post" action="{% url 'admin:timewarp' %}">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <fieldset class="module aligned">
+      {% for field in form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% else %}
+          <div class="form-row {% if field.errors %}errors{% endif %}">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors|join:" " }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </fieldset>
+    <div class="submit-row">
+      <button type="submit" class="button default" name="button" value="jump" style="margin-left: 5px;">Jump</button>
+      <button type="submit" class="button" name="button" value="reset">Reset</button>
+    </div>
+  </form>
+{% endblock %}
