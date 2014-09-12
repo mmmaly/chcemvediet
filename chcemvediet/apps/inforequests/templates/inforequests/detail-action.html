@@ -19,7 +19,7 @@
       {% if forloop.last and action.deadline %}&mdash;
         Deadline: {{ action.deadline }} WD{% if action.extension %} + {{ action.extension }} WD{% endif %},
         {% if action.deadline_missed %}
-          <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}" data-type="html" data-toggle="modal" data-target="#extend-deadline-{{ action.pk }}-modal">Deadline is Missed, Extend it</button>
+          <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
           <span id="extend-deadline-{{ action.pk }}-modal" class="modal hide fade"></span>
         {% else %}
           {{ action.deadline_remaining }} WD remains

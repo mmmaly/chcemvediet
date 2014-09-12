@@ -12,15 +12,15 @@
 <div class="well">
   <p>[{% lorem 20 %}]</p>
   <div class="btn-group">
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'confirmation' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#confirmation-smail-modal">Confirmation</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'extension' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#extension-smail-modal">Extension</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'advancement' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#advancement-smail-modal">Advancement</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'clarification-request' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#clarification-request-smail-modal">Clarification Request</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'disclosure' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#disclosure-smail-modal">Disclosure</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'refusal' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#refusal-smail-modal">Refusal</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'affirmation' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#affirmation-smail-modal">Affirmation</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'reversion' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#reversion-smail-modal">Reversion</button>
-    <button type="button" class="btn btn-primary ajax ajax-once" action="{% url 'inforequests:add_smail' 'remandment' inforequest.id %}" data-type="html" data-toggle="modal" data-target="#remandment-smail-modal">Remandment</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'confirmation' inforequest.id %}" data-type="html" data-target="#confirmation-smail-modal" data-fail-target="#ajax-fail-modal">Confirmation</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'extension' inforequest.id %}" data-type="html" data-target="#extension-smail-modal" data-fail-target="#ajax-fail-modal">Extension</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'advancement' inforequest.id %}" data-type="html" data-target="#advancement-smail-modal" data-fail-target="#ajax-fail-modal">Advancement</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'clarification-request' inforequest.id %}" data-type="html" data-target="#clarification-request-smail-modal" data-fail-target="#ajax-fail-modal">Clarification Request</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'disclosure' inforequest.id %}" data-type="html" data-target="#disclosure-smail-modal" data-fail-target="#ajax-fail-modal">Disclosure</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'refusal' inforequest.id %}" data-type="html" data-target="#refusal-smail-modal" data-fail-target="#ajax-fail-modal">Refusal</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'affirmation' inforequest.id %}" data-type="html" data-target="#affirmation-smail-modal" data-fail-target="#ajax-fail-modal">Affirmation</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'reversion' inforequest.id %}" data-type="html" data-target="#reversion-smail-modal" data-fail-target="#ajax-fail-modal">Reversion</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'remandment' inforequest.id %}" data-type="html" data-target="#remandment-smail-modal" data-fail-target="#ajax-fail-modal">Remandment</button>
   </div>
   <div id="confirmation-smail-modal" class="modal modal-large hide fade"></div>
   <div id="extension-smail-modal" class="modal modal-large hide fade"></div>

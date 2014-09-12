@@ -34,3 +34,6 @@
   {% include "inforequests/detail-new_action.html" with inforequest=inforequest %}
 </div>
 <div id="print-modal" class="modal modal-large hide"></div>
+<div id="ajax-fail-modal" class="modal hide fade">
+  {% include "inforequests/modals/ajax_fail.html" with inforequest=inforequest %}
+</div>

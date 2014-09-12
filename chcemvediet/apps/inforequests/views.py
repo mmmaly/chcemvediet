@@ -7,12 +7,11 @@ from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
 from poleno.utils.http import JsonResponse
-from poleno.utils.views import require_ajax
+from poleno.utils.views import require_ajax, login_required
 from poleno.utils.misc import Bunch
 from poleno.utils.form import clean_button
 from chcemvediet.apps.obligees.models import Obligee
@@ -87,7 +86,7 @@ def delete_draft(request, draft_id):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
-@login_required
+@login_required(raise_exception=True)
 def decide_email(request, action, inforequest_id, receivedemail_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
@@ -201,7 +200,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
-@login_required
+@login_required(raise_exception=True)
 def add_smail(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
@@ -315,7 +314,7 @@ def add_smail(request, action, inforequest_id):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
-@login_required
+@login_required(raise_exception=True)
 def new_action(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
@@ -412,7 +411,7 @@ def new_action(request, action, inforequest_id):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
-@login_required
+@login_required(raise_exception=True)
 def extend_deadline(request, inforequest_id, history_id, action_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     history = inforequest.history_set.get_or_404(pk=history_id)

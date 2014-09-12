@@ -1,0 +1,22 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <h3>Something Went Wrong</h3>
+</div>
+<div class="modal-body">
+  <p>The resource you requested is not available. Please reload the page.</p>
+  <p>[{% lorem 7 %}]</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary reload">Reload Page</button>
+  <button type="button" class="btn" data-dismiss="modal">Close</button>
+</div>
