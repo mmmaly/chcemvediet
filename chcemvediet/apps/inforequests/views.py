@@ -91,11 +91,8 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
 
-    # FIXME: We don't check whether ``receivedemail`` is the oldest ``inforequest`` undecided
-    # e-mail or not. Although the frontend forces the user to decide the e-mails in the order they
-    # were received, it is not necessarily a mistake to decide them in any other order. In the
-    # future we may even add an advanced frontend to allow the user to decide the e-mails in any
-    # order, but to keep the frontend simple, we don't do it now.
+    if receivedemail != inforequest.receivedemail_set.undecided().first():
+        raise Http404
 
     available_actions = {
             u'unrelated': Bunch(
@@ -154,12 +151,12 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
         action_type = available_actions[action].action_type
         form_class = available_actions[action].form_class
     except KeyError:
-        raise Http404(u'Invalid action.')
+        raise Http404
 
     if request.method == u'POST':
         action = None
         if action_type is not None:
-            form = form_class(request.POST, history_set=inforequest.history_set)
+            form = form_class(request.POST, inforequest=inforequest)
             if not form.is_valid():
                 return JsonResponse({
                         u'result': u'invalid',
@@ -191,7 +188,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(history_set=inforequest.history_set) if form_class else None
+        form = form_class(inforequest=inforequest) if form_class else None
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'email': receivedemail,
@@ -204,9 +201,9 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
 def add_smail(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
-    # FIXME: We don't check whether there are any undecided received e-mails waiting for this
-    # ``inforequest``. Although the frontend may force the user to decide the e-mails before he can
-    # add s-mails, it is not necessarily a mistake to add a s-mail before deciding waiting e-mails.
+    # We need to let the user save his form as a draft even if we have waiting email.
+    if request.method != u'POST' and inforequest.has_waiting_email:
+        raise Http404
 
     available_actions = {
             u'confirmation': Bunch(
@@ -261,13 +258,13 @@ def add_smail(request, action, inforequest_id):
         action_type = available_actions[action].action_type
         form_class = available_actions[action].form_class
     except KeyError:
-        raise Http404(u'Invalid action.')
+        raise Http404
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'add', u'draft'])
-        form = form_class(request.POST, history_set=inforequest.history_set, draft=(button == u'draft'))
+        form = form_class(request.POST, inforequest=inforequest, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -304,7 +301,7 @@ def add_smail(request, action, inforequest_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(history_set=inforequest.history_set)
+        form = form_class(inforequest=inforequest)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -318,23 +315,22 @@ def add_smail(request, action, inforequest_id):
 def new_action(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
 
-    # FIXME: We don't check whether there are any undecided received e-mails waiting for this
-    # ``inforequest``. Although the frontend may force the user to decide the e-mails before he can
-    # add new action, it is not necessarily a mistake to add a new action before deciding waiting
-    # e-mails.
-
-    # FIXME: Moreover, we don't check which actions may only be send by e-mail and/on s-mail, yet.
+    # We need to let the user save his form as a draft even if we have waiting email.
+    if request.method != u'POST' and inforequest.has_waiting_email:
+        raise Http404
 
     available_actions = {
             u'clarification-response': Bunch(
                 template = u'inforequests/modals/clarification_response.html',
                 action_type = Action.TYPES.CLARIFICATION_RESPONSE,
                 form_class = forms.ClarificationResponseForm,
+                can_email = True,
                 ),
             u'appeal': Bunch(
                 template = u'inforequests/modals/appeal.html',
                 action_type = Action.TYPES.APPEAL,
                 form_class = forms.AppealForm,
+                can_email = False,
                 ),
             }
 
@@ -342,14 +338,15 @@ def new_action(request, action, inforequest_id):
         template = available_actions[action].template
         action_type = available_actions[action].action_type
         form_class = available_actions[action].form_class
+        can_email = available_actions[action].can_email
     except KeyError:
-        raise Http404(u'Invalid action.')
+        raise Http404
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
 
     if request.method == u'POST':
-        button = clean_button(request.POST, [u'email', u'print', u'draft'])
-        form = form_class(request.POST, history_set=inforequest.history_set, draft=(button == u'draft'))
+        button = clean_button(request.POST, [u'email', u'print', u'draft'] if can_email else [u'print', u'draft'])
+        form = form_class(request.POST, inforequest=inforequest, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -401,7 +398,7 @@ def new_action(request, action, inforequest_id):
         return JsonResponse(json)
 
     else: # request.method != u'POST'
-        form = form_class(history_set=inforequest.history_set)
+        form = form_class(inforequest=inforequest)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -417,12 +414,17 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
     history = inforequest.history_set.get_or_404(pk=history_id)
     action = history.action_set.get_or_404(pk=action_id)
 
-    # FIXME: We don't check whether ``action`` is the last history action, nor whether it is an
-    # obligee action, yet. Moreover, we don't check whether its deadline is already missed, nor if
-    # it is set at all, yet.
+    if action != history.action_set.last():
+        raise Http404
+    if not action.can_extend_deadline:
+        raise Http404
+    if not action.deadline_missed:
+        raise Http404
+    if inforequest.has_waiting_email:
+        raise Http404
 
     if request.method == u'POST':
-        form = forms.ExtendDeadlineForm(request.POST, prefix=action.id)
+        form = forms.ExtendDeadlineForm(request.POST, prefix=action.pk)
         if not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -444,7 +446,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
                 })
 
     else: # request.method != u'POST'
-        form = forms.ExtendDeadlineForm(prefix=action.id)
+        form = forms.ExtendDeadlineForm(prefix=action.pk)
         return render(request, u'inforequests/modals/extend-deadline.html', {
                 u'inforequest': inforequest,
                 u'history': history,

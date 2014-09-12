@@ -36,6 +36,9 @@
 				});
 			}
 		});
+		$(document).on('ajax-fail', '.modal', function(event){
+			$('#ajax-fail-modal').subModal();
+		});
 	});
     </script>
   {% endaddtoblock %}{# }}} #}

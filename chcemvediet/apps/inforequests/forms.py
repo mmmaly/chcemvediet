@@ -1,11 +1,13 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django import forms
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
 from poleno.utils.model import after_saved
 from poleno.utils.form import AutoSuppressedSelect
+from poleno.utils.misc import squeeze
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
 from models import History, Action
@@ -101,13 +103,13 @@ class ActionAbstractForm(PrefixedForm):
             )
 
     def __init__(self, *args, **kwargs):
+        self.inforequest = kwargs.pop(u'inforequest')
         self.draft = kwargs.pop(u'draft', False)
-        history_set = kwargs.pop(u'history_set')
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
 
         field = self.fields[u'history']
-        field.queryset = history_set
-        if history_set.count() == 1:
+        field.queryset = self.inforequest.history_set
+        if field.queryset.count() == 1:
             field.empty_label = None
 
         if self.draft:
@@ -357,7 +359,17 @@ class RefusalEmailForm(DecideEmailCommonForm, RefusalReasonMixin):
 
 
 class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, ActionAbstractForm):
-    pass
+    def clean(self):
+        cleaned_data = super(AddSmailCommonForm, self).clean()
+
+        if not self.draft:
+            if self.inforequest.has_waiting_email:
+                msg = squeeze(render_to_string(u'inforequests/messages/add_smail-waiting_emails.txt', {
+                        u'inforequest': self.inforequest,
+                        }))
+                raise forms.ValidationError(msg, code=u'waiting_emails')
+
+        return cleaned_data
 
 class ConfirmationSmailForm(AddSmailCommonForm):
     pass
@@ -388,7 +400,17 @@ class RemandmentSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
 
 
 class NewActionCommonForm(SubjectContentMixin, ActionAbstractForm):
-    pass
+    def clean(self):
+        cleaned_data = super(NewActionCommonForm, self).clean()
+
+        if not self.draft:
+            if self.inforequest.has_waiting_email:
+                msg = squeeze(render_to_string(u'inforequests/messages/new_action-waiting_emails.txt', {
+                        u'inforequest': self.inforequest,
+                        }))
+                raise forms.ValidationError(msg, code=u'waiting_emails')
+
+        return cleaned_data
 
 class ClarificationResponseForm(NewActionCommonForm):
     pass

@@ -10,9 +10,7 @@
 {% block before_errors %}{% endblock %}
 {% if form.non_field_errors %}
   <div class="control-group error">
-    <div class="controls">
-      <span class="help-block">{{ form.non_field_errors|join:" " }}<span>
-    </div>
+    <span class="help-block">{{ form.non_field_errors|join:" " }}<span>
   </div>
 {% endif %}
 {% block before_fields %}{% endblock %}

@@ -82,6 +82,10 @@ class Inforequest(models.Model):
     def history(self):
         return self.history_set.get(advanced_by=None)
 
+    @property
+    def has_waiting_email(self):
+        return self.receivedemail_set.undecided().exists()
+
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
 
@@ -315,6 +319,21 @@ class Action(models.Model):
         # self.deadline_remaining is 0 on the last day of deadline
         remaining = self.deadline_remaining
         return remaining is not None and remaining < 0
+
+    @property
+    def can_extend_deadline(self):
+        return self.type in [
+                # Applicant actions
+                self.TYPES.REQUEST,
+                self.TYPES.CLARIFICATION_RESPONSE,
+                self.TYPES.APPEAL,
+                # Obligee actions
+                self.TYPES.CONFIRMATION,
+                self.TYPES.EXTENSION,
+                self.TYPES.REMANDMENT,
+                # Implicit actions
+                self.TYPES.ADVANCED_REQUEST,
+                ]
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object

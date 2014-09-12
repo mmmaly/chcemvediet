@@ -18,12 +18,7 @@
     <p class="span10">{{ action.effective_date }}
       {% if forloop.last and action.deadline %}&mdash;
         Deadline: {{ action.deadline }} WD{% if action.extension %} + {{ action.extension }} WD{% endif %},
-        {% if action.deadline_missed %}
-          <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
-          <span id="extend-deadline-{{ action.pk }}-modal" class="modal hide fade"></span>
-        {% else %}
-          {{ action.deadline_remaining }} WD remains
-        {% endif %}
+        {% if action.deadline_missed %}Deadline is Missed{% else %}{{ action.deadline_remaining }} WD remains{% endif %}
       {% endif %}
     </p>
   </div>
@@ -50,6 +45,10 @@
       <p class="span12" style="white-space: pre-line;">{{ action.content }}</p>
     </div>
   {% endif %}
+  {% if forloop.last and action.can_extend_deadline and action.deadline_missed and not inforequest.has_waiting_email %}
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
+    <span id="extend-deadline-{{ action.pk }}-modal" class="modal hide fade"></span>
+  {% endif %}
   {% for sub_history in action.advanced_to_set.all %}
     <div class="well well-inverse">
       <div class="row-fluid">
@@ -60,14 +59,10 @@
             {{ sub_history.obligee_zip }} {{ sub_history.obligee_city }}</p>
         </div>
       </div>
-      {% for sub_action in sub_history.action_set.all %}
-        <div id="action-{{ sub_action.id }}">
-          {# Workaround for Django bug causing infinite recursion #}
-          {% with template_name="inforequests/detail-action.html" %}
-            {% include template_name with inforequest=inforequest history=sub_history action=sub_action forloop=forloop %}
-          {% endwith %}
-        </div>
-      {% endfor %}
+      {# Workaround for Django bug causing infinite recursion #}
+      {% with template_name="inforequests/detail-history.html" %}
+        {% include template_name with inforequest=inforequest history=sub_history %}
+      {% endwith %}
     </div>
   {% endfor %}
 </div>

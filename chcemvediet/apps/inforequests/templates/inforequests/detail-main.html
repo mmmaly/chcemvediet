@@ -12,26 +12,24 @@
 <div id="request">
   {% include "inforequests/detail-request.html" with inforequest=inforequest %}
 </div>
-<div id="actions">
-  {% for action in inforequest.history.action_set.all %}
-    <div id="action-{{ action.id }}">
-      {% include "inforequests/detail-action.html" with inforequest=inforequest history=inforequest.history action=action forloop=forloop %}
-    </div>
-  {% endfor %}
-</div>
-<div id="decide">
-  {% if inforequest.receivedemail_set.undecided.count %}
+{% if inforequest.has_waiting_email %}
+  <div id="decide">
     {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first %}
-  {% endif %}
-</div>
-<div id="waiting">
-  {% include "inforequests/detail-waiting.html" with inforequest=inforequest %}
-</div>
-<div id="add-smail">
-  {% include "inforequests/detail-add_smail.html" with inforequest=inforequest %}
-</div>
-<div id="new-action">
-  {% include "inforequests/detail-new_action.html" with inforequest=inforequest %}
+  </div>
+  <div id="waiting">
+    {% include "inforequests/detail-waiting.html" with inforequest=inforequest %}
+  </div>
+{% else %}
+  <div id="add-smail">
+    {% include "inforequests/detail-add_smail.html" with inforequest=inforequest %}
+  </div>
+  <div id="new-action">
+    {% include "inforequests/detail-new_action.html" with inforequest=inforequest %}
+  </div>
+{% endif %}
+<h2>History</h2>
+<div id="actions">
+  {% include "inforequests/detail-history.html" with inforequest=inforequest history=inforequest.history %}
 </div>
 <div id="print-modal" class="modal modal-large hide"></div>
 <div id="ajax-fail-modal" class="modal hide fade">
