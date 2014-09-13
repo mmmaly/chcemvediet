@@ -48,15 +48,16 @@ class FieldChoices(object):
     Example:
         class Mail(models.Model):
             STATUSES = FieldChoices(
-                (UNKNOWN, 1, _(u'Unknown')),
-                (DELIVERED, 2, _(u'Delivered')),
-                (RETURNED, 3, _(u'Returned')),
-                (LOST, 4, _(u'Lost')),
+                ('UNKNOWN', 1, _('Unknown')),
+                ('DELIVERED', 2, _('Delivered')),
+                ('RETURNED', 3, _('Returned')),
+                ('LOST', 4, _('Lost')),
                 )
             status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
 
         mail = Mail()
         mail.status = mail.STATUSES.DELIVERED
+        mail.STATUSES._inverse[2] == 'DELIVERED'
     """
 
     def __init__(self, *args):

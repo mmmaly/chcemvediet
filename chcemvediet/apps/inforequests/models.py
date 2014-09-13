@@ -86,6 +86,56 @@ class Inforequest(models.Model):
     def has_waiting_email(self):
         return self.receivedemail_set.undecided().exists()
 
+    @property
+    def can_add_clarification_response(self):
+        return self.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE)
+
+    @property
+    def can_add_appeal(self):
+        return self.can_add_action(Action.TYPES.APPEAL)
+
+    @property
+    def can_add_confirmation(self):
+        return self.can_add_action(Action.TYPES.CONFIRMATION)
+
+    @property
+    def can_add_extension(self):
+        return self.can_add_action(Action.TYPES.EXTENSION)
+
+    @property
+    def can_add_advancement(self):
+        return self.can_add_action(Action.TYPES.ADVANCEMENT)
+
+    @property
+    def can_add_clarification_request(self):
+        return self.can_add_action(Action.TYPES.CLARIFICATION_REQUEST)
+
+    @property
+    def can_add_disclosure(self):
+        return self.can_add_action(Action.TYPES.DISCLOSURE)
+
+    @property
+    def can_add_refusal(self):
+        return self.can_add_action(Action.TYPES.REFUSAL)
+
+    @property
+    def can_add_affirmation(self):
+        return self.can_add_action(Action.TYPES.AFFIRMATION)
+
+    @property
+    def can_add_reversion(self):
+        return self.can_add_action(Action.TYPES.REVERSION)
+
+    @property
+    def can_add_remandment(self):
+        return self.can_add_action(Action.TYPES.REMANDMENT)
+
+    def can_add_action(self, action_type):
+        for history in self.history_set.all():
+            if history.can_add_action(action_type):
+                return True
+        return False
+
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
 
@@ -144,6 +194,106 @@ class History(models.Model):
 
     class Meta:
         ordering = [u'obligee_name', u'pk']
+
+    @property
+    def last_action(self):
+        return self.action_set.last()
+
+    @property
+    def can_add_clarification_response(self):
+        return self.last_action.type == Action.TYPES.CLARIFICATION_REQUEST
+
+    @property
+    def can_add_appeal(self):
+        if self.last_action.type == Action.TYPES.DISCLOSURE:
+            return self.last_action.disclosure_level != Action.DISCLOSURE_LEVELS.FULL
+        if self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.CLARIFICATION_RESPONSE,
+                Action.TYPES.CONFIRMATION,
+                Action.TYPES.EXTENSION,
+                Action.TYPES.REMANDMENT,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]:
+            return self.last_action.deadline_missed
+        return self.last_action.type in [
+                Action.TYPES.REFUSAL,
+                Action.TYPES.ADVANCEMENT,
+                ]
+
+    @property
+    def can_add_confirmation(self):
+        return self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]
+
+    @property
+    def can_add_extension(self):
+        return self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.CONFIRMATION,
+                Action.TYPES.CLARIFICATION_RESPONSE,
+                Action.TYPES.REMANDMENT,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]
+
+    @property
+    def can_add_advancement(self):
+        return self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.CLARIFICATION_RESPONSE,
+                Action.TYPES.CONFIRMATION,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]
+
+    @property
+    def can_add_clarification_request(self):
+        return self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.CLARIFICATION_RESPONSE,
+                Action.TYPES.CONFIRMATION,
+                Action.TYPES.CLARIFICATION_REQUEST,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]
+
+    @property
+    def can_add_disclosure(self):
+        return self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.CLARIFICATION_RESPONSE,
+                Action.TYPES.CONFIRMATION,
+                Action.TYPES.EXTENSION,
+                Action.TYPES.REMANDMENT,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]
+
+    @property
+    def can_add_refusal(self):
+        return self.last_action.type in [
+                Action.TYPES.REQUEST,
+                Action.TYPES.CLARIFICATION_RESPONSE,
+                Action.TYPES.CONFIRMATION,
+                Action.TYPES.EXTENSION,
+                Action.TYPES.REMANDMENT,
+                Action.TYPES.ADVANCED_REQUEST,
+                ]
+
+    @property
+    def can_add_affirmation(self):
+        return self.last_action.type == Action.TYPES.APPEAL
+
+    @property
+    def can_add_reversion(self):
+        return self.last_action.type == Action.TYPES.APPEAL
+
+    @property
+    def can_add_remandment(self):
+        return self.last_action.type == Action.TYPES.APPEAL
+
+    def can_add_action(self, action_type):
+        type_name = Action.TYPES._inverse[action_type]
+        return getattr(self, u'can_add_%s' % type_name.lower())
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object

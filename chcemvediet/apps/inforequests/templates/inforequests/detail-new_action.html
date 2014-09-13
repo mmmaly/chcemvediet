@@ -11,10 +11,14 @@
 <h2>What You Can Do</h2>
 <div class="well">
   <p>[{% lorem 21 %}]</p>
-  <div class="btn-group">
-    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:new_action' 'clarification-response' inforequest.id %}" data-type="html" data-target="#clarification-response-modal" data-fail-target="#ajax-fail-modal">Clarification Response</button>
-    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:new_action' 'appeal' inforequest.id %}" data-type="html" data-target="#appeal-modal" data-fail-target="#ajax-fail-modal">Appeal</button>
-  </div>
+  {% if inforequest.can_add_clarification_response or inforequest.can_add_appeal %}
+    <div class="btn-group">
+      {% if inforequest.can_add_clarification_response %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:new_action' 'clarification-response' inforequest.id %}" data-type="html" data-target="#clarification-response-modal" data-fail-target="#ajax-fail-modal">Clarification Response</button>{% endif %}
+      {% if inforequest.can_add_appeal %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:new_action' 'appeal' inforequest.id %}" data-type="html" data-target="#appeal-modal" data-fail-target="#ajax-fail-modal">Appeal</button>{% endif %}
+    </div>
+  {% else %}
+    <p>You can do nothing now.</p>
+  {% endif %}
   <div id="clarification-response-modal" class="modal modal-large hide fade"></div>
   <div id="appeal-modal" class="modal modal-large hide fade"></div>
 </div>

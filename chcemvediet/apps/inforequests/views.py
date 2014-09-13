@@ -91,9 +91,6 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
 
-    if receivedemail != inforequest.receivedemail_set.undecided().first():
-        raise Http404
-
     available_actions = {
             u'unrelated': Bunch(
                 template = u'inforequests/modals/unrelated-email.html',
@@ -153,10 +150,15 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
     except KeyError:
         raise Http404
 
+    if receivedemail != inforequest.receivedemail_set.undecided().first():
+        raise Http404
+    if action_type and not inforequest.can_add_action(action_type):
+        raise Http404
+
     if request.method == u'POST':
         action = None
-        if action_type is not None:
-            form = form_class(request.POST, inforequest=inforequest)
+        if action_type:
+            form = form_class(request.POST, inforequest=inforequest, action_type=action_type)
             if not form.is_valid():
                 return JsonResponse({
                         u'result': u'invalid',
@@ -188,7 +190,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest) if form_class else None
+        form = form_class(inforequest=inforequest, action_type=action_type) if form_class else None
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'email': receivedemail,
@@ -200,10 +202,6 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
 @login_required(raise_exception=True)
 def add_smail(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
-
-    # We need to let the user save his form as a draft even if we have waiting email.
-    if request.method != u'POST' and inforequest.has_waiting_email:
-        raise Http404
 
     available_actions = {
             u'confirmation': Bunch(
@@ -260,11 +258,17 @@ def add_smail(request, action, inforequest_id):
     except KeyError:
         raise Http404
 
+    if request.method != u'POST': # The user cas save a draft even if he may not submit.
+        if inforequest.has_waiting_email:
+            raise Http404
+        if not inforequest.can_add_action(action_type):
+            raise Http404
+
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'add', u'draft'])
-        form = form_class(request.POST, inforequest=inforequest, draft=(button == u'draft'))
+        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -301,7 +305,7 @@ def add_smail(request, action, inforequest_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest)
+        form = form_class(inforequest=inforequest, action_type=action_type)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -314,10 +318,6 @@ def add_smail(request, action, inforequest_id):
 @login_required(raise_exception=True)
 def new_action(request, action, inforequest_id):
     inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
-
-    # We need to let the user save his form as a draft even if we have waiting email.
-    if request.method != u'POST' and inforequest.has_waiting_email:
-        raise Http404
 
     available_actions = {
             u'clarification-response': Bunch(
@@ -342,11 +342,17 @@ def new_action(request, action, inforequest_id):
     except KeyError:
         raise Http404
 
+    if request.method != u'POST': # The user cas save a draft even if he may not submit.
+        if inforequest.has_waiting_email:
+            raise Http404
+        if not inforequest.can_add_action(action_type):
+            raise Http404
+
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'email', u'print', u'draft'] if can_email else [u'print', u'draft'])
-        form = form_class(request.POST, inforequest=inforequest, draft=(button == u'draft'))
+        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -398,7 +404,7 @@ def new_action(request, action, inforequest_id):
         return JsonResponse(json)
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest)
+        form = form_class(inforequest=inforequest, action_type=action_type)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {

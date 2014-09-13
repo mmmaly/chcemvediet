@@ -13,11 +13,6 @@ from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAuto
 from models import History, Action
 
 
-class HistoryChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, history):
-        return history.obligee_name;
-
-
 class PrefixedForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PrefixedForm, self).__init__(*args, **kwargs)
@@ -59,7 +54,7 @@ class InforequestForm(PrefixedForm):
 
     def save(self, inforequest):
         if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+            raise ValueError
 
         @after_saved(inforequest)
         def deferred():
@@ -80,7 +75,7 @@ class InforequestForm(PrefixedForm):
 
     def save_to_draft(self, draft):
         if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+            raise ValueError
 
         draft.obligee = self.cleaned_data[u'obligee']
         draft.subject = self.cleaned_data[u'subject']
@@ -93,10 +88,8 @@ class InforequestForm(PrefixedForm):
 
 
 class ActionAbstractForm(PrefixedForm):
-    history = HistoryChoiceField(
-            queryset=History.objects.none(),
+    history = forms.ChoiceField(
             label=_(u'Obligee'),
-            empty_label=u'',
             widget=AutoSuppressedSelect(suppressed_attrs={
                 u'class': u'suppressed-control',
                 }),
@@ -104,31 +97,36 @@ class ActionAbstractForm(PrefixedForm):
 
     def __init__(self, *args, **kwargs):
         self.inforequest = kwargs.pop(u'inforequest')
+        self.action_type = kwargs.pop(u'action_type')
         self.draft = kwargs.pop(u'draft', False)
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
 
         field = self.fields[u'history']
-        field.queryset = self.inforequest.history_set
-        if field.queryset.count() == 1:
-            field.empty_label = None
+        field.choices = [(history.pk, history.obligee_name)
+                for history in self.inforequest.history_set.all()
+                if history.can_add_action(self.action_type)]
+        if len(field.choices) > 1:
+            field.choices = [(u'', u'')] + field.choices
 
         if self.draft:
             self.fields[u'history'].required = False
 
     def save(self, action):
         if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+            raise ValueError
 
-        action.history = self.cleaned_data[u'history']
+        pk = self.cleaned_data[u'history']
+        action.history = History.objects.get(pk=pk) if pk else None
 
     def save_to_draft(self, draft):
         if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+            raise ValueError
 
-        draft.history = self.cleaned_data[u'history']
+        pk = self.cleaned_data[u'history']
+        draft.history = History.objects.get(pk=pk) if pk else None
 
     def load_from_draft(self, draft):
-        self.initial[u'history'] = draft.history
+        self.initial[u'history'] = draft.history.pk if draft.history else None
 
 class EffectiveDateMixin(ActionAbstractForm):
     effective_date = forms.DateField(
@@ -432,7 +430,7 @@ class ExtendDeadlineForm(PrefixedForm):
 
     def save(self, action):
         if not self.is_valid():
-            raise ValueError(u"The %s could not be saved because the data didn't validate." % type(self).__name__)
+            raise ValueError
 
         # User sets the extended deadline relative to today.
         if action.deadline is not None:
