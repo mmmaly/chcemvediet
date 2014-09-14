@@ -3,6 +3,7 @@
 from django import forms
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.encoding import smart_text
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
 from poleno.utils.model import after_saved
@@ -88,8 +89,9 @@ class InforequestForm(PrefixedForm):
 
 
 class ActionAbstractForm(PrefixedForm):
-    history = forms.ChoiceField(
+    history = forms.TypedChoiceField(
             label=_(u'Obligee'),
+            empty_value=None,
             widget=AutoSuppressedSelect(suppressed_attrs={
                 u'class': u'suppressed-control',
                 }),
@@ -101,12 +103,20 @@ class ActionAbstractForm(PrefixedForm):
         self.draft = kwargs.pop(u'draft', False)
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
 
+        # Assumes that converting a History to a string gives its ``pk``
         field = self.fields[u'history']
-        field.choices = [(history.pk, history.obligee_name)
+        field.choices = [(history, history.obligee_name)
                 for history in self.inforequest.history_set.all()
                 if history.can_add_action(self.action_type)]
         if len(field.choices) > 1:
             field.choices = [(u'', u'')] + field.choices
+
+        def coerce(val):
+            for o, v in field.choices:
+                if o and smart_text(o.pk) == val:
+                    return o
+            raise ValueError
+        field.coerce = coerce
 
         if self.draft:
             self.fields[u'history'].required = False
@@ -115,18 +125,16 @@ class ActionAbstractForm(PrefixedForm):
         if not self.is_valid():
             raise ValueError
 
-        pk = self.cleaned_data[u'history']
-        action.history = History.objects.get(pk=pk) if pk else None
+        action.history = self.cleaned_data[u'history']
 
     def save_to_draft(self, draft):
         if not self.is_valid():
             raise ValueError
 
-        pk = self.cleaned_data[u'history']
-        draft.history = History.objects.get(pk=pk) if pk else None
+        draft.history = self.cleaned_data[u'history']
 
     def load_from_draft(self, draft):
-        self.initial[u'history'] = draft.history.pk if draft.history else None
+        self.initial[u'history'] = draft.history
 
 class EffectiveDateMixin(ActionAbstractForm):
     effective_date = forms.DateField(

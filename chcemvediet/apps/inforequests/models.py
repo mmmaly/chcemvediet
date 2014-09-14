@@ -38,7 +38,7 @@ class InforequestDraft(models.Model):
         ordering = [u'pk']
 
     def __unicode__(self):
-        return u'%s' % ((self.applicant, self.obligee),)
+        return u'%s' % self.pk
 
 class InforequestQuerySet(QuerySet):
     def owned_by(self, user):
@@ -163,7 +163,7 @@ class Inforequest(models.Model):
         super(Inforequest, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s' % ((self.applicant, self.history.obligee, str(self.submission_date)),)
+        return u'%s' % self.pk
 
 class History(models.Model):
     # Mandatory
@@ -308,10 +308,7 @@ class History(models.Model):
         super(History, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        try:
-            return u'%s' % ((self.inforequest, self.obligee),)
-        except Inforequest.DoesNotExist:
-            return u'%s' % ((self.obligee,),)
+        return u'%s' % self.pk
 
 class ReceivedEmailQuerySet(QuerySet):
     def undecided(self):
@@ -345,7 +342,7 @@ class ReceivedEmail(models.Model):
         ordering = [u'raw_email__processed', u'pk']
 
     def __unicode__(self):
-        return u'%s' % ((self.inforequest, self.get_status_display(), self.raw_email),)
+        return u'%s' % self.pk
 
 class ActionQuerySet(QuerySet):
     def requests(self):
@@ -517,7 +514,7 @@ class Action(models.Model):
         send_mail(self.subject, self.content, sender_full, [recipient_address])
 
     def __unicode__(self):
-        return u'%s' % ((self.history, self.get_type_display(), self.effective_date),)
+        return u'%s' % self.pk
 
 class ActionDraft(models.Model):
     # Mandatory
@@ -557,7 +554,7 @@ class ActionDraft(models.Model):
         ordering = [u'pk']
 
     def __unicode__(self):
-        return u'%s' % ((self.inforequest, self.get_type_display()),)
+        return u'%s' % self.pk
 
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
