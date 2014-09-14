@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.db import models, IntegrityError
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, activate
 from django.contrib.auth.models import User
 
@@ -219,6 +220,7 @@ class History(models.Model):
         return self.last_action.type in [
                 Action.TYPES.REFUSAL,
                 Action.TYPES.ADVANCEMENT,
+                Action.TYPES.EXPIRATION,
                 ]
 
     @property
@@ -310,6 +312,15 @@ class History(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+    def add_expiration_if_expired(self):
+        if self.last_action.has_obligee_deadline and self.last_action.deadline_missed:
+            expiration = Action(
+                    history=self,
+                    type=Action.TYPES.EXPIRATION,
+                    effective_date=timezone.now(),
+                    )
+            expiration.save()
+
 class ReceivedEmailQuerySet(QuerySet):
     def undecided(self):
         return self.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
@@ -381,6 +392,7 @@ class Action(models.Model):
             (u'REMANDMENT', 10, _(u'Remandment')),
             # Implicit actions
             (u'ADVANCED_REQUEST', 11, _(u'Advanced Request')),
+            (u'EXPIRATION', 14, _(u'Expiration')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -415,6 +427,7 @@ class Action(models.Model):
             REMANDMENT=13,
             # Implicit actions
             ADVANCED_REQUEST=13,
+            EXPIRATION=None,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
@@ -498,7 +511,6 @@ class Action(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
-            print(self, self.deadline, self.type, self.disclosure_level)
             if self.deadline is None:
                 type_name = self.TYPES._inverse[self.type]
                 deadline = getattr(self.DEFAULT_DEADLINES, type_name)

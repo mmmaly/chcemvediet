@@ -374,6 +374,9 @@ def new_action(request, action, inforequest_id):
                     u'result': u'success',
                     })
 
+        if action_type == Action.TYPES.APPEAL:
+            form.cleaned_data[u'history'].add_expiration_if_expired()
+
         action = Action(
                 effective_date=timezone.now(),
                 type=action_type,
