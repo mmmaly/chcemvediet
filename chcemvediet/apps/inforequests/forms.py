@@ -1,7 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from dateutil.relativedelta import relativedelta
+
 from django import forms
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.encoding import smart_text
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
@@ -151,6 +155,26 @@ class EffectiveDateMixin(ActionAbstractForm):
         if self.draft:
             self.fields[u'effective_date'].required = False
 
+    def clean(self):
+        cleaned_data = super(EffectiveDateMixin, self).clean()
+
+        if not self.draft:
+            history = cleaned_data.get(u'history', None)
+            effective_date = cleaned_data.get(u'effective_date', None)
+            if effective_date:
+                try:
+                    if history and effective_date < history.last_action.effective_date:
+                        raise ValidationError(_(u'May not be older than previous action.'))
+                    if effective_date > timezone.now().date():
+                        raise ValidationError(_(u'May not be from future.'))
+                    if effective_date < timezone.now().date() - relativedelta(months=1):
+                        raise ValidationError(_(u'May not be older than one month.'))
+                except ValidationError as e:
+                    self._errors[u'effective_date'] = self.error_class(e.messages)
+                    del cleaned_data[u'effective_date']
+
+        return cleaned_data
+
     def save(self, action):
         super(EffectiveDateMixin, self).save(action)
         action.effective_date = self.cleaned_data[u'effective_date']
@@ -260,25 +284,21 @@ class AdvancedToMixin(ActionAbstractForm):
     def clean(self):
         cleaned_data = super(AdvancedToMixin, self).clean()
 
-        history = cleaned_data.get(u'history', None)
-        if history:
-            for field in self.ADVANCED_TO_FIELDS:
+        if not self.draft:
+            history = cleaned_data.get(u'history', None)
+            for i, field in enumerate(self.ADVANCED_TO_FIELDS):
                 advanced_to = cleaned_data.get(field, None)
-                if advanced_to == history.obligee:
-                    msg = _(u'May not advance to the same obligee.')
-                    self._errors[field] = self.error_class([msg])
-                    del cleaned_data[field]
-
-        for i, field in enumerate(self.ADVANCED_TO_FIELDS):
-            advanced_to = cleaned_data.get(field, None)
-            if advanced_to:
-                for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
-                    advanced_to_2 = cleaned_data.get(field_2, None)
-                    if advanced_to_2 == advanced_to:
-                        msg = _(u'May not advance twice to the same obligee.')
-                        self._errors[field] = self.error_class([msg])
+                if advanced_to:
+                    try:
+                        if history and advanced_to == history.obligee:
+                            raise ValidationError(_(u'May not advance to the same obligee.'))
+                        for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
+                            advanced_to_2 = cleaned_data.get(field_2, None)
+                            if advanced_to_2 == advanced_to:
+                                raise ValidationError(_(u'May not advance twice to the same obligee.'))
+                    except ValidationError as e:
+                        self._errors[field] = self.error_class(e.messages)
                         del cleaned_data[field]
-                        break;
 
         return cleaned_data
 
