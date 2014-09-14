@@ -288,9 +288,11 @@ class AdvancedToMixin(ActionAbstractForm):
             self.initial[field] = obligee
 
 class DisclosureLevelMixin(ActionAbstractForm):
-    disclosure_level = forms.ChoiceField(
+    disclosure_level = forms.TypedChoiceField(
             label=_(u'Disclosure Level'),
             choices=[(u'', u'')] + Action.DISCLOSURE_LEVELS._choices,
+            coerce=int,
+            empty_value=None,
             )
 
     def __init__(self, *args, **kwargs):
@@ -311,9 +313,11 @@ class DisclosureLevelMixin(ActionAbstractForm):
         self.initial[u'disclosure_level'] = draft.disclosure_level
 
 class RefusalReasonMixin(ActionAbstractForm):
-    refusal_reason = forms.ChoiceField(
+    refusal_reason = forms.TypedChoiceField(
             label=_(u'Refusal Reason'),
             choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
+            coerce=int,
+            empty_value=None,
             )
 
     def __init__(self, *args, **kwargs):

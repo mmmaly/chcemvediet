@@ -397,7 +397,8 @@ class Action(models.Model):
     # Mandatory for actions that set deadline; Must be NULL otherwise. Default value is determined
     # and automaticly set in save() when creating a new object. All actions that set deadlines
     # except CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the obligee.
-    # CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the applicant.
+    # CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the applicant. DISCLOSURE
+    # sets the deadline only if not FULL.
     DEFAULT_DEADLINES = Bunch(
             # Applicant actions
             REQUEST=8,
@@ -408,7 +409,9 @@ class Action(models.Model):
             EXTENSION=10,
             ADVANCEMENT=None,
             CLARIFICATION_REQUEST=7, # Deadline for the applicant
-            DISCLOSURE=15,           # Deadline for the applicant
+            DISCLOSURE=(lambda a: 15 # Deadline for the applicant if not full disclosure
+                    if a.disclosure_level != a.DISCLOSURE_LEVELS.FULL
+                    else None),
             REFUSAL=15,              # Deadline for the applicant
             AFFIRMATION=None,
             REVERSION=None,
@@ -471,8 +474,19 @@ class Action(models.Model):
         return remaining is not None and remaining < 0
 
     @property
-    def can_extend_deadline(self):
-        return self.type in [
+    def has_applicant_deadline(self):
+        return self.deadline is not None and self.type in [
+                # Applicant actions
+                # Obligee actions
+                self.TYPES.CLARIFICATION_REQUEST,
+                self.TYPES.DISCLOSURE,
+                self.TYPES.REFUSAL,
+                # Implicit actions
+                ]
+
+    @property
+    def has_obligee_deadline(self):
+        return self.deadline is not None and self.type in [
                 # Applicant actions
                 self.TYPES.REQUEST,
                 self.TYPES.CLARIFICATION_RESPONSE,
@@ -487,9 +501,11 @@ class Action(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
+            print(self, self.deadline, self.type, self.disclosure_level)
             if self.deadline is None:
-                type = self.TYPES._inverse[self.type]
-                self.deadline = getattr(self.DEFAULT_DEADLINES, type)
+                type_name = self.TYPES._inverse[self.type]
+                deadline = getattr(self.DEFAULT_DEADLINES, type_name)
+                self.deadline = deadline(self) if callable(deadline) else deadline
         super(Action, self).save(*args, **kwargs)
 
     def send_by_email(self):

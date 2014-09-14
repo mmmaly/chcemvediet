@@ -422,7 +422,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
 
     if action != history.action_set.last():
         raise Http404
-    if not action.can_extend_deadline:
+    if not action.has_obligee_deadline:
         raise Http404
     if not action.deadline_missed:
         raise Http404
