@@ -257,6 +257,31 @@ class AdvancedToMixin(ActionAbstractForm):
             for field in self.ADVANCED_TO_FIELDS:
                 self.fields[field].required = False
 
+    def clean(self):
+        cleaned_data = super(AdvancedToMixin, self).clean()
+
+        history = cleaned_data.get(u'history', None)
+        if history:
+            for field in self.ADVANCED_TO_FIELDS:
+                advanced_to = cleaned_data.get(field, None)
+                if advanced_to == history.obligee:
+                    msg = _(u'May not advance to the same obligee.')
+                    self._errors[field] = self.error_class([msg])
+                    del cleaned_data[field]
+
+        for i, field in enumerate(self.ADVANCED_TO_FIELDS):
+            advanced_to = cleaned_data.get(field, None)
+            if advanced_to:
+                for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
+                    advanced_to_2 = cleaned_data.get(field_2, None)
+                    if advanced_to_2 == advanced_to:
+                        msg = _(u'May not advance twice to the same obligee.')
+                        self._errors[field] = self.error_class([msg])
+                        del cleaned_data[field]
+                        break;
+
+        return cleaned_data
+
     def save(self, action):
         super(AdvancedToMixin, self).save(action)
 
