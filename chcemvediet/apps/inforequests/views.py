@@ -37,7 +37,7 @@ def create(request, draft_id=None):
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'submit', u'draft'])
-        form = forms.InforequestForm(request.POST, draft=(button == u'draft'))
+        form = forms.InforequestForm(request.POST, user=request.user, draft=(button == u'draft'))
 
         if button == u'draft':
             if form.is_valid():
@@ -61,7 +61,7 @@ def create(request, draft_id=None):
                 return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.id,)))
 
     else:
-        form = forms.InforequestForm()
+        form = forms.InforequestForm(user=request.user)
         if draft:
             form.load_from_draft(draft)
 
@@ -158,7 +158,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
     if request.method == u'POST':
         action = None
         if action_type:
-            form = form_class(request.POST, inforequest=inforequest, action_type=action_type)
+            form = form_class(request.POST, user=request.user, inforequest=inforequest, action_type=action_type)
             if not form.is_valid():
                 return JsonResponse({
                         u'result': u'invalid',
@@ -190,7 +190,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest, action_type=action_type) if form_class else None
+        form = form_class(user=request.user, inforequest=inforequest, action_type=action_type) if form_class else None
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'email': receivedemail,
@@ -268,7 +268,7 @@ def add_smail(request, action, inforequest_id):
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'add', u'draft'])
-        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
+        form = form_class(request.POST, user=request.user, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -305,7 +305,7 @@ def add_smail(request, action, inforequest_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest, action_type=action_type)
+        form = form_class(user=request.user, inforequest=inforequest, action_type=action_type)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -352,7 +352,7 @@ def new_action(request, action, inforequest_id):
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'email', u'print', u'draft'] if can_email else [u'print', u'draft'])
-        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
+        form = form_class(request.POST, user=request.user, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -407,7 +407,7 @@ def new_action(request, action, inforequest_id):
         return JsonResponse(json)
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest, action_type=action_type)
+        form = form_class(user=request.user, inforequest=inforequest, action_type=action_type)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {

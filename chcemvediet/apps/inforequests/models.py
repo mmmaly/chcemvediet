@@ -4,7 +4,7 @@ import datetime
 from email.utils import formataddr
 
 from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -32,6 +32,9 @@ class InforequestDraft(models.Model):
     # May be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
+
+    # May be empty
+    attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
 
     objects = InforequestDraftQuerySet.as_manager()
 
@@ -156,6 +159,7 @@ class Inforequest(models.Model):
                         super(Inforequest, self).save(*args, **kwargs)
                     except IntegrityError:
                         if length > 10:
+                            self.unique_email = None
                             raise # Give up
                         length += 1
                         continue
@@ -400,6 +404,9 @@ class Action(models.Model):
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
+    # May be empty
+    attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
+
     # Mandatory
     effective_date = models.DateField(verbose_name=_(u'Effective Date'))
 
@@ -523,7 +530,15 @@ class Action(models.Model):
         sender_address = self.history.inforequest.unique_email
         sender_full = formataddr((squeeze(sender_name), sender_address))
         recipient_address = self.history.obligee.email
-        send_mail(self.subject, self.content, sender_full, [recipient_address])
+
+        # FIXME: Attachment name and content type are set by client and not to be trusted. The name
+        # must be sanitized and the content type white listed for known content types. Any unknown
+        # content type should be replaced with 'application/octet-stream'.
+
+        msg = EmailMessage(self.subject, self.content, sender_full, [recipient_address])
+        for attachment in self.attachment_set.all():
+            msg.attach(attachment.name, attachment.content, attachment.content_type)
+        msg.send()
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -542,6 +557,9 @@ class ActionDraft(models.Model):
     # May be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
+
+    # May be empty
+    attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
 
     # Optional
     effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))

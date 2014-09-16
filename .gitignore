@@ -2,3 +2,4 @@
 *.pyc
 env/
 media/mailbox_attachments
+media/attachments

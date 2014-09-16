@@ -21,17 +21,13 @@
 {% addtoblock "css" %}<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">{% endaddtoblock %}
 {% addtoblock "js" %}<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>{% endaddtoblock %}
 
-{# JQuery plugins #}
-{% addtoblock "js" %}<script src="{% static 'main/3part/jquery/plugins/jquery.PrintArea.js' %}"></script>{% endaddtoblock %}
+{# JQuery File Upload (Requires: jquery.ui.widget.js)  #}
+{% addtoblock "js" %}<script src="{% static 'main/3part/jqueryplugins/jquery.iframe-transport.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'main/3part/jqueryplugins/jquery.fileupload.js' %}"></script>{% endaddtoblock %}
 
-
-{% comment %}
-{% addtoblock "css" %}<link href="{% static "main/3part/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" %}" rel="stylesheet">{% endaddtoblock %}
-{% addtoblock "css" %}<link href="{% static "main/3part/bootstrap/2.3.2/css/bootstrap-combined.min.css" %}" rel="stylesheet">{% endaddtoblock %}
-{% addtoblock "js" %}<script src="{% static "main/3part/jquery/1.10.2/jquery.min.js" %}"></script>{% endaddtoblock %}
-{% addtoblock "js" %}<script src="{% static "main/3part/jqueryui/1.10.3/jquery-ui.min.js" %}"></script>{% endaddtoblock %}
-{% addtoblock "js" %}<script src="{% static "main/3part/bootstrap/2.3.2/js/bootstrap.min.js" %}"></script>{% endaddtoblock %}
-{% endcomment %}
+{# Other JQuery plugins #}
+{% addtoblock "js" %}<script src="{% static 'main/3part/jqueryplugins/jquery.cookie.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'main/3part/jqueryplugins/jquery.PrintArea.js' %}"></script>{% endaddtoblock %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en" }}">
@@ -97,6 +93,16 @@
 	.obligee_with_address_input ~ .help-inline { padding-top: 5px; }
 	.obligee_with_address_input_details { padding: 10px 0px 0px 5px; }
 	.obligee_with_address_input_hide { display: none; }
+
+	/* Bootstrap labels with links and close buttoons */
+	.label { vertical-align: middle; }
+	.label a { color: inherit; vertical-align: middle; text-decoration: none; }
+	.label a:hover { text-decoration: none; }
+	.label-close { color: #000; opacity: 0.4; padding: 0px; margin-left: 5px; background: none; border: 1px red; font-size: 20px; font-weight: bold; line-height: 20px; text-shadow: 0px 1px 0px #FFF; }
+
+	/* Form file upload button */
+	.btn-file { position: relative; overflow: hidden; }
+	.btn-file input[type=file] { position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; filter: alpha(opacity=0); opacity: 0; cursor: inherit; display: block; }
   </style>
 {% endaddtoblock %}{# }}} #}
 
@@ -294,6 +300,65 @@
 		});
 	});
 
+	/* Attaches JQuery File Upload to file inputs with class ``fileupload``.
+	 *
+	 * Attributes:
+	 *  -- data-url: URL where the files upload to.
+	 *  -- data-field: Hidden input box where to keep the list of uploaded files.
+	 *  -- data-target: Container where to show the list of uploaded files. The target should
+	 *         contain a hidden child with class ``fileupload-template`` which content will be
+	 *         used as a template for the list of uploaded files.
+	 *
+	 * Example:
+	 *     <input class="fileupload" type="file" name="files" multiple data-url="..." data-field="#field" data-target="#target">
+	 *
+	 *     <span id="target">
+	 *       <span class="fileupload-template hide">...</span>
+	 *     </span>
+	 *
+	 *     <form>
+	 *       ...
+	 *       <input id="field" type="hidden" name="...">
+	 *       ...
+	 *     </form>
+	 */
+	$(function(){
+		function attach(base){
+			$(base).find('.fileupload').not('.hasFileupload').addClass('hasFileupload').each(function(){
+				var target = $(this).data('target');
+				var field = $(this).data('field');
+				$(target).data('field', field);
+				$(this).fileupload({
+					dataType: 'json',
+					singleFileUploads: false,
+					formData: {'csrfmiddlewaretoken': $.cookie('csrftoken')},
+				})
+			});
+		};
+		$(document).on('fileuploaddone', '.fileupload', function(event, data){
+			var target = $(this).data('target');
+			var field = $(this).data('field');
+			var template = $(target).find('.fileupload-template');
+			data.result.files.forEach(function(file){
+				var label = $($(template).html());
+				$(label).data('attachment', file.id);
+				$(label).find('a').attr('href', file.url).html(file.name);
+				$(target).append(label).append(' ');
+				$(field).val($(field).val() + ',' + file.id + ',');
+			});
+		});
+		$(document).on('click', '.fileupload-label-close', function(event){
+			var label = $(this).parents('.fileupload-label');
+			var attachment = $(label).data('attachment');
+			var target = $(label).parent();
+			var field = $(target).data('field');
+			$(label).hide(300, function(){ $(this).remove(); });
+			$(field).val($(field).val().replace(','+attachment+',', ','));
+		});
+		$(document).on('dom-changed', function(event){ attach(event.target); });
+		attach(document);
+	});
+
 	/* Performs AJAX call expecting JDOT (JSON DOM Transition) response generated by
 	 * ``poleno.utils.http.Jdot``. It's a list of simple javascript snippents to transform the
 	 * page.
@@ -384,7 +449,8 @@
 
 	/* Takes data returned by an Ajax request and shows them in a modal. Then disables the Ajax
 	 * on the element and configures the modal to directly show given data on any further
-	 * clicks.
+	 * clicks. After inserting returned data into the modal, emits ``dom-changed`` event on the
+	 * modal.
 	 *
 	 * Attributes:
 	 *     ``target``: Selector of modal element where to put response data. The element should
@@ -399,8 +465,7 @@
 	$(function(){
 		function done(event, data){
 			var target = $(this).data('target');
-			$(target).html(data);
-			$(target).modal('show');
+			$(target).html(data).trigger('dom-changed').modal('show');
 			$(this).removeClass('ajax ajax-modal-once');
 			$(this).attr('data-toggle', 'modal');
 		}

@@ -40,6 +40,16 @@
       <p class="span10">{{ action.get_refusal_reason_display }}</p>
     </div>
   {% endif %}
+  {% if action.attachment_set.count %}
+    <div class="row-fluid">
+      <p class="span2 text-right">Attachments:</p>
+      <p class="span10">
+        {% for attachment in action.attachment_set.all %}
+          <a href="{% url 'attachments:download' attachment.id %}"><span class="label label-info">{{ attachment.name }}</span></a>
+        {% endfor %}
+      </p>
+    </div>
+  {% endif %}
   {% if action.content %}
     <div class="row-fluid">
       <p class="span12" style="white-space: pre-line;">{{ action.content }}</p>

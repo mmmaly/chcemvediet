@@ -11,17 +11,12 @@ from django.utils.encoding import smart_text
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
 from poleno.utils.model import after_saved
-from poleno.utils.form import AutoSuppressedSelect
+from poleno.utils.form import AutoSuppressedSelect, PrefixedForm
 from poleno.utils.misc import squeeze
+from chcemvediet.apps.attachments.forms import AttachmentsField
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
 from models import History, Action
-
-
-class PrefixedForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(PrefixedForm, self).__init__(*args, **kwargs)
-        self.prefix = u'%s%s%s' % (self.prefix or u'', u'-' if self.prefix else u'', self.__class__.__name__.lower())
 
 
 class InforequestForm(PrefixedForm):
@@ -47,10 +42,17 @@ class InforequestForm(PrefixedForm):
                 u'class': u'input-block-level',
                 }),
             )
+    attachments = AttachmentsField(
+            label=_(u'Attachments'),
+            required=False,
+            )
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop(u'user')
         self.draft = kwargs.pop(u'draft', False)
         super(InforequestForm, self).__init__(*args, **kwargs)
+
+        self.fields[u'attachments'].owner = self.user
 
         if self.draft:
             self.fields[u'obligee'].required = False
@@ -78,6 +80,8 @@ class InforequestForm(PrefixedForm):
                     )
             action.save()
 
+            action.attachment_set = self.cleaned_data[u'attachments']
+
     def save_to_draft(self, draft):
         if not self.is_valid():
             raise ValueError
@@ -86,10 +90,15 @@ class InforequestForm(PrefixedForm):
         draft.subject = self.cleaned_data[u'subject']
         draft.content = self.cleaned_data[u'content']
 
+        @after_saved(draft)
+        def deferred():
+            draft.attachment_set = self.cleaned_data[u'attachments']
+
     def load_from_draft(self, draft):
         self.initial[u'obligee'] = draft.obligee
         self.initial[u'subject'] = draft.subject
         self.initial[u'content'] = draft.content
+        self.initial[u'attachments'] = draft.attachment_set.all()
 
 
 class ActionAbstractForm(PrefixedForm):
@@ -102,6 +111,7 @@ class ActionAbstractForm(PrefixedForm):
             )
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop(u'user')
         self.inforequest = kwargs.pop(u'inforequest')
         self.action_type = kwargs.pop(u'action_type')
         self.draft = kwargs.pop(u'draft', False)
@@ -224,6 +234,35 @@ class SubjectContentMixin(ActionAbstractForm):
         self.initial[u'subject'] = draft.subject
         self.initial[u'content'] = draft.content
 
+class AttachmentsMixin(ActionAbstractForm):
+    attachments = AttachmentsField(
+            label=_(u'Attachments'),
+            required=False,
+            )
+
+    def __init__(self, *args, **kwargs):
+        super(AttachmentsMixin, self).__init__(*args, **kwargs)
+
+        self.fields[u'attachments'].owner = self.user
+
+    def save(self, action):
+        super(AttachmentsMixin, self).save(action)
+
+        @after_saved(action)
+        def deferred():
+            action.attachment_set = self.cleaned_data[u'attachments']
+
+    def save_to_draft(self, draft):
+        super(AttachmentsMixin, self).save_to_draft(draft)
+
+        @after_saved(draft)
+        def deferred():
+            draft.attachment_set = self.cleaned_data[u'attachments']
+
+    def load_from_draft(self, draft):
+        super(AttachmentsMixin, self).load_from_draft(draft)
+        self.initial[u'attachments'] = draft.attachment_set.all()
+
 class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
             label=_(u'New Deadline'),
@@ -329,11 +368,9 @@ class AdvancedToMixin(ActionAbstractForm):
 
         @after_saved(draft)
         def deferred():
-            draft.obligee_set.clear()
-            for field in self.ADVANCED_TO_FIELDS:
-                obligee = self.cleaned_data[field]
-                if obligee:
-                    draft.obligee_set.add(obligee)
+            draft.obligee_set = [self.cleaned_data[f]
+                    for f in self.ADVANCED_TO_FIELDS
+                    if self.cleaned_data[f]]
 
     def load_from_draft(self, draft):
         super(AdvancedToMixin, self).load_from_draft(draft)
@@ -413,7 +450,7 @@ class RefusalEmailForm(DecideEmailCommonForm, RefusalReasonMixin):
     pass
 
 
-class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, ActionAbstractForm):
+class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, AttachmentsMixin, ActionAbstractForm):
     def clean(self):
         cleaned_data = super(AddSmailCommonForm, self).clean()
 
@@ -454,7 +491,7 @@ class RemandmentSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
     pass
 
 
-class NewActionCommonForm(SubjectContentMixin, ActionAbstractForm):
+class NewActionCommonForm(SubjectContentMixin, AttachmentsMixin, ActionAbstractForm):
     def clean(self):
         cleaned_data = super(NewActionCommonForm, self).clean()
 

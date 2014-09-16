@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import random
+import string
 
 class Bunch(object):
     u"""
@@ -16,6 +17,12 @@ class Bunch(object):
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+
+def random_string(length, chars=(string.ascii_letters + string.digits)):
+    u"""
+    Returns a random string ``length`` characters long consisting of ``chars``.
+    """
+    return u''.join(random.choice(chars) for i in xrange(length))
 
 def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprstvxz'):
     u"""
