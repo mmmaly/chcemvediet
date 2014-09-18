@@ -31,7 +31,7 @@ class SignupForm(forms.Form):
             regex=r'^\d{5}$',
             )
 
-    def save(self, user):
+    def signup(self, request, user):
         user.first_name = self.cleaned_data[u'first_name']
         user.last_name = self.cleaned_data[u'last_name']
         user.save()
