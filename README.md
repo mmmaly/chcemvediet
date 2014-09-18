@@ -60,23 +60,23 @@ If `migrate` fails, try to run it once or twice again. Sometimes it helps.
     	$ cd chcemvediet
     	$ env/bin/python manage.py runserver
 
- 2. Run testing mail infrastructure in another shell (see details in the next section):
+ 2. Run testing mail infrastructure in another shell (see details below):
 
     	$ cd chcemvediet
     	$ env/bin/python manage.py dummymail
 
- 3. Navigate your browser to: http://127.0.0.1:8000/admin/socialaccount/socialapp/ and login as
+ 3. Run testing cronserver in yet another shell:
+
+    	$ cd chcemvediet
+    	$ env/bin/python manage.py cronserver
+
+ 4. Navigate your browser to: http://127.0.0.1:8000/admin/socialaccount/socialapp/ and login as
     `admin` with password `kalerab`. Then click on 'Google OAuth' and enter your Google Apps
     'Client id' and 'Secret'. Similarly enter your secrets for LinkedIn, Twitter and Facebook.
     Don't forget to logout the admin interface afterwards. See bellow, how to get social accounts
     application keys.
 
- 4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
-
- 5. To process received e-mails use (we will make it a cron job in the future):
-
-    	$ cd chcemvediet
-    	$ env/bin/python manage.py getmail
+ 5. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 
 
 ### 1.5. Contributing

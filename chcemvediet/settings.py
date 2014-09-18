@@ -11,7 +11,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # (u'Your Name', u'your_email@example.com'),
+    (u'Admin', u'admin@chcemvediet.sk'),
 )
 
 MANAGERS = ADMINS
@@ -167,9 +167,11 @@ INSTALLED_APPS = (
     u'sekizai',
     u'django_mailbox',
     u'adminplus',
+    u'django_cron',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
+    u'poleno.cron',
     # Local to the project
     u'chcemvediet.apps.attachments',
     u'chcemvediet.apps.accounts',
@@ -248,3 +250,7 @@ FORMAT_MODULE_PATH = u'chcemvediet.locale'
 # Where to look for holidays definition
 HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 
+# Cron jobs
+CRON_CLASSES = (
+    u'chcemvediet.cron.get_mail',
+)

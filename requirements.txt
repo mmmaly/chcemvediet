@@ -8,6 +8,7 @@ django-hvad==0.4.1
 django-sekizai==0.7
 django-mailbox==3.3 # version 3.4 has broken IMAP
 django-adminplus==0.3
+django-cron==0.3.4
 South==1.0
 
 # Requirements for local testing
@@ -22,6 +23,7 @@ requests==2.3.0
 requests-oauthlib==0.4.1
 six==1.7.3
 zope.interface==4.1.1
+django-common-helpers==0.6.2
 
 # The following packages were installed 'virtualenv env' directly
 # argparse==1.2.1
