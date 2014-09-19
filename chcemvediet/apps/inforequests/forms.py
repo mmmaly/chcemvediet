@@ -1,11 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import datetime
 from dateutil.relativedelta import relativedelta
 
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.encoding import smart_text
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
@@ -172,13 +172,12 @@ class EffectiveDateMixin(ActionAbstractForm):
             history = cleaned_data.get(u'history', None)
             effective_date = cleaned_data.get(u'effective_date', None)
             if effective_date:
-                today = timezone.localtime(timezone.now()).date()
                 try:
                     if history and effective_date < history.last_action.effective_date:
                         raise ValidationError(_(u'May not be older than previous action.'))
-                    if effective_date > today:
+                    if effective_date > datetime.date.today():
                         raise ValidationError(_(u'May not be from future.'))
-                    if effective_date < today - relativedelta(months=1):
+                    if effective_date < datetime.date.today() - relativedelta(months=1):
                         raise ValidationError(_(u'May not be older than one month.'))
                 except ValidationError as e:
                     self._errors[u'effective_date'] = self.error_class(e.messages)
