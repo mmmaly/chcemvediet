@@ -172,12 +172,13 @@ class EffectiveDateMixin(ActionAbstractForm):
             history = cleaned_data.get(u'history', None)
             effective_date = cleaned_data.get(u'effective_date', None)
             if effective_date:
+                today = timezone.localtime(timezone.now()).date()
                 try:
                     if history and effective_date < history.last_action.effective_date:
                         raise ValidationError(_(u'May not be older than previous action.'))
-                    if effective_date > timezone.now().date():
+                    if effective_date > today:
                         raise ValidationError(_(u'May not be from future.'))
-                    if effective_date < timezone.now().date() - relativedelta(months=1):
+                    if effective_date < today - relativedelta(months=1):
                         raise ValidationError(_(u'May not be older than one month.'))
                 except ValidationError as e:
                     self._errors[u'effective_date'] = self.error_class(e.messages)
