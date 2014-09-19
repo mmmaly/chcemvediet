@@ -3,20 +3,78 @@
 import time as time_orig
 import datetime as datetime_orig
 
-# Timestamps
-warped_from = None
-warped_to = None
-speedup = 1
+timewarp = None
 
+class Timewarp(object):
+    def __init__(self):
+        from django.core.cache import cache as _cache
+        self._cache = _cache
+        self._recursive = False
+        self._lastupdate = None
+        self._warped_from = None
+        self._warped_to = None
+        self._speedup = 1
 
-def _warped_time_time():
-    res = time_orig.time()
-    if warped_from is not None:
-        res = warped_to + (res - warped_from) * speedup
-    return res
+    def _update(self):
+        if self._recursive:
+            return
+        if self._lastupdate and self._lastupdate + 1 > time_orig.time():
+            return
+        self._recursive = True
+        self._warped_from = self._cache.get(u'timewarp.warped_from')
+        self._warped_to = self._cache.get(u'timewarp.warped_to')
+        self._speedup = self._cache.get(u'timewarp.speedup', 1)
+        self._recursive = False
+        self._lastupdate = time_orig.time()
+
+    @property
+    def warped_from(self):
+        self._update()
+        return self._warped_from
+
+    @property
+    def warped_to(self):
+        self._update()
+        return self._warped_to
+
+    @property
+    def speedup(self):
+        self._update()
+        return self._speedup
+
+    @property
+    def is_warped(self):
+        return self.warped_from is not None and self.warped_to is not None
+
+    @property
+    def real_time(self):
+        return time_orig.time()
+
+    @property
+    def warped_time(self):
+        if self.is_warped:
+            return self.warped_to + (self.real_time - self.warped_from) * self.speedup
+        return self.real_time
+
+    def jump(self, date=None, speed=None):
+        self._cache.set_many({
+            u'timewarp.warped_from': self.real_time,
+            u'timewarp.warped_to': time_orig.mktime(date.timetuple()) if date is not None else self.warped_time,
+            u'timewarp.speedup': speed if speed is not None else self.speedup,
+            }, timeout=None)
+        self._lastupdate = None
+
+    def reset(self):
+        self._cache.delete_many([u'timewarp.warped_from', u'timewarp.warped_to', u'timewarp.speedup'])
+        self._lastupdate = None
+
 
 def _meta_factory(cls):
     class Meta(cls.__class__):
+        def __init__(self, *args, **kwargs):
+            cls.__class__.__init__(self, *args, **kwargs)
+            self.__module__ = cls.__module__
+
         def __instancecheck__(self, instance):
             return isinstance(instance, cls)
 
@@ -36,19 +94,19 @@ class _WarpedTime(object):
     @classmethod
     def ctime(cls, secs=None):
         if secs is None:
-            secs = _warped_time_time()
+            secs = warped_time()
         return time_orig.ctime(secs)
 
     @classmethod
     def gmtime(cls, secs=None):
         if secs is None:
-            secs = _warped_time_time()
+            secs = warped_time()
         return time_orig.gmtime(secs)
 
     @classmethod
     def localtime(cls, secs=None):
         if secs is None:
-            secs = _warped_time_time()
+            secs = warped_time()
         return time_orig.localtime(secs)
 
     @classmethod
@@ -59,7 +117,7 @@ class _WarpedTime(object):
 
     @classmethod
     def time(cls):
-        return _warped_time_time()
+        return warped_time()
 
     def __getattr__(self, attr):
         return getattr(time_orig, attr)
@@ -69,24 +127,30 @@ class _WarpedDatetime(object):
     class date(datetime_orig.date):
         __metaclass__ = _meta_factory(datetime_orig.date)
 
+        def __new__(cls, *args, **kwargs):
+            return datetime_orig.date(*args, **kwargs)
+
         @classmethod
         def today(cls):
-            return datetime_orig.datetime.fromtimestamp(_warped_time_time()).date()
+            return datetime_orig.datetime.fromtimestamp(warped_time()).date()
 
     class datetime(datetime_orig.datetime):
         __metaclass__ = _meta_factory(datetime_orig.datetime)
 
+        def __new__(cls, *args, **kwargs):
+            return datetime_orig.datetime(*args, **kwargs)
+
         @classmethod
         def today(cls):
-            return datetime_orig.datetime.fromtimestamp(_warped_time_time())
+            return datetime_orig.datetime.fromtimestamp(warped_time())
 
         @classmethod
         def now(cls, tz=None):
-            return datetime_orig.datetime.fromtimestamp(_warped_time_time(), tz)
+            return datetime_orig.datetime.fromtimestamp(warped_time(), tz)
 
         @classmethod
         def utcnow(cls):
-            return datetime_orig.datetime.utcfromtimestamp(_warped_time_time())
+            return datetime_orig.datetime.utcfromtimestamp(warped_time())
 
     def __getattr__(self, attr):
         return getattr(datetime_orig, attr)
@@ -96,8 +160,11 @@ def init():
     import os
     import sys
     import warnings
+    import copy_reg
     from django.utils.importlib import import_module
 
+    # We may not import ``django.conf.settings`` because this would initialize ``timezone`` as
+    # well. But we need ``timezone`` to be initialized only after ``datetime`` module is wrapped.
     env_name = u'DJANGO_SETTINGS_MODULE'
     try:
         settings_path = os.environ[env_name]
@@ -115,27 +182,14 @@ def init():
     if settings.DEBUG:
         sys.modules[u'time'] = _WarpedTime()
         sys.modules[u'datetime'] = _WarpedDatetime()
+        copy_reg.pickle(datetime_orig.date, lambda d: (_WarpedDatetime.date,) + d.__reduce__()[1:])
+        copy_reg.pickle(datetime_orig.datetime, lambda d: (_WarpedDatetime.datetime,) + d.__reduce__()[1:])
 
-def jump(date=None, speed=None):
-    global warped_from, warped_to, speedup
+        global timewarp
+        timewarp = Timewarp()
 
-    # ``warped_to`` must be set before ``warped_from``
-    warped_to = time_orig.mktime(date.timetuple()) if date is not None else _warped_time_time()
-    warped_from = time_orig.time()
-    speedup = speed if speed is not None else speedup
-
-def reset():
-    global warped_from, warped_to, speedup
-
-    warped_from = None
-    warped_to = None
-    speedup = 1
-
-def is_warped():
-    return warped_from is not None
-
-def time_real():
+def real_time():
     return time_orig.time()
 
-def time_warped():
-    return _warped_time_time()
+def warped_time():
+    return timewarp.warped_time if timewarp else time_orig.time()

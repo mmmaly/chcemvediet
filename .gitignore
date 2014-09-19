@@ -1,5 +1,6 @@
 *.db
 *.pyc
 env/
+cache/
 media/mailbox_attachments
 media/attachments

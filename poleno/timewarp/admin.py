@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.form import clean_button
 
-import timewarp
+from timewarp import timewarp
 import forms
 
 @admin.site.register_view(u'timewarp/', name=_(u'Timewarp'), urlname=u'timewarp')
@@ -34,10 +34,7 @@ def index(request):
         form = forms.WarpForm()
 
     return render(request, u'timewarp/timewarp.html', {
-            u'is_warped': timewarp.is_warped(),
-            u'time_real': timewarp.time_real(),
-            u'time_warped': timewarp.time_warped(),
-            u'speedup': timewarp.speedup,
+            u'timewarp': timewarp,
             u'form': form,
             u'title': _(u'Timewarp'),
             })

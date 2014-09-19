@@ -213,6 +213,14 @@ LOGGING = {
     }
 }
 
+# FIXME: We should probably use memcache on production environment
+CACHES = {
+    u'default': {
+        u'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        u'LOCATION': os.path.join(PROJECT_PATH, u'cache'),
+    },
+}
+
 # E-mail configuration
 EMAIL_BACKEND = u'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = u'localhost'

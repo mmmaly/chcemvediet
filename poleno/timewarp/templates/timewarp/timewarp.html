@@ -5,11 +5,8 @@
 {% comment %}
  %
  % Context:
- %  -- is_warped; bool
- %  -- time_real: float (timestamp)
- %  -- time_warped: float (timestamp)
- %  -- speedup: float
- %  -- form: poleno.utils.timewarp.forms.WarpForm
+ %  -- timewarp: poleno.timewarp.timewarp.Timewarp
+ %  -- form: poleno.timewarp.forms.WarpForm
  %  -- title: string
  %
 {% endcomment %}
@@ -55,10 +52,10 @@
 {% endblock %}
 
 {% block content %}
-  <p>Real time: <span class="timewarp" data-timestamp="{{ time_real|stringformat:"f" }}"></span></p>
-  {% if is_warped %}
-    <p>Warped time: <span class="timewarp" data-timestamp="{{ time_warped|stringformat:"f" }}" data-speedup="{{ speedup|stringformat:"f" }}"></span></p>
-    <p>Speedup: {{ speedup }}x</p>
+  <p>Real time: <span class="timewarp" data-timestamp="{{ timewarp.real_time|stringformat:"f" }}"></span></p>
+  {% if timewarp.is_warped %}
+    <p>Warped time: <span class="timewarp" data-timestamp="{{ timewarp.warped_time|stringformat:"f" }}" data-speedup="{{ timewarp.speedup|stringformat:"f" }}"></span></p>
+    <p>Speedup: {{ timewarp.speedup }}x</p>
   {% else %}
     <p>Warped time: &mdash;</p>
     <p>Speedup: &mdash;</p>

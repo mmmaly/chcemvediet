@@ -6,6 +6,9 @@ from optparse import make_option
 
 from django.core.management import call_command
 from django.core.management.base import NoArgsCommand
+from django.utils import timezone
+
+from django_cron.models import CronJobLog
 
 class Command(NoArgsCommand):
     default_interval = 60
@@ -24,6 +27,10 @@ class Command(NoArgsCommand):
 
         try:
             while True:
+                # If we are timewarping, we may encounter cron logs from future. We must remove
+                # them, otherwise django_cron won't run any jobs with logs from furure.
+                CronJobLog.objects.filter(end_time__gt=timezone.now()).delete()
+
                 call_command(u'runcrons')
                 time.sleep(interval)
         except KeyboardInterrupt:
