@@ -1,0 +1,22 @@
+{# vim: set filetype=django :#}
+{% load squeeze from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- decide_url: string
+ %
+{% endcomment %}
+
+{% autoescape off %}
+{% filter squeeze %}
+You have {{ inforequest.receivedemail_set.undecided.count }} e-mails regarding your inforequest to
+{{ inforequest.history.obligee_name }} waiting for your decision. The last of them was received on
+{{ inforequest.newest_waiting_email.received_date }}.
+{% endfilter %}
+
+{% filter squeeze %}
+To read the e-mails and decide what they are, go to {{ decide_url }}
+{% endfilter %}
+{% endautoescape %}

@@ -66,6 +66,9 @@ class Inforequest(models.Model):
     # Mandatory; Automaticly computed by Django when creating a new object.
     submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
+    # Optional; Used by ``cron.undecided_email_reminder``
+    last_undecided_email_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Undecided Email Reminder'))
+
     # Backward relation:
     #
     #  -- history_set: by History.inforequest
@@ -89,6 +92,14 @@ class Inforequest(models.Model):
     @property
     def has_waiting_email(self):
         return self.receivedemail_set.undecided().exists()
+
+    @property
+    def oldest_waiting_email(self):
+        return self.receivedemail_set.undecided().first()
+
+    @property
+    def newest_waiting_email(self):
+        return self.receivedemail_set.undecided().last()
 
     @property
     def can_add_clarification_response(self):
@@ -166,6 +177,32 @@ class Inforequest(models.Model):
                     return # object is already saved
 
         super(Inforequest, self).save(*args, **kwargs)
+
+    def send_received_email_notification(self, receivedemail):
+        decide_url = u'http://127.0.0.1:8000%s#decide' % reverse(u'inforequests:detail', args=(self.id,))
+        msg = render_mail(u'inforequests/mails/received_email_notification',
+                from_email=u'info@chcemvediet.sk',
+                to=[self.applicant.email],
+                dictionary={
+                    u'receivedemail': receivedemail,
+                    u'inforequest': self,
+                    u'decide_url': decide_url,
+                    })
+        msg.send()
+
+    def send_undecided_email_reminder(self):
+        decide_url = u'http://127.0.0.1:8000%s#decide' % reverse(u'inforequests:detail', args=(self.id,))
+        msg = render_mail(u'inforequests/mails/undecided_email_reminder',
+                from_email=u'info@chcemvediet.sk',
+                to=[self.applicant.email],
+                dictionary={
+                    u'inforequest': self,
+                    u'decide_url': decide_url,
+                    })
+        msg.send()
+
+        self.last_undecided_email_reminder = timezone.now()
+        self.save()
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -355,6 +392,32 @@ class ReceivedEmail(models.Model):
 
     class Meta:
         ordering = [u'raw_email__processed', u'pk']
+
+    @property
+    def received_datetime(self):
+        u""" Aware datetime """
+        return self.raw_email.processed
+
+    @property
+    def received_date(self):
+        u""" Naive local date """
+        return timezone.localtime(self.raw_email.processed).date()
+
+    @property
+    def from_header(self):
+        return self.raw_email.from_header
+
+    @property
+    def to_header(self):
+        return self.raw_email.to_header
+
+    @property
+    def subject(self):
+        return self.raw_email.subject
+
+    @property
+    def content(self):
+        return self.raw_email.text
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -589,6 +652,7 @@ class ActionDraft(models.Model):
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
     try:
+        activate(u'en') # We need to select active locale ('en-us' is selected by default)
         receivedemail = ReceivedEmail(raw_email=message)
         try:
             inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
@@ -600,17 +664,7 @@ def assign_email_on_message_received(sender, message, **kwargs):
         receivedemail.save()
 
         if receivedemail.inforequest:
-            activate(u'en') # We need to select active locale ('en-us' is selected by default)
-            decide_url = u'http://127.0.0.1:8000%s#decide' % reverse(u'inforequests:detail', args=(receivedemail.inforequest.id,))
-            msg = render_mail(u'inforequests/mails/new_mail_notification',
-                    from_email=u'info@chcemvediet.sk',
-                    to=[receivedemail.inforequest.applicant.email],
-                    dictionary={
-                        u'receivedemail': receivedemail,
-                        u'inforequest': receivedemail.inforequest,
-                        u'decide_url': decide_url,
-                        })
-            msg.send()
+            receivedemail.inforequest.send_received_email_notification(receivedemail)
     except Exception as e:
         print(e)
         raise

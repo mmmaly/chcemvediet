@@ -261,4 +261,5 @@ HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 # Cron jobs
 CRON_CLASSES = (
     u'chcemvediet.cron.get_mail',
+    u'chcemvediet.apps.inforequests.cron.undecided_email_reminder'
 )

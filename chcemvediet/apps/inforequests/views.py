@@ -169,9 +169,9 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
                             }),
                         })
             action = Action(
-                    subject=receivedemail.raw_email.subject,
-                    content=receivedemail.raw_email.text,
-                    effective_date=receivedemail.raw_email.processed,
+                    subject=receivedemail.subject,
+                    content=receivedemail.content,
+                    effective_date=receivedemail.received_date,
                     receivedemail=receivedemail,
                     type=action_type,
                     )

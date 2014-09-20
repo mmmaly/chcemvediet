@@ -1,0 +1,13 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- decide_url: string
+ %
+{% endcomment %}
+
+{% autoescape off %}
+Waiting E-mail Reminder
+{% endautoescape %}
