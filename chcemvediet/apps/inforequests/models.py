@@ -560,6 +560,35 @@ class Action(models.Model):
         ordering = [u'effective_date', u'pk']
 
     @property
+    def is_applicant_action(self):
+        return self.type in [
+                self.TYPES.REQUEST,
+                self.TYPES.CLARIFICATION_RESPONSE,
+                self.TYPES.APPEAL,
+                ]
+
+    @property
+    def is_obligee_action(self):
+        return self.type in [
+                self.TYPES.CONFIRMATION,
+                self.TYPES.EXTENSION,
+                self.TYPES.ADVANCEMENT,
+                self.TYPES.CLARIFICATION_REQUEST,
+                self.TYPES.DISCLOSURE,
+                self.TYPES.REFUSAL,
+                self.TYPES.AFFIRMATION,
+                self.TYPES.REVERSION,
+                self.TYPES.REMANDMENT,
+                ]
+
+    @property
+    def is_implicit_action(self):
+        return self.type in [
+                self.TYPES.ADVANCED_REQUEST,
+                self.TYPES.EXPIRATION,
+                ]
+
+    @property
     def days_passed(self):
         return self.days_passed_at(datetime.date.today())
 
@@ -620,7 +649,9 @@ class Action(models.Model):
         return remaining is not None and remaining < 0
 
     def send_by_email(self):
-        # FIXME: We should assert, this is an Applicant Action!
+        if not self.is_applicant_action:
+            raise TypeError
+
         sender_name = self.history.inforequest.applicant_name
         sender_address = self.history.inforequest.unique_email
         sender_full = formataddr((squeeze(sender_name), sender_address))
