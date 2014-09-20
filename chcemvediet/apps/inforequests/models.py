@@ -208,12 +208,20 @@ class Inforequest(models.Model):
         self.last_undecided_email_reminder = timezone.now()
         self.save()
 
-    def send_obligee_deadline_expiration_reminder(self, action):
-        self._send_notification(u'inforequests/mails/obligee_deadline_expiration_reminder', u'action-%s' % action.pk, {
+    def send_obligee_deadline_reminder(self, action):
+        self._send_notification(u'inforequests/mails/obligee_deadline_reminder', u'action-%s' % action.pk, {
                 u'action': action,
                 })
 
-        action.last_deadline_expiration_reminder = timezone.now()
+        action.last_deadline_reminder = timezone.now()
+        action.save()
+
+    def send_applicant_deadline_reminder(self, action):
+        self._send_notification(u'inforequests/mails/applicant_deadline_reminder', u'action-%s' % action.pk, {
+                u'action': action,
+                })
+
+        action.last_deadline_reminder = timezone.now()
         action.save()
 
     def __unicode__(self):
@@ -538,8 +546,8 @@ class Action(models.Model):
             )
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
-    # Optional; Used by ``cron.obligee_deadline_expiration_reminder``
-    last_deadline_expiration_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Deadline Expiration Reminder'))
+    # Optional; Used by ``cron.obligee_deadline_reminder``
+    last_deadline_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Deadline Reminder'))
 
     # Backward relations:
     #

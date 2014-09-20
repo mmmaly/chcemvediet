@@ -5,10 +5,10 @@
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- action: chcemvediet.apps.inforequests.models.Action
- %  -- decide_url: string
+ %  -- url: string
  %
 {% endcomment %}
 
 {% autoescape off %}
-Obligee Deadline Expiration Reminder
+Obligee Deadline Reminder
 {% endautoescape %}

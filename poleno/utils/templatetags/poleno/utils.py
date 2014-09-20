@@ -22,6 +22,20 @@ def subtract(value, arg):
     """
     return value - arg
 
+@register.filter
+def negate(value):
+    u"""
+    Negating (i.e. multiplying by -1) variable in Django templates.
+
+    Example:
+        {% if value > 0 %}
+          add {{ value }}
+        {% else %}
+          substract {{ value|negate }}
+        {% endif %}
+    """
+    return -value
+
 @register.filter(name=u'range')
 def range_(a, b):
     u"""
