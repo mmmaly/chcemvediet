@@ -13,7 +13,7 @@
 {% filter squeeze %}
 You have {{ inforequest.receivedemail_set.undecided.count }} e-mails regarding your inforequest to
 {{ inforequest.history.obligee_name }} waiting for your decision. The last of them was received on
-{{ inforequest.newest_waiting_email.received_date }}.
+{{ inforequest.newest_undecided_email.received_date }}.
 {% endfilter %}
 
 {% filter squeeze %}

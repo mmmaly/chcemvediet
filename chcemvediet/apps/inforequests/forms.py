@@ -455,11 +455,11 @@ class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, AttachmentsMix
         cleaned_data = super(AddSmailCommonForm, self).clean()
 
         if not self.draft:
-            if self.inforequest.has_waiting_email:
-                msg = squeeze(render_to_string(u'inforequests/messages/add_smail-waiting_emails.txt', {
+            if self.inforequest.has_undecided_email:
+                msg = squeeze(render_to_string(u'inforequests/messages/add_smail-undecided_emails.txt', {
                         u'inforequest': self.inforequest,
                         }))
-                raise forms.ValidationError(msg, code=u'waiting_emails')
+                raise forms.ValidationError(msg, code=u'undecided_emails')
 
         return cleaned_data
 
@@ -496,11 +496,11 @@ class NewActionCommonForm(SubjectContentMixin, AttachmentsMixin, ActionAbstractF
         cleaned_data = super(NewActionCommonForm, self).clean()
 
         if not self.draft:
-            if self.inforequest.has_waiting_email:
-                msg = squeeze(render_to_string(u'inforequests/messages/new_action-waiting_emails.txt', {
+            if self.inforequest.has_undecided_email:
+                msg = squeeze(render_to_string(u'inforequests/messages/new_action-undecided_emails.txt', {
                         u'inforequest': self.inforequest,
                         }))
-                raise forms.ValidationError(msg, code=u'waiting_emails')
+                raise forms.ValidationError(msg, code=u'undecided_emails')
 
         return cleaned_data
 

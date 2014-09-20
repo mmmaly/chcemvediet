@@ -49,6 +49,10 @@ class InforequestDraft(models.Model):
 class InforequestQuerySet(QuerySet):
     def owned_by(self, user):
         return self.filter(applicant=user)
+    def with_undecided_email(self):
+        return self.filter(receivedemail__status=ReceivedEmail.STATUSES.UNDECIDED).distinct()
+    def without_undecided_email(self):
+        return self.exclude(receivedemail__status=ReceivedEmail.STATUSES.UNDECIDED)
 
 class Inforequest(models.Model):
     # Mandatory
@@ -92,15 +96,15 @@ class Inforequest(models.Model):
         return self.history_set.get(advanced_by=None)
 
     @property
-    def has_waiting_email(self):
+    def has_undecided_email(self):
         return self.receivedemail_set.undecided().exists()
 
     @property
-    def oldest_waiting_email(self):
+    def oldest_undecided_email(self):
         return self.receivedemail_set.undecided().first()
 
     @property
-    def newest_waiting_email(self):
+    def newest_undecided_email(self):
         return self.receivedemail_set.undecided().last()
 
     @property

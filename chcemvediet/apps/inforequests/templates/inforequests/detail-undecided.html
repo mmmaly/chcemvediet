@@ -16,12 +16,12 @@
       for your decision. First decide the above e-mail and then the rest. You must decide them
       in the order they were received.{% endblocktrans %}
     </p>
-    <p><button class="btn" data-toggle="collapse" data-target="#waiting-collapse">{% blocktrans %}Show them{% endblocktrans %}</button></p>
+    <p><button class="btn" data-toggle="collapse" data-target="#undecided-collapse">{% blocktrans %}Show them{% endblocktrans %}</button></p>
   </div>
-  <div id="waiting-collapse" class="collapse">
+  <div id="undecided-collapse" class="collapse">
     {% for email in inforequest.receivedemail_set.undecided %}
       {% if forloop.counter >= 2 %}
-        <div id="waiting-{{ email.id }}" class="waiting well">
+        <div id="undecided-{{ email.id }}" class="undecided well">
           {% include "inforequests/detail-email.html" with inforequest=inforequest email=email %}
         </div>
       {% endif %}

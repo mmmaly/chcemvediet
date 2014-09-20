@@ -259,7 +259,7 @@ def add_smail(request, action, inforequest_id):
         raise Http404
 
     if request.method != u'POST': # The user cas save a draft even if he may not submit.
-        if inforequest.has_waiting_email:
+        if inforequest.has_undecided_email:
             raise Http404
         if not inforequest.can_add_action(action_type):
             raise Http404
@@ -343,7 +343,7 @@ def new_action(request, action, inforequest_id):
         raise Http404
 
     if request.method != u'POST': # The user cas save a draft even if he may not submit.
-        if inforequest.has_waiting_email:
+        if inforequest.has_undecided_email:
             raise Http404
         if not inforequest.can_add_action(action_type):
             raise Http404
@@ -429,7 +429,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
         raise Http404
     if not action.deadline_missed:
         raise Http404
-    if inforequest.has_waiting_email:
+    if inforequest.has_undecided_email:
         raise Http404
 
     if request.method == u'POST':

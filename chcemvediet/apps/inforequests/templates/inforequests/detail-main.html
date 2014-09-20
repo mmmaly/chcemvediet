@@ -12,12 +12,12 @@
 <div id="request">
   {% include "inforequests/detail-request.html" with inforequest=inforequest %}
 </div>
-{% if inforequest.has_waiting_email %}
+{% if inforequest.has_undecided_email %}
   <div id="decide">
     {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first %}
   </div>
-  <div id="waiting">
-    {% include "inforequests/detail-waiting.html" with inforequest=inforequest %}
+  <div id="undecided">
+    {% include "inforequests/detail-undecided.html" with inforequest=inforequest %}
   </div>
 {% else %}
   <div id="add-smail">

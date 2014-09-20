@@ -10,13 +10,11 @@ from poleno.utils.translation import translation
 
 from models import Inforequest
 
-@cron_job(run_at_times=[u'09:00'])
+@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
 def undecided_email_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.all():
-            email = inforequest.newest_waiting_email
-            if not email:
-                continue
+        for inforequest in Inforequest.objects.with_undecided_email():
+            email = inforequest.newest_undecided_email
             last = inforequest.last_undecided_email_reminder
             if last and last > email.received_datetime:
                 continue
