@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from poleno.utils.form import clean_button
+from poleno.utils.forms import clean_button
 
 from timewarp import timewarp
 import forms

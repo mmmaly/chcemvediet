@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from poleno.utils.model import QuerySet
+from poleno.utils.models import QuerySet
 from poleno.utils.misc import random_string
 
 class AttachmentQuerySet(QuerySet):

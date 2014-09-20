@@ -13,7 +13,7 @@ from allauth.account.decorators import verified_email_required
 from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.misc import Bunch
-from poleno.utils.form import clean_button
+from poleno.utils.forms import clean_button
 from chcemvediet.apps.obligees.models import Obligee
 
 from models import Inforequest, InforequestDraft, Action, ActionDraft

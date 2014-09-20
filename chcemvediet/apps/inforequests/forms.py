@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.encoding import smart_text
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
-from poleno.utils.model import after_saved
-from poleno.utils.form import AutoSuppressedSelect, PrefixedForm
+from poleno.utils.models import after_saved
+from poleno.utils.forms import AutoSuppressedSelect, PrefixedForm
 from poleno.utils.misc import squeeze
 from chcemvediet.apps.attachments.forms import AttachmentsField
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField

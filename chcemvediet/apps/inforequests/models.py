@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django_mailbox.signals import message_received
 
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
-from poleno.utils.model import FieldChoices, QuerySet
+from poleno.utils.models import FieldChoices, QuerySet
 from poleno.utils.mail import render_mail
 from poleno.utils.translation import translation
 from poleno.workdays import workdays
