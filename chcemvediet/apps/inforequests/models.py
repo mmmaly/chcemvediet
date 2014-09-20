@@ -7,8 +7,9 @@ from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models, IntegrityError
 from django.dispatch import receiver
+from django.conf import settings
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, activate
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from django_mailbox.signals import message_received
@@ -16,6 +17,7 @@ from django_mailbox.signals import message_received
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
 from poleno.utils.model import FieldChoices, QuerySet
 from poleno.utils.mail import render_mail
+from poleno.utils.translation import translation
 from poleno.workdays import workdays
 
 class InforequestDraftQuerySet(QuerySet):
@@ -652,7 +654,6 @@ class ActionDraft(models.Model):
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
     try:
-        activate(u'en') # We need to select active locale ('en-us' is selected by default)
         receivedemail = ReceivedEmail(raw_email=message)
         try:
             inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
@@ -664,7 +665,8 @@ def assign_email_on_message_received(sender, message, **kwargs):
         receivedemail.save()
 
         if receivedemail.inforequest:
-            receivedemail.inforequest.send_received_email_notification(receivedemail)
+            with translation(settings.LANGUAGE_CODE):
+                receivedemail.inforequest.send_received_email_notification(receivedemail)
     except Exception as e:
         print(e)
         raise

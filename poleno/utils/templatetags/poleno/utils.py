@@ -5,10 +5,10 @@ import random
 from django.template import Library
 from django.template.defaultfilters import stringfilter
 from django.core.urlresolvers import resolve, reverse
-from django.utils.translation import activate, get_language
 from django.contrib.webdesign.lorem_ipsum import paragraphs
 
 from poleno.utils.misc import squeeze as squeeze_func
+from poleno.utils.translation import translation
 
 register = Library()
 
@@ -118,16 +118,10 @@ def change_lang(context, lang=None):
 
     Source: https://djangosnippets.org/snippets/2875/
     """
-
     path = context[u'request'].path
     url_parts = resolve(path)
 
-    url = path
-    cur_language = get_language()
-    try:
-        activate(lang)
+    with translation(lang):
         url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
-    finally:
-        activate(cur_language)
 
     return u'%s' % url
