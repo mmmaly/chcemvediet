@@ -3,6 +3,7 @@
 import datetime
 
 from django.conf import settings
+from django.utils import timezone
 
 from poleno.cron import cron_job
 from poleno.workdays import workdays
@@ -22,3 +23,24 @@ def undecided_email_reminder():
             if days < 5:
                 continue
             inforequest.send_undecided_email_reminder()
+
+@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
+def obligee_deadline_expiration_reminder():
+    with translation(settings.LANGUAGE_CODE):
+        for inforequest in Inforequest.objects.without_undecided_email():
+            for history in inforequest.history_set.all():
+                if not history.last_action.has_obligee_deadline:
+                    continue
+                if not history.last_action.deadline_missed:
+                    continue
+
+                # The last reminder was sent after the deadline was extended for the last time iff
+                # the extended deadline was missed before the reminder was sent. We don't want to
+                # send any more reminders if the last reminder was sent after the deadline was
+                # extended for the last time.
+                last = history.last_action.last_deadline_expiration_reminder
+                last_date = timezone.localtime(last).date() if last else None
+                if last and history.last_action.deadline_missed_at(last_date):
+                    continue
+
+                inforequest.send_obligee_deadline_expiration_reminder(history.last_action)

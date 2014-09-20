@@ -184,31 +184,37 @@ class Inforequest(models.Model):
 
         super(Inforequest, self).save(*args, **kwargs)
 
-    def send_received_email_notification(self, receivedemail):
-        decide_url = u'http://127.0.0.1:8000%s#decide' % reverse(u'inforequests:detail', args=(self.id,))
-        msg = render_mail(u'inforequests/mails/received_email_notification',
+    def _send_notification(self, template, anchor, dictionary):
+        url = u'http://127.0.0.1:8000%s#%s' % (reverse(u'inforequests:detail', args=(self.id,)), anchor)
+        dictionary.update({
+                u'inforequest': self,
+                u'url': url,
+                })
+        msg = render_mail(template,
                 from_email=u'info@chcemvediet.sk',
                 to=[self.applicant.email],
-                dictionary={
-                    u'receivedemail': receivedemail,
-                    u'inforequest': self,
-                    u'decide_url': decide_url,
-                    })
+                dictionary=dictionary)
         msg.send()
 
+    def send_received_email_notification(self, receivedemail):
+        self._send_notification(u'inforequests/mails/received_email_notification', u'decide', {
+                u'receivedemail': receivedemail,
+                })
+
     def send_undecided_email_reminder(self):
-        decide_url = u'http://127.0.0.1:8000%s#decide' % reverse(u'inforequests:detail', args=(self.id,))
-        msg = render_mail(u'inforequests/mails/undecided_email_reminder',
-                from_email=u'info@chcemvediet.sk',
-                to=[self.applicant.email],
-                dictionary={
-                    u'inforequest': self,
-                    u'decide_url': decide_url,
-                    })
-        msg.send()
+        self._send_notification(u'inforequests/mails/undecided_email_reminder', u'decide', {
+                })
 
         self.last_undecided_email_reminder = timezone.now()
         self.save()
+
+    def send_obligee_deadline_expiration_reminder(self, action):
+        self._send_notification(u'inforequests/mails/obligee_deadline_expiration_reminder', u'action-%s' % action.pk, {
+                u'action': action,
+                })
+
+        action.last_deadline_expiration_reminder = timezone.now()
+        action.save()
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -532,6 +538,9 @@ class Action(models.Model):
             )
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
+    # Optional; Used by ``cron.obligee_deadline_expiration_reminder``
+    last_deadline_expiration_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Deadline Expiration Reminder'))
+
     # Backward relations:
     #
     #  -- advanced_to_set: by History.advanced_by
@@ -544,20 +553,15 @@ class Action(models.Model):
 
     @property
     def days_passed(self):
-        return workdays.between(self.effective_date, datetime.date.today())
+        return self.days_passed_at(datetime.date.today())
 
     @property
     def deadline_remaining(self):
-        if self.deadline is None:
-            return None
-        deadline = self.deadline + (self.extension or 0)
-        return deadline - self.days_passed
+        return self.deadline_remaining_at(datetime.date.today())
 
     @property
     def deadline_missed(self):
-        # self.deadline_remaining is 0 on the last day of deadline
-        remaining = self.deadline_remaining
-        return remaining is not None and remaining < 0
+        return self.deadline_missed_at(datetime.date.today())
 
     @property
     def has_applicant_deadline(self):
@@ -592,6 +596,20 @@ class Action(models.Model):
                 deadline = getattr(self.DEFAULT_DEADLINES, type_name)
                 self.deadline = deadline(self) if callable(deadline) else deadline
         super(Action, self).save(*args, **kwargs)
+
+    def days_passed_at(self, at):
+        return workdays.between(self.effective_date, at)
+
+    def deadline_remaining_at(self, at):
+        if self.deadline is None:
+            return None
+        deadline = self.deadline + (self.extension or 0)
+        return deadline - self.days_passed_at(at)
+
+    def deadline_missed_at(self, at):
+        # self.deadline_remaining is 0 on the last day of deadline
+        remaining = self.deadline_remaining_at(at)
+        return remaining is not None and remaining < 0
 
     def send_by_email(self):
         # FIXME: We should assert, this is an Applicant Action!

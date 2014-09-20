@@ -22,7 +22,7 @@ import forms
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def index(request):
-    inforequest_list = Inforequest.objects.all().owned_by(request.user)
+    inforequest_list = Inforequest.objects.owned_by(request.user)
     draft_list = InforequestDraft.objects.owned_by(request.user)
 
     ctx = {}

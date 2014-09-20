@@ -1,0 +1,31 @@
+{# vim: set filetype=django :#}
+{% load squeeze from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- action: chcemvediet.apps.inforequests.models.Action
+ %  -- decide_url: string
+ %
+{% endcomment %}
+
+{% autoescape off %}
+{% filter squeeze %}
+{{ action.history.obligee_name }} deadline after {{ action.get_type_display }} has expired.
+{{ action.get_type_display }} set a deadline of {{ action.deadline }} working days since {{ action.effective_date }}.
+{% if action.extension %}
+  You have already extended this deadline by another {{ action.extension }} working days.
+{% endif %}
+Already {{ action.days_passed }} working days passed since {{ action.effective_date }}.
+{% endfilter %}
+
+{% filter squeeze %}
+{% if action.type == action.TYPES.APPEAL %}
+  You may extend the deadline and wait a little longer.
+{% else %}
+  You may extend the deadline and wait a little longer, or send an appeal.
+{% endif %}
+To see the details, go to {{ url }}
+{% endfilter %}
+{% endautoescape %}

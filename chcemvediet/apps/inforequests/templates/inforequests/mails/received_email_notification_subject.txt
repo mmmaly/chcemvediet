@@ -3,9 +3,9 @@
 {% comment %}
  %
  % Context:
- %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- receivedemail: chcemvediet.apps.inforequests.models.ReceivedEmail
- %  -- decide_url: string
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- url: string
  %
 {% endcomment %}
 

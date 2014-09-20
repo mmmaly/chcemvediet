@@ -5,7 +5,7 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- decide_url: string
+ %  -- url: string
  %
 {% endcomment %}
 
@@ -17,6 +17,6 @@ You have {{ inforequest.receivedemail_set.undecided.count }} e-mails regarding y
 {% endfilter %}
 
 {% filter squeeze %}
-To read the e-mails and decide what they are, go to {{ decide_url }}
+To read the e-mails and decide what they are, go to {{ url }}
 {% endfilter %}
 {% endautoescape %}
