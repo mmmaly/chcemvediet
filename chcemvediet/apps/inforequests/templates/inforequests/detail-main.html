@@ -12,20 +12,22 @@
 <div id="request">
   {% include "inforequests/detail-request.html" with inforequest=inforequest %}
 </div>
-{% if inforequest.has_undecided_email %}
-  <div id="decide">
-    {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first %}
-  </div>
-  <div id="undecided">
-    {% include "inforequests/detail-undecided.html" with inforequest=inforequest %}
-  </div>
-{% else %}
-  <div id="add-smail">
-    {% include "inforequests/detail-add_smail.html" with inforequest=inforequest %}
-  </div>
-  <div id="new-action">
-    {% include "inforequests/detail-new_action.html" with inforequest=inforequest %}
-  </div>
+{% if not inforequest.closed %}
+  {% if inforequest.has_undecided_email %}
+    <div id="decide">
+      {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first %}
+    </div>
+    <div id="undecided">
+      {% include "inforequests/detail-undecided.html" with inforequest=inforequest %}
+    </div>
+  {% else %}
+    <div id="add-smail">
+      {% include "inforequests/detail-add_smail.html" with inforequest=inforequest %}
+    </div>
+    <div id="new-action">
+      {% include "inforequests/detail-new_action.html" with inforequest=inforequest %}
+    </div>
+  {% endif %}
 {% endif %}
 <h2>History</h2>
 <div id="actions">

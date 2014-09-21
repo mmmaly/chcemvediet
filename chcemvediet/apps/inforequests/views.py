@@ -22,13 +22,15 @@ import forms
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def index(request):
-    inforequest_list = Inforequest.objects.owned_by(request.user)
+    inforequest_list = Inforequest.objects.not_closed().owned_by(request.user)
     draft_list = InforequestDraft.objects.owned_by(request.user)
+    closed_list = Inforequest.objects.closed().owned_by(request.user)
 
-    ctx = {}
-    ctx[u'inforequest_list'] = inforequest_list
-    ctx[u'draft_list'] = draft_list
-    return render(request, u'inforequests/index.html', ctx)
+    return render(request, u'inforequests/index.html', {
+            u'inforequest_list': inforequest_list,
+            u'draft_list': draft_list,
+            u'closed_list': closed_list,
+            })
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @verified_email_required
@@ -88,7 +90,7 @@ def delete_draft(request, draft_id):
 @require_ajax
 @login_required(raise_exception=True)
 def decide_email(request, action, inforequest_id, receivedemail_id):
-    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
     receivedemail = inforequest.receivedemail_set.undecided().get_or_404(pk=receivedemail_id)
 
     available_actions = {
@@ -201,7 +203,7 @@ def decide_email(request, action, inforequest_id, receivedemail_id):
 @require_ajax
 @login_required(raise_exception=True)
 def add_smail(request, action, inforequest_id):
-    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
 
     available_actions = {
             u'confirmation': Bunch(
@@ -317,7 +319,7 @@ def add_smail(request, action, inforequest_id):
 @require_ajax
 @login_required(raise_exception=True)
 def new_action(request, action, inforequest_id):
-    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
 
     available_actions = {
             u'clarification-response': Bunch(
@@ -419,7 +421,7 @@ def new_action(request, action, inforequest_id):
 @require_ajax
 @login_required(raise_exception=True)
 def extend_deadline(request, inforequest_id, history_id, action_id):
-    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
     history = inforequest.history_set.get_or_404(pk=history_id)
     action = history.action_set.get_or_404(pk=action_id)
 

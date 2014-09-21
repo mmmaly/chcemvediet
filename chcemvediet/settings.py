@@ -264,4 +264,5 @@ CRON_CLASSES = (
     u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
     u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
+    u'chcemvediet.apps.inforequests.cron.close_inforequests',
 )

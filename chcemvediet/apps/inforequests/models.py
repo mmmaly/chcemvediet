@@ -49,6 +49,10 @@ class InforequestDraft(models.Model):
 class InforequestQuerySet(QuerySet):
     def owned_by(self, user):
         return self.filter(applicant=user)
+    def closed(self):
+        return self.filter(closed=True)
+    def not_closed(self):
+        return self.filter(closed=False)
     def with_undecided_email(self):
         return self.filter(receivedemail__status=ReceivedEmail.STATUSES.UNDECIDED).distinct()
     def without_undecided_email(self):
@@ -71,6 +75,9 @@ class Inforequest(models.Model):
 
     # Mandatory; Automaticly computed by Django when creating a new object.
     submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
+
+    # Mandatory
+    closed = models.BooleanField(default=False, verbose_name=_(u'Closed'))
 
     # Optional; Used by ``cron.undecided_email_reminder``
     last_undecided_email_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Undecided Email Reminder'))
@@ -370,17 +377,17 @@ class History(models.Model):
 
         super(History, self).save(*args, **kwargs)
 
-    def __unicode__(self):
-        return u'%s' % self.pk
-
     def add_expiration_if_expired(self):
         if self.last_action.has_obligee_deadline and self.last_action.deadline_missed:
             expiration = Action(
                     history=self,
-                    type=Action.TYPES.EXPIRATION,
+                    type=(Action.TYPES.APPEAL_EXPIRATION if self.last_action.type == Action.TYPES.APPEAL else Action.TYPES.EXPIRATION),
                     effective_date=timezone.now(),
                     )
             expiration.save()
+
+    def __unicode__(self):
+        return u'%s' % self.pk
 
 class ReceivedEmailQuerySet(QuerySet):
     def undecided(self):
@@ -480,6 +487,7 @@ class Action(models.Model):
             # Implicit actions
             (u'ADVANCED_REQUEST', 11, _(u'Advanced Request')),
             (u'EXPIRATION', 14, _(u'Expiration')),
+            (u'APPEAL_EXPIRATION', 15, _(u'Appeal Expiration')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -518,6 +526,7 @@ class Action(models.Model):
             # Implicit actions
             ADVANCED_REQUEST=13,
             EXPIRATION=None,
+            APPEAL_EXPIRATION=None,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
@@ -546,7 +555,7 @@ class Action(models.Model):
             )
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
-    # Optional; Used by ``cron.obligee_deadline_reminder``
+    # Optional; Used by ``cron.obligee_deadline_reminder`` and ``cron.applicant_deadline_reminder``
     last_deadline_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Deadline Reminder'))
 
     # Backward relations:
@@ -586,6 +595,7 @@ class Action(models.Model):
         return self.type in [
                 self.TYPES.ADVANCED_REQUEST,
                 self.TYPES.EXPIRATION,
+                self.TYPES.APPEAL_EXPIRATION,
                 ]
 
     @property
@@ -599,6 +609,10 @@ class Action(models.Model):
     @property
     def deadline_missed(self):
         return self.deadline_missed_at(datetime.date.today())
+
+    @property
+    def has_deadline(self):
+        return self.deadline is not None
 
     @property
     def has_applicant_deadline(self):
@@ -725,7 +739,7 @@ def assign_email_on_message_received(sender, message, **kwargs):
             receivedemail.status = receivedemail.STATUSES.UNDECIDED
         receivedemail.save()
 
-        if receivedemail.inforequest:
+        if receivedemail.inforequest and not receivedemail.inforequest.closed:
             with translation(settings.LANGUAGE_CODE):
                 receivedemail.inforequest.send_received_email_notification(receivedemail)
     except Exception as e:

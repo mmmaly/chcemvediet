@@ -5,8 +5,9 @@
 {% comment %}
  %
  % Context:
- %  -- inforequest_list: chcemvediet.apps.inforequests.models.Inforequest.objects
- %  -- draft_list: chcemvediet.apps.inforequests.models.InforequestDraft.objects
+ %  -- inforequest_list: [chcemvediet.apps.inforequests.models.Inforequest]
+ %  -- draft_list: [chcemvediet.apps.inforequests.models.InforequestDraft]
+ %  -- closed_list: [chcemvediet.apps.inforequests.models.Inforequest]
  %
 {% endcomment %}
 
@@ -60,4 +61,23 @@
   <p>
     <a class="btn" href="{% url 'inforequests:create' %}">{% blocktrans %}New Inforequest{% endblocktrans %}</a>
   </p>
+  {% if closed_list %}
+    <h2>{% blocktrans %}Closed Inforequests{% endblocktrans %}</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th>{% blocktrans %}Submission Date{% endblocktrans %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inforequest in closed_list %}
+          <tr>
+            <td><a href="{% url 'inforequests:detail' inforequest.id %}">{{ inforequest.history.obligee_name }}</a></td>
+            <td>{{ inforequest.submission_date }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
 {% endblock %}

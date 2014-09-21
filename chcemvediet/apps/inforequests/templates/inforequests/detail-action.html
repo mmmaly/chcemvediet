@@ -55,7 +55,7 @@
       <p class="span12" style="white-space: pre-line;">{{ action.content }}</p>
     </div>
   {% endif %}
-  {% if forloop.last and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_email %}
+  {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_email %}
     <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.id history.id action.id %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
     <span id="extend-deadline-{{ action.pk }}-modal" class="modal hide fade"></span>
   {% endif %}

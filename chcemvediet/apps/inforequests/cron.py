@@ -14,7 +14,7 @@ from models import Inforequest
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
 def undecided_email_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.with_undecided_email():
+        for inforequest in Inforequest.objects.not_closed().with_undecided_email():
             email = inforequest.newest_undecided_email
             last = inforequest.last_undecided_email_reminder
             if last and last > email.received_datetime:
@@ -28,7 +28,7 @@ def undecided_email_reminder():
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
 def obligee_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.without_undecided_email():
+        for inforequest in Inforequest.objects.not_closed().without_undecided_email():
             for history in inforequest.history_set.all():
                 if not history.last_action.has_obligee_deadline:
                     continue
@@ -49,7 +49,7 @@ def obligee_deadline_reminder():
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
 def applicant_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.without_undecided_email():
+        for inforequest in Inforequest.objects.not_closed().without_undecided_email():
             for history in inforequest.history_set.all():
                 if not history.last_action.has_applicant_deadline:
                     continue
@@ -64,3 +64,16 @@ def applicant_deadline_reminder():
                     continue
 
                 inforequest.send_applicant_deadline_reminder(history.last_action)
+
+@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
+def close_inforequests():
+    for inforequest in Inforequest.objects.not_closed():
+        for history in inforequest.history_set.all():
+            if history.last_action.has_deadline and history.last_action.deadline_remaining > -100:
+                break
+        else:
+            # Every history that has a deadline have been missed for at least 100 WD.
+            for history in inforequest.history_set.all():
+                history.add_expiration_if_expired()
+            inforequest.closed = True
+            inforequest.save()
