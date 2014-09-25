@@ -27,10 +27,13 @@ To prepare your local development environment, run the following commands:
 	$ cd chcemvediet
 	$ virtualenv env
 	$ env/bin/pip install -r requirements.txt
+	$ env/bin/python configure.py
 	$ env/bin/python manage.py syncdb --all --noinput
 	$ env/bin/python manage.py migrate --fake
 	$ env/bin/python manage.py loaddata fixtures/*
 
+Configuration script will ask for your OAuth Client IDs and Secrets for social account providers.
+See bellow, for details how to get social accounts application keys.
 
 ### 1.3. Updates
 
@@ -47,6 +50,7 @@ To migrate to an updated version of the site, run the following commands:
 	$ cd chcemvediet
 	$ git pull
 	$ env/bin/pip install -r requirements.txt
+	$ env/bin/python configure.py
 	$ env/bin/python manage.py syncdb --noinput
 	$ env/bin/python manage.py migrate
 
@@ -70,13 +74,7 @@ If `migrate` fails, try to run it once or twice again. Sometimes it helps.
     	$ cd chcemvediet
     	$ env/bin/python manage.py cronserver
 
- 4. Navigate your browser to: http://127.0.0.1:8000/admin/socialaccount/socialapp/ and login as
-    `admin` with password `kalerab`. Then click on 'Google OAuth' and enter your Google Apps
-    'Client id' and 'Secret'. Similarly enter your secrets for LinkedIn, Twitter and Facebook.
-    Don't forget to logout the admin interface afterwards. See bellow, how to get social accounts
-    application keys.
-
- 5. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
+ 4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 
 
 ### 1.5. Contributing

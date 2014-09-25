@@ -90,9 +90,6 @@ STATICFILES_FINDERS = (
 #    u'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = u'j9n03fl6sw%97=gosszi-y6s6t%j8np6t56m=f1*ka&bne8ua5'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
@@ -266,3 +263,6 @@ CRON_CLASSES = (
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.close_inforequests',
 )
+
+# Local settings configured by `configure.py`
+from settings_configured import *
