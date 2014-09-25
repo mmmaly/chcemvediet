@@ -30,10 +30,10 @@ To prepare your local development environment, run the following commands:
 	$ env/bin/python configure.py
 	$ env/bin/python manage.py syncdb --all --noinput
 	$ env/bin/python manage.py migrate --fake
-	$ env/bin/python manage.py loaddata fixtures/*
+	$ env/bin/python manage.py loaddata fixtures/*.json
 
 Configuration script will ask for your OAuth Client IDs and Secrets for social account providers.
-See bellow, for details how to get social accounts application keys.
+See bellow for details how to get social accounts application keys.
 
 ### 1.3. Updates
 
