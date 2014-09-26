@@ -6,4 +6,4 @@ cache/
 media/mailbox_attachments
 media/attachments
 fixtures/*.configured.json
-chcemvediet/settings_configured.py
+chcemvediet/settings/configured.py

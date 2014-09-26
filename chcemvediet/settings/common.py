@@ -1,10 +1,8 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 
-# Useful workarounds
 import os
 _ = lambda s: s
-PROJECT_PATH = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
 
 # Django settings for chcemvediet project.
 DEBUG = True
@@ -263,6 +261,3 @@ CRON_CLASSES = (
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.close_inforequests',
 )
-
-# Local settings configured by `configure.py`
-from settings_configured import *
