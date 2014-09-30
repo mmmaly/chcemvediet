@@ -8,6 +8,9 @@ _ = lambda s: s
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+SERVER_EMAIL = u'admin@chcemvediet.sk'
+DEFAULT_FROM_EMAIL = u'admin@chcemvediet.sk'
+
 ADMINS = (
     (u'Admin', u'admin@chcemvediet.sk'),
 )
@@ -215,11 +218,6 @@ CACHES = {
         u'LOCATION': os.path.join(PROJECT_PATH, u'cache'),
     },
 }
-
-# E-mail configuration
-EMAIL_BACKEND = u'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = u'localhost'
-EMAIL_PORT = 1025
 
 # Where to search for initial data
 FIXTURE_DIRS = (

@@ -52,6 +52,28 @@ class Configure(object):
         self.data[key] = inputed
         return inputed
 
+    def input_choice(self, key, prompt, choices, default=u''):
+        configured = self.data.get(key, default)
+        configured_choice = u''
+        print(u'\n%s:' % prompt)
+        for idx, (value, label) in enumerate(choices):
+            print(u' %d) %s' % (idx+1, label))
+            if value == configured:
+                configured_choice = u'%d' % (idx+1)
+        while True:
+            inputed = raw_input(u'\n%s [%s]: ' % (prompt, configured_choice)) or configured_choice
+            if not inputed:
+                print(u'\nError: The value is required.')
+                continue
+            try:
+                value, label = choices[int(inputed)-1]
+            except (ValueError, IndexError):
+                print(u'\nError: Invalid choice.')
+                continue
+            break
+        self.data[key] = value
+        return value
+
 class Settings(object):
     def __init__(self, filename=u'chcemvediet/settings/configured.py'):
         self.filename = filename
@@ -86,7 +108,8 @@ if __name__ == u'__main__':
     with Configure() as configure, Settings() as settings:
 
         # Django Secret Key generated only if not stored in the configuration, yet.
-        settings.setting(u'SECRET_KEY', configure.auto(u'secret_key', generate_secret_key()))
+        secret_key = configure.auto(u'secret_key', generate_secret_key())
+        settings.setting(u'SECRET_KEY', secret_key)
 
         # Social accounts Client IDs and Secrets
         print(dedent(u"""
@@ -96,8 +119,10 @@ if __name__ == u'__main__':
         with JsonFile(u'fixtures/socialaccount_socialapp.json.tpl', u'fixtures/socialaccount_socialapp.configured.json') as data:
             for entry in data:
                 if entry[u'model'] == u'socialaccount.socialapp':
-                    entry[u'fields'][u'client_id'] = configure.input(u'%s_client_id' % entry[u'fields'][u'provider'], u'%s Client ID' % entry[u'fields'][u'name'])
-                    entry[u'fields'][u'secret'] = configure.input(u'%s_secret' % entry[u'fields'][u'provider'], u'%s Secret' % entry[u'fields'][u'name'])
+                    client_id = configure.input(u'%s_client_id' % entry[u'fields'][u'provider'], u'%s Client ID' % entry[u'fields'][u'name'])
+                    secret = configure.input(u'%s_secret' % entry[u'fields'][u'provider'], u'%s Secret' % entry[u'fields'][u'name'])
+                    entry[u'fields'][u'client_id'] = client_id
+                    entry[u'fields'][u'secret'] = secret
 
         # Obligee dummy mails
         print(dedent(u"""
@@ -113,3 +138,23 @@ if __name__ == u'__main__':
                     mail = mail_tpl.format(name=slug)
                     entry[u'fields'][u'email'] = mail
 
+        # Dummymail or Mandrill testing mode
+        print(dedent(u"""
+                Local testing has two modes. The first mode, Dummymail, does not send any real
+                emails. It just mocks local SMPT/IMAP servers and does not support any advanced
+                features like message bounces. The second mode uses Madrill transactional mail
+                service to send the emails. If you want to use Mandrill, you will need to
+                supply a Mandrill API key. If using Mandrill while testing, make sure you don't
+                send any unsolicited emails to real addresses. You should configure your
+                Mandrill API key to be in testing mode, or make sure you only send emails to
+                addresses you control."""))
+        testing_mode = configure.input_choice(u'testing_mode', u'Testing mode', choices=(
+                (u'dummymail', u'Dummymail with local mocked SMPT/IMAP servers.'),
+                (u'mandrill', u'Using Madrill transactional mail service.'),
+                ))
+        settings.include(u'dummymail.py' if testing_mode == u'dummymail' else u'mandrill.py')
+
+        # Mandrill API key
+        if testing_mode == u'mandrill':
+            mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
+            settings.setting(u'MANDRILL_API_KEY', mandrill_api_key)
