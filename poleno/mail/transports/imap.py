@@ -8,7 +8,8 @@ from imaplib import IMAP4, IMAP4_SSL, IMAP4_PORT, IMAP4_SSL_PORT
 
 from django.core.files.base import ContentFile
 from django.conf import settings
-from django.utils import timezone
+
+from poleno.utils.date import utc_now
 
 from base import BaseTransport
 from ..models import Message, Recipient, Attachment
@@ -83,7 +84,7 @@ class ImapTransport(BaseTransport):
 
         message = Message(
                 type=Message.TYPES.INBOUND,
-                processed=timezone.now(),
+                processed=utc_now(),
                 from_name=from_name,
                 from_mail=from_mail,
                 subject=subject,

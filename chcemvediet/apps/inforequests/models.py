@@ -1,12 +1,10 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import datetime
 from email.utils import formataddr
 
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models, IntegrityError
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
@@ -14,6 +12,7 @@ from poleno.workdays import workdays
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
 from poleno.utils.models import FieldChoices, QuerySet
 from poleno.utils.mail import render_mail
+from poleno.utils.date import utc_now, local_today
 
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
@@ -207,7 +206,7 @@ class Inforequest(models.Model):
         self._send_notification(u'inforequests/mails/undecided_email_reminder', u'decide', {
                 })
 
-        self.last_undecided_email_reminder = timezone.now()
+        self.last_undecided_email_reminder = utc_now()
         self.save()
 
     def send_obligee_deadline_reminder(self, action):
@@ -215,7 +214,7 @@ class Inforequest(models.Model):
                 u'action': action,
                 })
 
-        action.last_deadline_reminder = timezone.now()
+        action.last_deadline_reminder = utc_now()
         action.save()
 
     def send_applicant_deadline_reminder(self, action):
@@ -223,7 +222,7 @@ class Inforequest(models.Model):
                 u'action': action,
                 })
 
-        action.last_deadline_reminder = timezone.now()
+        action.last_deadline_reminder = utc_now()
         action.save()
 
     def __unicode__(self):
@@ -377,7 +376,7 @@ class History(models.Model):
             expiration = Action(
                     history=self,
                     type=(Action.TYPES.APPEAL_EXPIRATION if self.last_action.type == Action.TYPES.APPEAL else Action.TYPES.EXPIRATION),
-                    effective_date=timezone.now(),
+                    effective_date=local_today(),
                     )
             expiration.save()
 
@@ -535,15 +534,15 @@ class Action(models.Model):
 
     @property
     def days_passed(self):
-        return self.days_passed_at(datetime.date.today())
+        return self.days_passed_at(local_today())
 
     @property
     def deadline_remaining(self):
-        return self.deadline_remaining_at(datetime.date.today())
+        return self.deadline_remaining_at(local_today())
 
     @property
     def deadline_missed(self):
-        return self.deadline_missed_at(datetime.date.today())
+        return self.deadline_missed_at(local_today())
 
     @property
     def has_deadline(self):

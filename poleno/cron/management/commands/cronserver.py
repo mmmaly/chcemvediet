@@ -6,7 +6,7 @@ from optparse import make_option
 
 from django.core.management import call_command
 from django.core.management.base import NoArgsCommand
-from django.utils import timezone
+from poleno.utils.date import utc_now
 
 from django_cron.models import CronJobLog
 
@@ -29,7 +29,7 @@ class Command(NoArgsCommand):
             while True:
                 # If we are timewarping, we may encounter cron logs from future. We must remove
                 # them, otherwise django_cron won't run any jobs with logs from furure.
-                CronJobLog.objects.filter(end_time__gt=timezone.now()).delete()
+                CronJobLog.objects.filter(end_time__gt=utc_now()).delete()
 
                 call_command(u'runcrons')
                 time.sleep(interval)

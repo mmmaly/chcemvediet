@@ -1,10 +1,10 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.utils import timezone
 from django.utils.module_loading import import_by_path
 
 from poleno.cron import cron_job
+from poleno.utils.date import utc_now
 
 from models import Message
 from signals import message_sent, message_received
@@ -21,7 +21,7 @@ def mail():
                 for message in messages:
                     print(u'Sending email: %s...' % repr(message))
                     transport.send_message(message)
-                    message.processed = timezone.now()
+                    message.processed = utc_now()
                     message.save()
                     print(u'Done.')
                     message_sent.send(sender=None, message=message)

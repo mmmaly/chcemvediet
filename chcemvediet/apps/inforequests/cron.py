@@ -1,14 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.conf import settings
-from django.utils import timezone
 
 from poleno.cron import cron_job
 from poleno.workdays import workdays
 from poleno.utils.translation import translation
-from poleno.utils.misc import localdate
+from poleno.utils.date import local_date, local_today
 
 from models import Inforequest
 
@@ -21,7 +18,7 @@ def undecided_email_reminder():
             last = inforequest.last_undecided_email_reminder
             if last and last > email.processed:
                 continue
-            days = workdays.between(localdate(email.processed), datetime.date.today())
+            days = workdays.between(local_date(email.processed), local_today())
             if days < 5:
                 continue
 
@@ -43,7 +40,7 @@ def obligee_deadline_reminder():
                 # send any more reminders if the last reminder was sent after the deadline was
                 # extended for the last time.
                 last = history.last_action.last_deadline_reminder
-                last_date = timezone.localtime(last).date() if last else None
+                last_date = local_date(last) if last else None
                 if last and history.last_action.deadline_missed_at(last_date):
                     continue
 

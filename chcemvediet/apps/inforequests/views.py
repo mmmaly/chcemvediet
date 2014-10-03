@@ -5,14 +5,14 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
 from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax, login_required
-from poleno.utils.misc import Bunch, localdate
+from poleno.utils.misc import Bunch
 from poleno.utils.forms import clean_button
+from poleno.utils.date import local_date
 
 from models import Inforequest, InforequestDraft, Action, ActionDraft
 import forms
@@ -162,7 +162,7 @@ def decide_email(request, action, inforequest_id, email_id):
             action = Action(
                     subject=email.subject,
                     content=email.text,
-                    effective_date=localdate(email.processed),
+                    effective_date=local_date(email.processed),
                     email=email,
                     type=action_type,
                     )
@@ -368,7 +368,7 @@ def new_action(request, action, inforequest_id):
             form.cleaned_data[u'history'].add_expiration_if_expired()
 
         action = Action(
-                effective_date=timezone.now(),
+                effective_date=local_date(),
                 type=action_type,
                 )
         form.save(action)
