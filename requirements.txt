@@ -9,7 +9,6 @@ django-sekizai==0.7
 django-adminplus==0.3
 django-cron==0.3.4
 South==1.0
-djrill==1.1.1
 jsonfield==1.0.0
 requests==2.3.0
 
