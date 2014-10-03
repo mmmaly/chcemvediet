@@ -1,10 +1,12 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import os
 import json
 import re
 import string
 import random
 from textwrap import dedent
+from getpass import getpass
 
 class JsonFile(object):
     def __init__(self, inputfile, outputfile=None):
@@ -51,6 +53,18 @@ class Configure(object):
             break
         self.data[key] = inputed
         return inputed
+
+    def input_password(self, key, prompt, hasher, required=False):
+        configured = self.data.get(key, u'')
+        while True:
+            inputed = getpass(u'\n%s [%s]: ' % (prompt, u'*****' if configured else u''))
+            if required and not inputed and not configured:
+                print(u'\nError: The value is required.')
+                continue
+            break
+        hashed = hasher(inputed) if inputed else configured
+        self.data[key] = hashed
+        return hashed
 
     def input_choice(self, key, prompt, choices, default=u''):
         configured = self.data.get(key, default)
@@ -158,3 +172,20 @@ if __name__ == u'__main__':
         if testing_mode == u'mandrill':
             mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
             settings.setting(u'MANDRILL_API_KEY', mandrill_api_key)
+
+    # Settings module is configured and we may use django now.
+    os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')
+
+    with Configure() as configure:
+        from django.contrib.auth.hashers import make_password
+
+        # Admin e-mail and password
+        print(dedent(u"""
+                Enter site admin email and password."""))
+        admin_email = configure.input(u'admin_email', u'Admin e-mail', required=True)
+        admin_password = configure.input_password(u'admin_password', u'Admin password', make_password, required=True)
+        with JsonFile(u'fixtures/auth_user.json.tpl', u'fixtures/auth_user.configured.json') as data:
+            for entry in data:
+                if entry[u'model'] == u'auth.user' and entry[u'fields'][u'username'] == u'admin':
+                    entry[u'fields'][u'email'] = admin_email
+                    entry[u'fields'][u'password'] = admin_password
