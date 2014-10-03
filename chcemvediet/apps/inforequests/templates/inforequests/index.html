@@ -29,7 +29,7 @@
           <tr>
             <td><a href="{% url 'inforequests:detail' inforequest.id %}">{{ inforequest.history.obligee_name }}</a></td>
             <td>{{ inforequest.submission_date }}</td>
-            <td>{% if inforequest.receivedemail_set.undecided.count %}New e-mail waiting{% endif %}</td>
+            <td>{% if inforequest.has_undecided_email %}New e-mail waiting{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>

@@ -4,7 +4,7 @@
 {% comment %}
  %
  % Context:
- %  -- receivedemail: chcemvediet.apps.inforequests.models.ReceivedEmail
+ %  -- email: poleno.mail.models.Message
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- url: string
  %
@@ -13,10 +13,10 @@
 {% autoescape off %}
 {% filter squeeze %}
 We received a new e-mail regarding your inforequest to {{ inforequest.history.obligee_name }}.
-{% if inforequest.receivedemail_set.undecided.count > 1 %}
-  We already have {{ inforequest.receivedemail_set.undecided.count }} waiting e-mails regarding your inforequest.
+{% if inforequest.undecided_set.count > 1 %}
+  We already have {{ inforequest.undecided_set.count }} waiting e-mails regarding your inforequest.
 {% endif %}
-The e-mail was sent from: {{ receivedemail.from_header }}
+The e-mail was sent from: {{ email.from_full }}
 {% endfilter %}
 
 {% filter squeeze %}
@@ -25,10 +25,10 @@ To read the e-mail and decide what it is, go to {{ url }}
 
 
 ---------- Received message ----------
-From: {{ receivedemail.from_header }}
-Date: {{ receivedemail.received_datetime }}
-Subject: {{ receivedemail.subject }}
-To: {{ receivedemail.to_header }}
+From: {{ email.from_full }}
+Date: {{ email.processed }}
+Subject: {{ email.subject }}
+To: {{ email.to_full }}
 
-{{ receivedemail.content }}
+{{ email.text }}
 {% endautoescape %}

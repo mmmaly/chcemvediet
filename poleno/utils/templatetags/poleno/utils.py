@@ -56,6 +56,18 @@ def range_(a, b):
         return []
 
 @register.filter
+def localdate(value):
+    u"""
+    Converts timezone aware ``datetime`` object to naive ``date`` object set with respect to the
+    current timezone.
+
+    Example:
+        now = timezone.now()
+        {{ now|localdate }}
+    """
+    return timezone.localtime(value).date()
+
+@register.filter
 def active(request, view_prefix):
     u"""
     Tests if the active view name has prefix ``view_prefix``. View name is colon separated list of

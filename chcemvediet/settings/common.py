@@ -9,7 +9,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 SERVER_EMAIL = u'admin@chcemvediet.sk'
-DEFAULT_FROM_EMAIL = u'admin@chcemvediet.sk'
+DEFAULT_FROM_EMAIL = u'info@chcemvediet.sk'
 
 ADMINS = (
     (u'Admin', u'admin@chcemvediet.sk'),
@@ -163,13 +163,13 @@ INSTALLED_APPS = (
     u'widget_tweaks',
     u'hvad',
     u'sekizai',
-    u'django_mailbox',
     u'adminplus',
     u'django_cron',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
     u'poleno.cron',
+    u'poleno.mail',
     # Local to the project
     u'chcemvediet.apps.attachments',
     u'chcemvediet.apps.accounts',
@@ -253,9 +253,12 @@ HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 
 # Cron jobs
 CRON_CLASSES = (
-    u'chcemvediet.cron.get_mail',
+    u'poleno.mail.cron.mail',
     u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
     u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.close_inforequests',
 )
+
+# Mail settings
+EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'

@@ -39,11 +39,13 @@ def render_mail(template_prefix, dictionary=None, context_instance=None, **kwarg
             if ext == u'txt' and not bodies:
                 raise
 
-    if u'txt' in bodies:
+    if u'txt' in bodies and u'html' in bodies:
         msg = EmailMultiAlternatives(subject, bodies[u'txt'], **kwargs)
-        if u'html' in bodies:
-            msg.attach_alternative(bodies[u'html'], u'text/html')
-    else:
+        msg.attach_alternative(bodies[u'html'], u'text/html')
+    elif u'html' in bodies:
         msg = EmailMessage(subject, bodies[u'html'], **kwargs)
         msg.content_subtype = u'html' # Main content is now text/html
+    else:
+        msg = EmailMessage(subject, bodies[u'txt'], **kwargs)
+
     return msg

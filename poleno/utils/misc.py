@@ -3,6 +3,8 @@
 import random
 import string
 
+from django.utils import timezone
+
 class Bunch(object):
     u"""
     Simple object with defened attributes.
@@ -17,6 +19,16 @@ class Bunch(object):
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+
+def localdate(datetime):
+    u"""
+    Converts timezone aware ``datetime`` object to naive ``date`` object set with respect to the
+    current timezone.
+
+    Example:
+        localdate(timezone.now())
+    """
+    return timezone.localtime(datetime).date()
 
 def random_string(length, chars=(string.ascii_letters + string.digits)):
     u"""

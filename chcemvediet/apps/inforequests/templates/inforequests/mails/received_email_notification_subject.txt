@@ -3,7 +3,7 @@
 {% comment %}
  %
  % Context:
- %  -- receivedemail: chcemvediet.apps.inforequests.models.ReceivedEmail
+ %  -- email: poleno.mail.models.Message
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- url: string
  %
