@@ -155,6 +155,8 @@ class Attachment(models.Model):
     name = models.CharField(max_length=255, verbose_name=_(u'Name'))
     content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'))
 
+    objects = QuerySet.as_manager()
+
     class Meta:
         ordering = [u'pk']
 

@@ -25,6 +25,16 @@
   <p class="span2 text-right">{% blocktrans %}Received{% endblocktrans %}:</p>
   <p class="span10">{{ email.processed }}</p>
 </div>
+{% if email.attachment_set.exists %}
+  <div class="row-fluid">
+    <p class="span2 text-right">Attachments:</p>
+    <p class="span10">
+      {% for attachment in email.attachment_set.all %}
+        <a href="{% url 'attachments:mail_download' attachment.id %}"><span class="label label-info">{{ attachment.name }}</span></a>
+      {% endfor %}
+    </p>
+  </div>
+{% endif %}
 <div class="row-fluid">
   <p class="span12" style="white-space: pre-line;">{{ email.text }}</p>
 </div>

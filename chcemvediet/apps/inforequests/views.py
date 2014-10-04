@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.core.files.base import ContentFile
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
@@ -12,9 +13,11 @@ from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.misc import Bunch
 from poleno.utils.forms import clean_button
-from poleno.utils.date import local_date
+from poleno.utils.date import local_date, local_today
 
-from models import Inforequest, InforequestDraft, Action, ActionDraft
+from chcemvediet.apps.attachments.models import Attachment
+
+from models import InforequestDraft, Inforequest, InforequestEmail, Action, ActionDraft
 import forms
 
 @require_http_methods([u'HEAD', u'GET'])
@@ -90,45 +93,54 @@ def delete_draft(request, draft_id):
 def decide_email(request, action, inforequest_id, email_id):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
     email = inforequest.undecided_set.get_or_404(pk=email_id)
+    inforequestemail = inforequest.inforequestemail_set.get(email=email)
 
     available_actions = {
             u'unrelated': Bunch(
                 template = u'inforequests/modals/unrelated-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.UNRELATED,
                 action_type = None,
                 form_class = None,
                 ),
             u'unknown': Bunch(
                 template = u'inforequests/modals/unknown-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.UNKNOWN,
                 action_type = None,
                 form_class = None,
                 ),
             u'confirmation': Bunch(
                 template = u'inforequests/modals/confirmation-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.CONFIRMATION,
                 form_class = forms.ConfirmationEmailForm,
                 ),
             u'extension': Bunch(
                 template = u'inforequests/modals/extension-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.EXTENSION,
                 form_class = forms.ExtensionEmailForm,
                 ),
             u'advancement': Bunch(
                 template = u'inforequests/modals/advancement-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.ADVANCEMENT,
                 form_class = forms.AdvancementEmailForm,
                 ),
             u'clarification-request': Bunch(
                 template = u'inforequests/modals/clarification_request-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.CLARIFICATION_REQUEST,
                 form_class = forms.ClarificationRequestEmailForm,
                 ),
             u'disclosure': Bunch(
                 template = u'inforequests/modals/disclosure-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.DISCLOSURE,
                 form_class = forms.DisclosureEmailForm,
                 ),
             u'refusal': Bunch(
                 template = u'inforequests/modals/refusal-email.html',
+                inforequestemail_type = InforequestEmail.TYPES.OBLIGEE_ACTION,
                 action_type = Action.TYPES.REFUSAL,
                 form_class = forms.RefusalEmailForm,
                 ),
@@ -136,6 +148,7 @@ def decide_email(request, action, inforequest_id, email_id):
 
     try:
         template = available_actions[action].template
+        inforequestemail_type = available_actions[action].inforequestemail_type
         action_type = available_actions[action].action_type
         form_class = available_actions[action].form_class
     except KeyError:
@@ -169,7 +182,19 @@ def decide_email(request, action, inforequest_id, email_id):
             form.save(action)
             action.save()
 
-        inforequest.undecided_set.remove(email)
+            for attch in email.attachment_set.all():
+                attachment = Attachment(
+                        owner = request.user,
+                        file = ContentFile(attch.content),
+                        name = attch.name,
+                        content_type = attch.content_type,
+                        size = attch.file.size,
+                        )
+                attachment.save()
+                action.attachment_set.add(attachment)
+
+        inforequestemail.type = inforequestemail_type
+        inforequestemail.save()
 
         return JsonResponse({
                 u'result': u'success',
@@ -368,7 +393,7 @@ def new_action(request, action, inforequest_id):
             form.cleaned_data[u'history'].add_expiration_if_expired()
 
         action = Action(
-                effective_date=local_date(),
+                effective_date=local_today(),
                 type=action_type,
                 )
         form.save(action)

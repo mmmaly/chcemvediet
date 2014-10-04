@@ -1,16 +1,13 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import os
-import stat
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
-from django.views.static import was_modified_since
-from django.http import HttpResponseNotModified, CompatibleStreamingHttpResponse
-from django.utils.http import http_date, urlquote
 
-from poleno.utils.http import JsonResponse
+from poleno.mail.models import Attachment as MailAttachment
+from poleno.utils.http import JsonResponse, send_file_response
 from poleno.utils.views import require_ajax, login_required
 
 from models import Attachment
@@ -39,24 +36,19 @@ def upload(request):
     return JsonResponse({u'files': res})
 
 @require_http_methods([u'HEAD', u'GET'])
+@login_required
 def download(request, attachment_id):
     attachment = Attachment.objects.owned_by(request.user).get_or_404(pk=attachment_id)
 
-    # FIXME: If running on real Apache server, we should use "X-SENDFILE" header to let Apache
-    # server the file. It's much faster.
+    # FIXME: If ``attachment.content_type`` is among whitelisted content types, we should use it.
+    path = os.path.join(settings.MEDIA_ROOT, attachment.file.name)
+    return send_file_response(request, path, attachment.name, u'application/octet-stream')
 
-    # FIXME: "Content-Disposition" filename is very fragile if contains non-ASCII characters.
-    # Current implementation works on Firefox, but probably fails on other browsers. We should test
-    # and fix it for them and/or sanitize and normalize file names.
+@require_http_methods([u'HEAD', u'GET'])
+@login_required
+def mail_download(request, attachment_id):
+    attachment = MailAttachment.objects.filter(message__inforequest__applicant=request.user).distinct().get_or_404(pk=attachment_id)
 
-    # Based on: django.views.static.serve
-    fullpath = os.path.join(settings.MEDIA_ROOT, attachment.file.name)
-    statobj = os.stat(fullpath)
-    if not was_modified_since(request.META.get(u'HTTP_IF_MODIFIED_SINCE'), statobj.st_mtime, statobj.st_size):
-        return HttpResponseNotModified()
-    response = CompatibleStreamingHttpResponse(open(fullpath, u'rb'), content_type=u'application/octet-stream')
-    response[u'Last-Modified'] = http_date(statobj.st_mtime)
-    response[u'Content-Disposition'] = "attachment; filename*=UTF-8''%s" % urlquote(attachment.name)
-    if stat.S_ISREG(statobj.st_mode):
-        response[u'Content-Length'] = statobj.st_size
-    return response
+    # FIXME: If ``attachment.content_type`` is among whitelisted content types, we should use it.
+    path = os.path.join(settings.MEDIA_ROOT, attachment.file.name)
+    return send_file_response(request, path, attachment.name, u'application/octet-stream')

@@ -48,16 +48,16 @@ class InforequestQuerySet(QuerySet):
     def not_closed(self):
         return self.filter(closed=False)
     def with_undecided_email(self):
-        return self.filter(undecided_set__isnull=False).distinct()
+        return self.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED).distinct()
     def without_undecided_email(self):
-        return self.filter(undecided_set__isnull=True)
+        return self.exclude(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
 
 class Inforequest(models.Model):
     # Mandatory
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
 
-    # May be empty
-    undecided_set = models.ManyToManyField(u'mail.Message', verbose_name=_(u'Undecided Set'))
+    # May be empty; m2m through InforequestEmail
+    email_set = models.ManyToManyField(u'mail.Message', through=u'InforequestEmail', verbose_name=_(u'E-mail Set'))
 
     # Frozen Applicant contact information at the time the Inforequest was submitted, in case that
     # the contact information changes in the future. The information is mandatory and automaticly
@@ -86,6 +86,9 @@ class Inforequest(models.Model):
     #
     #  -- actiondraft_set: by ActionDraft.inforequest
     #     May be empty; May contain at most one instance for every ActionDraft.TYPES
+    #
+    #  -- inforequestemail_set: by InforequestEmail.inforequest
+    #     May be empty
 
     objects = InforequestQuerySet.as_manager()
 
@@ -95,6 +98,10 @@ class Inforequest(models.Model):
     @property
     def history(self):
         return self.history_set.get(advanced_by=None)
+
+    @property
+    def undecided_set(self):
+        return self.email_set.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
 
     @property
     def has_undecided_email(self):
@@ -227,6 +234,21 @@ class Inforequest(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+class InforequestEmail(models.Model):
+    # Mandatory; m2m ends
+    inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
+    email = models.ForeignKey(u'mail.Message', verbose_name=_(u'E-mail'))
+
+    # Mandatory choice
+    TYPES = FieldChoices(
+            (u'APPLICANT_ACTION', 1, _(u'Applicant Action')),
+            (u'OBLIGEE_ACTION', 2, _(u'Obligee Action')),
+            (u'UNDECIDED', 3, _(u'Undecided')),
+            (u'UNRELATED', 4, _(u'Unrelated')),
+            (u'UNKNOWN', 5, _(u'Unknown')),
+            )
+    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
 class History(models.Model):
     # Mandatory
@@ -613,6 +635,13 @@ class Action(models.Model):
         for attachment in self.attachment_set.all():
             msg.attach(attachment.name, attachment.content, attachment.content_type)
         msg.send()
+
+        inforequestemail = InforequestEmail(
+                inforequest=self.history.inforequest,
+                email=msg.instance,
+                type=InforequestEmail.TYPES.APPLICANT_ACTION,
+                )
+        inforequestemail.save()
 
         self.email = msg.instance
         self.save()
