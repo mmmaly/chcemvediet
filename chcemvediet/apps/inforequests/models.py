@@ -614,6 +614,9 @@ class Action(models.Model):
             msg.attach(attachment.name, attachment.content, attachment.content_type)
         msg.send()
 
+        self.email = msg.instance
+        self.save()
+
     def __unicode__(self):
         return u'%s' % self.pk
 

@@ -37,6 +37,34 @@ class EmailBackend(BaseEmailBackend):
                 raise ValueError(u'Alternative with the same mimetype as the body.')
             html = content
 
+        recipients = []
+        for addresses, type in ((message.to, Recipient.TYPES.TO),
+                                (message.cc, Recipient.TYPES.CC),
+                                (message.bcc, Recipient.TYPES.BCC)):
+            for addr in addresses:
+                sanitized = sanitize_address(addr, message.encoding)
+                name, mail = parseaddr(sanitized)
+                recipients.append(Recipient(
+                        name=name,
+                        mail=mail,
+                        type=type,
+                        status=Recipient.STATUSES.QUEUED,
+                        ))
+
+        attachments = []
+        for attachment in message.attachments:
+            if isinstance(attachment, MIMEBase):
+                name = attachment.get_filename()
+                content = attachment.get_payload(decode=True)
+                content_type = attachment.get_content_type()
+            else:
+                name, content, content_type = attachment
+            attachments.append(Attachment(
+                    file=ContentFile(content),
+                    name=name,
+                    content_type=content_type or DEFAULT_ATTACHMENT_MIME_TYPE,
+                    ))
+
         msg = Message(
                 type=Message.TYPES.OUTBOUND,
                 from_name=from_name,
@@ -47,35 +75,12 @@ class EmailBackend(BaseEmailBackend):
                 headers=headers,
                 )
         msg.save()
+        message.instance = msg
 
-        for addresses, type in ((message.to, Recipient.TYPES.TO),
-                                (message.cc, Recipient.TYPES.CC),
-                                (message.bcc, Recipient.TYPES.BCC)):
-            for addr in addresses:
-                sanitized = sanitize_address(addr, message.encoding)
-                name, mail = parseaddr(sanitized)
+        for recipient in recipients:
+            recipient.message = msg
+            recipient.save()
 
-                recipient = Recipient(
-                        message=msg,
-                        name=name,
-                        mail=mail,
-                        type=type,
-                        status=Recipient.STATUSES.QUEUED,
-                        )
-                recipient.save()
-
-        for attachment in message.attachments:
-            if isinstance(attachment, MIMEBase):
-                name = attachment.get_filename()
-                content = attachment.get_payload(decode=True)
-                content_type = attachment.get_content_type()
-            else:
-                name, content, content_type = attachment
-
-            attch = Attachment(
-                    message=msg,
-                    file=ContentFile(content),
-                    name=name,
-                    content_type=content_type or DEFAULT_ATTACHMENT_MIME_TYPE,
-                    )
-            attch.save()
+        for attachment in attachments:
+            attachment.message = msg
+            attachment.save()
