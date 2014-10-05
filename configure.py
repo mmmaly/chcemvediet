@@ -112,17 +112,15 @@ class Settings(object):
     def setting(self, name, value):
         self.lines.append(u'%s = %s' % (name, repr(value)))
 
-def generate_secret_key():
-    # Based on: http://techblog.leosoto.com/django-secretkey-generation/
-    chars = string.digits + string.letters + string.punctuation
-    return u''.join(random.SystemRandom().choice(chars) for i in range(100))
+def generate_secret_key(length, chars):
+    return u''.join(random.SystemRandom().choice(chars) for i in range(length))
 
 
 if __name__ == u'__main__':
     with Configure() as configure, Settings() as settings:
 
         # Django Secret Key generated only if not stored in the configuration, yet.
-        secret_key = configure.auto(u'secret_key', generate_secret_key())
+        secret_key = configure.auto(u'secret_key', generate_secret_key(100, string.digits + string.letters + string.punctuation))
         settings.setting(u'SECRET_KEY', secret_key)
 
         # Social accounts Client IDs and Secrets
@@ -157,21 +155,49 @@ if __name__ == u'__main__':
                 Local testing has two modes. The first mode, Dummymail, does not send any real
                 emails. It just mocks local SMPT/IMAP servers and does not support any advanced
                 features like message bounces. The second mode uses Madrill transactional mail
-                service to send the emails. If you want to use Mandrill, you will need to
-                supply a Mandrill API key. If using Mandrill while testing, make sure you don't
-                send any unsolicited emails to real addresses. You should configure your
-                Mandrill API key to be in testing mode, or make sure you only send emails to
-                addresses you control."""))
+                service to send the emails. If you want to use Mandrill, you will need to supply
+                Mandrill API key and other details. If using Mandrill while testing, make sure
+                you don't send any unsolicited emails to real addresses. You should configure
+                your Mandrill API key to be in testing mode, or make sure you only send emails
+                to addresses you control."""))
         testing_mode = configure.input_choice(u'testing_mode', u'Testing mode', choices=(
                 (u'dummymail', u'Dummymail with local mocked SMPT/IMAP servers.'),
                 (u'mandrill', u'Using Madrill transactional mail service.'),
                 ))
         settings.include(u'dummymail.py' if testing_mode == u'dummymail' else u'mandrill.py')
 
-        # Mandrill API key
+        # Mandrill API key and Webhook configuration
         if testing_mode == u'mandrill':
             mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
             settings.setting(u'MANDRILL_API_KEY', mandrill_api_key)
+
+            print(dedent(u"""
+                    To setup Mandrill webhook you need an URL Mandrill server can access. If you are
+                    running your server behing a firewall or NAT, you need to setup a tunelling
+                    reverse proxy to your localhost. See https://ngrok.com/ for instance. Please
+                    enter your webhook URL prefix. If using ngrok, your prefix should look like
+                    "https://<yoursubdomain>.ngrok.com/". If you don't want to setup Mandrill
+                    webhook, just leave it empty."""))
+            mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix')
+            if mandrill_webhook_prefix:
+                mandrill_webhook_secret = configure.auto(u'mandrill_webhook_secret', generate_secret_key(32, string.digits + string.letters))
+                mandrill_webhook_url = u'%s/mandrill/webhook/?secret=%s' % (mandrill_webhook_prefix.rstrip(u'/'), mandrill_webhook_secret)
+                settings.setting(u'MANDRILL_WEBHOOK_SECRET', mandrill_webhook_secret)
+                settings.setting(u'MANDRILL_WEBHOOK_URL', mandrill_webhook_url)
+
+                print(dedent(u"""
+                        After you finish this configuration and run your server, you can open Mandrill
+                        webhook settings and create a webhook with the following URL:
+
+                            %s
+
+                        It is not possible to create the webhook before you run your server, because
+                        Mandrill checks if the given URL works. After you create your webhook, run this
+                        configuration once again and enter the its key as given by Mandrill. Leave the
+                        key empty if you have not created the webhook yet."""
+                        % mandrill_webhook_url))
+                mandrill_webhook_key = configure.input(u'mandrill_webhook_key', u'Mandrill webhook key')
+                settings.setting(u'MANDRILL_WEBHOOK_KEY', mandrill_webhook_key)
 
     # Settings module is configured and we may use django now.
     os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')

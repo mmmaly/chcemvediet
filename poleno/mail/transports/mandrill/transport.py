@@ -7,14 +7,17 @@ import requests
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-from base import BaseTransport
+from ..base import BaseTransport
 
 class MandrillTransport(BaseTransport):
     def __init__(self, **kwargs):
         super(MandrillTransport, self).__init__(**kwargs)
-        self.api_key = getattr(settings, u'MANDRILL_API_KEY')
+        self.api_key = getattr(settings, u'MANDRILL_API_KEY', None)
         self.api_url = getattr(settings, u'MANDRILL_API_URL', u'https://mandrillapp.com/api/1.0')
         self.api_send = self.api_url + u'/messages/send.json'
+
+        if self.api_key is None:
+            raise ImproperlyConfigured(u'Setting MANDRILL_API_KEY is not set.')
 
     def send_message(self, message):
         assert message.type == message.TYPES.OUTBOUND
@@ -74,7 +77,7 @@ class MandrillTransport(BaseTransport):
 
                 if rcp[u'status'] == u'sent':
                     recipient.status = recipient.STATUSES.SENT
-                elif rcp[u'status'] == u'queued' or rcp[u'status'] == u'scheduled':
+                elif rcp[u'status'] in [u'queued', u'scheduled']:
                     recipient.status = recipient.STATUSES.QUEUED
                 elif rcp[u'status'] == u'rejected':
                     recipient.status = recipient.STATUSES.REJECTED

@@ -20,12 +20,17 @@ class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
         make_option(u'--interval', action=u'store', type=u'int', dest=u'interval', default=default_interval,
             help=u'Interval in seconds how often to check if there are jobs to run. Defaults to %d secons.' % default_interval),
+        make_option(u'--clearlogs', action=u'store_true', dest=u'clearlogs', default=False,
+            help=u'Clear cron logs before running the server like no cron jobs have ever been run yet.'),
         )
 
     def handle_noargs(self, **options):
         interval = options[u'interval']
+        clearlogs = options[u'clearlogs']
 
         try:
+            if clearlogs:
+                CronJobLog.objects.all().delete()
             while True:
                 # If we are timewarping, we may encounter cron logs from future. We must remove
                 # them, otherwise django_cron won't run any jobs with logs from furure.
