@@ -5,6 +5,7 @@ from email.utils import formataddr
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models, IntegrityError
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
@@ -179,7 +180,8 @@ class Inforequest(models.Model):
             if not self.unique_email:
                 length = 4
                 while True:
-                    self.unique_email = u'%s@mail.chcemvediet.sk' % random_readable_string(length)
+                    token = random_readable_string(length)
+                    self.unique_email = settings.INFOREQUEST_UNIQUE_EMAIL.format(token=token)
                     try:
                         super(Inforequest, self).save(*args, **kwargs)
                     except IntegrityError:
@@ -199,7 +201,7 @@ class Inforequest(models.Model):
                 u'url': url,
                 })
         msg = render_mail(template,
-                from_email=u'info@chcemvediet.sk',
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[self.applicant.email],
                 dictionary=dictionary)
         msg.send()

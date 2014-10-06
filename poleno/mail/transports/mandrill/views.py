@@ -40,13 +40,13 @@ def webhook(request):
         if not signature:
             return HttpResponseForbidden(u'X-Mandrill-Signature not set')
 
-        post_string = webhook_url
+        post_parts = [webhook_url]
         post_lists = sorted(request.POST.lists())
         for key, value_list in post_lists:
             for item in value_list:
-                post_string += u'%s%s' % (key, item)
+                post_parts.extend([key, item])
         webhook_key_encoded = webhook_key.encode('ascii','ignore')
-        post_string_encoded = post_string.encode('ascii','ignore')
+        post_string_encoded = u''.join(post_parts).encode('ascii','ignore')
         hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded, digestmod=hashlib.sha1).digest())
         if signature != hash_string:
             return HttpResponseForbidden(u'Signature does not match')

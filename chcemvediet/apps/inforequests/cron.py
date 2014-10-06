@@ -13,7 +13,6 @@ from models import Inforequest
 def undecided_email_reminder():
     with translation(settings.LANGUAGE_CODE):
         for inforequest in Inforequest.objects.not_closed().with_undecided_email():
-            print(u'moooo: %s' % repr(inforequest))
             email = inforequest.newest_undecided_email
             last = inforequest.last_undecided_email_reminder
             if last and last > email.processed:

@@ -8,13 +8,7 @@ _ = lambda s: s
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-SERVER_EMAIL = u'admin@chcemvediet.sk'
-DEFAULT_FROM_EMAIL = u'info@chcemvediet.sk'
-
-ADMINS = (
-    (u'Admin', u'admin@chcemvediet.sk'),
-)
-
+ADMINS = []
 MANAGERS = ADMINS
 
 DATABASES = {

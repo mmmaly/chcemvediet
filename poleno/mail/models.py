@@ -37,6 +37,9 @@ class Message(models.Model):
     # Mandatory
     from_mail = models.CharField(max_length=255, verbose_name=_(u'From E-mail'))
 
+    # May be empty
+    received_for = models.CharField(blank=True, max_length=255, verbose_name=_(u'Received for'))
+
     # Should NOT be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
 

@@ -150,6 +150,24 @@ if __name__ == u'__main__':
                     mail = mail_tpl.format(name=slug)
                     entry[u'fields'][u'email'] = mail
 
+        # Server email addresses
+        print(dedent(u"""
+                Set admin e-mail, inforequest unique e-mail template and default from address.
+                The admin e-mail will be used for lowlevel error reporting and administration
+                e-mails. Inforequest unique e-mail template will be used to generate unique from
+                e-mail addresses used by inforequests. The unique e-mail template must contain
+                '{token}' as a placeholdel to distinguish individual inforequests. For instance
+                '{token}@mail.example.com' may be expanded to 'lama@mail.example.com'. The
+                default from address will be used as the from e-mail addresses for all other
+                e-mails. All these e-mail should be on a domain you control."""))
+        admin_email = configure.input(u'admin_email', u'Admin e-mail', default=u'admin@chcemvediet.sk', required=True)
+        default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@chcemvediet.sk', required=True)
+        inforequest_unique_email = configure.input(u'inforequest_unique_email', u'Inforequest unique e-mail', default=u'{token}@mail.chcemvediet.sk', required=True)
+        settings.setting(u'SERVER_EMAIL', admin_email)
+        settings.setting(u'DEFAULT_FROM_EMAIL', default_from_email)
+        settings.setting(u'INFOREQUEST_UNIQUE_EMAIL', inforequest_unique_email)
+        settings.setting(u'ADMINS[len(ADMINS):]', [(u'Admin', admin_email)])
+
         # Dummymail or Mandrill testing mode
         print(dedent(u"""
                 Local testing has two modes. The first mode, Dummymail, does not send any real
@@ -207,11 +225,10 @@ if __name__ == u'__main__':
 
         # Admin e-mail and password
         print(dedent(u"""
-                Enter site admin email and password."""))
-        admin_email = configure.input(u'admin_email', u'Admin e-mail', required=True)
+                Enter site admin password."""))
         admin_password = configure.input_password(u'admin_password', u'Admin password', make_password, required=True)
         with JsonFile(u'fixtures/auth_user.json.tpl', u'fixtures/auth_user.configured.json') as data:
             for entry in data:
                 if entry[u'model'] == u'auth.user' and entry[u'fields'][u'username'] == u'admin':
-                    entry[u'fields'][u'email'] = admin_email
+                    entry[u'fields'][u'email'] = admin_email # Obtained earlier
                     entry[u'fields'][u'password'] = admin_password

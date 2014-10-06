@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% load squeeze from poleno.utils %}
 {% load blocktrans from i18n %}
 
 {% comment %}
@@ -22,6 +23,32 @@
       {% endif %}
     </p>
   </div>
+  {% if action.email %}
+    <div class="row-fluid">
+      <p class="span2 text-right">From:</p>
+      <p class="span10">{{ action.email.from_full }}</p>
+    </div>
+    <div class="row-fluid">
+      <p class="span2 text-right">To:</p>
+      <p class="span10">
+        {% for recipient in action.email.recipient_set.all %}
+          {% filter squeeze %}
+            {% if recipient.mail == action.email.received_for %}
+              <b>{{ recipient.full }}</b>
+            {% else %}
+              <span>{{ recipient.full }}</span>
+            {% endif %}
+            {% if recipient.status == recipient.STATUSES.QUEUED %}<span class="label">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.REJECTED %}<span class="label label-important">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.INVALID %}<span class="label label-important">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.SENT %}<span class="label label-info">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.DELIVERED %}<span class="label label-success">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.OPENED %}<span class="label label-success">{{ recipient.get_status_display }}</span>{% endif %}
+          {% endfilter %}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      </p>
+    </div>
+  {% endif %}
   {% if action.subject %}
     <div class="row-fluid">
       <p class="span2 text-right">Subject:</p>
