@@ -210,12 +210,13 @@ if __name__ == u'__main__':
                             %s
 
                         It is not possible to create the webhook before you run your server, because
-                        Mandrill checks if the given URL works. After you create your webhook, run this
-                        configuration once again and enter the its key as given by Mandrill. Leave the
-                        key empty if you have not created the webhook yet."""
+                        Mandrill checks if the given URL works. After you create your webhooks, run this
+                        configuration once again and enter all their keys as given by Mandrill. If you
+                        are entering multiple webhook keys, separate them with space. Leave the key
+                        empty if you have not created the webhook yet."""
                         % mandrill_webhook_url))
-                mandrill_webhook_key = configure.input(u'mandrill_webhook_key', u'Mandrill webhook key')
-                settings.setting(u'MANDRILL_WEBHOOK_KEY', mandrill_webhook_key)
+                mandrill_webhook_keys = configure.input(u'mandrill_webhook_keys', u'Mandrill webhook keys')
+                settings.setting(u'MANDRILL_WEBHOOK_KEYS', mandrill_webhook_keys.split())
 
     # Settings module is configured and we may use django now.
     os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')

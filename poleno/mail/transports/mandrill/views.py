@@ -22,15 +22,15 @@ def webhook(request):
     # Based on djrill.views.DjrillWebhookView
     secret = getattr(settings, u'MANDRILL_WEBHOOK_SECRET', None)
     secret_name = getattr(settings, u'MANDRILL_WEBHOOK_SECRET_NAME', u'secret')
-    webhook_key = getattr(settings, u'MANDRILL_WEBHOOK_KEY', None)
+    webhook_keys = getattr(settings, u'MANDRILL_WEBHOOK_KEYS', None)
     webhook_url = getattr(settings, u'MANDRILL_WEBHOOK_URL', None)
 
-    if secret is None:
+    if not secret:
         raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_SECRET is not set.')
-    if webhook_url is None:
+    if not webhook_url:
         raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_URL is not set.')
-    if webhook_key is None and request.method == u'POST':
-        raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_KEY is not set.')
+    if not webhook_keys and request.method == u'POST':
+        raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_KEYS is not set.')
 
     if request.GET.get(secret_name) != secret:
         return HttpResponseForbidden(u'Secret does not match')
@@ -45,10 +45,13 @@ def webhook(request):
         for key, value_list in post_lists:
             for item in value_list:
                 post_parts.extend([key, item])
-        webhook_key_encoded = webhook_key.encode('ascii','ignore')
         post_string_encoded = u''.join(post_parts).encode('ascii','ignore')
-        hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded, digestmod=hashlib.sha1).digest())
-        if signature != hash_string:
+        for webhook_key in webhook_keys:
+            webhook_key_encoded = webhook_key.encode('ascii','ignore')
+            hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded, digestmod=hashlib.sha1).digest())
+            if signature == hash_string:
+                break
+        else:
             return HttpResponseForbidden(u'Signature does not match')
 
         try:
