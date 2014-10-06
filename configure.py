@@ -1,10 +1,12 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import os
 import json
 import re
 import string
 import random
 from textwrap import dedent
+from getpass import getpass
 
 class JsonFile(object):
     def __init__(self, inputfile, outputfile=None):
@@ -52,6 +54,40 @@ class Configure(object):
         self.data[key] = inputed
         return inputed
 
+    def input_password(self, key, prompt, hasher, required=False):
+        configured = self.data.get(key, u'')
+        while True:
+            inputed = getpass(u'\n%s [%s]: ' % (prompt, u'*****' if configured else u''))
+            if required and not inputed and not configured:
+                print(u'\nError: The value is required.')
+                continue
+            break
+        hashed = hasher(inputed) if inputed else configured
+        self.data[key] = hashed
+        return hashed
+
+    def input_choice(self, key, prompt, choices, default=u''):
+        configured = self.data.get(key, default)
+        configured_choice = u''
+        print(u'\n%s:' % prompt)
+        for idx, (value, label) in enumerate(choices):
+            print(u' %d) %s' % (idx+1, label))
+            if value == configured:
+                configured_choice = u'%d' % (idx+1)
+        while True:
+            inputed = raw_input(u'\n%s [%s]: ' % (prompt, configured_choice)) or configured_choice
+            if not inputed:
+                print(u'\nError: The value is required.')
+                continue
+            try:
+                value, label = choices[int(inputed)-1]
+            except (ValueError, IndexError):
+                print(u'\nError: Invalid choice.')
+                continue
+            break
+        self.data[key] = value
+        return value
+
 class Settings(object):
     def __init__(self, filename=u'chcemvediet/settings/configured.py'):
         self.filename = filename
@@ -76,17 +112,16 @@ class Settings(object):
     def setting(self, name, value):
         self.lines.append(u'%s = %s' % (name, repr(value)))
 
-def generate_secret_key():
-    # Based on: http://techblog.leosoto.com/django-secretkey-generation/
-    chars = string.digits + string.letters + string.punctuation
-    return u''.join(random.SystemRandom().choice(chars) for i in range(100))
+def generate_secret_key(length, chars):
+    return u''.join(random.SystemRandom().choice(chars) for i in range(length))
 
 
 if __name__ == u'__main__':
     with Configure() as configure, Settings() as settings:
 
         # Django Secret Key generated only if not stored in the configuration, yet.
-        settings.setting(u'SECRET_KEY', configure.auto(u'secret_key', generate_secret_key()))
+        secret_key = configure.auto(u'secret_key', generate_secret_key(100, string.digits + string.letters + string.punctuation))
+        settings.setting(u'SECRET_KEY', secret_key)
 
         # Social accounts Client IDs and Secrets
         print(dedent(u"""
@@ -96,8 +131,10 @@ if __name__ == u'__main__':
         with JsonFile(u'fixtures/socialaccount_socialapp.json.tpl', u'fixtures/socialaccount_socialapp.configured.json') as data:
             for entry in data:
                 if entry[u'model'] == u'socialaccount.socialapp':
-                    entry[u'fields'][u'client_id'] = configure.input(u'%s_client_id' % entry[u'fields'][u'provider'], u'%s Client ID' % entry[u'fields'][u'name'])
-                    entry[u'fields'][u'secret'] = configure.input(u'%s_secret' % entry[u'fields'][u'provider'], u'%s Secret' % entry[u'fields'][u'name'])
+                    client_id = configure.input(u'%s_client_id' % entry[u'fields'][u'provider'], u'%s Client ID' % entry[u'fields'][u'name'])
+                    secret = configure.input(u'%s_secret' % entry[u'fields'][u'provider'], u'%s Secret' % entry[u'fields'][u'name'])
+                    entry[u'fields'][u'client_id'] = client_id
+                    entry[u'fields'][u'secret'] = secret
 
         # Obligee dummy mails
         print(dedent(u"""
@@ -113,3 +150,86 @@ if __name__ == u'__main__':
                     mail = mail_tpl.format(name=slug)
                     entry[u'fields'][u'email'] = mail
 
+        # Server email addresses
+        print(dedent(u"""
+                Set admin e-mail, inforequest unique e-mail template and default from address.
+                The admin e-mail will be used for lowlevel error reporting and administration
+                e-mails. Inforequest unique e-mail template will be used to generate unique from
+                e-mail addresses used by inforequests. The unique e-mail template must contain
+                '{token}' as a placeholdel to distinguish individual inforequests. For instance
+                '{token}@mail.example.com' may be expanded to 'lama@mail.example.com'. The
+                default from address will be used as the from e-mail addresses for all other
+                e-mails. All these e-mail should be on a domain you control."""))
+        admin_email = configure.input(u'admin_email', u'Admin e-mail', default=u'admin@chcemvediet.sk', required=True)
+        default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@chcemvediet.sk', required=True)
+        inforequest_unique_email = configure.input(u'inforequest_unique_email', u'Inforequest unique e-mail', default=u'{token}@mail.chcemvediet.sk', required=True)
+        settings.setting(u'SERVER_EMAIL', admin_email)
+        settings.setting(u'DEFAULT_FROM_EMAIL', default_from_email)
+        settings.setting(u'INFOREQUEST_UNIQUE_EMAIL', inforequest_unique_email)
+        settings.setting(u'ADMINS[len(ADMINS):]', [(u'Admin', admin_email)])
+
+        # Dummymail or Mandrill testing mode
+        print(dedent(u"""
+                Local testing has two modes. The first mode, Dummymail, does not send any real
+                emails. It just mocks local SMPT/IMAP servers and does not support any advanced
+                features like message bounces. The second mode uses Madrill transactional mail
+                service to send the emails. If you want to use Mandrill, you will need to supply
+                Mandrill API key and other details. If using Mandrill while testing, make sure
+                you don't send any unsolicited emails to real addresses. You should configure
+                your Mandrill API key to be in testing mode, or make sure you only send emails
+                to addresses you control."""))
+        testing_mode = configure.input_choice(u'testing_mode', u'Testing mode', choices=(
+                (u'dummymail', u'Dummymail with local mocked SMPT/IMAP servers.'),
+                (u'mandrill', u'Using Madrill transactional mail service.'),
+                ))
+        settings.include(u'dummymail.py' if testing_mode == u'dummymail' else u'mandrill.py')
+
+        # Mandrill API key and Webhook configuration
+        if testing_mode == u'mandrill':
+            mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
+            settings.setting(u'MANDRILL_API_KEY', mandrill_api_key)
+
+            print(dedent(u"""
+                    To setup Mandrill webhook you need an URL Mandrill server can access. If you are
+                    running your server behing a firewall or NAT, you need to setup a tunelling
+                    reverse proxy to your localhost. See https://ngrok.com/ for instance. Please
+                    enter your webhook URL prefix. If using ngrok, your prefix should look like
+                    "https://<yoursubdomain>.ngrok.com/". If you don't want to setup Mandrill
+                    webhook, just leave it empty."""))
+            mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix')
+            if mandrill_webhook_prefix:
+                mandrill_webhook_secret = configure.auto(u'mandrill_webhook_secret', generate_secret_key(32, string.digits + string.letters))
+                mandrill_webhook_url = u'%s/mandrill/webhook/?secret=%s' % (mandrill_webhook_prefix.rstrip(u'/'), mandrill_webhook_secret)
+                settings.setting(u'MANDRILL_WEBHOOK_SECRET', mandrill_webhook_secret)
+                settings.setting(u'MANDRILL_WEBHOOK_URL', mandrill_webhook_url)
+
+                print(dedent(u"""
+                        After you finish this configuration and run your server, you can open Mandrill
+                        webhook settings and create a webhook with the following URL:
+
+                            %s
+
+                        It is not possible to create the webhook before you run your server, because
+                        Mandrill checks if the given URL works. After you create your webhooks, run this
+                        configuration once again and enter all their keys as given by Mandrill. If you
+                        are entering multiple webhook keys, separate them with space. Leave the key
+                        empty if you have not created the webhook yet."""
+                        % mandrill_webhook_url))
+                mandrill_webhook_keys = configure.input(u'mandrill_webhook_keys', u'Mandrill webhook keys')
+                settings.setting(u'MANDRILL_WEBHOOK_KEYS', mandrill_webhook_keys.split())
+
+    # Settings module is configured and we may use django now.
+    os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')
+
+    with Configure() as configure:
+        from django.contrib.auth.hashers import make_password
+
+        # Admin e-mail and password
+        print(dedent(u"""
+                Enter site admin password."""))
+        admin_password = configure.input_password(u'admin_password', u'Admin password', make_password, required=True)
+        with JsonFile(u'fixtures/auth_user.json.tpl', u'fixtures/auth_user.configured.json') as data:
+            for entry in data:
+                if entry[u'model'] == u'auth.user' and entry[u'fields'][u'username'] == u'admin':
+                    entry[u'fields'][u'email'] = admin_email # Obtained earlier
+                    entry[u'fields'][u'password'] = admin_password

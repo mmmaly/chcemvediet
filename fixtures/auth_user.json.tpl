@@ -12,8 +12,8 @@
     "last_login": "2013-09-26T06:16:41.442Z", 
     "groups": [], 
     "user_permissions": [], 
-    "password": "pbkdf2_sha256$10000$faOxq5iHka3W$kss7xoNNZ1+jpJQOw7JF/RyOnnQHlwCMW3WoEmmy7ho=", 
-    "email": "admin@example.com", 
+    "password": "(insert password hash here)", 
+    "email": "(insert email here)", 
     "date_joined": "2013-09-23T03:13:45.529Z"
   }
 }

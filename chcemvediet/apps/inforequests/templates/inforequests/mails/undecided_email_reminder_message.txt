@@ -1,5 +1,5 @@
 {# vim: set filetype=django :#}
-{% load squeeze from poleno.utils %}
+{% load squeeze local_date from poleno.utils %}
 
 {% comment %}
  %
@@ -11,9 +11,9 @@
 
 {% autoescape off %}
 {% filter squeeze %}
-You have {{ inforequest.receivedemail_set.undecided.count }} e-mails regarding your inforequest to
+You have {{ inforequest.undecided_set.count }} e-mails regarding your inforequest to
 {{ inforequest.history.obligee_name }} waiting for your decision. The last of them was received on
-{{ inforequest.newest_undecided_email.received_date }}.
+{{ inforequest.newest_undecided_email.processed|local_date }}.
 {% endfilter %}
 
 {% filter squeeze %}

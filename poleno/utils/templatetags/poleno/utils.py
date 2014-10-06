@@ -8,6 +8,7 @@ from django.core.urlresolvers import resolve, reverse
 from django.contrib.webdesign.lorem_ipsum import paragraphs
 
 from poleno.utils.misc import squeeze as squeeze_func
+from poleno.utils.date import utc_date as utc_date_func, local_date as local_date_func
 from poleno.utils.translation import translation
 
 register = Library()
@@ -54,6 +55,21 @@ def range_(a, b):
         return range(int(a), int(b))
     except (ValueError, TypeError):
         return []
+
+@register.filter
+def utc_date(dt):
+    u"""
+    Converts aware ``datetime`` ``dt`` to UTC and returns its day as ``date``.
+    """
+    return utc_date_func(dt)
+
+@register.filter
+def local_date(dt, tz=None):
+    u"""
+    Converts aware ``datetime`` ``dt`` to timezone ``tz``, by default the current time zone, and
+    returns its day as ``date``.
+    """
+    return local_date_func(dt, tz)
 
 @register.filter
 def active(request, view_prefix):

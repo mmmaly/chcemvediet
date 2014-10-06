@@ -8,10 +8,7 @@ _ = lambda s: s
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    (u'Admin', u'admin@chcemvediet.sk'),
-)
-
+ADMINS = []
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -160,13 +157,13 @@ INSTALLED_APPS = (
     u'widget_tweaks',
     u'hvad',
     u'sekizai',
-    u'django_mailbox',
     u'adminplus',
     u'django_cron',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
     u'poleno.cron',
+    u'poleno.mail',
     # Local to the project
     u'chcemvediet.apps.attachments',
     u'chcemvediet.apps.accounts',
@@ -216,11 +213,6 @@ CACHES = {
     },
 }
 
-# E-mail configuration
-EMAIL_BACKEND = u'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = u'localhost'
-EMAIL_PORT = 1025
-
 # Where to search for initial data
 FIXTURE_DIRS = (
     u'./fixtures',
@@ -255,9 +247,12 @@ HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 
 # Cron jobs
 CRON_CLASSES = (
-    u'chcemvediet.cron.get_mail',
+    u'poleno.mail.cron.mail',
     u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
     u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.close_inforequests',
 )
+
+# Mail settings
+EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'

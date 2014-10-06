@@ -15,7 +15,7 @@
 {% if not inforequest.closed %}
   {% if inforequest.has_undecided_email %}
     <div id="decide">
-      {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.receivedemail_set.undecided.first %}
+      {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.oldest_undecided_email %}
     </div>
     <div id="undecided">
       {% include "inforequests/detail-undecided.html" with inforequest=inforequest %}

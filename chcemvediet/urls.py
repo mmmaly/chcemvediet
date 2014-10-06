@@ -14,6 +14,7 @@ admin.autodiscover()
 
 urlpatterns = patterns(u'',
     url(r'^sitemap[.]xml$', u'django.contrib.sitemaps.views.sitemap'),
+    url(r'^mandrill/', include(u'poleno.mail.transports.mandrill.urls', namespace=u'mandrill')),
 )
 
 urlpatterns += i18n_patterns(u'',

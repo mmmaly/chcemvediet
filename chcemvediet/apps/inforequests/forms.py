@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import datetime
 from dateutil.relativedelta import relativedelta
 
 from django import forms
@@ -13,6 +12,7 @@ from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 from poleno.utils.models import after_saved
 from poleno.utils.forms import AutoSuppressedSelect, PrefixedForm
 from poleno.utils.misc import squeeze
+from poleno.utils.date import local_today
 from chcemvediet.apps.attachments.forms import AttachmentsField
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
@@ -175,9 +175,9 @@ class EffectiveDateMixin(ActionAbstractForm):
                 try:
                     if history and effective_date < history.last_action.effective_date:
                         raise ValidationError(_(u'May not be older than previous action.'))
-                    if effective_date > datetime.date.today():
+                    if effective_date > local_today():
                         raise ValidationError(_(u'May not be from future.'))
-                    if effective_date < datetime.date.today() - relativedelta(months=1):
+                    if effective_date < local_today() - relativedelta(months=1):
                         raise ValidationError(_(u'May not be older than one month.'))
                 except ValidationError as e:
                     self._errors[u'effective_date'] = self.error_class(e.messages)

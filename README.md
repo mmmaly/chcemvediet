@@ -19,6 +19,7 @@ You need the following packages installed
  * python (ver. 2.7.x)
  * python-virtualenv
 
+
 ### 1.2. Installation
 
 To prepare your local development environment, run the following commands:
@@ -32,18 +33,24 @@ To prepare your local development environment, run the following commands:
 	$ env/bin/python manage.py migrate --fake
 	$ env/bin/python manage.py loaddata fixtures/*.json
 
-Configuration script will ask for your OAuth Client IDs and Secrets for social account providers.
-See bellow for details how to get social accounts application keys.
+Configuration script `configure.py` will ask you to input several options. Please follow the script
+instructions. Among other things it well ask for your OAuth Client IDs and Secrets for social
+account providers. See [Social accounts application keys](#2-social-accounts-application-keys)
+section bellow for details how to get social accounts application keys. The script will ask you
+whether you wish to configure just local dummy e-mail infrastructure, or you wish to end real
+e-mails via Mandrill. For details on the dummy e-mail infrastructure see [Dummy e-mail
+infrastructure](#4-dummy-e-mail-infrastructure) section, and for instructions how to setup Mandrill
+see [Mandrill transactional e-mail servis](#3-mandrill-transactional-e-mail-servis) section below.
+
 
 ### 1.3. Updates
 
-You should update your development environment regularly to reflect the changes
-made by other developers. To update the environment, you can delete it and
-recreate it from the scratch again, or you can migrate it. Migrations are
-useful if you've got some unfinished work you have not pushed to the
-repository, yet. However, you should recreate your environment from the scratch
-once in a while, as the migrations are not waterproof and may fail sometimes,
-especially if migrating from a rather old environment.
+You should update your development environment regularly to reflect the changes made by other
+developers. To update the environment, you can delete it and recreate it from the scratch again, or
+you can migrate it. Migrations are useful if you've got some unfinished work you have not pushed to
+the repository, yet. However, you should recreate your environment from the scratch once in
+a while, as the migrations are not waterproof and may fail sometimes, especially if migrating from
+a rather old environment.
 
 To migrate to an updated version of the site, run the following commands:
 
@@ -61,17 +68,15 @@ If `migrate` fails, try to run it once or twice again. Sometimes it helps.
 
  1. Run testing webserver:
 
-    	$ cd chcemvediet
     	$ env/bin/python manage.py runserver
 
- 2. Run testing mail infrastructure in another shell (see details below):
+ 2. Run dummy mail infrastructure in another shell if you have configured your installation to use
+    it instead of Mandrill (if you have configured to use Mandrill, don't run this command):
 
-    	$ cd chcemvediet
     	$ env/bin/python manage.py dummymail
 
  3. Run testing cronserver in yet another shell:
 
-    	$ cd chcemvediet
     	$ env/bin/python manage.py cronserver
 
  4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
@@ -108,7 +113,35 @@ And then submit a 'Pull Request' on GitHub.
     in http://127.0.0.1:8000/admin/socialaccount/socialapp/
 
 
-## 3. Dummy e-mail infrastructure
+## 3. Mandrill transactional e-mail servis
+
+To use Mandrill, you need to register on their site http://mandrill.com/ and obtain a Mandrill API
+key. The configuration script `configure.py` will ask for this key.
+
+To let Mandrill process your inbound e-mails, you must configure your inbound e-mail addresses to
+reside on domains you control. The configuration script will ask you to input your admin e-mail,
+your default from e-mail and your inforequest unique email template. For every domain you use with
+these addresses, you must add MX DNS records as required by Mandrill. For details see
+https://mandrillapp.com/inbound. Note that obligee emails should not reside on domains you
+configured to use with Mandrill.
+
+To setup Mandrill webhook you need an URL Mandrill server can access. If you will be running your
+server behing a firewall or NAT, you need to setup a tunelling reverse proxy to your localhost. See
+https://ngrok.com/ for instance. The configuration script will ask for your webhook prefix. For
+instance, if using ngrok, your prefix should look like `https://<yoursubdomain>.ngrok.com/`.
+After you input the webhook prefix, the script will give you a full URL you are to use to configure
+your Mandrill webhook. To configure the webhook, go to https://mandrillapp.com/inbound and add
+a route pointing to this URL for every inbound domain. Note that in order to add a route your
+server must be up and running, so for now skim the rest of the configuration script, run the
+server, setup the route and run the configuration script once again to input remaining options.
+
+After you have added your webhook, go to https://mandrillapp.com/settings/webhooks and add
+a webhook to trigger on the following events: `send`, `deferral`, `hard_bounce`, `soft_bounce`,
+`open`, `click`, `spam` and `reject`. Finally, copy the keys of all your webhooks and input them
+into the configuration script and restart the server.
+
+
+## 4. Dummy e-mail infrastructure
 
 Using the command:
 
@@ -156,7 +189,7 @@ e-mail address whatsoever. Nothing will be delivered. Also note, that all e-mail
 memory only, so they will disappear when the infrastructure is restarted.
 
 
-## 4. Site Content and translations
+## 5. Site Content and translations
 
 All site text content is stored in templates. Templates are in `template` directories all over the
 project. Some templates are translated in place and have their translated versions such as

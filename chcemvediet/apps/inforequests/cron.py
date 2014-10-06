@@ -1,13 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.conf import settings
-from django.utils import timezone
 
 from poleno.cron import cron_job
 from poleno.workdays import workdays
 from poleno.utils.translation import translation
+from poleno.utils.date import local_date, local_today
 
 from models import Inforequest
 
@@ -17,12 +15,13 @@ def undecided_email_reminder():
         for inforequest in Inforequest.objects.not_closed().with_undecided_email():
             email = inforequest.newest_undecided_email
             last = inforequest.last_undecided_email_reminder
-            if last and last > email.received_datetime:
+            if last and last > email.processed:
                 continue
-            days = workdays.between(email.received_date, datetime.date.today())
+            days = workdays.between(local_date(email.processed), local_today())
             if days < 5:
                 continue
 
+            print(u'Sending undecided email reminder: %s' % repr(inforequest))
             inforequest.send_undecided_email_reminder()
 
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
@@ -40,10 +39,11 @@ def obligee_deadline_reminder():
                 # send any more reminders if the last reminder was sent after the deadline was
                 # extended for the last time.
                 last = history.last_action.last_deadline_reminder
-                last_date = timezone.localtime(last).date() if last else None
+                last_date = local_date(last) if last else None
                 if last and history.last_action.deadline_missed_at(last_date):
                     continue
 
+                print(u'Sending obligee deadline reminder: %s' % repr(history.last_action))
                 inforequest.send_obligee_deadline_reminder(history.last_action)
 
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
@@ -63,6 +63,7 @@ def applicant_deadline_reminder():
                 if history.last_action.last_deadline_reminder:
                     continue
 
+                print(u'Sending applicant deadline reminder: %s' % repr(history.last_action))
                 inforequest.send_applicant_deadline_reminder(history.last_action)
 
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
@@ -75,5 +76,7 @@ def close_inforequests():
             # Every history that has a deadline have been missed for at least 100 WD.
             for history in inforequest.history_set.all():
                 history.add_expiration_if_expired()
+
+            print(u'Closing inforequest: %s' % repr(inforequest))
             inforequest.closed = True
             inforequest.save()

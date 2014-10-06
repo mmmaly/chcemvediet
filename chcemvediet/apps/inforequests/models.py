@@ -1,24 +1,19 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import datetime
 from email.utils import formataddr
 
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models, IntegrityError
-from django.dispatch import receiver
 from django.conf import settings
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from django_mailbox.signals import message_received
-
+from poleno.workdays import workdays
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
 from poleno.utils.models import FieldChoices, QuerySet
 from poleno.utils.mail import render_mail
-from poleno.utils.translation import translation
-from poleno.workdays import workdays
+from poleno.utils.date import utc_now, local_today
 
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
@@ -54,13 +49,16 @@ class InforequestQuerySet(QuerySet):
     def not_closed(self):
         return self.filter(closed=False)
     def with_undecided_email(self):
-        return self.filter(receivedemail__status=ReceivedEmail.STATUSES.UNDECIDED).distinct()
+        return self.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED).distinct()
     def without_undecided_email(self):
-        return self.exclude(receivedemail__status=ReceivedEmail.STATUSES.UNDECIDED)
+        return self.exclude(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
 
 class Inforequest(models.Model):
     # Mandatory
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
+
+    # May be empty; m2m through InforequestEmail
+    email_set = models.ManyToManyField(u'mail.Message', through=u'InforequestEmail', verbose_name=_(u'E-mail Set'))
 
     # Frozen Applicant contact information at the time the Inforequest was submitted, in case that
     # the contact information changes in the future. The information is mandatory and automaticly
@@ -90,7 +88,7 @@ class Inforequest(models.Model):
     #  -- actiondraft_set: by ActionDraft.inforequest
     #     May be empty; May contain at most one instance for every ActionDraft.TYPES
     #
-    #  -- receivedemail_set: by ReceivedEmail.inforequest
+    #  -- inforequestemail_set: by InforequestEmail.inforequest
     #     May be empty
 
     objects = InforequestQuerySet.as_manager()
@@ -103,16 +101,20 @@ class Inforequest(models.Model):
         return self.history_set.get(advanced_by=None)
 
     @property
+    def undecided_set(self):
+        return self.email_set.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
+
+    @property
     def has_undecided_email(self):
-        return self.receivedemail_set.undecided().exists()
+        return self.undecided_set.exists()
 
     @property
     def oldest_undecided_email(self):
-        return self.receivedemail_set.undecided().first()
+        return self.undecided_set.first()
 
     @property
     def newest_undecided_email(self):
-        return self.receivedemail_set.undecided().last()
+        return self.undecided_set.last()
 
     @property
     def can_add_clarification_response(self):
@@ -178,7 +180,8 @@ class Inforequest(models.Model):
             if not self.unique_email:
                 length = 4
                 while True:
-                    self.unique_email = u'%s@mail.chcemvediet.sk' % random_readable_string(length)
+                    token = random_readable_string(length)
+                    self.unique_email = settings.INFOREQUEST_UNIQUE_EMAIL.format(token=token)
                     try:
                         super(Inforequest, self).save(*args, **kwargs)
                     except IntegrityError:
@@ -198,21 +201,21 @@ class Inforequest(models.Model):
                 u'url': url,
                 })
         msg = render_mail(template,
-                from_email=u'info@chcemvediet.sk',
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[self.applicant.email],
                 dictionary=dictionary)
         msg.send()
 
-    def send_received_email_notification(self, receivedemail):
+    def send_received_email_notification(self, email):
         self._send_notification(u'inforequests/mails/received_email_notification', u'decide', {
-                u'receivedemail': receivedemail,
+                u'email': email,
                 })
 
     def send_undecided_email_reminder(self):
         self._send_notification(u'inforequests/mails/undecided_email_reminder', u'decide', {
                 })
 
-        self.last_undecided_email_reminder = timezone.now()
+        self.last_undecided_email_reminder = utc_now()
         self.save()
 
     def send_obligee_deadline_reminder(self, action):
@@ -220,7 +223,7 @@ class Inforequest(models.Model):
                 u'action': action,
                 })
 
-        action.last_deadline_reminder = timezone.now()
+        action.last_deadline_reminder = utc_now()
         action.save()
 
     def send_applicant_deadline_reminder(self, action):
@@ -228,11 +231,26 @@ class Inforequest(models.Model):
                 u'action': action,
                 })
 
-        action.last_deadline_reminder = timezone.now()
+        action.last_deadline_reminder = utc_now()
         action.save()
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+class InforequestEmail(models.Model):
+    # Mandatory; m2m ends
+    inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
+    email = models.ForeignKey(u'mail.Message', verbose_name=_(u'E-mail'))
+
+    # Mandatory choice
+    TYPES = FieldChoices(
+            (u'APPLICANT_ACTION', 1, _(u'Applicant Action')),
+            (u'OBLIGEE_ACTION', 2, _(u'Obligee Action')),
+            (u'UNDECIDED', 3, _(u'Undecided')),
+            (u'UNRELATED', 4, _(u'Unrelated')),
+            (u'UNKNOWN', 5, _(u'Unknown')),
+            )
+    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
 class History(models.Model):
     # Mandatory
@@ -382,69 +400,9 @@ class History(models.Model):
             expiration = Action(
                     history=self,
                     type=(Action.TYPES.APPEAL_EXPIRATION if self.last_action.type == Action.TYPES.APPEAL else Action.TYPES.EXPIRATION),
-                    effective_date=timezone.now(),
+                    effective_date=local_today(),
                     )
             expiration.save()
-
-    def __unicode__(self):
-        return u'%s' % self.pk
-
-class ReceivedEmailQuerySet(QuerySet):
-    def undecided(self):
-        return self.filter(status=ReceivedEmail.STATUSES.UNDECIDED)
-
-class ReceivedEmail(models.Model):
-    # None for UNASSIGNED emails; Mandatory otherwise
-    inforequest = models.ForeignKey(u'Inforequest', blank=True, null=True, verbose_name=_(u'Inforequest'))
-
-    # Mandatory
-    raw_email = models.ForeignKey(u'django_mailbox.Message', verbose_name=_(u'Raw E-mail'))
-
-    # Mandatory choice
-    STATUSES = FieldChoices(
-        (u'UNASSIGNED', 1, _(u'Unassigned')),
-        (u'UNDECIDED', 2, _(u'Undecided')),
-        (u'UNKNOWN', 3, _(u'Unknown')),
-        (u'UNRELATED', 4, _(u'Unrelated')),
-        (u'OBLIGEE_ACTION', 5, _(u'Obligee Action')),
-        )
-    status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'))
-
-    # Backward relations:
-    #
-    #  -- action: by Action.receivedemail
-    #     Mandatory for OBLIGEE_ACTION; Raises DoesNotExist otherwise
-
-    objects = ReceivedEmailQuerySet.as_manager()
-
-    class Meta:
-        ordering = [u'raw_email__processed', u'pk']
-
-    @property
-    def received_datetime(self):
-        u""" Aware datetime """
-        return self.raw_email.processed
-
-    @property
-    def received_date(self):
-        u""" Naive local date """
-        return timezone.localtime(self.raw_email.processed).date()
-
-    @property
-    def from_header(self):
-        return self.raw_email.from_header
-
-    @property
-    def to_header(self):
-        return self.raw_email.to_header
-
-    @property
-    def subject(self):
-        return self.raw_email.subject
-
-    @property
-    def content(self):
-        return self.raw_email.text
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -465,8 +423,8 @@ class Action(models.Model):
     # Mandatory
     history = models.ForeignKey(u'History', verbose_name=_(u'History'))
 
-    # Mandatory for actions received by email; None otherwise
-    receivedemail = models.OneToOneField(u'ReceivedEmail', blank=True, null=True, verbose_name=_(u'Received E-mail'))
+    # Mandatory for actions sent or received by email; None otherwise
+    email = models.OneToOneField(u'mail.Message', blank=True, null=True, verbose_name=_(u'E-mail'))
 
     # Mandatory choice
     TYPES = FieldChoices(
@@ -600,15 +558,15 @@ class Action(models.Model):
 
     @property
     def days_passed(self):
-        return self.days_passed_at(datetime.date.today())
+        return self.days_passed_at(local_today())
 
     @property
     def deadline_remaining(self):
-        return self.deadline_remaining_at(datetime.date.today())
+        return self.deadline_remaining_at(local_today())
 
     @property
     def deadline_missed(self):
-        return self.deadline_missed_at(datetime.date.today())
+        return self.deadline_missed_at(local_today())
 
     @property
     def has_deadline(self):
@@ -680,6 +638,16 @@ class Action(models.Model):
             msg.attach(attachment.name, attachment.content, attachment.content_type)
         msg.send()
 
+        inforequestemail = InforequestEmail(
+                inforequest=self.history.inforequest,
+                email=msg.instance,
+                type=InforequestEmail.TYPES.APPLICANT_ACTION,
+                )
+        inforequestemail.save()
+
+        self.email = msg.instance
+        self.save()
+
     def __unicode__(self):
         return u'%s' % self.pk
 
@@ -726,22 +694,4 @@ class ActionDraft(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-@receiver(message_received)
-def assign_email_on_message_received(sender, message, **kwargs):
-    try:
-        receivedemail = ReceivedEmail(raw_email=message)
-        try:
-            inforequest = Inforequest.objects.get(unique_email__in=message.to_addresses)
-        except (Inforequest.DoesNotExist, Inforequest.MultipleObjectsReturned):
-            receivedemail.status = receivedemail.STATUSES.UNASSIGNED
-        else:
-            receivedemail.inforequest = inforequest
-            receivedemail.status = receivedemail.STATUSES.UNDECIDED
-        receivedemail.save()
-
-        if receivedemail.inforequest and not receivedemail.inforequest.closed:
-            with translation(settings.LANGUAGE_CODE):
-                receivedemail.inforequest.send_received_email_notification(receivedemail)
-    except Exception as e:
-        print(e)
-        raise
+import signals
