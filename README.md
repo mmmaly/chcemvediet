@@ -128,7 +128,7 @@ configured to use with Mandrill.
 To setup Mandrill webhook you need an URL Mandrill server can access. If you will be running your
 server behing a firewall or NAT, you need to setup a tunelling reverse proxy to your localhost. See
 https://ngrok.com/ for instance. The configuration script will ask for your webhook prefix. For
-instance, if using ngrok, your prefix should look like `https://&lt;yoursubdomain&gt;.ngrok.com/`.
+instance, if using ngrok, your prefix should look like `https://<yoursubdomain>.ngrok.com/`.
 After you input the webhook prefix, the script will give you a full URL you are to use to configure
 your Mandrill webhook. To configure the webhook, go to https://mandrillapp.com/inbound and add
 a route pointing to this URL for every inbound domain. Note that in order to add a route your
