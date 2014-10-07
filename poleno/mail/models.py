@@ -21,33 +21,33 @@ class MessageQuerySet(QuerySet):
         return self.filter(processed__isnull=True)
 
 class Message(models.Model):
-    # Mandatory choice
+    # May NOT be NULL
     TYPES = FieldChoices(
             (u'INBOUND', 1, _(u'Inbound')),
             (u'OUTBOUND', 2, _(u'Outbound')),
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
-    # Mandatory for processed messages; NULL for queued messages
+    # May NOT be NULL for processed messages; NULL for queued messages
     processed = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Processed'))
 
     # May be empty
     from_name = models.CharField(blank=True, max_length=255, verbose_name=_(u'From Name'))
 
-    # Mandatory
+    # Should NOT be empty
     from_mail = models.CharField(max_length=255, verbose_name=_(u'From E-mail'))
 
-    # May be empty
+    # May be empty for inbound messages; Empty for outbound messages
     received_for = models.CharField(blank=True, max_length=255, verbose_name=_(u'Received for'))
 
-    # Should NOT be empty
+    # May be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
 
-    # At least one should NOT be empty
+    # May be empty
     text = models.TextField(blank=True, verbose_name=_(u'Text Content'))
     html = models.TextField(blank=True, verbose_name=_(u'HTML Content'))
 
-    # Dict: String->String; May be empty
+    # Dict: String->(String|[String]); May be empty
     headers = JSONField(default={}, verbose_name=_(u'Headers'))
 
     # Backward relations:
@@ -66,6 +66,7 @@ class Message(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+    # May be empty; Read-write
     @property
     def from_full(self):
         return formataddr((self.from_name, self.from_mail))
@@ -95,16 +96,16 @@ class RecipientQuerySet(QuerySet):
         return self.filter(type=Recipient.TYPES.BCC)
 
 class Recipient(models.Model):
-    # Mandatory
+    # May NOT be NULL
     message = models.ForeignKey(u'Message', verbose_name=_(u'Message'))
 
     # May be empty
     name = models.CharField(blank=True, max_length=255, verbose_name=_(u'Name'))
 
-    # Mandatory
+    # May NOT be empty
     mail = models.CharField(max_length=255, verbose_name=_(u'E-mail'))
 
-    # Mandatory choice
+    # May NOT be NULL
     TYPES = FieldChoices(
             (u'TO', 1, _(u'To')),
             (u'CC', 2, _(u'Cc')),
@@ -112,7 +113,7 @@ class Recipient(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
-    # Mandatory choice
+    # May NOT be NULL
     STATUSES = FieldChoices(
             (u'INBOUND', 8, _(u'Inbound')),
             (u'UNDEFINED', 1, _(u'Undefined')),
@@ -139,6 +140,7 @@ class Recipient(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+    # May be empty; Read-write
     @property
     def full(self):
         return formataddr((self.name, self.mail))
@@ -148,10 +150,10 @@ class Recipient(models.Model):
         self.name, self.mail = parseaddr(value)
 
 class Attachment(models.Model):
-    # Mandatory
+    # May NOT be NULL
     message = models.ForeignKey(u'Message', verbose_name=_(u'Message'))
 
-    # Mandatory; Random local filename is generated in save() when creating a new object.
+    # May NOT be NULL; Random local filename is generated in save() when creating a new object.
     file = models.FileField(upload_to=u'mail_attachments', max_length=255, verbose_name=_(u'File'))
 
     # May be empty; May not be trusted, set by the mail sender.
@@ -166,6 +168,7 @@ class Attachment(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+    # May be empty; Read-only
     @property
     def content(self):
         try:

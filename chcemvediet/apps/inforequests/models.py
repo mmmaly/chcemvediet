@@ -20,10 +20,10 @@ class InforequestDraftQuerySet(QuerySet):
         return self.filter(applicant=user)
 
 class InforequestDraft(models.Model):
-    # Mandatory
+    # May NOT be NULL
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
 
-    # Optional
+    # May be NULL
     obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True, verbose_name=_(u'Obligee'))
 
     # May be empty
@@ -54,7 +54,7 @@ class InforequestQuerySet(QuerySet):
         return self.exclude(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
 
 class Inforequest(models.Model):
-    # Mandatory
+    # May NOT be NULL
     applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
 
     # May be empty; m2m through InforequestEmail
@@ -68,16 +68,16 @@ class Inforequest(models.Model):
     applicant_city = models.CharField(max_length=255, verbose_name=_(u'Applicant City'))
     applicant_zip = models.CharField(max_length=10, verbose_name=_(u'Applicant Zip'))
 
-    # Mandatory and unique; Automaticly computed in save() when creating a new object.
+    # May NOT be empty; Unique; Automaticly computed in save() when creating a new object.
     unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail'))
 
-    # Mandatory; Automaticly computed by Django when creating a new object.
+    # May NOT be NULL; Automaticly computed by Django when creating a new object.
     submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
-    # Mandatory
+    # May NOT be NULL
     closed = models.BooleanField(default=False, verbose_name=_(u'Closed'))
 
-    # Optional; Used by ``cron.undecided_email_reminder``
+    # May be NULL; Used by ``cron.undecided_email_reminder``
     last_undecided_email_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Undecided Email Reminder'))
 
     # Backward relation:
@@ -96,66 +96,82 @@ class Inforequest(models.Model):
     class Meta:
         ordering = [u'submission_date', u'pk']
 
+    # May NOT be NULL; Read-only
     @property
     def history(self):
         return self.history_set.get(advanced_by=None)
 
+    # May be empty; Read-only
     @property
     def undecided_set(self):
         return self.email_set.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
 
+    # May NOT be NULL; Read-only
     @property
     def has_undecided_email(self):
         return self.undecided_set.exists()
 
+    # May be NULL; Read-only
     @property
     def oldest_undecided_email(self):
         return self.undecided_set.first()
 
+    # May be NULL; Read-only
     @property
     def newest_undecided_email(self):
         return self.undecided_set.last()
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_clarification_response(self):
         return self.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_appeal(self):
         return self.can_add_action(Action.TYPES.APPEAL)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_confirmation(self):
         return self.can_add_action(Action.TYPES.CONFIRMATION)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_extension(self):
         return self.can_add_action(Action.TYPES.EXTENSION)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_advancement(self):
         return self.can_add_action(Action.TYPES.ADVANCEMENT)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_clarification_request(self):
         return self.can_add_action(Action.TYPES.CLARIFICATION_REQUEST)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_disclosure(self):
         return self.can_add_action(Action.TYPES.DISCLOSURE)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_refusal(self):
         return self.can_add_action(Action.TYPES.REFUSAL)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_affirmation(self):
         return self.can_add_action(Action.TYPES.AFFIRMATION)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_reversion(self):
         return self.can_add_action(Action.TYPES.REVERSION)
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_remandment(self):
         return self.can_add_action(Action.TYPES.REMANDMENT)
@@ -238,13 +254,15 @@ class Inforequest(models.Model):
         return u'%s' % self.pk
 
 class InforequestEmail(models.Model):
-    # Mandatory; m2m ends
+    # May NOT be NULL; m2m ends
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
     email = models.ForeignKey(u'mail.Message', verbose_name=_(u'E-mail'))
 
-    # Mandatory choice
+    # May NOT be NULL
     TYPES = FieldChoices(
+            # For outbound messages
             (u'APPLICANT_ACTION', 1, _(u'Applicant Action')),
+            # For inbound messages
             (u'OBLIGEE_ACTION', 2, _(u'Obligee Action')),
             (u'UNDECIDED', 3, _(u'Undecided')),
             (u'UNRELATED', 4, _(u'Unrelated')),
@@ -253,10 +271,10 @@ class InforequestEmail(models.Model):
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
 class History(models.Model):
-    # Mandatory
+    # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
-    # Mandatory
+    # May NOT be NULL
     obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
 
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
@@ -282,14 +300,17 @@ class History(models.Model):
     class Meta:
         ordering = [u'obligee_name', u'pk']
 
+    # May NOT be NULL; Read-only
     @property
     def last_action(self):
         return self.action_set.last()
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_clarification_response(self):
         return self.last_action.type == Action.TYPES.CLARIFICATION_REQUEST
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_appeal(self):
         if self.last_action.type == Action.TYPES.DISCLOSURE:
@@ -309,6 +330,7 @@ class History(models.Model):
                 Action.TYPES.EXPIRATION,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_confirmation(self):
         return self.last_action.type in [
@@ -316,6 +338,7 @@ class History(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_extension(self):
         return self.last_action.type in [
@@ -326,6 +349,7 @@ class History(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_advancement(self):
         return self.last_action.type in [
@@ -335,6 +359,7 @@ class History(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_clarification_request(self):
         return self.last_action.type in [
@@ -345,6 +370,7 @@ class History(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_disclosure(self):
         return self.last_action.type in [
@@ -356,6 +382,7 @@ class History(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_refusal(self):
         return self.last_action.type in [
@@ -367,14 +394,17 @@ class History(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_affirmation(self):
         return self.last_action.type == Action.TYPES.APPEAL
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_reversion(self):
         return self.last_action.type == Action.TYPES.APPEAL
 
+    # May NOT be NULL; Read-only
     @property
     def can_add_remandment(self):
         return self.last_action.type == Action.TYPES.APPEAL
@@ -420,13 +450,13 @@ class ActionQuerySet(QuerySet):
         return self.filter(type=Action.TYPES.CLARIFICATION_REQUEST)
 
 class Action(models.Model):
-    # Mandatory
+    # May NOT be NULL
     history = models.ForeignKey(u'History', verbose_name=_(u'History'))
 
-    # Mandatory for actions sent or received by email; None otherwise
+    # May NOT be NULL for actions sent or received by email; NULL otherwise
     email = models.OneToOneField(u'mail.Message', blank=True, null=True, verbose_name=_(u'E-mail'))
 
-    # Mandatory choice
+    # May NOT be NULL
     TYPES = FieldChoices(
             # Applicant actions
             (u'REQUEST', 1, _(u'Request')),
@@ -456,14 +486,14 @@ class Action(models.Model):
     # May be empty
     attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
 
-    # Mandatory
+    # May NOT be NULL
     effective_date = models.DateField(verbose_name=_(u'Effective Date'))
 
-    # Mandatory for actions that set deadline; Must be NULL otherwise. Default value is determined
-    # and automaticly set in save() when creating a new object. All actions that set deadlines
-    # except CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the obligee.
-    # CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the applicant. DISCLOSURE
-    # sets the deadline only if not FULL.
+    # May NOT be NULL for actions that set deadline; Must be NULL otherwise. Default value is
+    # determined and automaticly set in save() when creating a new object. All actions that set
+    # deadlines except CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the
+    # obligee. CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the applicant.
+    # DISCLOSURE sets the deadline only if not FULL.
     DEFAULT_DEADLINES = Bunch(
             # Applicant actions
             REQUEST=8,
@@ -488,10 +518,10 @@ class Action(models.Model):
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
-    # Optional
+    # May be NULL
     extension = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline Extension'))
 
-    # Mandatory for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be NULL otherwise
+    # May NOT be NULL for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be NULL otherwise
     DISCLOSURE_LEVELS = FieldChoices(
             (u'NONE', 1, _(u'No Disclosure at All')),
             (u'PARTIAL', 2, _(u'Partial Disclosure')),
@@ -499,7 +529,7 @@ class Action(models.Model):
             )
     disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
 
-    # Mandatory for REFUSAL, AFFIRMATION; Must be None otherwise
+    # May NOT be NULL for REFUSAL, AFFIRMATION; Must be None otherwise
     REFUSAL_REASONS = FieldChoices(
             (u'DOES_NOT_HAVE', 3, _(u'Does not Have Information')),
             (u'DOES_NOT_PROVIDE', 4, _(u'Does not Provide Information')),
@@ -513,19 +543,20 @@ class Action(models.Model):
             )
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 
-    # Optional; Used by ``cron.obligee_deadline_reminder`` and ``cron.applicant_deadline_reminder``
+    # May be NULL; Used by ``cron.obligee_deadline_reminder`` and ``cron.applicant_deadline_reminder``
     last_deadline_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Deadline Reminder'))
 
     # Backward relations:
     #
     #  -- advanced_to_set: by History.advanced_by
-    #     Mandatory for ADVANCEMENT; Must be empty otherwise
+    #     May NOT be empty for ADVANCEMENT; Must be empty otherwise
 
     objects = ActionQuerySet.as_manager()
 
     class Meta:
         ordering = [u'effective_date', u'pk']
 
+    # May NOT be NULL; Read-only
     @property
     def is_applicant_action(self):
         return self.type in [
@@ -534,6 +565,7 @@ class Action(models.Model):
                 self.TYPES.APPEAL,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def is_obligee_action(self):
         return self.type in [
@@ -548,6 +580,7 @@ class Action(models.Model):
                 self.TYPES.REMANDMENT,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def is_implicit_action(self):
         return self.type in [
@@ -556,22 +589,27 @@ class Action(models.Model):
                 self.TYPES.APPEAL_EXPIRATION,
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def days_passed(self):
         return self.days_passed_at(local_today())
 
+    # May be NULL; Read-only
     @property
     def deadline_remaining(self):
         return self.deadline_remaining_at(local_today())
 
+    # May NOT be NULL; Read-only
     @property
     def deadline_missed(self):
         return self.deadline_missed_at(local_today())
 
+    # May NOT be NULL; Read-only
     @property
     def has_deadline(self):
         return self.deadline is not None
 
+    # May NOT be NULL; Read-only
     @property
     def has_applicant_deadline(self):
         return self.deadline is not None and self.type in [
@@ -583,6 +621,7 @@ class Action(models.Model):
                 # Implicit actions
                 ]
 
+    # May NOT be NULL; Read-only
     @property
     def has_obligee_deadline(self):
         return self.deadline is not None and self.type in [
@@ -652,13 +691,13 @@ class Action(models.Model):
         return u'%s' % self.pk
 
 class ActionDraft(models.Model):
-    # Mandatory
+    # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
-    # Optional; Must be owned by the inforequest if set.
+    # May be NULL; Must be owned by the inforequest if set.
     history = models.ForeignKey(u'History', blank=True, null=True, verbose_name=_(u'History'))
 
-    # Mandatory choice
+    # May NOT be NULL
     TYPES = Action.TYPES
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -669,17 +708,17 @@ class ActionDraft(models.Model):
     # May be empty
     attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
 
-    # Optional
+    # May NOT be NULL
     effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))
 
-    # Optional for EXTENSION; Must be None otherwise
+    # May be NULL for EXTENSION; Must be NULL otherwise
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
-    # Optional for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be None otherwise
+    # May be NULL for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be NULL otherwise
     DISCLOSURE_LEVELS = Action.DISCLOSURE_LEVELS
     disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
 
-    # Optional for REFUSAL and AFFIRMATION; Must be None otherwise
+    # May be NULL for REFUSAL and AFFIRMATION; Must be NULL otherwise
     REFUSAL_REASONS = Action.REFUSAL_REASONS
     refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
 

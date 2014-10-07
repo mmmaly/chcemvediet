@@ -15,17 +15,17 @@ class Attachment(models.Model):
     # FIXME: Unused uploaded files are not deleted, yet. We need cron stript to delete files
     # uploaded long ago, but never (or not any more) used.
 
-    # Mandatory
+    # May NOT be NULL
     owner = models.ForeignKey(User, verbose_name=_(u'Owner'))
 
-    # Mandatory; Random local filename is generated in save() when creating a new object.
+    # May NOT be NULL; Random local filename is generated in save() when creating a new object.
     file = models.FileField(upload_to=u'attachments', max_length=255, verbose_name=_(u'File'))
 
     # May be empty; May not be trusted, set by client.
     name = models.CharField(max_length=255, verbose_name=_(u'Name'))
     content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'))
 
-    # Mandatory
+    # May NOT by NULL
     size = models.IntegerField(verbose_name=_(u'Size'))
 
     objects = AttachmentQuerySet.as_manager()
@@ -33,6 +33,7 @@ class Attachment(models.Model):
     class Meta:
         ordering = [u'pk']
 
+    # May be empty
     @property
     def content(self):
         try:
