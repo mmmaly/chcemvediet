@@ -12,8 +12,11 @@ from models import Inforequest, InforequestEmail
 @receiver(message_received)
 def assign_email_on_message_received(sender, message, **kwargs):
     try:
-        q = (Q(unique_email__iexact=r.mail) for r in message.recipient_set.all())
-        q = reduce((lambda a, b: a | b), q, Q())
+        if message.received_for:
+            q = Q(unique_email__iexact=message.received_for)
+        else:
+            q = (Q(unique_email__iexact=r.mail) for r in message.recipient_set.all())
+            q = reduce((lambda a, b: a | b), q, Q())
         inforequest = Inforequest.objects.get(q)
 
         inforequestemail = InforequestEmail(
