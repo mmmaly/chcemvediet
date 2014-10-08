@@ -1,7 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
-from django.core.files.base import ContentFile
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
@@ -9,13 +8,14 @@ from django.template.loader import render_to_string
 from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
+from poleno.attachments import views as attachments_views
+from poleno.attachments.models import Attachment
+from poleno.mail.models import Message as EmailMessage
 from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.misc import Bunch
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_date, local_today
-
-from chcemvediet.apps.attachments.models import Attachment
 
 from models import InforequestDraft, Inforequest, InforequestEmail, Action, ActionDraft
 import forms
@@ -37,10 +37,11 @@ def index(request):
 @verified_email_required
 def create(request, draft_id=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id) if draft_id else None
+    attachments_pointing_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'submit', u'draft'])
-        form = forms.InforequestForm(request.POST, user=request.user, draft=(button == u'draft'))
+        form = forms.InforequestForm(request.POST, draft=(button == u'draft'), attachments_pointing_to=attachments_pointing_to)
 
         if button == u'draft':
             if form.is_valid():
@@ -64,7 +65,7 @@ def create(request, draft_id=None):
                 return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.id,)))
 
     else:
-        form = forms.InforequestForm(user=request.user)
+        form = forms.InforequestForm(attachments_pointing_to=attachments_pointing_to)
         if draft:
             form.load_from_draft(draft)
 
@@ -162,7 +163,7 @@ def decide_email(request, action, inforequest_id, email_id):
     if request.method == u'POST':
         action = None
         if action_type:
-            form = form_class(request.POST, user=request.user, inforequest=inforequest, action_type=action_type)
+            form = form_class(request.POST, inforequest=inforequest, action_type=action_type)
             if not form.is_valid():
                 return JsonResponse({
                         u'result': u'invalid',
@@ -183,15 +184,9 @@ def decide_email(request, action, inforequest_id, email_id):
             action.save()
 
             for attch in email.attachment_set.all():
-                attachment = Attachment(
-                        owner = request.user,
-                        file = ContentFile(attch.content),
-                        name = attch.name,
-                        content_type = attch.content_type,
-                        size = attch.file.size,
-                        )
+                attachment = attch.clone()
+                attachment.generic_object = action
                 attachment.save()
-                action.attachment_set.add(attachment)
 
         inforequestemail.type = inforequestemail_type
         inforequestemail.save()
@@ -205,7 +200,7 @@ def decide_email(request, action, inforequest_id, email_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(user=request.user, inforequest=inforequest, action_type=action_type) if form_class else None
+        form = form_class(inforequest=inforequest, action_type=action_type) if form_class else None
         return render(request, template, {
                 u'inforequest': inforequest,
                 u'email': email,
@@ -280,10 +275,11 @@ def add_smail(request, action, inforequest_id):
             raise Http404
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
+    attachments_pointing_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'add', u'draft'])
-        form = form_class(request.POST, user=request.user, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
+        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'), attachments_pointing_to=attachments_pointing_to)
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -320,7 +316,7 @@ def add_smail(request, action, inforequest_id):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(user=request.user, inforequest=inforequest, action_type=action_type)
+        form = form_class(inforequest=inforequest, action_type=action_type, attachments_pointing_to=attachments_pointing_to)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -364,10 +360,11 @@ def new_action(request, action, inforequest_id):
             raise Http404
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
+    attachments_pointing_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'email', u'print', u'draft'] if can_email else [u'print', u'draft'])
-        form = form_class(request.POST, user=request.user, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'))
+        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'), attachments_pointing_to=attachments_pointing_to)
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -422,7 +419,7 @@ def new_action(request, action, inforequest_id):
         return JsonResponse(json)
 
     else: # request.method != u'POST'
-        form = form_class(user=request.user, inforequest=inforequest, action_type=action_type)
+        form = form_class(inforequest=inforequest, action_type=action_type, attachments_pointing_to=attachments_pointing_to)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -478,3 +475,22 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
                 u'form': form,
                 })
 
+@require_http_methods([u'POST'])
+@require_ajax
+@login_required(raise_exception=True)
+def upload_attachment(request):
+    download_url_func = (lambda a: reverse(u'inforequests:download_attachment', args=(a.id,)))
+    return attachments_views.upload(request, request.user, download_url_func)
+
+@require_http_methods([u'HEAD', u'GET'])
+@login_required(raise_exception=True)
+def download_attachment(request, attachment_id):
+    pointing_to = (
+            request.user,
+            EmailMessage.objects.filter(inforequest__applicant=request.user),
+            InforequestDraft.objects.filter(applicant=request.user),
+            Action.objects.filter(history__inforequest__applicant=request.user),
+            ActionDraft.objects.filter(inforequest__applicant=request.user),
+            )
+    attachment = Attachment.objects.pointing_to(*pointing_to).get_or_404(pk=attachment_id)
+    return attachments_views.download(request, attachment)

@@ -3,7 +3,6 @@
 configure.json
 env/
 cache/
-media/mail_attachments
 media/attachments
 fixtures/*.configured.json
 chcemvediet/settings/configured.py

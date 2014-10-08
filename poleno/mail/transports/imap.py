@@ -9,10 +9,11 @@ from imaplib import IMAP4, IMAP4_SSL, IMAP4_PORT, IMAP4_SSL_PORT
 from django.core.files.base import ContentFile
 from django.conf import settings
 
+from poleno.attachments.models import Attachment
 from poleno.utils.date import utc_now
 
 from base import BaseTransport
-from ..models import Message, Recipient, Attachment
+from ..models import Message, Recipient
 
 class ImapTransport(BaseTransport):
     def __init__(self, **kwargs):
@@ -99,7 +100,7 @@ class ImapTransport(BaseTransport):
             recipient.save()
 
         for attachment in attachments:
-            attachment.message = message
+            attachment.generic_object = message
             attachment.save()
 
         return message

@@ -3,17 +3,18 @@
 from dateutil.relativedelta import relativedelta
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.encoding import smart_text
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
+from poleno.attachments.forms import AttachmentsField
 from poleno.utils.models import after_saved
 from poleno.utils.forms import AutoSuppressedSelect, PrefixedForm
 from poleno.utils.misc import squeeze
 from poleno.utils.date import local_today
-from chcemvediet.apps.attachments.forms import AttachmentsField
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
 from models import History, Action
@@ -45,14 +46,16 @@ class InforequestForm(PrefixedForm):
     attachments = AttachmentsField(
             label=_(u'Attachments'),
             required=False,
+            upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
+            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.id,))),
             )
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop(u'user')
         self.draft = kwargs.pop(u'draft', False)
+        self.attachments_pointing_to = kwargs.pop(u'attachments_pointing_to')
         super(InforequestForm, self).__init__(*args, **kwargs)
 
-        self.fields[u'attachments'].owner = self.user
+        self.fields[u'attachments'].pointing_to = self.attachments_pointing_to
 
         if self.draft:
             self.fields[u'obligee'].required = False
@@ -111,7 +114,6 @@ class ActionAbstractForm(PrefixedForm):
             )
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop(u'user')
         self.inforequest = kwargs.pop(u'inforequest')
         self.action_type = kwargs.pop(u'action_type')
         self.draft = kwargs.pop(u'draft', False)
@@ -238,12 +240,15 @@ class AttachmentsMixin(ActionAbstractForm):
     attachments = AttachmentsField(
             label=_(u'Attachments'),
             required=False,
+            upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
+            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.id,))),
             )
 
     def __init__(self, *args, **kwargs):
+        self.attachments_pointing_to = kwargs.pop(u'attachments_pointing_to')
         super(AttachmentsMixin, self).__init__(*args, **kwargs)
 
-        self.fields[u'attachments'].owner = self.user
+        self.fields[u'attachments'].pointing_to = self.attachments_pointing_to
 
     def save(self, action):
         super(AttachmentsMixin, self).save(action)

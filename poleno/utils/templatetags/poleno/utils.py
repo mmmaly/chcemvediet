@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import random
+from functools import partial
 
 from django.template import Library
 from django.template.defaultfilters import stringfilter
@@ -105,6 +106,54 @@ def squeeze(text):
         {% endfilter %}
     """
     return squeeze_func(text)
+
+@register.filter
+def method(value, arg):
+    u"""
+    Tool to call object methods in templates.
+    Source: https://djangosnippets.org/snippets/424/
+
+    Example:
+        class Foo:
+            def bar(self, a, b, c):
+                pass
+            def bop(self, a):
+                pass
+
+        In template with { "foo": Foo() } passed as context:
+            {{ foo|method:"bar"|with:"one"|with:"two"|with:"three"|call }}
+            {{ foo|method:"bop"|call_with:"baz" }}
+    """
+    try:
+        return value[arg]
+    except IndexError:
+        pass
+    try:
+        return getattr(value, str(arg))
+    except AttributeError:
+        pass
+    return "[%s has no method %s]" % (value, arg)
+
+@register.filter
+def call_with(value, arg):
+    u""" See ``method`` """
+    if not callable(value):
+        return "[%s is not callable]" % value
+    return value(arg)
+
+@register.filter
+def call(value):
+    u""" See ``method`` """
+    if not callable(value):
+        return "[%s is not callable]" % value
+    return value()
+
+@register.filter(name="with")
+def with_(value, arg):
+    u""" See ``method`` """
+    if not callable(value):
+        return "[%s is not callable]" % value
+    return partial(value, arg)
 
 @register.simple_tag
 def lorem(randseed=None, count=1, method=None):

@@ -15,14 +15,40 @@ class AttachmentsWidget(forms.TextInput):
                 u'name': name,
                 u'textinput': textinput,
                 u'attachments': value or [],
+                u'funcs': {
+                    u'upload_url': self.upload_url_func,
+                    u'download_url': self.download_url_func,
+                    },
                 })
 
 class AttachmentsField(forms.Field):
     widget = AttachmentsWidget
 
     def __init__(self, *args, **kwargs):
-        self.owner = kwargs.pop(u'owner', None)
+        pointing_to = kwargs.pop(u'pointing_to', None)
+        upload_url_func = kwargs.pop(u'upload_url_func', None)
+        download_url_func = kwargs.pop(u'download_url_func', None)
         super(AttachmentsField, self).__init__(*args, **kwargs)
+
+        self.pointing_to = pointing_to
+        self.upload_url_func = upload_url_func
+        self.download_url_func = download_url_func
+
+    @property
+    def upload_url_func(self):
+        return self._upload_url_func
+
+    @upload_url_func.setter
+    def upload_url_func(self, func):
+        self.widget.upload_url_func = self._upload_url_func = func
+
+    @property
+    def download_url_func(self):
+        return self._download_url_func
+
+    @download_url_func.setter
+    def download_url_func(self, func):
+        self.widget.download_url_func = self._download_url_func = func
 
     def prepare_value(self, value):
         if isinstance(value, basestring):
@@ -38,24 +64,12 @@ class AttachmentsField(forms.Field):
         if not keys:
             return []
 
-        # We dont check whether the attachments were uploaded by this very same form field. We only
-        # check if they were uploaded by the same user. Unsolicited user may plant id of any
-        # attachment he uploaded earlier and "hijack" it. However, he only can "hijack" his own
-        # attachments, which he can download and reupload manually anyway. So it's not an issue.
-        if not self.owner:
-            raise ValueError
-        query_set = Attachment.objects.owned_by(self.owner)
+        # Only attachments poiting to whitelisted objects may be used by the field.
+        query_set = Attachment.objects.pointing_to(*self.pointing_to)
         try:
             attachments = query_set.filter(pk__in=keys)
         except ValueError:
             raise ValidationError(_(u'Invalid attachments.'))
-
-        # Primary keys are unique, so ``filter(pk__in=keys)`` gets at most one attachment for every
-        # key. Therefore, if any key is wrong, we must get fewer than ``len(keys)`` attachments.
-        # Or, in other words, if we get ``len(keys)`` attachments, every key mached.
         if len(attachments) != len(keys):
             raise ValidationError(_(u'Invalid attachments.'))
-
         return attachments
-
-

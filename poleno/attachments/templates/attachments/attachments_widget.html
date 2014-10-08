@@ -1,0 +1,24 @@
+{# vim: set filetype=htmldjango :#}
+{% load method with call from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- name: string
+ %  -- textinput: string
+ %  -- attachments: [poleno.attachments.models.Attachment]
+ %  -- funcs.upload_url: function
+ %  -- funcs.download_url: function
+ %
+{% endcomment %}
+
+{{ textinput }}
+<span class="btn btn-default btn-file">Browse<input class="fileupload" type="file" name="files" multiple="multiple" data-url="{{ funcs|method:"upload_url"|call }}" data-field="#id_{{name}}" data-target="#{{name}}-target"></span>
+<span id="{{name}}-target">
+  <span class="fileupload-template hide">
+    <span class="label label-info fileupload-label" data-attachment=""><a href=""></a> <button type="button" class="label-close fileupload-label-close">&times;</button></span>
+  </span>
+  {% for attachment in attachments %}
+    <span class="label label-info fileupload-label" data-attachment="{{ attachment.id }}"><a href="{{ funcs|method:"download_url"|with:attachment|call }}">{{ attachment.name }}</a> <button type="button" class="label-close fileupload-label-close">&times;</button></span>
+  {% endfor %}
+</span>

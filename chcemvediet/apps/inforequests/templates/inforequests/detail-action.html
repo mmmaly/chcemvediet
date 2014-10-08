@@ -72,7 +72,7 @@
       <p class="span2 text-right">Attachments:</p>
       <p class="span10">
         {% for attachment in action.attachment_set.all %}
-          <a href="{% url 'attachments:download' attachment.id %}"><span class="label label-info">{{ attachment.name }}</span></a>
+          <a href="{% url 'inforequests:download_attachment' attachment.id %}"><span class="label label-info">{{ attachment.name }}</span></a>
         {% endfor %}
       </p>
     </div>

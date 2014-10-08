@@ -36,3 +36,7 @@ class SmtpTransport(BaseTransport):
             msg = EmailMessage(body=message.text, **kwargs)
 
         msg.send()
+
+        for recipient in message.recipient_set.all():
+            recipient.status = recipient.STATUSES.SENT
+            recipient.save()

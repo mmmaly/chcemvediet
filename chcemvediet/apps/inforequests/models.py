@@ -8,6 +8,7 @@ from django.db import models, IntegrityError
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
 
 from poleno.workdays import workdays
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
@@ -31,7 +32,7 @@ class InforequestDraft(models.Model):
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
     # May be empty
-    attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
+    attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
 
     objects = InforequestDraftQuerySet.as_manager()
 
@@ -484,7 +485,7 @@ class Action(models.Model):
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
     # May be empty
-    attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
+    attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
 
     # May NOT be NULL
     effective_date = models.DateField(verbose_name=_(u'Effective Date'))
@@ -706,7 +707,7 @@ class ActionDraft(models.Model):
     content = models.TextField(blank=True, verbose_name=_(u'Content'))
 
     # May be empty
-    attachment_set = models.ManyToManyField(u'attachments.Attachment', verbose_name=_(u'Attachment Set'))
+    attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
 
     # May NOT be NULL
     effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))

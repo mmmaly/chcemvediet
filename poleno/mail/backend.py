@@ -7,7 +7,9 @@ from django.core.files.base import ContentFile
 from django.core.mail.message import sanitize_address, DEFAULT_ATTACHMENT_MIME_TYPE
 from django.core.mail.backends.base import BaseEmailBackend
 
-from models import Message, Recipient, Attachment
+from poleno.attachments.models import Attachment
+
+from models import Message, Recipient
 
 class EmailBackend(BaseEmailBackend):
 
@@ -82,5 +84,5 @@ class EmailBackend(BaseEmailBackend):
             recipient.save()
 
         for attachment in attachments:
-            attachment.message = msg
+            attachment.generic_object = msg
             attachment.save()

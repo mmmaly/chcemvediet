@@ -24,7 +24,6 @@ urlpatterns += i18n_patterns(u'',
     url(_(r'^inforequests/'), include(u'chcemvediet.apps.inforequests.urls', namespace=u'inforequests')),
     url(r'^accounts/', include(u'allauth.urls')),
     url(r'^accounts/', include(u'chcemvediet.apps.accounts.urls', namespace=u'accounts')),
-    url(r'^attachments/', include(u'chcemvediet.apps.attachments.urls', namespace=u'attachments')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^i18n/', include(u'django.conf.urls.i18n')),
 )

@@ -5,9 +5,10 @@ from base64 import b64decode
 from django.core.files.base import ContentFile
 from django.dispatch import Signal, receiver
 
+from poleno.attachments.models import Attachment
 from poleno.utils.date import utc_now
 
-from ...models import Message, Recipient, Attachment
+from ...models import Message, Recipient
 from ...signals import message_received
 
 webhook_event = Signal(providing_args=['event_type', 'data'])
@@ -89,7 +90,7 @@ def inbound_email_webhook_event(sender, event_type, data, **kwargs):
             recipient.save()
 
         for attachment in attachments:
-            attachment.message = message
+            attachment.generic_object = message
             attachment.save()
 
         message_received.send(sender=None, message=message)

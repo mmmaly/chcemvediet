@@ -4,11 +4,11 @@ from email.utils import formataddr, parseaddr
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes import generic
 
 from jsonfield import JSONField
 
 from poleno.utils.models import FieldChoices, QuerySet
-from poleno.utils.misc import random_string
 
 class MessageQuerySet(QuerySet):
     def inbound(self):
@@ -50,13 +50,13 @@ class Message(models.Model):
     # Dict: String->(String|[String]); May be empty
     headers = JSONField(default={}, verbose_name=_(u'Headers'))
 
+    # May be empty; Backward generic relation
+    attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
+
     # Backward relations:
     #
     #  -- recipient_set: by Recipient.message
     #     Should NOT be empty
-    #
-    #  -- attachment_set: by Attachment.message
-    #     May be empty
 
     objects = MessageQuerySet.as_manager()
 
@@ -148,37 +148,3 @@ class Recipient(models.Model):
     @full.setter
     def full(self, value):
         self.name, self.mail = parseaddr(value)
-
-class Attachment(models.Model):
-    # May NOT be NULL
-    message = models.ForeignKey(u'Message', verbose_name=_(u'Message'))
-
-    # May NOT be NULL; Random local filename is generated in save() when creating a new object.
-    file = models.FileField(upload_to=u'mail_attachments', max_length=255, verbose_name=_(u'File'))
-
-    # May be empty; May not be trusted, set by the mail sender.
-    name = models.CharField(max_length=255, verbose_name=_(u'Name'))
-    content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'))
-
-    objects = QuerySet.as_manager()
-
-    class Meta:
-        ordering = [u'pk']
-
-    def __unicode__(self):
-        return u'%s' % self.pk
-
-    # May be empty; Read-only
-    @property
-    def content(self):
-        try:
-            self.file.open(u'rb')
-            return self.file.read()
-        finally:
-            self.file.close()
-
-    def save(self, *args, **kwargs):
-        if self.pk is None: # Creating a new object
-            self.file.name = random_string(10)
-
-        super(Attachment, self).save(*args, **kwargs)

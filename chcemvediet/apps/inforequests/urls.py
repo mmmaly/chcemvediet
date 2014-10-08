@@ -15,5 +15,7 @@ urlpatterns = patterns(u'',
     url(_(r'^add-smail/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.add_smail, name=u'add_smail'),
     url(_(r'^new-action/(?P<action>[\w-]+)/(?P<inforequest_id>\d+)/$'), views.new_action, name=u'new_action'),
     url(_(r'^extend-deadline/(?P<inforequest_id>\d+)/(?P<history_id>\d+)/(?P<action_id>\d+)/$'), views.extend_deadline, name=u'extend_deadline'),
+    url(_(r'^attachments/$'), views.upload_attachment, name=u'upload_attachment'),
+    url(_(r'^attachments/(?P<attachment_id>\d+)/$'), views.download_attachment, name=u'download_attachment'),
 )
 
