@@ -16,7 +16,7 @@ We received a new e-mail regarding your inforequest to {{ inforequest.history.hi
 {% if inforequest.undecided_set.count > 1 %}
   We already have {{ inforequest.undecided_set.count }} waiting e-mails regarding your inforequest.
 {% endif %}
-The e-mail was sent from: {{ email.from_full }}
+The e-mail was sent from: {{ email.from_formatted }}
 {% endfilter %}
 
 {% filter squeeze %}
@@ -25,10 +25,10 @@ To read the e-mail and decide what it is, go to {{ url }}
 
 
 ---------- Received message ----------
-From: {{ email.from_full }}
+From: {{ email.from_formatted }}
 Date: {{ email.processed }}
 Subject: {{ email.subject }}
-To: {{ email.to_full }}
+To: {{ email.to_formatted }}
 
 {{ email.text }}
 {% endautoescape %}

@@ -657,14 +657,14 @@ class Action(models.Model):
 
         sender_name = self.history.inforequest.applicant_name
         sender_address = self.history.inforequest.unique_email
-        sender_full = formataddr((squeeze(sender_name), sender_address))
+        sender_formatted = formataddr((squeeze(sender_name), sender_address))
         recipients = self.history.obligee.emails_formatted
 
         # FIXME: Attachment name and content type are set by client and not to be trusted. The name
         # must be sanitized and the content type white listed for known content types. Any unknown
         # content type should be replaced with 'application/octet-stream'.
 
-        msg = EmailMessage(self.subject, self.content, sender_full, recipients)
+        msg = EmailMessage(self.subject, self.content, sender_formatted, recipients)
         for attachment in self.attachment_set.all():
             msg.attach(attachment.name, attachment.content, attachment.content_type)
         msg.send()

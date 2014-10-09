@@ -73,8 +73,8 @@ class ImapTransport(BaseTransport):
                                   (u'cc', Recipient.TYPES.CC),
                                   (u'bcc', Recipient.TYPES.BCC)):
             header = self._decode_header(msg.get(header_name, u''))
-            for rcp_full in header.split(','):
-                rcp_name, rcp_mail = parseaddr(rcp_full)
+            for rcp_address in header.split(','):
+                rcp_name, rcp_mail = parseaddr(rcp_address)
                 if rcp_mail:
                     recipients.append(Recipient(
                             name=rcp_name,

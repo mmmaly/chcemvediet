@@ -19,10 +19,10 @@ class SmtpTransport(BaseTransport):
         kwargs = {}
         kwargs[u'connection'] = self.connection
         kwargs[u'subject'] = message.subject
-        kwargs[u'from_email'] = message.from_full
-        kwargs[u'to'] = (r.full for r in message.recipient_set.to())
-        kwargs[u'cc'] = (r.full for r in message.recipient_set.cc())
-        kwargs[u'bcc'] = (r.full for r in message.recipient_set.bcc())
+        kwargs[u'from_email'] = message.from_formatted
+        kwargs[u'to'] = (r.formatted for r in message.recipient_set.to())
+        kwargs[u'cc'] = (r.formatted for r in message.recipient_set.cc())
+        kwargs[u'bcc'] = (r.formatted for r in message.recipient_set.bcc())
         kwargs[u'attachments'] = ((a.name, a.content, a.content_type) for a in message.attachment_set.all())
         kwargs[u'headers'] = message.headers
 

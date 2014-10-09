@@ -68,24 +68,24 @@ class Message(models.Model):
 
     # May be empty; Read-write
     @property
-    def from_full(self):
+    def from_formatted(self):
         return formataddr((self.from_name, self.from_mail))
 
-    @from_full.setter
-    def from_full(self, value):
+    @from_formatted.setter
+    def from_formatted(self, value):
         self.from_name, self.from_mail = parseaddr(value)
 
     @property
-    def to_full(self):
-        return u', '.join(r.full for r in self.recipient_set.to())
+    def to_formatted(self):
+        return u', '.join(r.formatted for r in self.recipient_set.to())
 
     @property
-    def cc_full(self):
-        return u', '.join(r.full for r in self.recipient_set.cc())
+    def cc_formatted(self):
+        return u', '.join(r.formatted for r in self.recipient_set.cc())
 
     @property
-    def bcc_full(self):
-        return u', '.join(r.full for r in self.recipient_set.bcc())
+    def bcc_formatted(self):
+        return u', '.join(r.formatted for r in self.recipient_set.bcc())
 
 class RecipientQuerySet(QuerySet):
     def to(self):
@@ -142,9 +142,9 @@ class Recipient(models.Model):
 
     # May be empty; Read-write
     @property
-    def full(self):
+    def formatted(self):
         return formataddr((self.name, self.mail))
 
-    @full.setter
-    def full(self, value):
+    @formatted.setter
+    def formatted(self, value):
         self.name, self.mail = parseaddr(value)
