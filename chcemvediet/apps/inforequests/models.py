@@ -83,7 +83,7 @@ class Inforequest(models.Model):
 
     # Backward relation:
     #
-    #  -- history_set: by History.inforequest
+    #  -- paperwork_set: by Paperwork.inforequest
     #     May NOT be empty
     #
     #  -- actiondraft_set: by ActionDraft.inforequest
@@ -99,8 +99,8 @@ class Inforequest(models.Model):
 
     # May NOT be NULL; Read-only
     @property
-    def history(self):
-        return self.history_set.get(advanced_by=None)
+    def paperwork(self):
+        return self.paperwork_set.get(advanced_by=None)
 
     # May be empty; Read-only
     @property
@@ -178,8 +178,8 @@ class Inforequest(models.Model):
         return self.can_add_action(Action.TYPES.REMANDMENT)
 
     def can_add_action(self, action_type):
-        for history in self.history_set.all():
-            if history.can_add_action(action_type):
+        for paperwork in self.paperwork_set.all():
+            if paperwork.can_add_action(action_type):
                 return True
         return False
 
@@ -271,7 +271,7 @@ class InforequestEmail(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
-class History(models.Model):
+class Paperwork(models.Model):
     # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
@@ -283,14 +283,14 @@ class History(models.Model):
             help_text=_(u'Frozen Obligee at the time the Inforequest was submitted or advanced to it.'))
 
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
-    # main history. Inforequest must contain exactly one history with ``advanced_by`` set to None.
+    # main paperwork. Inforequest must contain exactly one paperwork with ``advanced_by`` set to None.
     advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, verbose_name=_(u'Advanced By'))
 
     # Backward relations:
     #
-    #  -- action_set: by Action.history
-    #     May NOT be empty; The first action of every main history must be REQUEST and the first
-    #     action of every advanced history ADVANCED_REQUEST.
+    #  -- action_set: by Action.paperwork
+    #     May NOT be empty; The first action of every main paperwork must be REQUEST and the first
+    #     action of every advanced paperwork ADVANCED_REQUEST.
 
     objects = QuerySet.as_manager()
 
@@ -415,12 +415,12 @@ class History(models.Model):
             if self.obligee:
                 self.historicalobligee = self.obligee.history.first()
 
-        super(History, self).save(*args, **kwargs)
+        super(Paperwork, self).save(*args, **kwargs)
 
     def add_expiration_if_expired(self):
         if self.last_action.has_obligee_deadline and self.last_action.deadline_missed:
             expiration = Action(
-                    history=self,
+                    paperwork=self,
                     type=(Action.TYPES.APPEAL_EXPIRATION if self.last_action.type == Action.TYPES.APPEAL else Action.TYPES.EXPIRATION),
                     effective_date=local_today(),
                     )
@@ -443,7 +443,7 @@ class ActionQuerySet(QuerySet):
 
 class Action(models.Model):
     # May NOT be NULL
-    history = models.ForeignKey(u'History', verbose_name=_(u'History'))
+    paperwork = models.ForeignKey(u'Paperwork', verbose_name=_(u'Paperwork'))
 
     # May NOT be NULL for actions sent or received by email; NULL otherwise
     email = models.OneToOneField(u'mail.Message', blank=True, null=True, verbose_name=_(u'E-mail'))
@@ -540,7 +540,7 @@ class Action(models.Model):
 
     # Backward relations:
     #
-    #  -- advanced_to_set: by History.advanced_by
+    #  -- advanced_to_set: by Paperwork.advanced_by
     #     May NOT be empty for ADVANCEMENT; Must be empty otherwise
 
     objects = ActionQuerySet.as_manager()
@@ -655,10 +655,10 @@ class Action(models.Model):
         if not self.is_applicant_action:
             raise TypeError
 
-        sender_name = self.history.inforequest.applicant_name
-        sender_address = self.history.inforequest.unique_email
+        sender_name = self.paperwork.inforequest.applicant_name
+        sender_address = self.paperwork.inforequest.unique_email
         sender_formatted = formataddr((squeeze(sender_name), sender_address))
-        recipients = self.history.obligee.emails_formatted
+        recipients = self.paperwork.obligee.emails_formatted
 
         # FIXME: Attachment name and content type are set by client and not to be trusted. The name
         # must be sanitized and the content type white listed for known content types. Any unknown
@@ -670,7 +670,7 @@ class Action(models.Model):
         msg.send()
 
         inforequestemail = InforequestEmail(
-                inforequest=self.history.inforequest,
+                inforequest=self.paperwork.inforequest,
                 email=msg.instance,
                 type=InforequestEmail.TYPES.APPLICANT_ACTION,
                 )
@@ -687,7 +687,7 @@ class ActionDraft(models.Model):
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
     # May be NULL; Must be owned by the inforequest if set.
-    history = models.ForeignKey(u'History', blank=True, null=True, verbose_name=_(u'History'))
+    paperwork = models.ForeignKey(u'Paperwork', blank=True, null=True, verbose_name=_(u'Paperwork'))
 
     # May NOT be NULL
     TYPES = Action.TYPES

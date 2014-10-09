@@ -57,7 +57,7 @@ def create(request, draft_id=None):
                 form.save(inforequest)
                 inforequest.save()
 
-                action = inforequest.history.action_set.requests().first()
+                action = inforequest.paperwork.action_set.requests().first()
                 action.send_by_email()
 
                 if draft:
@@ -387,7 +387,7 @@ def new_action(request, action, inforequest_id):
                     })
 
         if action_type == Action.TYPES.APPEAL:
-            form.cleaned_data[u'history'].add_expiration_if_expired()
+            form.cleaned_data[u'paperwork'].add_expiration_if_expired()
 
         action = Action(
                 effective_date=local_today(),
@@ -430,12 +430,12 @@ def new_action(request, action, inforequest_id):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def extend_deadline(request, inforequest_id, history_id, action_id):
+def extend_deadline(request, inforequest_id, paperwork_id, action_id):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
-    history = inforequest.history_set.get_or_404(pk=history_id)
-    action = history.action_set.get_or_404(pk=action_id)
+    paperwork = inforequest.paperwork_set.get_or_404(pk=paperwork_id)
+    action = paperwork.action_set.get_or_404(pk=action_id)
 
-    if action != history.action_set.last():
+    if action != paperwork.action_set.last():
         raise Http404
     if not action.has_obligee_deadline:
         raise Http404
@@ -451,7 +451,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
                     u'result': u'invalid',
                     u'content': render_to_string(u'inforequests/modals/extend-deadline.html', context_instance=RequestContext(request), dictionary={
                         u'inforequest': inforequest,
-                        u'history': history,
+                        u'paperwork': paperwork,
                         u'action': action,
                         u'form': form,
                         }),
@@ -470,7 +470,7 @@ def extend_deadline(request, inforequest_id, history_id, action_id):
         form = forms.ExtendDeadlineForm(prefix=action.pk)
         return render(request, u'inforequests/modals/extend-deadline.html', {
                 u'inforequest': inforequest,
-                u'history': history,
+                u'paperwork': paperwork,
                 u'action': action,
                 u'form': form,
                 })
@@ -489,7 +489,7 @@ def download_attachment(request, attachment_id):
             request.user,
             EmailMessage.objects.filter(inforequest__applicant=request.user),
             InforequestDraft.objects.filter(applicant=request.user),
-            Action.objects.filter(history__inforequest__applicant=request.user),
+            Action.objects.filter(paperwork__inforequest__applicant=request.user),
             ActionDraft.objects.filter(inforequest__applicant=request.user),
             )
     attachment = Attachment.objects.pointing_to(*pointing_to).get_or_404(pk=attachment_id)

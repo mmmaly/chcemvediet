@@ -12,7 +12,7 @@
 
 {% autoescape off %}
 {% filter squeeze %}
-We received a new e-mail regarding your inforequest to {{ inforequest.history.historicalobligee.name }}.
+We received a new e-mail regarding your inforequest to {{ inforequest.paperwork.historicalobligee.name }}.
 {% if inforequest.undecided_set.count > 1 %}
   We already have {{ inforequest.undecided_set.count }} waiting e-mails regarding your inforequest.
 {% endif %}
