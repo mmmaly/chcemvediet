@@ -12,7 +12,7 @@ from django.conf import settings
 from poleno.attachments.models import Attachment
 from poleno.utils.date import utc_now
 
-from base import BaseTransport
+from .base import BaseTransport
 from ..models import Message, Recipient
 
 class ImapTransport(BaseTransport):

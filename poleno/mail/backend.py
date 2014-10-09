@@ -9,7 +9,7 @@ from django.core.mail.backends.base import BaseEmailBackend
 
 from poleno.attachments.models import Attachment
 
-from models import Message, Recipient
+from .models import Message, Recipient
 
 class EmailBackend(BaseEmailBackend):
 

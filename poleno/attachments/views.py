@@ -6,7 +6,7 @@ from django.conf import settings
 
 from poleno.utils.http import JsonResponse, send_file_response
 
-from models import Attachment
+from .models import Attachment
 
 def upload(request, generic_object, download_url_func):
     res = []

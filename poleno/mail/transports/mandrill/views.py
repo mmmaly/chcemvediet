@@ -13,7 +13,7 @@ from django.conf import settings
 
 from poleno.utils.views import secure_required
 
-from signals import webhook_event
+from .signals import webhook_event
 
 @require_http_methods([u'HEAD', u'POST'])
 @csrf_exempt

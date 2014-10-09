@@ -12,7 +12,7 @@ from django.db.models import Q
 
 from poleno.utils.http import JsonResponse
 
-import models
+import .models
 
 @require_http_methods([u'HEAD', u'GET'])
 def index(request):

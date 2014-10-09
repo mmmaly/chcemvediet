@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from models import Attachment
+from .models import Attachment
 
 class AttachmentsWidget(forms.TextInput):
     def render(self, name, value, attrs=None):

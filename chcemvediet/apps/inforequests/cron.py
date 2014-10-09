@@ -7,7 +7,7 @@ from poleno.workdays import workdays
 from poleno.utils.translation import translation
 from poleno.utils.date import local_date, local_today
 
-from models import Inforequest
+from .models import Inforequest
 
 @cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
 def undecided_email_reminder():

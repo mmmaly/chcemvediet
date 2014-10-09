@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from models import Obligee
+from .models import Obligee
 
 
 class ObligeeWithAddressInput(forms.TextInput):

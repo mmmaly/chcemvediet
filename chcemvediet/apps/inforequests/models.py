@@ -725,4 +725,4 @@ class ActionDraft(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-import signals
+import .signals

@@ -17,7 +17,7 @@ from poleno.utils.misc import squeeze
 from poleno.utils.date import local_today
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
-from models import History, Action
+from .models import History, Action
 
 
 class InforequestForm(PrefixedForm):

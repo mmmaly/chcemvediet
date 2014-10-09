@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404
 
-from misc import Bunch
+from .misc import Bunch
 
 def after_saved(model):
     u"""

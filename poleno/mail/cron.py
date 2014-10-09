@@ -6,8 +6,8 @@ from django.utils.module_loading import import_by_path
 from poleno.cron import cron_job
 from poleno.utils.date import utc_now
 
-from models import Message
-from signals import message_sent, message_received
+from .models import Message
+from .signals import message_sent, message_received
 
 @cron_job(run_every_mins=1)
 def mail():

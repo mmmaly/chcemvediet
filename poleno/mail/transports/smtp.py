@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.core.mail import get_connection, EmailMultiAlternatives, EmailMessage
 
-from base import BaseTransport
+from .base import BaseTransport
 
 class SmtpTransport(BaseTransport):
     def connect(self):
