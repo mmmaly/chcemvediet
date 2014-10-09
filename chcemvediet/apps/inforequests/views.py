@@ -17,8 +17,8 @@ from poleno.utils.misc import Bunch
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_date, local_today
 
+from . import forms
 from .models import InforequestDraft, Inforequest, InforequestEmail, Action, ActionDraft
-import .forms
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required

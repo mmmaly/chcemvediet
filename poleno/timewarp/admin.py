@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.forms import clean_button
 
-from timewarp import timewarp
-import .forms
+from . import forms
+from .timewarp import timewarp
 
 @admin.site.register_view(u'timewarp/', name=_(u'Timewarp'), urlname=u'timewarp')
 @require_http_methods([u'HEAD', u'GET', u'POST'])

@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from adminplus.sites import AdminSitePlus
 
-import .views
+from . import views
 
 admin.site = AdminSitePlus()
 admin.autodiscover()
