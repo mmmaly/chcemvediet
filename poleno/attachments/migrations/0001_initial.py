@@ -11,7 +11,8 @@ class Migration(SchemaMigration):
         # Adding model 'Attachment'
         db.create_table(u'attachments_attachment', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('generic_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
+            ('generic_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
             ('file', self.gf('django.db.models.fields.files.FileField')(max_length=255)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('content_type', self.gf('django.db.models.fields.CharField')(max_length=255)),
@@ -32,10 +33,18 @@ class Migration(SchemaMigration):
             'content_type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'created': ('django.db.models.fields.DateTimeField', [], {}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '255'}),
+            'generic_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'generic_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'size': ('django.db.models.fields.IntegerField', [], {})
+        },
+        u'contenttypes.contenttype': {
+            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 

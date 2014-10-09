@@ -13,11 +13,13 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
             ('processed', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('from_name', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
+            ('from_mail', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('received_for', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('html', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('from_name', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('from_mail', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('headers', self.gf('jsonfield.fields.JSONField')(default={})),
         ))
         db.send_create_signal(u'mail', ['Message'])
 
@@ -29,6 +31,8 @@ class Migration(SchemaMigration):
             ('mail', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
             ('status', self.gf('django.db.models.fields.SmallIntegerField')()),
+            ('status_details', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
+            ('remote_id', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
         ))
         db.send_create_signal(u'mail', ['Recipient'])
 
@@ -46,9 +50,11 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "[u'processed', u'pk']", 'object_name': 'Message'},
             'from_mail': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'from_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'headers': ('jsonfield.fields.JSONField', [], {'default': '{}'}),
             'html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'processed': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'received_for': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'type': ('django.db.models.fields.SmallIntegerField', [], {})
@@ -59,7 +65,9 @@ class Migration(SchemaMigration):
             'mail': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'message': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mail.Message']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'remote_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'status_details': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'type': ('django.db.models.fields.SmallIntegerField', [], {})
         }
     }
