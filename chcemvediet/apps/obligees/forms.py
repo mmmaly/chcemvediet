@@ -64,7 +64,7 @@ class ObligeeAutocompleteField(forms.Field):
         if value in self.empty_values:
             return None
         # FIXME: Should be ``.get(name=value)``, but there are Obligees with duplicate names, yet.
-        value = Obligee.objects.filter(name=value).first()
+        value = Obligee.objects.pending().filter(name=value).first()
         if value is None:
             raise ValidationError(_(u'Invalid obligee name. Select one form the menu.'))
         return value

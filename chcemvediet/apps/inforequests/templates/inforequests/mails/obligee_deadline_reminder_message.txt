@@ -12,7 +12,7 @@
 
 {% autoescape off %}
 {% filter squeeze %}
-{{ action.history.obligee_name }} deadline after {{ action.get_type_display }} has expired.
+{{ action.history.historicalobligee.name }} deadline after {{ action.get_type_display }} has expired.
 {{ action.get_type_display }} set a deadline of {{ action.deadline }} working days since {{ action.effective_date }}.
 {% if action.extension %}
   You have already extended this deadline by another {{ action.extension }} working days.

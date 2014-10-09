@@ -121,7 +121,7 @@ class ActionAbstractForm(PrefixedForm):
 
         # Assumes that converting a History to a string gives its ``pk``
         field = self.fields[u'history']
-        field.choices = [(history, history.obligee_name)
+        field.choices = [(history, history.historicalobligee.name)
                 for history in self.inforequest.history_set.all()
                 if history.can_add_action(self.action_type)]
         if len(field.choices) > 1:

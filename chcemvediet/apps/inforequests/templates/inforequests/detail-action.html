@@ -91,9 +91,9 @@
       <div class="row-fluid">
         <p class="span2 text-right">{% blocktrans %}New Obligee{% endblocktrans %}:</p>
         <div class="span10">
-          <p>{{ sub_history.obligee_name }}</p>
-          <p>{{ sub_history.obligee_street }}<br>
-            {{ sub_history.obligee_zip }} {{ sub_history.obligee_city }}</p>
+          <p>{{ sub_history.historicalobligee.name }}</p>
+          <p>{{ sub_history.historicalobligee.street }}<br>
+            {{ sub_history.historicalobligee.zip }} {{ sub_history.historicalobligee.city }}</p>
         </div>
       </div>
       {# Workaround for Django bug causing infinite recursion #}

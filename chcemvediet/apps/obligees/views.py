@@ -16,7 +16,7 @@ import models
 
 @require_http_methods([u'HEAD', u'GET'])
 def index(request):
-    obligee_list = models.Obligee.objects.all()
+    obligee_list = models.Obligee.objects.pending()
     paginator = Paginator(obligee_list, 25)
 
     page = request.GET.get(u'page')
@@ -38,7 +38,7 @@ def autocomplete(request):
     words = filter(None, re.split(r'[^a-z0-9]+', term))
 
     query = reduce(lambda p, q: p & q, (Q(slug__contains=u'-'+w) for w in words), Q())
-    obligee_list = models.Obligee.objects.filter(query).order_by(u'name')[:10]
+    obligee_list = models.Obligee.objects.pending().filter(query).order_by(u'name')[:10]
 
     data = [{
         u'label': obligee.name,

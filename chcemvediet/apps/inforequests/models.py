@@ -278,17 +278,13 @@ class History(models.Model):
     # May NOT be NULL
     obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
 
+    # May NOT be NULL; Automaticly frozen in save() when creating a new object.
+    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee', verbose_name=_(u'Historical Obligee'),
+            help_text=_(u'Frozen Obligee at the time the Inforequest was submitted or advanced to it.'))
+
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
     # main history. Inforequest must contain exactly one history with ``advanced_by`` set to None.
     advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, verbose_name=_(u'Advanced By'))
-
-    # Frozen Obligee contact information at the time the Inforequest was submitted if this is its
-    # main History, or the time the Inforequest was advanced to this Obligee otherwise. The
-    # information is mandatory and automaticly frozen in save() when creating a new object.
-    obligee_name = models.CharField(max_length=255, verbose_name=_(u'Obligee Name'))
-    obligee_street = models.CharField(max_length=255, verbose_name=_(u'Obligee Street'))
-    obligee_city = models.CharField(max_length=255, verbose_name=_(u'Obligee City'))
-    obligee_zip = models.CharField(max_length=10, verbose_name=_(u'Obligee Zip'))
 
     # Backward relations:
     #
@@ -299,7 +295,7 @@ class History(models.Model):
     objects = QuerySet.as_manager()
 
     class Meta:
-        ordering = [u'obligee_name', u'pk']
+        ordering = [u'historicalobligee__name', u'pk']
 
     # May NOT be NULL; Read-only
     @property
@@ -416,13 +412,8 @@ class History(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
-
-            # Freeze obligee contact information
             if self.obligee:
-                self.obligee_name = self.obligee.name
-                self.obligee_street = self.obligee.street
-                self.obligee_city = self.obligee.city
-                self.obligee_zip = self.obligee.zip
+                self.historicalobligee = self.obligee.history.first()
 
         super(History, self).save(*args, **kwargs)
 
@@ -667,13 +658,13 @@ class Action(models.Model):
         sender_name = self.history.inforequest.applicant_name
         sender_address = self.history.inforequest.unique_email
         sender_full = formataddr((squeeze(sender_name), sender_address))
-        recipient_address = self.history.obligee.email
+        recipients = self.history.obligee.emails_formatted
 
         # FIXME: Attachment name and content type are set by client and not to be trusted. The name
         # must be sanitized and the content type white listed for known content types. Any unknown
         # content type should be replaced with 'application/octet-stream'.
 
-        msg = EmailMessage(self.subject, self.content, sender_full, [recipient_address])
+        msg = EmailMessage(self.subject, self.content, sender_full, recipients)
         for attachment in self.attachment_set.all():
             msg.attach(attachment.name, attachment.content, attachment.content_type)
         msg.send()

@@ -12,7 +12,7 @@
 {% autoescape off %}
 {% filter squeeze %}
 You have {{ inforequest.undecided_set.count }} e-mails regarding your inforequest to
-{{ inforequest.history.obligee_name }} waiting for your decision. The last of them was received on
+{{ inforequest.history.historicalobligee.name }} waiting for your decision. The last of them was received on
 {{ inforequest.newest_undecided_email.processed|local_date }}.
 {% endfilter %}
 

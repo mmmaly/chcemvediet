@@ -145,10 +145,10 @@ if __name__ == u'__main__':
         mail_tpl = configure.input(u'obligee_dummy_mail', u'Obligee dummy e-mail', required=True)
         with JsonFile(u'fixtures/obligees_obligee.json.tpl', u'fixtures/obligees_obligee.configured.json') as data:
             for entry in data:
-                if entry[u'model'] == u'obligees.obligee':
+                if entry[u'model'] in [u'obligees.obligee', u'obligees.historicalobligee']:
                     slug = entry[u'fields'][u'slug'].strip(u'-')
                     mail = mail_tpl.format(name=slug)
-                    entry[u'fields'][u'email'] = mail
+                    entry[u'fields'][u'emails'] = mail
 
         # Server email addresses
         print(dedent(u"""

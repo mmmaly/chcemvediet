@@ -99,8 +99,8 @@ MIDDLEWARE_CLASSES = (
     u'django.contrib.auth.middleware.AuthenticationMiddleware',
     u'django.contrib.messages.middleware.MessageMiddleware',
     u'django.middleware.locale.LocaleMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
     u'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    u'simple_history.middleware.HistoryRequestMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -159,6 +159,7 @@ INSTALLED_APPS = (
     u'sekizai',
     u'adminplus',
     u'django_cron',
+    u'simple_history',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
