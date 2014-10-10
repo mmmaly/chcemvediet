@@ -426,12 +426,35 @@ class Paperwork(models.Model):
                     )
             expiration.save()
 
+    def collect_obligee_emails(self):
+        res = {}
+        for action in self.action_set.by_email():
+            if action.email.type == action.email.TYPES.INBOUND:
+                res.update({action.email.from_mail: action.email.from_name})
+            else: # OUTBOUND
+                res.update({r.mail: r.name for r in action.email.recipient_set.all()})
+        # Current obligee emails
+        res.update({mail: name for name, mail in self.obligee.emails_parsed})
+
+        return ((name, mail) for mail, name in res.items())
+
     def __unicode__(self):
         return u'%s' % self.pk
 
 class ActionQuerySet(QuerySet):
+    # Applicant actions
+    def applicant_actions(self):
+        return self.filter(type__in=Action.APPLICANT_ACTION_TYPES)
     def requests(self):
         return self.filter(type=Action.TYPES.REQUEST)
+    def clarification_responses(self):
+        return self.filter(type=Action.TYPES.CLARIFICATION_RESPONSE)
+    def appeals(self):
+        return self.filter(type=Action.TYPES.APPEAL)
+
+    # Obligee actions
+    def obligee_actions(self):
+        return self.filter(type__in=Action.OBLIGEE_ACTION_TYPES)
     def confirmations(self):
         return self.filter(type=Action.TYPES.CONFIRMATION)
     def extensions(self):
@@ -440,6 +463,32 @@ class ActionQuerySet(QuerySet):
         return self.filter(type=Action.TYPES.ADVANCEMENT)
     def clarification_requests(self):
         return self.filter(type=Action.TYPES.CLARIFICATION_REQUEST)
+    def disclosures(self):
+        return self.filter(type=Action.TYPES.DISCLOSURE)
+    def refusals(self):
+        return self.filter(type=Action.TYPES.REFUSAL)
+    def affirmations(self):
+        return self.filter(type=Action.TYPES.AFFIRMATION)
+    def reversions(self):
+        return self.filter(type=Action.TYPES.REVERSION)
+    def remandments(self):
+        return self.filter(type=Action.TYPES.REMANDMENT)
+
+    # Implicit actions
+    def implicit_actions(self):
+        return self.filter(type__in=Action.IMPLICIT_ACTION_TYPES)
+    def advanced_requests(self):
+        return self.filter(type=Action.TYPES.ADVANCED_REQUEST)
+    def expirations(self):
+        return self.filter(type=Action.TYPES.EXPIRATION)
+    def appeal_expirations(self):
+        return self.filter(type=Action.TYPES.APPEAL_EXPIRATION)
+
+    # Action form
+    def by_email(self):
+        return self.filter(email__isnull=False)
+    def by_smail(self):
+        return self.filter(email__isnull=True)
 
 class Action(models.Model):
     # May NOT be NULL
@@ -468,6 +517,27 @@ class Action(models.Model):
             (u'ADVANCED_REQUEST', 11, _(u'Advanced Request')),
             (u'EXPIRATION', 14, _(u'Expiration')),
             (u'APPEAL_EXPIRATION', 15, _(u'Appeal Expiration')),
+            )
+    APPLICANT_ACTION_TYPES = (
+            TYPES.REQUEST,
+            TYPES.CLARIFICATION_RESPONSE,
+            TYPES.APPEAL,
+            )
+    OBLIGEE_ACTION_TYPES = (
+            TYPES.CONFIRMATION,
+            TYPES.EXTENSION,
+            TYPES.ADVANCEMENT,
+            TYPES.CLARIFICATION_REQUEST,
+            TYPES.DISCLOSURE,
+            TYPES.REFUSAL,
+            TYPES.AFFIRMATION,
+            TYPES.REVERSION,
+            TYPES.REMANDMENT,
+            )
+    IMPLICIT_ACTION_TYPES = (
+            TYPES.ADVANCED_REQUEST,
+            TYPES.EXPIRATION,
+            TYPES.APPEAL_EXPIRATION,
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
@@ -507,6 +577,26 @@ class Action(models.Model):
             ADVANCED_REQUEST=13,
             EXPIRATION=None,
             APPEAL_EXPIRATION=None,
+            )
+    SETTING_APPLICANT_DEADLINE_TYPES = (
+            # Applicant actions
+            # Obligee actions
+            TYPES.CLARIFICATION_REQUEST,
+            TYPES.DISCLOSURE,
+            TYPES.REFUSAL,
+            # Implicit actions
+            )
+    SETTING_OBLIGEE_DEADLINE_TYPES = (
+            # Applicant actions
+            TYPES.REQUEST,
+            TYPES.CLARIFICATION_RESPONSE,
+            TYPES.APPEAL,
+            # Obligee actions
+            TYPES.CONFIRMATION,
+            TYPES.EXTENSION,
+            TYPES.REMANDMENT,
+            # Implicit actions
+            TYPES.ADVANCED_REQUEST,
             )
     deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
 
@@ -551,35 +641,17 @@ class Action(models.Model):
     # May NOT be NULL; Read-only
     @property
     def is_applicant_action(self):
-        return self.type in [
-                self.TYPES.REQUEST,
-                self.TYPES.CLARIFICATION_RESPONSE,
-                self.TYPES.APPEAL,
-                ]
+        return self.type in self.APPLICANT_ACTION_TYPES
 
     # May NOT be NULL; Read-only
     @property
     def is_obligee_action(self):
-        return self.type in [
-                self.TYPES.CONFIRMATION,
-                self.TYPES.EXTENSION,
-                self.TYPES.ADVANCEMENT,
-                self.TYPES.CLARIFICATION_REQUEST,
-                self.TYPES.DISCLOSURE,
-                self.TYPES.REFUSAL,
-                self.TYPES.AFFIRMATION,
-                self.TYPES.REVERSION,
-                self.TYPES.REMANDMENT,
-                ]
+        return self.type in self.OBLIGEE_ACTION_TYPES
 
     # May NOT be NULL; Read-only
     @property
     def is_implicit_action(self):
-        return self.type in [
-                self.TYPES.ADVANCED_REQUEST,
-                self.TYPES.EXPIRATION,
-                self.TYPES.APPEAL_EXPIRATION,
-                ]
+        return self.type in self.IMPLICIT_ACTION_TYPES
 
     # May NOT be NULL; Read-only
     @property
@@ -604,30 +676,12 @@ class Action(models.Model):
     # May NOT be NULL; Read-only
     @property
     def has_applicant_deadline(self):
-        return self.deadline is not None and self.type in [
-                # Applicant actions
-                # Obligee actions
-                self.TYPES.CLARIFICATION_REQUEST,
-                self.TYPES.DISCLOSURE,
-                self.TYPES.REFUSAL,
-                # Implicit actions
-                ]
+        return self.deadline is not None and self.type in self.SETTING_APPLICANT_DEADLINE_TYPES
 
     # May NOT be NULL; Read-only
     @property
     def has_obligee_deadline(self):
-        return self.deadline is not None and self.type in [
-                # Applicant actions
-                self.TYPES.REQUEST,
-                self.TYPES.CLARIFICATION_RESPONSE,
-                self.TYPES.APPEAL,
-                # Obligee actions
-                self.TYPES.CONFIRMATION,
-                self.TYPES.EXTENSION,
-                self.TYPES.REMANDMENT,
-                # Implicit actions
-                self.TYPES.ADVANCED_REQUEST,
-                ]
+        return self.deadline is not None and self.type in self.SETTING_OBLIGEE_DEADLINE_TYPES
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
@@ -658,7 +712,7 @@ class Action(models.Model):
         sender_name = self.paperwork.inforequest.applicant_name
         sender_address = self.paperwork.inforequest.unique_email
         sender_formatted = formataddr((squeeze(sender_name), sender_address))
-        recipients = self.paperwork.obligee.emails_formatted
+        recipients = (formataddr(r) for r in self.paperwork.collect_obligee_emails())
 
         # FIXME: Attachment name and content type are set by client and not to be trusted. The name
         # must be sanitized and the content type white listed for known content types. Any unknown
