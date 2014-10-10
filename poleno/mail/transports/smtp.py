@@ -5,12 +5,17 @@ from django.core.mail import get_connection, EmailMultiAlternatives, EmailMessag
 from .base import BaseTransport
 
 class SmtpTransport(BaseTransport):
+    def __init__(self, *args, **kwargs):
+        super(SmtpTransport, self).__init__(*args, **kwargs)
+        self.connection = None
+
     def connect(self):
         self.connection = get_connection(u'django.core.mail.backends.smtp.EmailBackend')
         self.connection.open()
 
     def disconnect(self):
         self.connection.close()
+        self.connection = None
 
     def send_message(self, message):
         assert message.type == message.TYPES.OUTBOUND

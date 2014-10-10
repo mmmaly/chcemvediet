@@ -35,8 +35,8 @@ def index(request):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @verified_email_required
-def create(request, draft_id=None):
-    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id) if draft_id else None
+def create(request, draft_pk=None):
+    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk) if draft_pk else None
     attachments_pointing_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
@@ -62,7 +62,7 @@ def create(request, draft_id=None):
 
                 if draft:
                     draft.delete()
-                return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.id,)))
+                return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
     else:
         form = forms.InforequestForm(attachments_pointing_to=attachments_pointing_to)
@@ -75,25 +75,25 @@ def create(request, draft_id=None):
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
-def detail(request, inforequest_id):
-    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_id)
+def detail(request, inforequest_pk):
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_pk)
     return render(request, u'inforequests/detail.html', {
             u'inforequest': inforequest,
             })
 
 @require_http_methods([u'POST'])
 @login_required
-def delete_draft(request, draft_id):
-    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_id)
+def delete_draft(request, draft_pk):
+    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk)
     draft.delete()
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def decide_email(request, action, inforequest_id, email_id):
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
-    email = inforequest.undecided_set.get_or_404(pk=email_id)
+def decide_email(request, action, inforequest_pk, email_pk):
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
+    email = inforequest.undecided_set.get_or_404(pk=email_pk)
     inforequestemail = inforequest.inforequestemail_set.get(email=email)
 
     available_actions = {
@@ -193,7 +193,7 @@ def decide_email(request, action, inforequest_id, email_id):
 
         return JsonResponse({
                 u'result': u'success',
-                u'scroll_to': u'#action-%d' % action.id if action else u'',
+                u'scroll_to': u'#action-%d' % action.pk if action else u'',
                 u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
                     u'inforequest': inforequest,
                     }),
@@ -210,8 +210,8 @@ def decide_email(request, action, inforequest_id, email_id):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def add_smail(request, action, inforequest_id):
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
+def add_smail(request, action, inforequest_pk):
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     available_actions = {
             u'confirmation': Bunch(
@@ -309,7 +309,7 @@ def add_smail(request, action, inforequest_id):
 
         return JsonResponse({
                 u'result': u'success',
-                u'scroll_to': u'#action-%d' % action.id,
+                u'scroll_to': u'#action-%d' % action.pk,
                 u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
                     u'inforequest': inforequest,
                     }),
@@ -327,8 +327,8 @@ def add_smail(request, action, inforequest_id):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def new_action(request, action, inforequest_id):
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
+def new_action(request, action, inforequest_pk):
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     available_actions = {
             u'clarification-response': Bunch(
@@ -404,7 +404,7 @@ def new_action(request, action, inforequest_id):
 
         json = {
                 u'result': u'success',
-                u'scroll_to': u'#action-%d' % action.id,
+                u'scroll_to': u'#action-%d' % action.pk,
                 u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
                     u'inforequest': inforequest,
                     }),
@@ -430,10 +430,10 @@ def new_action(request, action, inforequest_id):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def extend_deadline(request, inforequest_id, paperwork_id, action_id):
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_id)
-    paperwork = inforequest.paperwork_set.get_or_404(pk=paperwork_id)
-    action = paperwork.action_set.get_or_404(pk=action_id)
+def extend_deadline(request, inforequest_pk, paperwork_pk, action_pk):
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
+    paperwork = inforequest.paperwork_set.get_or_404(pk=paperwork_pk)
+    action = paperwork.action_set.get_or_404(pk=action_pk)
 
     if action != paperwork.action_set.last():
         raise Http404
@@ -479,12 +479,12 @@ def extend_deadline(request, inforequest_id, paperwork_id, action_id):
 @require_ajax
 @login_required(raise_exception=True)
 def upload_attachment(request):
-    download_url_func = (lambda a: reverse(u'inforequests:download_attachment', args=(a.id,)))
+    download_url_func = (lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,)))
     return attachments_views.upload(request, request.user, download_url_func)
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required(raise_exception=True)
-def download_attachment(request, attachment_id):
+def download_attachment(request, attachment_pk):
     pointing_to = (
             request.user,
             EmailMessage.objects.filter(inforequest__applicant=request.user),
@@ -492,5 +492,5 @@ def download_attachment(request, attachment_id):
             Action.objects.filter(paperwork__inforequest__applicant=request.user),
             ActionDraft.objects.filter(inforequest__applicant=request.user),
             )
-    attachment = Attachment.objects.pointing_to(*pointing_to).get_or_404(pk=attachment_id)
+    attachment = Attachment.objects.pointing_to(*pointing_to).get_or_404(pk=attachment_pk)
     return attachments_views.download(request, attachment)

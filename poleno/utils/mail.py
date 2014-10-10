@@ -1,7 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import re
-
 from django.core.mail import EmailMultiAlternatives, EmailMessage
 from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist

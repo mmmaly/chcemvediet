@@ -212,7 +212,7 @@ class Inforequest(models.Model):
         super(Inforequest, self).save(*args, **kwargs)
 
     def _send_notification(self, template, anchor, dictionary):
-        url = u'http://127.0.0.1:8000%s#%s' % (reverse(u'inforequests:detail', args=(self.id,)), anchor)
+        url = u'http://127.0.0.1:8000%s#%s' % (reverse(u'inforequests:detail', args=(self.pk,)), anchor)
         dictionary.update({
                 u'inforequest': self,
                 u'url': url,
@@ -779,4 +779,5 @@ class ActionDraft(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+# Let Django register signals as soon as possible
 from . import signals

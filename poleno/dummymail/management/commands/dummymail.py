@@ -5,7 +5,7 @@ import time
 from textwrap import dedent
 from optparse import make_option
 from multiprocessing import Process
-from email.Utils import formatdate
+from email.utils import formatdate
 
 import localmail
 from twisted.python import log

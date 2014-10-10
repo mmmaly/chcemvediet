@@ -24,6 +24,7 @@ class ImapTransport(BaseTransport):
         self.username = getattr(settings, u'IMAP_USERNAME')
         self.password = getattr(settings, u'IMAP_PASSWORD', u'')
         self.transport = IMAP4_SSL if self.ssl else IMAP4
+        self.connection = None
 
     def connect(self):
         self.connection = self.transport(self.host, self.port)
@@ -33,6 +34,7 @@ class ImapTransport(BaseTransport):
     def disconnect(self):
         self.connection.close()
         self.connection.logout()
+        self.connection = None
 
     def _decode_header(self, header):
         parts = email.header.decode_header(header)

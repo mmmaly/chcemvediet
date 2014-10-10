@@ -14,7 +14,7 @@ def _holidays():
         path = settings.HOLIDAYS_MODULE_PATH
     except AttributeError:
         return None
-    module = import_module(settings.HOLIDAYS_MODULE_PATH)
+    module = import_module(path)
     return module.HOLIDAYS
 
 
@@ -33,6 +33,8 @@ class Holiday(object):
                   for d in self.for_year(y)
                   if after < d <= before]
 
+    def for_year(self, year):
+        raise NotImplementedError
 
 class FixedHoliday(Holiday):
     def __init__(self, **kwargs):
@@ -45,7 +47,6 @@ class FixedHoliday(Holiday):
 
     def __repr__(self):
         return u'%s(day=%s, month=%s)' % (self.__class__.__name__, repr(self.day), repr(self.month))
-
 
 class EasterHoliday(Holiday):
     def __init__(self, **kwargs):
@@ -60,7 +61,6 @@ class EasterHoliday(Holiday):
 
     def __repr__(self):
         return u'%s(days=%s)' % (self.__class__.__name__, repr(self.days))
-
 
 class HolidaySet(object):
     def __init__(self, *args):
@@ -93,9 +93,9 @@ def between(after, before, holiday_set=None):
         between(a, b) == between(a, x) + between(x, b)
         between(a, a+1) == 1 iff a+1 is workday; 0 otherwise
     """
-    if (after == before):
+    if after == before:
         return 0
-    if (after > before):
+    if after > before:
         return -between(before, after, holiday_set)
 
     if not holiday_set:

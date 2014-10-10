@@ -6,7 +6,6 @@ from optparse import make_option
 from dateutil.relativedelta import relativedelta
 
 from django.core.management.base import BaseCommand, CommandError
-from django.utils import formats
 
 from poleno.timewarp.timewarp import timewarp
 

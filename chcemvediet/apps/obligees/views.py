@@ -7,7 +7,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 from django.forms.models import model_to_dict
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
 from django.db.models import Q
 
 from poleno.utils.http import JsonResponse
@@ -35,7 +34,7 @@ def index(request):
 def autocomplete(request):
     term = request.GET.get(u'term', u'')
     term = unidecode(term).lower() # transliterate unicode to ascii
-    words = filter(None, re.split(r'[^a-z0-9]+', term))
+    words = (w for w in re.split(r'[^a-z0-9]+', term) if w)
 
     query = reduce(lambda p, q: p & q, (Q(slug__contains=u'-'+w) for w in words), Q())
     obligee_list = models.Obligee.objects.pending().filter(query).order_by(u'name')[:10]

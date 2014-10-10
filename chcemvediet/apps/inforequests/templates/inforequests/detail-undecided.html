@@ -22,7 +22,7 @@
   <div id="undecided-collapse" class="collapse">
     {% for email in inforequest.undecided_set.all %}
       {% if forloop.counter >= 2 %}
-        <div id="undecided-{{ email.id }}" class="undecided well">
+        <div id="undecided-{{ email.pk }}" class="undecided well">
           {% include "inforequests/detail-email.html" with inforequest=inforequest email=email %}
         </div>
       {% endif %}

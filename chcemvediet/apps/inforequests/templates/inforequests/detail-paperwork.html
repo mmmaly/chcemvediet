@@ -9,7 +9,7 @@
 {% endcomment %}
 
 {% for action in paperwork.action_set.all %}
-  <div id="action-{{ action.id }}">
+  <div id="action-{{ action.pk }}">
     {% include "inforequests/detail-action.html" with inforequest=inforequest paperwork=paperwork action=action forloop=forloop %}
   </div>
 {% endfor %}

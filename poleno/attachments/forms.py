@@ -8,6 +8,11 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Attachment
 
 class AttachmentsWidget(forms.TextInput):
+    def __init__(self, *args, **kwargs):
+        super(AttachmentsWidget, self).__init__(*args, **kwargs)
+        self.upload_url_func = None
+        self.download_url_func = None
+
     def render(self, name, value, attrs=None):
         textinput_value = u',%s,' % u','.join(u'%s' % a.pk for a in value or [])
         textinput = super(AttachmentsWidget, self).render(name, textinput_value, attrs)
@@ -29,6 +34,9 @@ class AttachmentsField(forms.Field):
         upload_url_func = kwargs.pop(u'upload_url_func', None)
         download_url_func = kwargs.pop(u'download_url_func', None)
         super(AttachmentsField, self).__init__(*args, **kwargs)
+
+        self._upload_url_func = None
+        self._download_url_func = None
 
         self.pointing_to = pointing_to
         self.upload_url_func = upload_url_func
@@ -60,7 +68,7 @@ class AttachmentsField(forms.Field):
 
     def to_python(self, value):
         u""" Returns list of Attachments """
-        keys = filter(None, value.split(u','))
+        keys = (k for k in value.split(u',') if k)
         if not keys:
             return []
 

@@ -70,14 +70,14 @@ class FieldChoices(object):
                 for group_name, group_key, group_value in choice_value:
                     group.append((group_key, group_value))
                     inverse[group_key] = u'%s__%s' % (choice_name, group_name)
-                    bunch.__dict__[group_name] = group_key
+                    setattr(bunch, group_name, group_key)
                 choices.append((choice_key, group))
                 inverse[choice_key] = choice_name
-                self.__dict__[choice_name] = bunch
+                setattr(self, choice_name, bunch)
             else:
                 choices.append((choice_key, choice_value))
                 inverse[choice_key] = choice_name
-                self.__dict__[choice_name] = choice_key
+                setattr(self, choice_name, choice_key)
         self._choices = choices
         self._inverse = inverse
 

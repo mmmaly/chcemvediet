@@ -27,7 +27,7 @@
       <tbody>
         {% for inforequest in inforequest_list %}
           <tr>
-            <td><a href="{% url 'inforequests:detail' inforequest.id %}">{{ inforequest.paperwork.historicalobligee.name }}</a></td>
+            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.paperwork.historicalobligee.name }}</a></td>
             <td>{{ inforequest.submission_date }}</td>
             <td>{% if inforequest.has_undecided_email %}New e-mail waiting{% endif %}</td>
           </tr>
@@ -50,8 +50,8 @@
           <tr>
             <td>{% if draft.obligee %}{{ draft.obligee.name }}{% else %}{% blocktrans %}(empty){% endblocktrans %}{% endif %}</a></td>
             <td class="text-right">
-              <a class="btn" href="{% url 'inforequests:create_from_draft' draft.id %}">Edit and Submit</a>
-              <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.id %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}">Delete</a>
+              <a class="btn" href="{% url 'inforequests:create_from_draft' draft.pk %}">Edit and Submit</a>
+              <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.pk %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}">Delete</a>
             </td>
           </tr>
         {% endfor %}
@@ -73,7 +73,7 @@
       <tbody>
         {% for inforequest in closed_list %}
           <tr>
-            <td><a href="{% url 'inforequests:detail' inforequest.id %}">{{ inforequest.paperwork.historicalobligee.name }}</a></td>
+            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.paperwork.historicalobligee.name }}</a></td>
             <td>{{ inforequest.submission_date }}</td>
           </tr>
         {% endfor %}

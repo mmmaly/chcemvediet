@@ -47,7 +47,7 @@ class InforequestForm(PrefixedForm):
             label=_(u'Attachments'),
             required=False,
             upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
-            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.id,))),
+            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,))),
             )
 
     def __init__(self, *args, **kwargs):
@@ -241,7 +241,7 @@ class AttachmentsMixin(ActionAbstractForm):
             label=_(u'Attachments'),
             required=False,
             upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
-            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.id,))),
+            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,))),
             )
 
     def __init__(self, *args, **kwargs):

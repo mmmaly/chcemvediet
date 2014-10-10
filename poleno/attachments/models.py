@@ -23,7 +23,7 @@ class AttachmentQuerySet(QuerySet):
         for arg in args:
             if isinstance(arg, models.query.QuerySet):
                 content_type = ContentType.objects.get_for_model(arg.model)
-                q.append(Q(generic_type=content_type, generic_id__in=arg.values(u'id')))
+                q.append(Q(generic_type=content_type, generic_id__in=arg.values(u'pk')))
             elif isinstance(arg, models.Model):
                 content_type = ContentType.objects.get_for_model(arg.__class__)
                 q.append(Q(generic_type=content_type, generic_id=arg.pk))

@@ -27,6 +27,7 @@ class TranslationLoader(BaseLoader):
     is_usable = True
 
     def __init__(self, loader):
+        super(TranslationLoader, self).__init__()
         self._loader = loader
         self._cached_loader = None
 

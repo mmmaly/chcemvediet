@@ -19,6 +19,6 @@
     <span class="label label-info fileupload-label" data-attachment=""><a href=""></a> <button type="button" class="label-close fileupload-label-close">&times;</button></span>
   </span>
   {% for attachment in attachments %}
-    <span class="label label-info fileupload-label" data-attachment="{{ attachment.id }}"><a href="{{ funcs|method:"download_url"|with:attachment|call }}">{{ attachment.name }}</a> <button type="button" class="label-close fileupload-label-close">&times;</button></span>
+    <span class="label label-info fileupload-label" data-attachment="{{ attachment.pk }}"><a href="{{ funcs|method:"download_url"|with:attachment|call }}">{{ attachment.name }}</a> <button type="button" class="label-close fileupload-label-close">&times;</button></span>
   {% endfor %}
 </span>

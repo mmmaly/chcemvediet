@@ -19,7 +19,7 @@ def upload(request, generic_object, download_url_func):
                 )
         attachment.save()
         res.append({
-                u'id': attachment.id,
+                u'pk': attachment.pk,
                 u'name': attachment.name,
                 u'size': attachment.size,
                 u'url': download_url_func(attachment),

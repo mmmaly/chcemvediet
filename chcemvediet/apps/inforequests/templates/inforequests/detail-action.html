@@ -72,7 +72,7 @@
       <p class="span2 text-right">Attachments:</p>
       <p class="span10">
         {% for attachment in action.attachment_set.all %}
-          <a href="{% url 'inforequests:download_attachment' attachment.id %}"><span class="label label-info">{{ attachment.name }}</span></a>
+          <a href="{% url 'inforequests:download_attachment' attachment.pk %}"><span class="label label-info">{{ attachment.name }}</span></a>
         {% endfor %}
       </p>
     </div>
@@ -83,7 +83,7 @@
     </div>
   {% endif %}
   {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_email %}
-    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.id paperwork.id action.id %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.pk paperwork.pk action.pk %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
     <span id="extend-deadline-{{ action.pk }}-modal" class="modal hide fade"></span>
   {% endif %}
   {% for sub_paperwork in action.advanced_to_set.all %}

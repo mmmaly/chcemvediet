@@ -16,7 +16,7 @@ class Bunch(object):
     """
 
     def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+        vars(self).update(kwargs)
 
 def random_string(length, chars=(string.ascii_letters + string.digits)):
     u"""

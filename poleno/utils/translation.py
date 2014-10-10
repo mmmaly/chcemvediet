@@ -18,6 +18,7 @@ class translation(object):
     """
     def __init__(self, language_code):
         self.language_code = language_code
+        self.previous_code = None
 
     def __enter__(self):
         self.previous_code = get_language()

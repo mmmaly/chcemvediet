@@ -341,10 +341,10 @@
 			var template = $(target).find('.fileupload-template');
 			data.result.files.forEach(function(file){
 				var label = $($(template).html());
-				$(label).data('attachment', file.id);
+				$(label).data('attachment', file.pk);
 				$(label).find('a').attr('href', file.url).html(file.name);
 				$(target).append(label).append(' ');
-				$(field).val($(field).val() + ',' + file.id + ',');
+				$(field).val($(field).val() + ',' + file.pk + ',');
 			});
 		});
 		$(document).on('click', '.fileupload-label-close', function(event){

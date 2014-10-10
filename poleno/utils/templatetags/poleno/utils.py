@@ -82,7 +82,7 @@ def active(request, view_prefix):
     """
     try:
         resolved = resolve(request.path)
-    except:
+    except Exception:
         return False
     if not (resolved.view_name + u':').startswith(view_prefix + u':'):
         return False
