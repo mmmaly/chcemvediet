@@ -12,12 +12,12 @@ from poleno.utils.date import utc_now
 from poleno.utils.misc import random_string
 
 class AttachmentQuerySet(QuerySet):
-    def pointing_to(self, *args):
+    def attached_to(self, *args):
         u"""
-        Filter attachments pointing to any of given arguments. As an argument you may pass:
-         -- model instance: filters attachments pointing to the instance;
-         -- model class: filters attachments pointing to any instance of the model;
-         -- queryset: filters attachments pointing to any of the objects returned by the queryset.
+        Filter attachments attached to any of given arguments. As an argument you may pass:
+         -- model instance: filters attachments attached to the instance;
+         -- model class: filters attachments attached to any instance of the model;
+         -- queryset: filters attachments attached to any of the objects returned by the queryset.
         """
         q = []
         for arg in args:

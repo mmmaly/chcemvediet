@@ -52,10 +52,10 @@ class InforequestForm(PrefixedForm):
 
     def __init__(self, *args, **kwargs):
         self.draft = kwargs.pop(u'draft', False)
-        self.attachments_pointing_to = kwargs.pop(u'attachments_pointing_to')
+        self.attached_to = kwargs.pop(u'attached_to')
         super(InforequestForm, self).__init__(*args, **kwargs)
 
-        self.fields[u'attachments'].pointing_to = self.attachments_pointing_to
+        self.fields[u'attachments'].attached_to = self.attached_to
 
         if self.draft:
             self.fields[u'obligee'].required = False
@@ -245,10 +245,10 @@ class AttachmentsMixin(ActionAbstractForm):
             )
 
     def __init__(self, *args, **kwargs):
-        self.attachments_pointing_to = kwargs.pop(u'attachments_pointing_to')
+        self.attached_to = kwargs.pop(u'attached_to')
         super(AttachmentsMixin, self).__init__(*args, **kwargs)
 
-        self.fields[u'attachments'].pointing_to = self.attachments_pointing_to
+        self.fields[u'attachments'].attached_to = self.attached_to
 
     def save(self, action):
         super(AttachmentsMixin, self).save(action)

@@ -30,7 +30,7 @@ class AttachmentsField(forms.Field):
     widget = AttachmentsWidget
 
     def __init__(self, *args, **kwargs):
-        pointing_to = kwargs.pop(u'pointing_to', None)
+        attached_to = kwargs.pop(u'attached_to', None)
         upload_url_func = kwargs.pop(u'upload_url_func', None)
         download_url_func = kwargs.pop(u'download_url_func', None)
         super(AttachmentsField, self).__init__(*args, **kwargs)
@@ -38,7 +38,7 @@ class AttachmentsField(forms.Field):
         self._upload_url_func = None
         self._download_url_func = None
 
-        self.pointing_to = pointing_to
+        self.attached_to = attached_to
         self.upload_url_func = upload_url_func
         self.download_url_func = download_url_func
 
@@ -73,7 +73,7 @@ class AttachmentsField(forms.Field):
             return []
 
         # Only attachments poiting to whitelisted objects may be used by the field.
-        query_set = Attachment.objects.pointing_to(*self.pointing_to)
+        query_set = Attachment.objects.attached_to(*self.attached_to)
         try:
             attachments = query_set.filter(pk__in=keys)
         except ValueError:

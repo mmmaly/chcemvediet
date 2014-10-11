@@ -37,11 +37,11 @@ def index(request):
 @verified_email_required
 def create(request, draft_pk=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk) if draft_pk else None
-    attachments_pointing_to = (request.user, draft) if draft else (request.user,)
+    attached_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'submit', u'draft'])
-        form = forms.InforequestForm(request.POST, draft=(button == u'draft'), attachments_pointing_to=attachments_pointing_to)
+        form = forms.InforequestForm(request.POST, draft=(button == u'draft'), attached_to=attached_to)
 
         if button == u'draft':
             if form.is_valid():
@@ -65,7 +65,7 @@ def create(request, draft_pk=None):
                 return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
     else:
-        form = forms.InforequestForm(attachments_pointing_to=attachments_pointing_to)
+        form = forms.InforequestForm(attached_to=attached_to)
         if draft:
             form.load_from_draft(draft)
 
@@ -275,11 +275,11 @@ def add_smail(request, action, inforequest_pk):
             raise Http404
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
-    attachments_pointing_to = (request.user, draft) if draft else (request.user,)
+    attached_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'add', u'draft'])
-        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'), attachments_pointing_to=attachments_pointing_to)
+        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'), attached_to=attached_to)
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -316,7 +316,7 @@ def add_smail(request, action, inforequest_pk):
                 })
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest, action_type=action_type, attachments_pointing_to=attachments_pointing_to)
+        form = form_class(inforequest=inforequest, action_type=action_type, attached_to=attached_to)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -360,11 +360,11 @@ def new_action(request, action, inforequest_pk):
             raise Http404
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
-    attachments_pointing_to = (request.user, draft) if draft else (request.user,)
+    attached_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'email', u'print', u'draft'] if can_email else [u'print', u'draft'])
-        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'), attachments_pointing_to=attachments_pointing_to)
+        form = form_class(request.POST, inforequest=inforequest, action_type=action_type, draft=(button == u'draft'), attached_to=attached_to)
         if not button or not form.is_valid():
             return JsonResponse({
                     u'result': u'invalid',
@@ -419,7 +419,7 @@ def new_action(request, action, inforequest_pk):
         return JsonResponse(json)
 
     else: # request.method != u'POST'
-        form = form_class(inforequest=inforequest, action_type=action_type, attachments_pointing_to=attachments_pointing_to)
+        form = form_class(inforequest=inforequest, action_type=action_type, attached_to=attached_to)
         if draft:
             form.load_from_draft(draft)
         return render(request, template, {
@@ -485,12 +485,12 @@ def upload_attachment(request):
 @require_http_methods([u'HEAD', u'GET'])
 @login_required(raise_exception=True)
 def download_attachment(request, attachment_pk):
-    pointing_to = (
+    attached_to = (
             request.user,
             EmailMessage.objects.filter(inforequest__applicant=request.user),
             InforequestDraft.objects.filter(applicant=request.user),
             Action.objects.filter(paperwork__inforequest__applicant=request.user),
             ActionDraft.objects.filter(inforequest__applicant=request.user),
             )
-    attachment = Attachment.objects.pointing_to(*pointing_to).get_or_404(pk=attachment_pk)
+    attachment = Attachment.objects.attached_to(*attached_to).get_or_404(pk=attachment_pk)
     return attachments_views.download(request, attachment)

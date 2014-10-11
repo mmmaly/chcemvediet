@@ -291,6 +291,8 @@ class Paperwork(models.Model):
     #  -- action_set: by Action.paperwork
     #     May NOT be empty; The first action of every main paperwork must be REQUEST and the first
     #     action of every advanced paperwork ADVANCED_REQUEST.
+    #  -- actiondraft_set: by ActionDraft.paperwork
+    #     May be empty
 
     objects = QuerySet.as_manager()
 
