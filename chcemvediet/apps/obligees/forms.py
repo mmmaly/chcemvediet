@@ -20,7 +20,7 @@ class ObligeeWithAddressInput(forms.TextInput):
         textinput_value = obligee.name if obligee else value
         textinput = super(ObligeeWithAddressInput, self).render(name, textinput_value, attrs)
 
-        return render_to_string(u'inforequests/widgets/obligee_with_address_input.html', {
+        return render_to_string(u'obligees/widgets/obligee_with_address_input.html', {
                 u'textinput': textinput,
                 u'obligee': obligee,
                 })

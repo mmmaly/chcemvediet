@@ -25,7 +25,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [u'127.0.0.1']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -80,10 +80,17 @@ STATICFILES_DIRS = (
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-    u'django.contrib.staticfiles.finders.FileSystemFinder',
-    u'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    u'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #u'django.contrib.staticfiles.finders.FileSystemFinder',
+    #u'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    #u'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    u'pipeline.finders.FileSystemFinder',
+    u'pipeline.finders.AppDirectoriesFinder',
+    u'pipeline.finders.PipelineFinder',
+    #u'pipeline.finders.CachedFileFinder',
 )
+
+STATICFILES_STORAGE = u'pipeline.storage.PipelineStorage'
+#STATICFILES_STORAGE = u'pipeline.storage.PipelineCachedStorage'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -101,6 +108,7 @@ MIDDLEWARE_CLASSES = (
     u'django.middleware.locale.LocaleMiddleware',
     u'django.middleware.clickjacking.XFrameOptionsMiddleware',
     u'simple_history.middleware.HistoryRequestMiddleware',
+    #u'pipeline.middleware.MinifyHTMLMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -160,6 +168,7 @@ INSTALLED_APPS = (
     u'adminplus',
     u'django_cron',
     u'simple_history',
+    u'pipeline',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
@@ -257,3 +266,48 @@ CRON_CLASSES = (
 
 # Mail settings
 EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'
+
+# JS and CSS assets
+ASSETS = (
+    # JQuery
+    u'//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
+    # JQuery UI
+    u'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css',
+    u'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js',
+    u'main/3part/jqueryui/1.10.3/datepicker-sk.js',
+    # Bootstrap
+    u'//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css',
+    u'//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js',
+    # JQuery File Upload (Requires: jquery.ui.widget.js)
+    u'main/3part/jqueryplugins/jquery.iframe-transport.js',
+    u'main/3part/jqueryplugins/jquery.fileupload.js',
+    # Other JQuery plugins
+    u'main/3part/jqueryplugins/jquery.cookie.js',
+    u'main/3part/jqueryplugins/jquery.PrintArea.js',
+    # Reused apps
+    u'poleno/js/*.js',
+    u'attachments/js/*.js',
+    # Local to the project
+    u'obligees/css/*.css',
+    u'obligees/js/*.js',
+    u'inforequests/js/*.js',
+    u'main/css/*.css',
+)
+
+#PIPELINE_ENABLED = True
+PIPELINE_JS_COMPRESSOR = None
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS = {
+    u'main': {
+        u'source_filenames': [a for a in ASSETS if not a.startswith(u'//') and a.endswith(u'.js')],
+        u'output_filename': u'js/main.js',
+    },
+}
+PIPELINE_CSS = {
+    u'main': {
+        u'source_filenames': [a for a in ASSETS if not a.startswith(u'//') and a.endswith(u'.css')],
+        u'output_filename': u'css/main.css',
+    },
+}
+EXTERNAL_JS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.js')]
+EXTERNAL_CSS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.css')]

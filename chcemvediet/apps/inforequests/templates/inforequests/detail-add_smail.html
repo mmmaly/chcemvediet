@@ -22,13 +22,13 @@
       {% if inforequest.can_add_reversion %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'reversion' inforequest.pk %}" data-type="html" data-target="#reversion-smail-modal" data-fail-target="#ajax-fail-modal">Reversion</button>{% endif %}
       {% if inforequest.can_add_remandment %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail' 'remandment' inforequest.pk %}" data-type="html" data-target="#remandment-smail-modal" data-fail-target="#ajax-fail-modal">Remandment</button>{% endif %}
   </div>
-  <div id="confirmation-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="extension-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="advancement-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="clarification-request-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="disclosure-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="refusal-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="affirmation-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="reversion-smail-modal" class="modal modal-large hide fade"></div>
-  <div id="remandment-smail-modal" class="modal modal-large hide fade"></div>
+  <div id="confirmation-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="extension-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="advancement-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="clarification-request-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="disclosure-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="refusal-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="affirmation-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="reversion-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+  <div id="remandment-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
 </div>

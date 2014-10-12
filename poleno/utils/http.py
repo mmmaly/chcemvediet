@@ -20,36 +20,6 @@ class JsonResponse(HttpResponse):
         data = json.dumps(data)
         super(JsonResponse, self).__init__(content=data, **kwargs)
 
-class Jdot(object):
-    u"""
-    JDOT = JSON DOM Transition
-
-    FIXME: DEPRECATED?
-    """
-    def __init__(self):
-        self.list = []
-
-    def as_response(self):
-        return JsonResponse({u'jdot': self.list})
-
-    def js(self, javascript, args=None):
-        self.list.append({
-            u'js': javascript,
-            u'args': args,
-            })
-        return self
-
-    def content_from_string(self, selector, html):
-        self.js(ur"$(args.selector).html(args.html);", args={
-                u'selector': selector,
-                u'html': html,
-            })
-        return self
-
-    def content(self, selector, request, template, context):
-        self.content_from_string(selector, render_to_string(template, context, RequestContext(request)))
-        return self
-
 def send_file_response(request, path, name, content_type):
     # Based on: django.views.static.serve
 

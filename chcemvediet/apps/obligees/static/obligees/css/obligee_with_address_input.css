@@ -1,0 +1,6 @@
+/* For chcemvediet.apps.obligees.forms.ObligeeWithAddressInput */
+.obligee_with_address_input { display: inline-block; vertical-align: top; }
+.obligee_with_address_input ~ .help-inline { padding-top: 5px; }
+.obligee_with_address_input_details { padding: 10px 0px 0px 5px; }
+.obligee_with_address_input_hide { display: none; }
+

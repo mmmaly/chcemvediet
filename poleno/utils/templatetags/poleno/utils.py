@@ -6,7 +6,9 @@ from functools import partial
 from django.template import Library
 from django.template.defaultfilters import stringfilter
 from django.core.urlresolvers import resolve, reverse
+from django.conf import settings
 from django.contrib.webdesign.lorem_ipsum import paragraphs
+from django.utils.html import format_html
 
 from poleno.utils.misc import squeeze as squeeze_func
 from poleno.utils.date import utc_date as utc_date_func, local_date as local_date_func
@@ -185,7 +187,7 @@ def lorem(randseed=None, count=1, method=None):
 
     if method == u'p':
         res = [u'<p>%s</p>' % p for p in res]
-    return '\n'.join(res)
+    return u'\n'.join(res)
 
 @register.simple_tag(takes_context=True)
 def change_lang(context, lang=None):
@@ -204,3 +206,17 @@ def change_lang(context, lang=None):
         url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
 
     return u'%s' % url
+
+@register.simple_tag
+def external_css():
+    u"""
+    Render links to external css styles. Uses settins.EXTERNAL_CSS to get their list.
+    """
+    return u'\n'.join(format_html(u'<link href="{0}" rel="stylesheet">', url) for url in settings.EXTERNAL_CSS)
+
+@register.simple_tag
+def external_js():
+    u"""
+    Render links to external javascript. Uses settins.EXTERNAL_JS to get their list.
+    """
+    return u'\n'.join(format_html(u'<script src="{0}"></script>', url) for url in settings.EXTERNAL_JS)

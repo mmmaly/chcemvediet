@@ -68,7 +68,7 @@ class AttachmentsField(forms.Field):
 
     def to_python(self, value):
         u""" Returns list of Attachments """
-        keys = (k for k in value.split(u',') if k)
+        keys = [k for k in value.split(u',') if k]
         if not keys:
             return []
 

@@ -1,0 +1,45 @@
+/** Various fixes and tweaks for Bootstrap **/
+
+/* Make sure fixed menu won't overlap page top. */
+@media (min-width: 980px) { body { padding-top: 60px; } }
+
+/* Large Bootstrap modals */
+@media (min-width: 768px) { .modal.modal-large { width: 660px; margin-left: -330px; } }
+@media (min-width: 980px) { .modal.modal-large { width: 870px; margin-left: -435px; } }
+@media (min-width: 1200px) { .modal.modal-large { width: 1100px; margin-left: -550px; } }
+
+/* Naive workaround for responsive tall modals */
+@media (min-height: 650px) { .modal-body { max-height: 450px; } }
+@media (min-height: 700px) { .modal-body { max-height: 500px; } }
+@media (min-height: 750px) { .modal-body { max-height: 550px; } }
+@media (min-height: 800px) { .modal-body { max-height: 600px; } }
+@media (min-height: 850px) { .modal-body { max-height: 650px; } }
+@media (min-height: 900px) { .modal-body { max-height: 700px; } }
+@media (min-height: 950px) { .modal-body { max-height: 750px; } }
+@media (min-height: 1000px) { .modal-body { max-height: 800px; } }
+@media (min-width: 768px) and (min-height: 750px) { .modal-body { max-height: 450px; } }
+@media (min-width: 768px) and (min-height: 800px) { .modal-body { max-height: 500px; } }
+@media (min-width: 768px) and (min-height: 850px) { .modal-body { max-height: 550px; } }
+@media (min-width: 768px) and (min-height: 900px) { .modal-body { max-height: 600px; } }
+@media (min-width: 768px) and (min-height: 950px) { .modal-body { max-height: 650px; } }
+@media (min-width: 768px) and (min-height: 1000px) { .modal-body { max-height: 700px; } }
+
+/* Bootstrap labels with links and close buttons */
+.label { vertical-align: middle; }
+.label a { color: inherit; vertical-align: middle; text-decoration: none; }
+.label a:hover { text-decoration: none; }
+.label-close { color: #000; opacity: 0.4; padding: 0px; margin-left: 5px; background: none; border: 1px red; font-size: 20px; font-weight: bold; line-height: 20px; text-shadow: 0px 1px 0px #FFF; }
+
+/* Form file upload button */
+.btn-file { position: relative; overflow: hidden; }
+.btn-file input[type=file] { position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; filter: alpha(opacity=0); opacity: 0; cursor: inherit; display: block; }
+
+/* Highlight active navbar brand */
+.brand.active { color: white; }
+
+/* Well with white background  */
+.well-inverse { background-color: white; }
+
+/* Fix text position if used instead a controll in a form */
+.suppressed-control { padding: 5px; height: 20px; line-height: 20px; display: inline-block; vertical-align: center; }
+
