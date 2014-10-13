@@ -3,11 +3,14 @@
 import datetime
 from dateutil.easter import easter
 
+from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.utils.importlib import import_module
 
 
 WEEKEND = [5, 6]
+
+SPECIFY_HOLIDAY_SET_ERROR = u'Specify holiday_set or set global setting HOLIDAYS_MODULE_PATH.'
 
 def _holidays():
     try:
@@ -101,7 +104,7 @@ def between(after, before, holiday_set=None):
     if not holiday_set:
         holiday_set = _holidays()
     if not holiday_set:
-        raise ValueError(u'Specify holiday_set or set global setting HOLIDAYS_MODULE_PATH.')
+        raise ImproperlyConfigured(SPECIFY_HOLIDAY_SET_ERROR)
 
     # Having: after < before
     days = (before - after).days
