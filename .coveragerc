@@ -1,0 +1,13 @@
+[run]
+branch = True
+source =
+    poleno
+    chcemvediet
+
+[report]
+show_missing = True
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+

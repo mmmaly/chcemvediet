@@ -1,5 +1,7 @@
 *.db
 *.pyc
+.coverage
+.instrumental.cov
 configure.json
 env/
 cache/
