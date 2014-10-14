@@ -113,7 +113,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     u'django.contrib.auth.backends.ModelBackend',
-    "allauth.account.auth_backends.AuthenticationBackend",
+    u'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 ROOT_URLCONF = u'chcemvediet.urls'

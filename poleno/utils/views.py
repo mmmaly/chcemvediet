@@ -20,7 +20,7 @@ def require_ajax(view):
     @wraps(view, assigned=available_attrs(view))
     def wrapped_view(request, *args, **kwargs):
         if not request.is_ajax():
-            return HttpResponseBadRequest
+            return HttpResponseBadRequest()
         return view(request, *args, **kwargs)
     return wrapped_view
 
