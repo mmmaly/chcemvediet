@@ -63,6 +63,9 @@ def range_(a, b):
 def utc_date(dt):
     u"""
     Converts aware ``datetime`` ``dt`` to UTC and returns its day as ``date``.
+
+    Example:
+        {{ dt|utc_date }}
     """
     return utc_date_func(dt)
 
@@ -71,8 +74,12 @@ def local_date(dt, tz=None):
     u"""
     Converts aware ``datetime`` ``dt`` to timezone ``tz``, by default the current time zone, and
     returns its day as ``date``.
+
+    Example:
+        {{ dt|local_date }}
+        {{ dt|local_date:tz }}
     """
-    return local_date_func(dt, tz)
+    return local_date_func(dt, tz=tz)
 
 @register.filter
 def active(request, view_prefix):
@@ -82,9 +89,11 @@ def active(request, view_prefix):
     function returns ``True`` for 'namespace' and 'namespace:name', but not for 'name' or
     'namespace:other'.
     """
+    # FIXME: Should probably be {% ifactive arg %}...{% endif %} tag. Filter doesn't make much
+    # sense here.
     try:
         resolved = resolve(request.path)
-    except Exception:
+    except Exception: # pragma: no cover
         return False
     if not (resolved.view_name + u':').startswith(view_prefix + u':'):
         return False
@@ -128,33 +137,33 @@ def method(value, arg):
     """
     try:
         return value[arg]
-    except IndexError:
+    except (TypeError, KeyError, IndexError):
         pass
     try:
         return getattr(value, str(arg))
     except AttributeError:
         pass
-    return "[%s has no method %s]" % (value, arg)
+    return u'[no method %s]' % arg
 
 @register.filter
 def call_with(value, arg):
     u""" See ``method`` """
     if not callable(value):
-        return "[%s is not callable]" % value
+        return '[not callable]'
     return value(arg)
 
 @register.filter
 def call(value):
     u""" See ``method`` """
     if not callable(value):
-        return "[%s is not callable]" % value
+        return u'[not callable]'
     return value()
 
 @register.filter(name="with")
 def with_(value, arg):
     u""" See ``method`` """
     if not callable(value):
-        return "[%s is not callable]" % value
+        return u'[not callable]'
     return partial(value, arg)
 
 @register.simple_tag
