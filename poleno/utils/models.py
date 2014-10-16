@@ -31,6 +31,11 @@ def after_saved(model):
                 book.author = author
                 book.save()
     """
+    # FIXME: What if ``model`` never gets saved? We should keep just a weak reference to it and
+    # disconnect when the object is destroyed without saving. We should also make sure the deffered
+    # function ``func`` does not keep reference to this object. It seems that nested functions
+    # without free variables does not create closures, and so does not keep references to outer
+    # function local variables. But I'm not sure.
     def _decorator(func):
         uid=(id(func), id(model))
         def receiver(sender, instance, **kwargs):
@@ -59,7 +64,7 @@ class FieldChoices(object):
         mail.status = mail.STATUSES.DELIVERED
         mail.STATUSES._inverse[2] == 'DELIVERED'
     """
-
+    # FIXME: Should check that there are no conflicting keys
     def __init__(self, *args):
         choices = []
         inverse = {}
@@ -69,7 +74,7 @@ class FieldChoices(object):
                 bunch = Bunch()
                 for group_name, group_key, group_value in choice_value:
                     group.append((group_key, group_value))
-                    inverse[group_key] = u'%s__%s' % (choice_name, group_name)
+                    inverse[group_key] = u'%s.%s' % (choice_name, group_name)
                     setattr(bunch, group_name, group_key)
                 choices.append((choice_key, group))
                 inverse[choice_key] = choice_name
@@ -129,6 +134,11 @@ class QuerySet(models.query.QuerySet):
 
             def __getattr__(self, name, *args):
                 if name.startswith(u'_'):
+                    # We don't let the object manager access private methods/attributes of the
+                    # queryset. For instance, according to:
+                    #     https://djangosnippets.org/snippets/734/#c903
+                    # Pickle library goes crazy if QuerySet ``__getstate__`` or ``__setstate__``
+                    # can be accessed from the object manager.
                     raise AttributeError
                 return getattr(self.get_query_set(), name, *args)
 
