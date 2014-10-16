@@ -4,8 +4,6 @@ import datetime
 
 from django.utils import timezone
 
-from poleno.utils.misc import overloaded
-
 # All functions assume that settings.USE_TZ is True.
 
 def local_now(tz=None):
