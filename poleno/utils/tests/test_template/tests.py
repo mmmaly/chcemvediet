@@ -22,9 +22,9 @@ class TranslationLoaderTest(TestCase):
         if there is no original nor translated template.
         """
         lang = ((u'de', u'Deutsch'), (u'en', u'English'), (u'fr', u'Francais'))
-        loader = ((u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),)
+        loaders = ((u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),)
         dirs = (os.path.abspath(os.path.join(os.path.dirname(__file__), u'templates')),)
-        with self.settings(LANGUAGES=lang, TEMPLATE_LOADERS=loader, TEMPLATE_DIRS=dirs):
+        with self.settings(LANGUAGES=lang, TEMPLATE_LOADERS=loaders, TEMPLATE_DIRS=dirs):
             with translation(u'en'):
                 # Translated "first.en.html" has priority over "first.html".
                 rendered = squeeze(render_to_string(u'first.html'))

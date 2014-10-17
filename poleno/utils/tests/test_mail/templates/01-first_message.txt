@@ -1,0 +1,7 @@
+		
+
+
+First message text with leading and trailing whitespace         
+		      
+
+	

@@ -134,10 +134,10 @@ class SqueezeTest(TestCase):
                 pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
                 deserunt mollit anim id est laborum.
                 """)
-        self.assertRegexpMatches(res, r'^([\S]+ )*[\S]+$')
+        self.assertRegexpMatches(res, r'^(\S+ )*\S+$')
 
     def test_long_random_text(self):
         sample = u''.join(random.choice(string.printable if random.random() < 0.5 else string.whitespace)
                 for i in range(1000))
         res = squeeze(sample)
-        self.assertRegexpMatches(res, r'^([\S]+ )*[\S]+$')
+        self.assertRegexpMatches(res, r'^(\S+ )*\S+$')
