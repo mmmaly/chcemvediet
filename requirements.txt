@@ -13,10 +13,13 @@ jsonfield==1.0.0
 requests==2.3.0
 django-simple-history==1.5.0
 django-pipeline==1.3.25
+pytz==2014.7
+
+# Requirements for unittests
 mock==1.0.1
 coverage==4.0a1
 instrumental==0.5.3
-pytz==2014.7
+testfixtures==4.1.0
 
 # Requirements for local testing
 localmail==0.3
