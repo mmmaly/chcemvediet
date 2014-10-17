@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import os
+from testfixtures import TempDirectory
 
 from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
@@ -10,12 +11,6 @@ from django.test.utils import override_settings
 from poleno.utils.mail import render_mail
 
 
-settings_overrides = {
-    u'TEMPLATE_LOADERS': (u'django.template.loaders.filesystem.Loader',),
-    u'TEMPLATE_DIRS': (os.path.abspath(os.path.join(os.path.dirname(__file__), u'templates')),),
-}
-
-@override_settings(**settings_overrides)
 class RenderMailTest(TestCase):
     u"""
     Tests ``render_mail()`` function. Checks that message subject and body alternatives are
@@ -23,16 +18,44 @@ class RenderMailTest(TestCase):
     passed directly to the message constructor.
     """
 
+    def setUp(self):
+        self.tempdir = TempDirectory()
+
+        self.settings_override = override_settings(
+            TEMPLATE_LOADERS=(u'django.template.loaders.filesystem.Loader',),
+            TEMPLATE_DIRS=(self.tempdir.path,),
+            )
+        self.settings_override.enable()
+
+        self.tempdir.write(u'first_subject.txt', u'\n\n\t\t\r\r\t\tSubject       with\t\t lots \t  \n\n\t\r\r\n of whitespace\n\n    \n\n  \t')
+        self.tempdir.write(u'first_message.txt', u'   \n\n  \t\n\tFirst message text with leading and trailing whitespace   \n     \n\n  \n  ')
+        self.tempdir.write(u'first_message.html', u'   \n\n  \t  <p>\nFirst message HTML with leading and trailing whitespace\n</p>\n\n\n\n   ')
+        self.tempdir.write(u'second_subject.txt', u'Second subject\n')
+        self.tempdir.write(u'second_message.txt', u'Second message with only text\n')
+        self.tempdir.write(u'third_subject.txt', u'Third subject\n')
+        self.tempdir.write(u'third_message.html', u'<p>Third message with only HTML</p>\n')
+        self.tempdir.write(u'fourth_subject.txt', u'Fourth message with no body\n')
+        self.tempdir.write(u'fifth_message.txt', u'Fifth message with no subject\n')
+        self.tempdir.write(u'sixth_subject.txt', u'Subject with dictionary: {{ variable }}\n')
+        self.tempdir.write(u'sixth_message.txt', u'Text message with dictionary: {{ variable }}\n')
+        self.tempdir.write(u'sixth_message.html', u'<p>HTML message with dictionary: {{ variable }}</p>\n')
+
+    def tearDown(self):
+        self.settings_override.disable()
+        self.tempdir.cleanup()
+
+
     def _get_alternatives(self, msg):
         alternatives = [(u'text/' + msg.content_subtype, msg.body)]
         for content, mimetype in getattr(msg, u'alternatives', []):
             alternatives.append((mimetype, content))
         return alternatives
 
+
     def test_message_with_text_and_html(self):
-        # existing: 01-first_subject.txt, 01-first_message.txt, 01-first_message.html
+        # existing: first_subject.txt, first_message.txt, first_message.html
         # missing: --
-        msg = render_mail(u'01-first')
+        msg = render_mail(u'first')
         alternatives = self._get_alternatives(msg)
         self.assertEqual(alternatives, [
             (u'text/plain', u'First message text with leading and trailing whitespace'),
@@ -40,45 +63,45 @@ class RenderMailTest(TestCase):
             ])
 
     def test_message_with_text_only(self):
-        # existing: 02-second_subject.txt, 02-second_message.txt
-        # missing: 02-second_message.html
-        msg = render_mail(u'02-second')
+        # existing: second_subject.txt, second_message.txt
+        # missing: second_message.html
+        msg = render_mail(u'second')
         alternatives = self._get_alternatives(msg)
         self.assertEqual(alternatives, [
             (u'text/plain', u'Second message with only text'),
             ])
 
     def test_message_with_html_only(self):
-        # existing: 03-third_subject.txt, 03-third_message.html
-        # missing: 03-third_message.txt
-        msg = render_mail(u'03-third')
+        # existing: third_subject.txt, third_message.html
+        # missing: third_message.txt
+        msg = render_mail(u'third')
         alternatives = self._get_alternatives(msg)
         self.assertEqual(alternatives, [
             (u'text/html', u'<p>Third message with only HTML</p>'),
             ])
 
     def test_message_with_missing_templates(self):
-        # existing: 04-fourth_subject.txt
-        # missing: 04-fourth_message.txt, 04-fourth_message.html
-        with self.assertRaisesMessage(TemplateDoesNotExist, u'04-fourth_message.txt'):
-            msg = render_mail(u'04-fourth')
+        # existing: fourth_subject.txt
+        # missing: fourth_message.txt, fourth_message.html
+        with self.assertRaisesMessage(TemplateDoesNotExist, u'fourth_message.txt'):
+            msg = render_mail(u'fourth')
 
     def test_message_with_missing_subject_template(self):
-        # existing: 05-fifth_message.txt
-        # missing: 05-fifth_subject.txt, 05-fifth_message.html
-        with self.assertRaisesMessage(TemplateDoesNotExist, u'05-fifth_subject.txt'):
-            msg = render_mail(u'05-fifth')
+        # existing: fifth_message.txt
+        # missing: fifth_subject.txt, fifth_message.html
+        with self.assertRaisesMessage(TemplateDoesNotExist, u'fifth_subject.txt'):
+            msg = render_mail(u'fifth')
 
     def test_subject_squeezed(self):
         u"""
         Checks that even if the subject template contains leading, trailing or consecutive
         whitespace, tabs or linebreaks, the rendered subject is normalized.
         """
-        # Ensure "01-first_subject.txt" contains leading/trailing/consecutive whitespace
-        rendered = render_to_string(u'01-first_subject.txt')
+        # Ensure "first_subject.txt" contains leading/trailing/consecutive whitespace
+        rendered = render_to_string(u'first_subject.txt')
         self.assertNotRegexpMatches(rendered, r'^(\S+ )*\S+$')
 
-        msg = render_mail(u'01-first')
+        msg = render_mail(u'first')
         self.assertRegexpMatches(msg.subject, r'^(\S+ )*\S+$')
 
     def test_body_stripped(self):
@@ -86,13 +109,13 @@ class RenderMailTest(TestCase):
         Checks that even if the message template contains leading or trailing whitespace, the
         rendered message is stripped.
         """
-        # Ensure both "01-first_message.txt" and "01-first_message.html" contain leading/trailing whitespace
-        rendered_txt = render_to_string(u'01-first_message.txt')
-        rendered_html = render_to_string(u'01-first_message.html')
+        # Ensure both "first_message.txt" and "first_message.html" contain leading/trailing whitespace
+        rendered_txt = render_to_string(u'first_message.txt')
+        rendered_html = render_to_string(u'first_message.html')
         self.assertNotEqual(rendered_txt, rendered_txt.strip())
         self.assertNotEqual(rendered_html, rendered_html.strip())
 
-        msg = render_mail(u'01-first')
+        msg = render_mail(u'first')
         alternatives = self._get_alternatives(msg)
         self.assertEqual(alternatives[0][1], alternatives[0][1].strip())
         self.assertEqual(alternatives[1][1], alternatives[1][1].strip())
@@ -112,7 +135,7 @@ class RenderMailTest(TestCase):
             u'attachments': [(u'filename', u'content', u'application/octet-stream')],
             }
 
-        for template in [u'01-first', u'02-second', u'03-third']:
+        for template in [u'first', u'second', u'third']:
             msg = render_mail(template, **kwargs)
             self.assertEqual(msg.from_email, kwargs[u'from_email'])
             self.assertEqual(msg.to, kwargs[u'to'])
@@ -126,7 +149,7 @@ class RenderMailTest(TestCase):
         Passes a dictionary to ``render_mail()`` function and checks if templates using it are
         rendered corectly.
         """
-        msg = render_mail(u'06-sixth', dictionary={u'variable': 47})
+        msg = render_mail(u'sixth', dictionary={u'variable': 47})
         alternatives = self._get_alternatives(msg)
         self.assertEqual(msg.subject, u'[example.com] Subject with dictionary: 47')
         self.assertEqual(alternatives, [

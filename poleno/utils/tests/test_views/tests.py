@@ -1,8 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
-from django.test import Client, TestCase
+from django.conf.urls import patterns, url
 from django.contrib.auth.models import User
+from django.test import Client, TestCase
+
+from poleno.utils.views import require_ajax, login_required, secure_required
 
 class SecureClient(Client):
     u"""
@@ -29,7 +32,14 @@ class RequireAjaxTest(TestCase):
     u"""
     Tests ``@require_ajax`` decorator.
     """
-    urls = u'poleno.utils.tests.test_views.urls'
+    @require_ajax
+    def require_ajax_view(request):
+        return HttpResponse()
+
+    urls = tuple(patterns(u'',
+        url(r'^require-ajax/$', require_ajax_view),
+    ))
+
 
     def test_with_ajax(self):
         u"""
@@ -51,7 +61,19 @@ class LoginRequiredTest(TestCase):
     u"""
     Tests ``@login_required`` decorator. Tested in both forms, with and without arguments.
     """
-    urls = u'poleno.utils.tests.test_views.urls'
+    @login_required
+    def login_required_with_redirect_view(request):
+        return HttpResponse()
+
+    @login_required(raise_exception=True)
+    def login_required_with_exception_view(request):
+        return HttpResponse()
+
+    urls = tuple(patterns(u'',
+        url(r'^login-required-with-redirect/$', login_required_with_redirect_view),
+        url(r'^login-required-with-exception/$', login_required_with_exception_view),
+    ))
+
 
     def test_anonymous_with_redirect(self):
         u"""
@@ -98,8 +120,20 @@ class SecureRequiredTest(TestCase):
     u"""
     Tests ``@secure_required`` decorator. Tested in both forms, with and without arguments.
     """
+    @secure_required
+    def secure_required_with_redirect_view(request):
+        return HttpResponse()
+
+    @secure_required(raise_exception=True)
+    def secure_required_with_exception_view(request):
+        return HttpResponse()
+
     client_class = SecureClient
-    urls = u'poleno.utils.tests.test_views.urls'
+    urls = tuple(patterns(u'',
+        url(r'^secure-required-with-redirect/$', secure_required_with_redirect_view),
+        url(r'^secure-required-with-exception/$', secure_required_with_exception_view),
+    ))
+
 
     def test_insecure_with_redirect(self):
         u"""

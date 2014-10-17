@@ -3,12 +3,15 @@
 import re
 
 from django.template import Context, Template
-from django.test import TestCase
 from django.http import HttpResponse
+from django.conf.urls import patterns, url, include
+from django.conf.urls.i18n import i18n_patterns
 from django.utils import timezone
+from django.test import TestCase
 
 from poleno.utils.date import utc_datetime_from_local, local_datetime_from_local
 from poleno.utils.misc import Bunch
+
 
 class TemplatetagsStringTest(TestCase):
     u"""
@@ -20,6 +23,7 @@ class TemplatetagsStringTest(TestCase):
 
     def _render(self, template, **context):
         return Template(template).render(Context(context))
+
 
     def test_substract_filter(self):
         u"""
@@ -181,7 +185,39 @@ class TemplatetagsViewTest(TestCase):
     Tests ``active`` template filter and ``change_lang`` template tag. Tests are performed by
     requesting views using templates with these filters and tags.
     """
-    urls = u'poleno.utils.tests.test_templatetags.urls'
+    def active_view(request):
+        return HttpResponse(Template(
+            u'{% load active from poleno.utils %}'
+            u'(index={{ request|active:"index" }})'
+            u'(first={{ request|active:"first" }})'
+            u'(second={{ request|active:"second" }})'
+            u'(second:first={{ request|active:"second:first" }})'
+        ).render(Context({
+            u'request': request,
+        })))
+
+    def language_view(request):
+        return HttpResponse(Template(
+            u'{% load change_lang from poleno.utils %}'
+            u'({% change_lang "en" %})'
+            u'({% change_lang "de" %})'
+            u'({% change_lang "fr" %})'
+        ).render(Context({
+            u'request': request,
+        })))
+
+    urls = tuple(patterns(u'',
+        url(r'^$', active_view, name=u'index'),
+        url(r'^first/', active_view, name=u'first'),
+        url(r'^second/', include(namespace=u'second', arg=patterns(u'',
+            url(r'^$', active_view, name=u'index'),
+            url(r'^first/', active_view, name=u'first'),
+        ))),
+    ))
+    urls += tuple(i18n_patterns(u'',
+        url(r'^language/', language_view, name=u'language'),
+    ))
+
 
     def test_active_filter(self):
         u"""

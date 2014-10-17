@@ -3,7 +3,6 @@
 import os
 import random
 import json
-
 from testfixtures import TempDirectory
 
 from django.conf.urls import patterns, url
@@ -45,7 +44,7 @@ class JsonResponseTest(TestCase):
     def json_view_with_true(request):
         return JsonResponse(True)
 
-    urls = patterns(u'',
+    urls = tuple(patterns(u'',
         url(r'^json_view/$', json_view),
         url(r'^json_view_with_status/$', json_view_with_status),
         url(r'^json_view_with_empty_dict/$', json_view_with_empty_dict),
@@ -54,7 +53,7 @@ class JsonResponseTest(TestCase):
         url(r'^json_view_with_number/$', json_view_with_number),
         url(r'^json_view_with_float/$', json_view_with_float),
         url(r'^json_view_with_true/$', json_view_with_true),
-        )
+        ))
 
     def _check_response(self, response, klass, status_code, content):
         self.assertIs(type(response), klass)
@@ -118,6 +117,7 @@ class SendFileResponseTest(TestCase):
 
     def tearDown(self):
         self.tempdir.cleanup()
+
 
     def _create_file(self, filename=u'myfile.tmp', content=u'Some text.'):
         self.tempdir.write(filename, content)
