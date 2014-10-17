@@ -13,6 +13,7 @@ class Bunch(object):
         b = Bunch(key=value)
         b.key
         b.other = value
+        del b.key
     """
 
     def __init__(self, **kwargs):
@@ -22,7 +23,8 @@ def random_string(length, chars=(string.ascii_letters + string.digits)):
     u"""
     Returns a random string ``length`` characters long consisting of ``chars``.
     """
-    return u''.join(random.choice(chars) for i in xrange(length))
+    sysrandom = random.SystemRandom()
+    return u''.join(sysrandom.choice(chars) for i in xrange(length))
 
 def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprstvxz'):
     u"""
@@ -36,12 +38,13 @@ def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprs
     your own sets of vowels and consonants.
     """
     res = []
-    if random.random() < len(vowels) / float(len(vowels) + len(consonants)):
-        res.append(random.choice(vowels))
+    sysrandom = random.SystemRandom()
+    if sysrandom.random() < len(vowels) / float(len(vowels) + len(consonants)):
+        res.append(sysrandom.choice(vowels))
     while len(res) < length:
-        res.append(random.choice(consonants))
+        res.append(sysrandom.choice(consonants))
         if len(res) < length:
-            res.append(random.choice(vowels))
+            res.append(sysrandom.choice(vowels))
     return u''.join(res)
 
 def squeeze(s):

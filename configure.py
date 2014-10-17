@@ -113,7 +113,8 @@ class Settings(object):
         self.lines.append(u'%s = %s' % (name, repr(value)))
 
 def generate_secret_key(length, chars):
-    return u''.join(random.SystemRandom().choice(chars) for i in range(length))
+    sysrandom = random.SystemRandom()
+    return u''.join(sysrandom.choice(chars) for i in range(length))
 
 
 if __name__ == u'__main__':
