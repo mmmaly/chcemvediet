@@ -6,17 +6,17 @@ from django.test import TestCase
 
 from poleno.utils.models import after_saved, FieldChoices, QuerySet
 
-class MockModelQuerySet(QuerySet):
+class TestModelsModelQuerySet(QuerySet):
     def black(self):
-        return self.filter(type=MockModel.TYPES.BLACK)
+        return self.filter(type=TestModelsModel.TYPES.BLACK)
     def red(self):
-        return self.filter(type=MockModel.TYPES.RGB.RED)
+        return self.filter(type=TestModelsModel.TYPES.RGB.RED)
     def rgb(self):
-        return self.filter(type__in=[MockModel.TYPES.RGB.RED, MockModel.TYPES.RGB.GREEN, MockModel.TYPES.RGB.BLUE])
+        return self.filter(type__in=[TestModelsModel.TYPES.RGB.RED, TestModelsModel.TYPES.RGB.GREEN, TestModelsModel.TYPES.RGB.BLUE])
     def _private(self):
         pass
 
-class MockModel(models.Model):
+class TestModelsModel(models.Model):
     name = models.CharField(blank=True, max_length=255)
 
     TYPES = FieldChoices(
@@ -30,7 +30,7 @@ class MockModel(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices, default=TYPES.BLACK)
 
-    objects = MockModelQuerySet.as_manager()
+    objects = TestModelsModelQuerySet.as_manager()
 
     class Meta:
         app_label = u'utils'
@@ -43,14 +43,14 @@ class AfterSavedTest(TestCase):
     """
 
     def setUp(self):
-        self.obj1 = MockModel.objects.create(name=u'obj1')
-        self.obj2 = MockModel.objects.create(name=u'obj2')
+        self.obj1 = TestModelsModel.objects.create(name=u'obj1')
+        self.obj2 = TestModelsModel.objects.create(name=u'obj2')
 
     def test_after_new_instance_saved(self):
         u"""
         Checks that the deffered function is called when a new object is created.
         """
-        obj = MockModel(name=u'first')
+        obj = TestModelsModel(name=u'first')
         counter = [0]
 
         @after_saved(obj)
@@ -69,7 +69,7 @@ class AfterSavedTest(TestCase):
         Checks that the deffered function is called when an already existing object is altered and
         saved.
         """
-        obj = MockModel.objects.first()
+        obj = TestModelsModel.objects.first()
         counter = [0]
 
         @after_saved(obj)
@@ -89,7 +89,7 @@ class AfterSavedTest(TestCase):
         Checks that if there are two deffered functions for one instance, both deffered functions
         are called when the instance is saved.
         """
-        obj = MockModel.objects.create(name=u'first')
+        obj = TestModelsModel.objects.create(name=u'first')
         counter = [0, 0]
 
         @after_saved(obj)
@@ -109,8 +109,8 @@ class AfterSavedTest(TestCase):
         Checks that the deffered funstion is not called when another instance of the same model is
         saved.
         """
-        obj1 = MockModel.objects.create(name=u'obj1')
-        obj2 = MockModel.objects.create(name=u'obj2')
+        obj1 = TestModelsModel.objects.create(name=u'obj1')
+        obj2 = TestModelsModel.objects.create(name=u'obj2')
         counter = [0]
 
         @after_saved(obj1)
@@ -160,30 +160,30 @@ class FieldChoicesTest(TestCase):
 
 class QuerySetTest(TestCase):
     u"""
-    Tests ``FieldChoices`` and custom ``QuerySet` on testing ``MockModel``.
+    Tests ``FieldChoices`` and custom ``QuerySet` on testing ``TestModelsModel``.
     """
 
     def setUp(self):
-        self.black1 = MockModel.objects.create(name=u'black1', type=MockModel.TYPES.BLACK)
-        self.black2 = MockModel.objects.create(name=u'black2', type=MockModel.TYPES.BLACK)
-        self.white = MockModel.objects.create(name=u'white', type=MockModel.TYPES.WHITE)
-        self.red = MockModel.objects.create(name=u'red', type=MockModel.TYPES.RGB.RED)
-        self.blue = MockModel.objects.create(name=u'blue', type=MockModel.TYPES.RGB.BLUE)
+        self.black1 = TestModelsModel.objects.create(name=u'black1', type=TestModelsModel.TYPES.BLACK)
+        self.black2 = TestModelsModel.objects.create(name=u'black2', type=TestModelsModel.TYPES.BLACK)
+        self.white = TestModelsModel.objects.create(name=u'white', type=TestModelsModel.TYPES.WHITE)
+        self.red = TestModelsModel.objects.create(name=u'red', type=TestModelsModel.TYPES.RGB.RED)
+        self.blue = TestModelsModel.objects.create(name=u'blue', type=TestModelsModel.TYPES.RGB.BLUE)
 
     def test_single_queryset_method(self):
-        res = MockModel.objects.black()
+        res = TestModelsModel.objects.black()
         self.assertItemsEqual(res, [self.black1, self.black2])
 
     def test_chained_queryset_methods(self):
-        res = MockModel.objects.all().rgb().all()
+        res = TestModelsModel.objects.all().rgb().all()
         self.assertItemsEqual(res, [self.red, self.blue])
 
     def test_queryset_with_single_result(self):
-        res = MockModel.objects.rgb().red()
+        res = TestModelsModel.objects.rgb().red()
         self.assertItemsEqual(res, [self.red])
 
     def test_queryset_with_no_results(self):
-        res = MockModel.objects.rgb().black()
+        res = TestModelsModel.objects.rgb().black()
         self.assertItemsEqual(res, [])
 
     def test_object_manager_private_attributes(self):
@@ -193,22 +193,22 @@ class QuerySetTest(TestCase):
         """
         # Private methods on the object managers are not accessible.
         with self.assertRaises(AttributeError):
-            MockModel.objects._private()
+            TestModelsModel.objects._private()
         # But the same method on the QuerySet is accessible.
-        MockModel.objects.all()._private()
+        TestModelsModel.objects.all()._private()
 
     def test_get_or_404_with_single_result(self):
-        res = MockModel.objects.get_or_404(type=MockModel.TYPES.WHITE)
+        res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.WHITE)
         self.assertEqual(res, self.white)
 
     def test_get_or_404_with_no_results(self):
         with self.assertRaises(Http404):
-            res = MockModel.objects.get_or_404(type=MockModel.TYPES.WHITE, pk=self.red.pk)
+            res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.WHITE, pk=self.red.pk)
 
     def test_get_or_404_with_multiple_results(self):
-        with self.assertRaises(MockModel.MultipleObjectsReturned):
-            res = MockModel.objects.get_or_404(type=MockModel.TYPES.BLACK)
+        with self.assertRaises(TestModelsModel.MultipleObjectsReturned):
+            res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.BLACK)
 
     def test_get_display_of_field_with_choices(self):
-        res = MockModel.objects.get(pk=self.white.pk)
+        res = TestModelsModel.objects.get(pk=self.white.pk)
         self.assertEqual(res.get_type_display(), u'White')
