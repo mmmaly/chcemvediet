@@ -27,9 +27,12 @@ def index(request):
                     timewarp.jump(jumpto, speedup)
                 return HttpResponseRedirect(reverse(u'admin:timewarp'))
 
-        if button == u'reset':
+        elif button == u'reset':
             timewarp.reset()
             return HttpResponseRedirect(reverse(u'admin:timewarp'))
+
+        else: # invalid button
+            form = forms.WarpForm()
     else:
         form = forms.WarpForm()
 

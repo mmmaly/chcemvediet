@@ -41,12 +41,10 @@ class DateTest(TestCase):
         return dt.time()
 
     def _check_dt(self, value, expected):
-        # FIXME: We should check against the class, not its name. After fixing timewarp.
         self.assertEqual(repr(type(value)), u"<type 'datetime.datetime'>")
         self.assertEqual(value.strftime(u'%Y-%m-%d %H:%M:%S.%f %Z %z'), expected)
 
     def _check_date(self, value, expected):
-        # FIXME: We should check against the class, not its name. After fixing timewarp.
         self.assertEqual(repr(type(value)), u"<type 'datetime.date'>")
         self.assertEqual(value.strftime(u'%Y-%m-%d'), expected)
 

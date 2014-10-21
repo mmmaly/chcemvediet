@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 else:
                     raise CommandError(u'Invalid date: "%s".' % joined)
             else:
-                # Notice that this datetime may already be warped.
+                # Remember this datetime may already be warped.
                 date = datetime.datetime.now()
 
             delta = relativedelta(**delta_options)
