@@ -34,6 +34,7 @@ class Command(BaseCommand):
         make_option(u'--hour', action=u'store', type=u'int', dest=u'hour', default=None, help=u'Change to hour.'),
         make_option(u'--minute', action=u'store', type=u'int', dest=u'minute', default=None, help=u'Change to minute.'),
         make_option(u'--second', action=u'store', type=u'int', dest=u'second', default=None, help=u'Change to second.'),
+        make_option(u'--microsecond', action=u'store', type=u'int', dest=u'microsecond', default=None, help=u'Change to microsecond.'),
 
         make_option(u'--years', action=u'store', type=u'int', dest=u'years', default=None, help=u'Advance by years.'),
         make_option(u'--months', action=u'store', type=u'int', dest=u'months', default=None, help=u'Advance by months.'),
@@ -42,6 +43,7 @@ class Command(BaseCommand):
         make_option(u'--hours', action=u'store', type=u'int', dest=u'hours', default=None, help=u'Advance by hours.'),
         make_option(u'--minutes', action=u'store', type=u'int', dest=u'minutes', default=None, help=u'Advance by minutes.'),
         make_option(u'--seconds', action=u'store', type=u'int', dest=u'seconds', default=None, help=u'Advance by seconds.'),
+        make_option(u'--microseconds', action=u'store', type=u'int', dest=u'microseconds', default=None, help=u'Advance by microseconds.'),
         make_option(u'--weekday', action=u'store', type=u'int', dest=u'weekday', default=None, help=u'Advance to the next weekday. (0 for monday, 1 for tuesday, ...)'),
 
         make_option(u'--speedup', action=u'store', type=u'int', dest=u'speedup', default=None, help=u'Rate at which the time flows.'),
@@ -52,16 +54,18 @@ class Command(BaseCommand):
         #print(args, options)
 
         delta_options = {k: options[k] for k in [
-                    u'year', u'month', u'day', u'hour', u'minute', u'second',
-                    u'years', u'months', u'weeks', u'days', u'hours', u'minutes', u'seconds', u'weekday',
+                    u'year', u'month', u'day', u'hour', u'minute', u'second', u'microsecond',
+                    u'years', u'months', u'weeks', u'days', u'hours', u'minutes', u'seconds', u'microseconds', u'weekday',
                     ] if options[k] is not None}
 
         if options[u'reset']:
-            print(u'Resetting Timewarp...')
+            if options[u'verbosity'] != u'0':
+                print(u'Resetting Timewarp...')
             timewarp.reset()
 
         elif args or delta_options or options[u'speedup'] is not None:
-            print(u'Jumping...')
+            if options[u'verbosity'] != u'0':
+                print(u'Jumping...')
             if args:
                 joined = u' '.join(args)
                 for format in [u'%Y-%m-%d %H:%M:%S', u'%Y-%m-%d %H:%M', u'%Y-%m-%d']:
@@ -79,7 +83,8 @@ class Command(BaseCommand):
             delta = relativedelta(**delta_options)
             timewarp.jump(date=date+delta, speed=options[u'speedup'])
 
-        print(u'Real time: %s' % datetime.datetime.fromtimestamp(timewarp.real_time))
-        print(u'Warped time: %s' % (datetime.datetime.fromtimestamp(timewarp.warped_time) if timewarp.is_warped else u'--'))
-        print(u'Speedup: %s' % (timewarp.speedup if timewarp.is_warped else u'--'))
+        if options[u'verbosity'] != u'0':
+            print(u'Real time: %s' % datetime.datetime.fromtimestamp(timewarp.real_time))
+            print(u'Warped time: %s' % (datetime.datetime.fromtimestamp(timewarp.warped_time) if timewarp.is_warped else u'--'))
+            print(u'Speedup: %s' % (timewarp.speedup if timewarp.is_warped else u'--'))
 
