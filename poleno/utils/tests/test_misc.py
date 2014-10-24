@@ -6,7 +6,7 @@ import random
 
 from django.test import TestCase
 
-from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze
+from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze, guess_extension
 
 class BunchTest(TestCase):
     u"""
@@ -141,3 +141,25 @@ class SqueezeTest(TestCase):
                 for i in range(1000))
         res = squeeze(sample)
         self.assertRegexpMatches(res, r'^(\S+ )*\S+$')
+
+class GuessExtension(TestCase):
+    u"""
+    Tests ``guess_extension()`` function.
+    """
+
+    # Overriden guesses
+    def test_text_plain(self):
+        self.assertEqual(guess_extension(u'text/plain'), u'.txt')
+
+    def test_application_octet_stream(self):
+        self.assertEqual(guess_extension(u'application/octet-stream'), u'.bin')
+
+    # Guesses by ``mimetypes`` module
+    def test_application_pdf(self):
+        self.assertEqual(guess_extension(u'application/pdf'), u'.pdf')
+
+    def test_unknown_content_type(self):
+        self.assertIsNone(guess_extension(u'application/nonexistent'))
+
+    def test_unknown_content_type_with_default_extension(self):
+        self.assertEqual(guess_extension(u'application/nonexistent', u'.bin'), u'.bin')

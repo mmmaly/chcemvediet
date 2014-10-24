@@ -14,7 +14,7 @@ from ..forms import AttachmentsField
 
 class AttachmentsFieldTest(TestCase):
     u"""
-    Tests ``...``
+    Tests ``AttachmentsField`` form field with ``AttachmentsWidget`` form widget.
     """
 
     class AttachmentsFieldForm(forms.Form):

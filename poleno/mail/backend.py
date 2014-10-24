@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 from django.core.mail.message import sanitize_address, DEFAULT_ATTACHMENT_MIME_TYPE
 from django.core.mail.backends.base import BaseEmailBackend
 
+from poleno.utils.misc import guess_extension
 from poleno.attachments.models import Attachment
 
 from .models import Message, Recipient
@@ -25,19 +26,21 @@ class EmailBackend(BaseEmailBackend):
         from_name, from_mail = parseaddr(sanitized)
 
         subject = message.subject
-        text = message.body if message.content_subtype != u'html' else u''
-        html = message.body if message.content_subtype == u'html' else u''
+        text = message.body if message.content_subtype != u'html' else None
+        html = message.body if message.content_subtype == u'html' else None
         headers = message.extra_headers
 
-        if getattr(message, u'alternatives', None):
-            if len(message.alternatives) > 1:
-                raise ValueError(u'Too many alternatives attached to the message.')
-            content, mimetype = message.alternatives[0]
-            if mimetype != u'text/html':
-                raise ValueError(u'Invalid alternative mimetype "%s".' % mimetype)
-            if message.content_subtype == u'html':
-                raise ValueError(u'Alternative with the same mimetype as the body.')
-            html = content
+        # We may have only one plaintext and one html message body. If the message has more
+        # plaintext and/or html aternatives, they are converted to attachments.
+        remnant_alternatives = []
+        for content, content_type in getattr(message, u'alternatives', []):
+            if content_type == u'text/plain' and text is None:
+                text = content
+            elif content_type == u'text/html' and html is None:
+                html = content
+            else:
+                ext = guess_extension(content_type, u'.bin')
+                remnant_alternatives.append((u'message%s' % ext, content, content_type))
 
         recipients = []
         for addresses, type in ((message.to, Recipient.TYPES.TO),
@@ -54,17 +57,21 @@ class EmailBackend(BaseEmailBackend):
                         ))
 
         attachments = []
-        for attachment in message.attachments:
+        for attachment in message.attachments + remnant_alternatives:
             if isinstance(attachment, MIMEBase):
                 name = attachment.get_filename()
                 content = attachment.get_payload(decode=True)
                 content_type = attachment.get_content_type()
             else:
                 name, content, content_type = attachment
+            if not content_type:
+                content_type = DEFAULT_ATTACHMENT_MIME_TYPE
+            if not name:
+                name = u'attachment%s' % guess_extension(content_type, u'.bin')
             attachments.append(Attachment(
                     file=ContentFile(content),
                     name=name,
-                    content_type=content_type or DEFAULT_ATTACHMENT_MIME_TYPE,
+                    content_type=content_type,
                     ))
 
         msg = Message(
@@ -72,8 +79,8 @@ class EmailBackend(BaseEmailBackend):
                 from_name=from_name,
                 from_mail=from_mail,
                 subject=subject,
-                text=text,
-                html=html,
+                text=text or u'',
+                html=html or u'',
                 headers=headers,
                 )
         msg.save()

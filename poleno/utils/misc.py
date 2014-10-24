@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import random
 import string
+import mimetypes
 
 class Bunch(object):
     u"""
@@ -56,3 +57,27 @@ def squeeze(s):
         "   text   with\nspaces\n\n" -> "text with spaces"
     """
     return u' '.join(s.split())
+
+def guess_extension(content_type, default=None):
+    u"""
+    Guesses file extention based on file content type. Wrapper around ``mimetypes.guess_extension`` to
+    return ``default`` extension if the given content type is not known by ``mimetypes`` module, and to
+    fix stupid guesses like: "text/plain" -> ".ksh".
+
+    See: http://bugs.python.org/issue1043134
+
+    Example:
+        "text/plain" -> ".txt"
+        "text/html" -> ".html"
+    """
+    override = {
+            u'text/plain': u'.txt', # was: ".ksh"
+            u'application/octet-stream': u'.bin', # was: ".obj"
+            }
+    if content_type in override:
+        res = override[content_type]
+    else:
+        res = mimetypes.guess_extension(content_type)
+    if not res:
+        res = default
+    return res

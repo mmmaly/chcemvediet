@@ -28,7 +28,7 @@ class Message(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
-    # May NOT be NULL for processed messages; NULL for queued messages
+    # NOT NULL for processed messages; NULL for queued messages
     processed = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Processed'))
 
     # May be empty
@@ -63,9 +63,6 @@ class Message(models.Model):
     class Meta:
         ordering = [u'processed', u'pk']
 
-    def __unicode__(self):
-        return u'%s' % self.pk
-
     # May be empty; Read-write
     @property
     def from_formatted(self):
@@ -86,6 +83,9 @@ class Message(models.Model):
     @property
     def bcc_formatted(self):
         return u', '.join(r.formatted for r in self.recipient_set.bcc())
+
+    def __unicode__(self):
+        return u'%s' % self.pk
 
 class RecipientQuerySet(QuerySet):
     def to(self):
@@ -137,9 +137,6 @@ class Recipient(models.Model):
     class Meta:
         ordering = [u'pk']
 
-    def __unicode__(self):
-        return u'%s' % self.pk
-
     # May be empty; Read-write
     @property
     def formatted(self):
@@ -148,3 +145,6 @@ class Recipient(models.Model):
     @formatted.setter
     def formatted(self, value):
         self.name, self.mail = parseaddr(value)
+
+    def __unicode__(self):
+        return u'%s' % self.pk
