@@ -215,12 +215,28 @@ class DateTest(TestCase):
         value = local_datetime_from_local(datetime=self._parse_dt(u'2014-08-15 03:45:00'))
         self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
 
+    def test_datetime_argument_as_string_datetime(self):
+        value = local_datetime_from_local(u'2014-08-15 03:45:00')
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_datetime_as_kwarg(self):
+        value = local_datetime_from_local(datetime=u'2014-08-15 03:45:00')
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
     def test_datetime_argument_as_date_and_time(self):
         value = local_datetime_from_local(self._parse_date(u'2014-08-15'), self._parse_time('03:45:00'))
         self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
 
     def test_datetime_argument_as_date_and_time_as_kwargs(self):
         value = local_datetime_from_local(date=self._parse_date(u'2014-08-15'), time=self._parse_time('03:45:00'))
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_date_and_string_time(self):
+        value = local_datetime_from_local(self._parse_date(u'2014-08-15'), u'03:45:00')
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_date_and_string_time_as_kwarg(self):
+        value = local_datetime_from_local(self._parse_date(u'2014-08-15'), time=u'03:45:00')
         self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
 
     def test_datetime_argument_as_date_and_expanded_time(self):
@@ -231,12 +247,44 @@ class DateTest(TestCase):
         value = local_datetime_from_local(date=self._parse_date(u'2014-08-15'), hour=3, minute=45, second=0, microsecond=123)
         self._check_dt(value, u'2014-08-15 03:45:00.000123 CEST +0200')
 
-    def test_datetime_argument_as__date_and_default_time(self):
+    def test_datetime_argument_as_date_and_default_time(self):
         value = local_datetime_from_local(self._parse_date(u'2014-08-15'))
         self._check_dt(value, u'2014-08-15 00:00:00.000000 CEST +0200')
 
     def test_datetime_argument_as_date_and_default_time_as_kwarg(self):
         value = local_datetime_from_local(date=self._parse_date(u'2014-08-15'))
+        self._check_dt(value, u'2014-08-15 00:00:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_time(self):
+        value = local_datetime_from_local(u'2014-08-15', self._parse_time('03:45:00'))
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_time_as_kwargs(self):
+        value = local_datetime_from_local(date=u'2014-08-15', time=self._parse_time('03:45:00'))
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_string_time(self):
+        value = local_datetime_from_local(u'2014-08-15', u'03:45:00')
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_string_time_as_kwarg(self):
+        value = local_datetime_from_local(u'2014-08-15', time=u'03:45:00')
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_expanded_time(self):
+        value = local_datetime_from_local(u'2014-08-15', 3, 45, 0, 123)
+        self._check_dt(value, u'2014-08-15 03:45:00.000123 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_expanded_time_as_kwargs(self):
+        value = local_datetime_from_local(date=u'2014-08-15', hour=3, minute=45, second=0, microsecond=123)
+        self._check_dt(value, u'2014-08-15 03:45:00.000123 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_default_time(self):
+        value = local_datetime_from_local(u'2014-08-15')
+        self._check_dt(value, u'2014-08-15 00:00:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_string_date_and_default_time_as_kwarg(self):
+        value = local_datetime_from_local(date=u'2014-08-15')
         self._check_dt(value, u'2014-08-15 00:00:00.000000 CEST +0200')
 
     def test_datetime_argument_as_expanded_date_and_time(self):
@@ -247,11 +295,23 @@ class DateTest(TestCase):
         value = local_datetime_from_local(year=2014, month=8, day=15, time=self._parse_time('03:45:00'))
         self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
 
+    def test_datetime_argument_as_expanded_date_and_string_time(self):
+        value = local_datetime_from_local(2014, 8, 15, u'03:45:00')
+        self._check_dt(value, u'2014-08-15 03:45:00.000000 CEST +0200')
+
+    def test_datetime_argument_as_expanded_date_and_string_time_as_kwargs(self):
+        value = local_datetime_from_local(year=2014, month=8, day=15, time=u'03:45:00.123456')
+        self._check_dt(value, u'2014-08-15 03:45:00.123456 CEST +0200')
+
     def test_datetime_argument_as_expanded_date_and_expaded_time(self):
         value = local_datetime_from_local(2014, 8, 15, 3, 45, 0, 123)
         self._check_dt(value, u'2014-08-15 03:45:00.000123 CEST +0200')
 
-    def test_datetime_argument_as__expanded_date_and_expaded_time_as_kwarg(self):
+    def test_datetime_argument_as_expanded_date_and_expaded_time_as_strings(self):
+        value = local_datetime_from_local(u'2014', u'8', u'15', u'3', u'45', u'0', u'123')
+        self._check_dt(value, u'2014-08-15 03:45:00.000123 CEST +0200')
+
+    def test_datetime_argument_as_expanded_date_and_expaded_time_as_kwarg(self):
         value = local_datetime_from_local(year=2014, month=8, day=15, hour=3, minute=45, second=0, microsecond=123)
         self._check_dt(value, u'2014-08-15 03:45:00.000123 CEST +0200')
 
@@ -272,9 +332,13 @@ class DateTest(TestCase):
             local_datetime_from_local(2014, 8)
 
     def test_datetime_argument_with_invalid_argument(self):
+        with self.assertRaisesMessage(TypeError, u'Expecting argument: day, got 3.2'):
+            local_datetime_from_local(2014, 8, 3.2)
+
+    def test_datetime_argument_with_unexpected_argument(self):
         with self.assertRaisesMessage(TypeError, u'Unexpected arguments: 2014'):
             local_datetime_from_local(self._parse_dt(u'2014-08-15 03:45:00'), 2014)
 
-    def test_datetime_argument_with_invalid_kw_argument(self):
+    def test_datetime_argument_with_unexpected_kw_argument(self):
         with self.assertRaisesMessage(TypeError, u'Unexpected arguments: year=2014'):
             local_datetime_from_local(self._parse_dt(u'2014-08-15 03:45:00'), year=2014)

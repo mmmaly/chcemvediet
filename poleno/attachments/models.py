@@ -27,11 +27,11 @@ class AttachmentQuerySet(QuerySet):
             elif isinstance(arg, models.Model):
                 content_type = ContentType.objects.get_for_model(arg.__class__)
                 q.append(Q(generic_type=content_type, generic_id=arg.pk))
-            elif issubclass(arg, models.Model):
+            elif isinstance(arg, type) and issubclass(arg, models.Model):
                 content_type = ContentType.objects.get_for_model(arg)
                 q.append(Q(generic_type=content_type))
             else:
-                raise TypeError
+                raise TypeError(u'Expecting QuerySet, Model instance, or Model class.')
         q = reduce((lambda a, b: a | b), q, Q())
         return self.filter(q)
 

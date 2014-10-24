@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.conf.urls import patterns, url
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.test.utils import override_settings
 
 from poleno.utils.views import require_ajax, login_required, secure_required
 
@@ -73,6 +74,16 @@ class LoginRequiredTest(TestCase):
         url(r'^login-required-with-redirect/$', login_required_with_redirect_view),
         url(r'^login-required-with-exception/$', login_required_with_exception_view),
     ))
+
+
+    def setUp(self):
+        self.settings_override = override_settings(
+            PASSWORD_HASHERS=(u'django.contrib.auth.hashers.MD5PasswordHasher',),
+            )
+        self.settings_override.enable()
+
+    def tearDown(self):
+        self.settings_override.disable()
 
 
     def test_anonymous_with_redirect(self):

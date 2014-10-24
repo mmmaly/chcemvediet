@@ -1,5 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import collections
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
@@ -73,7 +75,11 @@ class AttachmentsField(forms.Field):
             return []
 
         # Only attachments poiting to whitelisted objects may be used by the field.
-        query_set = Attachment.objects.attached_to(*self.attached_to)
+        if isinstance(self.attached_to, collections.Iterable):
+            query_set = Attachment.objects.attached_to(*self.attached_to)
+        else:
+            query_set = Attachment.objects.attached_to(self.attached_to)
+
         try:
             attachments = query_set.filter(pk__in=keys)
         except ValueError:
