@@ -10,6 +10,8 @@ from django.core import management
 from django.core.management.base import CommandError
 from django.test import TestCase
 
+from poleno.utils.misc import collect_stdout
+
 from ..timewarp import timewarp
 
 class TimewarpManagementTest(TestCase):
@@ -33,14 +35,9 @@ class TimewarpManagementTest(TestCase):
             return datetime.datetime.strptime(value, u'%Y-%m-%d %H:%M:%S')
 
     def _call_timewarp(self, *args, **kwargs):
-        try:
-            orig_stdout = sys.stdout
-            sys.stdout = StringIO()
+        with collect_stdout() as collected:
             management.call_command(u'timewarp', *args, **kwargs)
-            sys.stdout.seek(0)
-            return sys.stdout.read()
-        finally:
-            sys.stdout = orig_stdout
+        return collected.stdout
 
 
     def test_without_arguments(self):

@@ -40,6 +40,12 @@ class CronserverManagementTest(TestCase):
     Tests ``cronserver`` management command.
     """
 
+    def _call_cronserver(self, *args, **kwargs):
+        # ``runcrons`` command runs ``logging.debug()`` that somehow spoils stderr.
+        with mock.patch(u'django_cron.logging'):
+            call_command(u'cronserver', *args, **kwargs)
+
+
     def test_clearlogs(self):
         u"""
         Checks that ``cronserver`` clears all cron logs if called with ``--clearlogs`` option.
@@ -55,7 +61,7 @@ class CronserverManagementTest(TestCase):
 
         with mock.patch(u'poleno.cron.management.commands.cronserver.time.sleep', side_effect=KeyboardInterrupt):
             with mock.patch(u'poleno.cron.management.commands.cronserver.call_command'):
-                call_command(u'cronserver', clearlogs=True)
+                self._call_cronserver(clearlogs=True)
         self.assertEqual(CronJobLog.objects.count(), 0)
 
     def test_clear_logs_from_future(self):
@@ -85,7 +91,7 @@ class CronserverManagementTest(TestCase):
 
         with mock.patch(u'poleno.cron.management.commands.cronserver.time.sleep', side_effect=side_effect()):
             with mock.patch(u'poleno.cron.management.commands.cronserver.call_command'):
-                call_command(u'cronserver')
+                self._call_cronserver()
 
     def test_interval(self):
         u"""
@@ -93,7 +99,7 @@ class CronserverManagementTest(TestCase):
         """
         with mock.patch(u'poleno.cron.management.commands.cronserver.time.sleep', side_effect=KeyboardInterrupt) as mock_sleep:
             with mock.patch(u'poleno.cron.management.commands.cronserver.call_command'):
-                call_command(u'cronserver', interval=100)
+                self._call_cronserver(interval=100)
         self.assertEqual(mock_sleep.mock_calls, [mock.call(100)])
 
     def test_multiple_cycles(self):
@@ -102,5 +108,5 @@ class CronserverManagementTest(TestCase):
         """
         with mock.patch(u'poleno.cron.management.commands.cronserver.time.sleep', side_effect=[None]*10 + [KeyboardInterrupt]):
             with mock.patch(u'poleno.cron.management.commands.cronserver.call_command') as mock_call_command:
-                call_command(u'cronserver')
+                self._call_cronserver()
         self.assertEqual(mock_call_command.mock_calls, [mock.call(u'runcrons')] * 11)

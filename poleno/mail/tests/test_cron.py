@@ -1,0 +1,136 @@
+# vim: expandtab
+# -*- coding: utf-8 -*-
+import datetime
+import mock
+
+from django.core.management import call_command
+from django.test import TestCase
+
+from poleno.timewarp import timewarp
+from poleno.cron.test import mock_cron_jobs
+from poleno.utils.date import utc_now, local_datetime_from_local
+from poleno.utils.misc import collect_stdout
+from poleno.utils.test import override_signals
+
+from . import MailTestCaseMixin
+from ..models import Message
+from ..cron import mail as mail_cron_job
+from ..signals import message_sent, message_received
+
+class MailCronjobTest(MailTestCaseMixin, TestCase):
+    u"""
+    Tests ``poleno.mail.cron.mail`` cron job. Checks that the job is run once every minute and
+    queued outbound and inbound messages are processed.
+    """
+
+    def _call_runcrons(self):
+        # ``runcrons`` command runs ``logging.debug()`` that somehow spoils stderr.
+        with mock.patch(u'django_cron.logging'):
+            call_command(u'runcrons')
+
+    def _run_mail_cron_job(self, outbound=False, inbound=False,
+            send_message_method=mock.DEFAULT, message_sent_receiver=None,
+            get_message_method=mock.DEFAULT, message_received_receiver=None):
+        u"""
+        Mocks mail transport, overrides ``send_message`` and ``get_message`` signals, calls
+        ``mail`` cron job and eats any stdout prited by the called job.
+        """
+        transport = u'poleno.mail.transports.base.BaseTransport'
+        outbound_transport = transport if outbound else None
+        inbound_transport = transport if inbound else None
+        with self.settings(EMAIL_OUTBOUND_TRANSPORT=outbound_transport, EMAIL_INBOUND_TRANSPORT=inbound_transport):
+            with mock.patch.multiple(transport, send_message=send_message_method, get_message=get_message_method):
+                with override_signals(message_sent, message_received):
+                    if message_sent_receiver is not None:
+                        message_sent.connect(message_sent_receiver)
+                    if message_received_receiver is not None:
+                        message_received.connect(message_received_receiver)
+                    with collect_stdout():
+                        mail_cron_job().do()
+
+
+    def test_job_is_run_with_empty_logs(self):
+        with mock_cron_jobs() as mock_jobs:
+            self._call_runcrons()
+        self.assertEqual(mock_jobs[u'poleno.mail.cron.mail'].call_count, 1)
+
+    def test_job_is_not_run_again_before_timeout(self):
+        timewarp.enable()
+        with mock_cron_jobs() as mock_jobs:
+            timewarp.jump(date=local_datetime_from_local(u'2010-10-05 10:00:00'))
+            self._call_runcrons()
+            timewarp.jump(date=local_datetime_from_local(u'2010-10-05 10:00:50'))
+            self._call_runcrons()
+        self.assertEqual(mock_jobs[u'poleno.mail.cron.mail'].call_count, 1)
+        timewarp.reset()
+
+    def test_job_is_run_again_after_timeout(self):
+        timewarp.enable()
+        with mock_cron_jobs() as mock_jobs:
+            timewarp.jump(date=local_datetime_from_local(u'2010-10-05 10:00:00'))
+            self._call_runcrons()
+            timewarp.jump(date=local_datetime_from_local(u'2010-10-05 10:01:10'))
+            self._call_runcrons()
+        self.assertEqual(mock_jobs[u'poleno.mail.cron.mail'].call_count, 2)
+        timewarp.reset()
+
+
+    def test_outbound_transport(self):
+        u"""
+        Checks that the registered transport is used to send the queued message, the sent message
+        is marked as processed and ``message_sent`` signal is emmited for it.
+        """
+        msg = self._create_message(type=Message.TYPES.OUTBOUND, processed=None)
+        method, receiver = mock.Mock(), mock.Mock()
+        self._run_mail_cron_job(outbound=True, send_message_method=method, message_sent_receiver=receiver)
+        msg = Message.objects.get(pk=msg.pk)
+        self.assertAlmostEqual(msg.processed, utc_now(), delta=datetime.timedelta(seconds=10))
+        self.assertItemsEqual(method.mock_calls, [mock.call(msg)])
+        self.assertItemsEqual(receiver.mock_calls, [mock.call(message=msg, sender=None, signal=message_sent)])
+
+    def test_outbound_transport_with_no_queued_messages(self):
+        u"""
+        Checks that no transport method is called and no ``message_sent`` signal is emmited if
+        there are no queued messages.
+        """
+        method, receiver = mock.Mock(), mock.Mock()
+        self._run_mail_cron_job(outbound=True, send_message_method=method, message_sent_receiver=receiver)
+        self.assertItemsEqual(method.mock_calls, [])
+        self.assertItemsEqual(receiver.mock_calls, [])
+
+    def test_outbound_transport_sends_at_most_10_messages_in_one_batch(self):
+        msgs = [self._create_message(type=Message.TYPES.OUTBOUND, processed=None) for i in range(20)]
+        method, receiver = mock.Mock(), mock.Mock()
+        self._run_mail_cron_job(outbound=True, send_message_method=method, message_sent_receiver=receiver)
+
+        # We expect first 10 messages (sorted by their ``pk``) to be sent.
+        msgs = Message.objects.filter(pk__in=sorted(m.pk for m in msgs)[:10])
+        self.assertEqual(len(msgs), 10)
+        for msg in msgs:
+            self.assertAlmostEqual(msg.processed, utc_now(), delta=datetime.timedelta(seconds=10))
+        self.assertItemsEqual(method.mock_calls, [mock.call(m) for m in msgs])
+        self.assertItemsEqual(receiver.mock_calls, [mock.call(message=m, sender=None, signal=message_sent) for m in msgs])
+
+    def test_inbound_transport(self):
+        u"""
+        Checks that ``message_received`` signal is emmited for all messages returned by the
+        transport ``get_message`` method.
+        """
+        msgs = []
+        def method(transport):
+            for i in range(3):
+                msg = self._create_message(type=Message.TYPES.INBOUND)
+                msgs.append(msg)
+                yield msg
+
+        receiver = mock.Mock()
+        self._run_mail_cron_job(inbound=True, get_message_method=method, message_received_receiver=receiver)
+        self.assertItemsEqual(receiver.mock_calls, [mock.call(message=m, sender=None, signal=message_received) for m in msgs])
+
+    def test_inbound_transport_with_no_received_messages(self):
+        def method(transport):
+            return []
+
+        receiver = mock.Mock()
+        self._run_mail_cron_job(inbound=True, get_message_method=method, message_received_receiver=receiver)
+        self.assertItemsEqual(receiver.mock_calls, [])

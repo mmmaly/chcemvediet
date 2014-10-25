@@ -6,7 +6,8 @@ import random
 
 from django.test import TestCase
 
-from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze, guess_extension
+from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze
+from poleno.utils.misc import guess_extension, collect_stdout
 
 class BunchTest(TestCase):
     u"""
@@ -142,7 +143,7 @@ class SqueezeTest(TestCase):
         res = squeeze(sample)
         self.assertRegexpMatches(res, r'^(\S+ )*\S+$')
 
-class GuessExtension(TestCase):
+class GuessExtensionTest(TestCase):
     u"""
     Tests ``guess_extension()`` function.
     """
@@ -163,3 +164,23 @@ class GuessExtension(TestCase):
 
     def test_unknown_content_type_with_default_extension(self):
         self.assertEqual(guess_extension(u'application/nonexistent', u'.bin'), u'.bin')
+
+class CollectStdoutTest(TestCase):
+    u"""
+    Tests ``collect_stdout()`` context manager.
+    """
+
+    def test_stdout_collected(self):
+        with collect_stdout() as collected:
+            print(u'Collected text')
+        self.assertEqual(collected.stdout, u'Collected text\n')
+
+    def test_stdout_released_after_block(self):
+        with collect_stdout() as outer:
+            print(u'Outer before')
+            with collect_stdout() as inner:
+                print(u'Inner')
+            print(u'Outer after')
+        self.assertEqual(inner.stdout, u'Inner\n')
+        self.assertEqual(outer.stdout, u'Outer before\nOuter after\n')
+

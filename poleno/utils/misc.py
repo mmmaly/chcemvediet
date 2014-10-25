@@ -1,8 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import sys
 import random
 import string
 import mimetypes
+import contextlib
+from StringIO import StringIO
 
 class Bunch(object):
     u"""
@@ -81,3 +84,23 @@ def guess_extension(content_type, default=None):
     if not res:
         res = default
     return res
+
+@contextlib.contextmanager
+def collect_stdout():
+    u"""
+    Intercepts and collencts all output printed on ``stdout``.
+
+    Example:
+        with collect_stdout() as collect:
+            print('Hello')
+        return 'printed: "%s"' % collect.stdout
+    """
+    orig_stdout = sys.stdout
+    sys.stdout = StringIO()
+    res = Bunch(stdout=None)
+    try:
+        yield res
+    finally:
+        sys.stdout.seek(0)
+        res.stdout = sys.stdout.read()
+        sys.stdout = orig_stdout
