@@ -11,6 +11,7 @@ from django.conf import settings
 
 from poleno.attachments.models import Attachment
 from poleno.utils.date import utc_now
+from poleno.utils.misc import guess_extension
 
 from .base import BaseTransport
 from ..models import Message, Recipient
@@ -21,7 +22,7 @@ class ImapTransport(BaseTransport):
         self.ssl = getattr(settings, u'IMAP_SSL', False)
         self.host = getattr(settings, u'IMAP_HOST', u'')
         self.port = getattr(settings, u'IMAP_PORT', IMAP4_SSL_PORT if self.ssl else IMAP4_PORT)
-        self.username = getattr(settings, u'IMAP_USERNAME')
+        self.username = getattr(settings, u'IMAP_USERNAME', u'')
         self.password = getattr(settings, u'IMAP_PASSWORD', u'')
         self.transport = IMAP4_SSL if self.ssl else IMAP4
         self.connection = None
@@ -36,10 +37,20 @@ class ImapTransport(BaseTransport):
         self.connection.logout()
         self.connection = None
 
+    def _decode_content(self, content, charset):
+        try:
+            decoded = content.decode(charset, u'replace') if charset else content
+            return decoded
+        except LookupError as e:
+            raise email.errors.MessageParseError(e)
+
     def _decode_header(self, header):
         parts = email.header.decode_header(header)
-        decoded = u''.join(unicode(part, enc or u'ASCII', u'replace') for part, enc in parts)
-        return decoded
+        try:
+            decoded = u''.join(unicode(part, enc or u'ASCII', u'replace') for part, enc in parts)
+            return decoded
+        except LookupError as e:
+            raise email.errors.MessageParseError(e)
 
     def _decode_message(self, msg):
         assert isinstance(msg, email.message.Message)
@@ -58,12 +69,15 @@ class ImapTransport(BaseTransport):
             content_type = part.get_content_type()
             charset = part.get_content_charset()
             content = part.get_payload(decode=True)
-            if not text and content_type == u'text/plain':
-                text = content.decode(charset, u'replace') if charset else content
-            elif not html and content_type == u'text/html':
-                html = content.decode(charset, u'replace') if charset else content
+            disposition = self._decode_header(part.get(u'Content-Disposition', u''))
+            is_attachment = disposition.startswith(u'attachment')
+            if not text and content_type == u'text/plain' and not is_attachment:
+                text = self._decode_content(content, charset)
+            elif not html and content_type == u'text/html' and not is_attachment:
+                html = self._decode_content(content, charset)
             else:
-                filename = part.get_filename()
+                default = u'attachment%s' % guess_extension(content_type, u'.bin')
+                filename = part.get_filename(default)
                 attachments.append(Attachment(
                         file=ContentFile(content),
                         name=filename,
@@ -115,10 +129,10 @@ class ImapTransport(BaseTransport):
                 try:
                     _, contents = self.connection.fetch(key, '(RFC822)')
                     msg = email.message_from_string(contents[0][1])
+                    message = self._decode_message(msg)
                 except email.errors.MessageParseError:
                     continue
 
-                message = self._decode_message(msg)
                 yield message
 
                 self.connection.store(key, u'+FLAGS', u'\\Deleted')
