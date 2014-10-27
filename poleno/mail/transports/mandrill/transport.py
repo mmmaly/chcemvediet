@@ -14,7 +14,7 @@ class MandrillTransport(BaseTransport):
         super(MandrillTransport, self).__init__(**kwargs)
         self.api_key = getattr(settings, u'MANDRILL_API_KEY', None)
         self.api_url = getattr(settings, u'MANDRILL_API_URL', u'https://mandrillapp.com/api/1.0')
-        self.api_send = self.api_url + u'/messages/send.json'
+        self.api_send = self.api_url.rstrip(u'/') + u'/messages/send.json'
 
         if self.api_key is None:
             raise ImproperlyConfigured(u'Setting MANDRILL_API_KEY is not set.')
@@ -47,10 +47,9 @@ class MandrillTransport(BaseTransport):
                 rcp[u'type'] = u'to'
             elif recipient.type == recipient.TYPES.CC:
                 rcp[u'type'] = u'cc'
-            elif recipient.type == recipient.TYPES.BCC:
-                rcp[u'type'] = u'bcc'
             else:
-                continue
+                assert recipient.type == recipient.TYPES.BCC
+                rcp[u'type'] = u'bcc'
             msg[u'to'].append(rcp)
 
         msg[u'attachments'] = []

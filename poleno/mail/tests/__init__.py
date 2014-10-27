@@ -36,8 +36,9 @@ class MailTestCaseMixin(TestCase):
         return func(**defaults)
 
     def _create_attachment(self, **kwargs):
+        content = kwargs.pop(u'content', u'content')
         return self._call_with_defaults(Attachment.objects.create, kwargs, {
-            u'file': ContentFile(u'content', name=u'overriden'),
+            u'file': ContentFile(content, name=u'overriden'),
             u'name': u'filename.txt',
             u'content_type': u'text/plain',
             })

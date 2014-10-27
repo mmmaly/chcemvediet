@@ -4,7 +4,6 @@ import mock
 from textwrap import dedent
 from collections import defaultdict
 
-from django.core.files.base import ContentFile
 from django.core.mail import BadHeaderError
 from django.test import TestCase
 
@@ -182,8 +181,8 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
     def test_message_with_attachments(self):
         msg = self._create_message()
         rcpt = self._create_recipient(message=msg)
-        attch1 = self._create_attachment(generic_object=msg, file=ContentFile(u'content'), name=u'filename.txt', content_type=u'text/plain')
-        attch2 = self._create_attachment(generic_object=msg, file=ContentFile(u'<p>content</p>'), name=u'filename.html', content_type=u'text/html')
+        attch1 = self._create_attachment(generic_object=msg, content=u'content', name=u'filename.txt', content_type=u'text/plain')
+        attch2 = self._create_attachment(generic_object=msg, content=u'<p>content</p>', name=u'filename.html', content_type=u'text/html')
         result = self._run_mail_cron_job()
         self.assertRegexpMatches(result[0].headers[u'Content-Type'][0], u'multipart/mixed; boundary="===============.*=="')
         self.assertRegexpMatches(result[0].body, dedent(u"""\
