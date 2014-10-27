@@ -31,14 +31,14 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
 
     def test_type_field_may_not_be_ommited(self):
         with self.assertRaisesMessage(IntegrityError, u'mail_message.type may not be NULL'):
-            msg = self._create_message(_omit=[u'type'])
+            msg = self._create_message(omit=[u'type'])
 
     def test_processed_field_with_explicit_value(self):
         msg = self._create_message(processed=utc_datetime_from_local(u'2014-10-04 13:22:12'))
         self.assertEqual(msg.processed, utc_datetime_from_local(u'2014-10-04 13:22:12'))
 
     def test_processed_field_with_default_value_if_ommited(self):
-        msg = self._create_message(_omit=[u'processed'])
+        msg = self._create_message(omit=[u'processed'])
         self.assertIsNone(msg.processed)
 
     def test_from_name_and_from_mail_fields_with_explicit_values(self):
@@ -47,7 +47,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertEqual(msg.from_mail, u'from@example.com')
 
     def test_from_name_and_from_mail_fields_with_default_values_if_ommited(self):
-        msg = self._create_message(_omit=[u'from_name', u'from_mail'])
+        msg = self._create_message(omit=[u'from_name', u'from_mail'])
         self.assertEqual(msg.from_name, u'')
         self.assertEqual(msg.from_mail, u'')
 
@@ -56,7 +56,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertEqual(msg.received_for, u'received_for@example.com')
 
     def test_received_for_field_with_default_value_if_ommited(self):
-        msg = self._create_message(_omit=[u'received_for'])
+        msg = self._create_message(omit=[u'received_for'])
         self.assertEqual(msg.received_for, u'')
 
     def test_subject_text_and_html_fields_with_explicit_values(self):
@@ -66,7 +66,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertEqual(msg.html, u'<b>HTML</b>')
 
     def test_subject_text_and_html_fields_with_default_values_if_ommited(self):
-        msg = self._create_message(_omit=[u'subject', u'text', u'html'])
+        msg = self._create_message(omit=[u'subject', u'text', u'html'])
         self.assertEqual(msg.subject, u'')
         self.assertEqual(msg.text, u'')
         self.assertEqual(msg.html, u'')
@@ -76,7 +76,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertEqual(msg.headers, {u'X-Some-Header': u'Some Value'})
 
     def test_headers_field_with_default_value_if_ommited(self):
-        msg = self._create_message(_omit=[u'headers'])
+        msg = self._create_message(omit=[u'headers'])
         self.assertEqual(msg.headers, {})
 
     def test_attachment_set_empty_by_default(self):
@@ -132,15 +132,15 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertEqual(msg.from_formatted, u'From Name <mail@example.com>')
 
     def test_from_formatted_property_with_ommited_name(self):
-        msg = self._create_message(from_mail=u'mail@example.com', _omit=[u'from_name'])
+        msg = self._create_message(from_mail=u'mail@example.com', omit=[u'from_name'])
         self.assertEqual(msg.from_formatted, u'mail@example.com')
 
     def test_from_formatted_property_with_ommited_mail(self):
-        msg = self._create_message(from_name=u'From Name', _omit=[u'from_mail'])
+        msg = self._create_message(from_name=u'From Name', omit=[u'from_mail'])
         self.assertEqual(msg.from_formatted, u'From Name <>')
 
     def test_from_formatted_property_with_ommited_both_name_and_mail(self):
-        msg = self._create_message(_omit=[u'from_name', u'from_mail'])
+        msg = self._create_message(omit=[u'from_name', u'from_mail'])
         self.assertEqual(msg.from_formatted, u'')
 
     def test_from_formatted_property_with_at_symbol_in_name(self):
@@ -193,8 +193,8 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertItemsEqual(result, [obj3])
 
     def test_processed_and_not_processed_query_methods(self):
-        obj1 = self._create_message(_omit=[u'processed'])
-        obj2 = self._create_message(_omit=[u'processed'])
+        obj1 = self._create_message(omit=[u'processed'])
+        obj2 = self._create_message(omit=[u'processed'])
         obj3 = self._create_message(processed=utc_now())
         result = Message.objects.processed()
         self.assertItemsEqual(result, [obj3])
@@ -219,7 +219,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
     def test_message_field_may_not_be_ommited(self):
         msg = self._create_message()
         with self.assertRaisesMessage(IntegrityError, u'mail_recipient.message_id may not be NULL'):
-            rcpt = self._create_recipient(_omit=[u'message'])
+            rcpt = self._create_recipient(omit=[u'message'])
 
     def test_name_and_mail_fields_with_explicit_values(self):
         msg = self._create_message()
@@ -229,7 +229,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
 
     def test_name_and_mail_fields_with_default_values_if_ommited(self):
         msg = self._create_message()
-        rcpt = self._create_recipient(message=msg, _omit=[u'name', u'mail'])
+        rcpt = self._create_recipient(message=msg, omit=[u'name', u'mail'])
         self.assertEqual(rcpt.name, u'')
         self.assertEqual(rcpt.mail, u'')
 
@@ -254,7 +254,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
     def test_type_field_may_not_be_ommited(self):
         msg = self._create_message()
         with self.assertRaisesMessage(IntegrityError, u'mail_recipient.type may not be NULL'):
-            rcpt = self._create_recipient(message=msg, _omit=['type'])
+            rcpt = self._create_recipient(message=msg, omit=['type'])
 
     def test_status_field_with_explicit_value(self):
         statuses = (
@@ -276,7 +276,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
     def test_status_field_may_not_be_ommited(self):
         msg = self._create_message()
         with self.assertRaisesMessage(IntegrityError, u'mail_recipient.status may not be NULL'):
-            rcpt = self._create_recipient(message=msg, _omit=['status'])
+            rcpt = self._create_recipient(message=msg, omit=['status'])
 
     def test_status_details_and_remote_id_with_explicit_values(self):
         msg = self._create_message()
@@ -286,7 +286,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
 
     def test_status_details_and_remote_id_with_default_values_if_ommited(self):
         msg = self._create_message()
-        rcpt = self._create_recipient(message=msg, _omit=[u'status_details', u'remote_id'])
+        rcpt = self._create_recipient(message=msg, omit=[u'status_details', u'remote_id'])
         self.assertEqual(rcpt.status_details, u'')
         self.assertEqual(rcpt.remote_id, u'')
 
@@ -304,7 +304,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
 
     def test_formatted_property_with_ommited_name(self):
         msg = self._create_message()
-        rcpt = self._create_recipient(message=msg, mail=u'mail@example.com', _omit=[u'name'])
+        rcpt = self._create_recipient(message=msg, mail=u'mail@example.com', omit=[u'name'])
         self.assertEqual(rcpt.formatted, u'mail@example.com')
 
     def test_formatted_property_with_at_comma_and_quote_symbols_in_name(self):

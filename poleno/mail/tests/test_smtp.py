@@ -78,13 +78,13 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(result[0].headers[u'From'], [u'"Smith, John" <smith@example.com>'])
 
     def test_message_with_empty_from_name(self):
-        msg = self._create_message(from_mail=u'smith@example.com', _omit=[u'from_name'])
+        msg = self._create_message(from_mail=u'smith@example.com', omit=[u'from_name'])
         rcpt = self._create_recipient(message=msg)
         result = self._run_mail_cron_job()
         self.assertEqual(result[0].headers[u'From'], [u'smith@example.com'])
 
     def test_message_with_default_from_mail_if_both_from_name_and_from_mail_are_empty(self):
-        msg = self._create_message(_omit=[u'from_name', u'from_mail'])
+        msg = self._create_message(omit=[u'from_name', u'from_mail'])
         rcpt = self._create_recipient(message=msg)
         with self.settings(DEFAULT_FROM_EMAIL=u'Default <default@example.com>'):
             result = self._run_mail_cron_job()
@@ -97,7 +97,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(result[0].headers[u'Subject'], [u'Mail Subject'])
 
     def test_message_with_empty_subject(self):
-        msg = self._create_message(_omit=[u'subject'])
+        msg = self._create_message(omit=[u'subject'])
         rcpt = self._create_recipient(message=msg)
         result = self._run_mail_cron_job()
         self.assertEqual(result[0].headers[u'Subject'], [u''])
@@ -109,7 +109,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
             result = self._run_mail_cron_job()
 
     def test_message_with_text_body_only(self):
-        msg = self._create_message(text=u'Text content', _omit=[u'html'])
+        msg = self._create_message(text=u'Text content', omit=[u'html'])
         rcpt = self._create_recipient(message=msg)
         result = self._run_mail_cron_job()
         self.assertRegexpMatches(result[0].headers[u'Content-Type'][0], u'multipart/mixed; boundary="===============.*=="')
@@ -123,7 +123,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
                 --===============.*==--"""))
 
     def test_message_with_html_body_only(self):
-        msg = self._create_message(html=u'<p>HTML content</p>', _omit=[u'text'])
+        msg = self._create_message(html=u'<p>HTML content</p>', omit=[u'text'])
         rcpt = self._create_recipient(message=msg)
         result = self._run_mail_cron_job()
         self.assertRegexpMatches(result[0].headers[u'Content-Type'][0], u'multipart/mixed; boundary="===============.*=="')
@@ -162,7 +162,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
                 --===============.*==--"""))
 
     def test_message_with_neither_text_nor_html_body(self):
-        msg = self._create_message(_omit=[u'text', u'html'])
+        msg = self._create_message(omit=[u'text', u'html'])
         rcpt = self._create_recipient(message=msg)
         result = self._run_mail_cron_job()
         self.assertRegexpMatches(result[0].headers[u'Content-Type'][0], u'multipart/mixed; boundary="===============.*=="')
@@ -179,7 +179,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(result[0].headers[u'X-Another-Header'], [u'Another Value'])
 
     def test_message_with_attachments(self):
-        msg = self._create_message()
+        msg = self._create_message(text=u'Text content', html=u'<p>HTML content</p>')
         rcpt = self._create_recipient(message=msg)
         attch1 = self._create_attachment(generic_object=msg, content=u'content', name=u'filename.txt', content_type=u'text/plain')
         attch2 = self._create_attachment(generic_object=msg, content=u'<p>content</p>', name=u'filename.html', content_type=u'text/html')
@@ -243,7 +243,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
 
     def test_message_with_recipient_without_name(self):
         msg = self._create_message()
-        to = self._create_recipient(message=msg, mail=u'smith@example.com', type=Recipient.TYPES.TO, _omit=[u'name'])
+        to = self._create_recipient(message=msg, mail=u'smith@example.com', type=Recipient.TYPES.TO, omit=[u'name'])
         result = self._run_mail_cron_job()
         self.assertEqual(result[0].headers[u'To'], [u'smith@example.com'])
 

@@ -29,24 +29,24 @@ class MailTestCaseMixin(TestCase):
 
 
     def _call_with_defaults(self, func, kwargs, defaults):
-        omit = kwargs.pop(u'_omit', [])
+        omit = kwargs.pop(u'omit', [])
         defaults.update(kwargs)
         for key in omit:
             defaults.pop(key, None)
         return func(**defaults)
 
     def _create_attachment(self, **kwargs):
-        content = kwargs.pop(u'content', u'content')
+        content = kwargs.pop(u'content', u'Default Testing Content')
         return self._call_with_defaults(Attachment.objects.create, kwargs, {
-            u'file': ContentFile(content, name=u'overriden'),
-            u'name': u'filename.txt',
+            u'file': ContentFile(content, name=u'overriden-file-name.bin'),
+            u'name': u'default_testing_filename.txt',
             u'content_type': u'text/plain',
             })
 
     def _create_recipient(self, **kwargs):
         return self._call_with_defaults(Recipient.objects.create, kwargs, {
-            u'name': u'Agent Cobbler',
-            u'mail': u'cobbler@example.com',
+            u'name': u'Default Testing Name',
+            u'mail': u'default_testing_mail@example.com',
             u'type': Recipient.TYPES.TO,
             u'status': Recipient.STATUSES.INBOUND,
             u'status_details': u'',
@@ -57,11 +57,11 @@ class MailTestCaseMixin(TestCase):
         return self._call_with_defaults(Message.objects.create, kwargs, {
             u'type': Message.TYPES.INBOUND,
             u'processed': utc_now(),
-            u'from_name': u'Agent Smith',
-            u'from_mail': u'smith@example.com',
-            u'received_for': u'cobbler@example.com',
-            u'subject': u'Subject',
-            u'text': u'Text content',
-            u'html': u'<p>HTML content</p>',
-            u'headers': {'X-Something': 'Value'},
+            u'from_name': u'Default Testing From Name',
+            u'from_mail': u'default_testing_from_mail@example.com',
+            u'received_for': u'default_testing_for_mail@example.com',
+            u'subject': u'Default Testing Subject',
+            u'text': u'Default Testing Text Content',
+            u'html': u'<p>Default Testing HTML Content</p>',
+            u'headers': {'X-Default-Testing-Extra-Header': 'Default Testing Value'},
             })

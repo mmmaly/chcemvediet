@@ -43,8 +43,8 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
         overrides = {
                 u'EMAIL_OUTBOUND_TRANSPORT': u'poleno.mail.transports.mandrill.MandrillTransport',
                 u'EMAIL_INBOUND_TRANSPORT': None,
-                u'MANDRILL_API_KEY': u'test_api_key',
-                u'MANDRILL_API_URL': u'https://testhost/api'
+                u'MANDRILL_API_KEY': u'default_testing_api_key',
+                u'MANDRILL_API_URL': u'https://defaulttestinghost/api'
                 }
         overrides.update(override_settings)
 
@@ -108,7 +108,7 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(requests[0].data[u'message'][u'subject'], u'Testing subject')
 
     def test_message_with_mising_subject(self):
-        msg = self._create_message(_omit=[u'subject'])
+        msg = self._create_message(omit=[u'subject'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertEqual(requests[0].data[u'message'][u'subject'], u'')
@@ -128,28 +128,28 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(requests[0].data[u'message'][u'from_email'], u'smith@example.com')
 
     def test_message_with_missing_from_name(self):
-        msg = self._create_message(from_mail=u'smith@example.com', _omit=[u'from_name'])
+        msg = self._create_message(from_mail=u'smith@example.com', omit=[u'from_name'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertNotIn(u'from_name', requests[0].data[u'message'])
         self.assertEqual(requests[0].data[u'message'][u'from_email'], u'smith@example.com')
 
     def test_message_with_missing_both_from_name_and_from_mail(self):
-        msg = self._create_message(_omit=[u'from_name', u'from_mail'])
+        msg = self._create_message(omit=[u'from_name', u'from_mail'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertNotIn(u'from_name', requests[0].data[u'message'])
         self.assertEqual(requests[0].data[u'message'][u'from_email'], u'')
 
     def test_message_with_text_body_only(self):
-        msg = self._create_message(text=u'Text content', _omit=[u'html'])
+        msg = self._create_message(text=u'Text content', omit=[u'html'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertEqual(requests[0].data[u'message'][u'text'], u'Text content')
         self.assertNotIn(u'html', requests[0].data[u'message'])
 
     def test_message_with_html_body_only(self):
-        msg = self._create_message(html=u'<p>HTML content</p>', _omit=[u'text'])
+        msg = self._create_message(html=u'<p>HTML content</p>', omit=[u'text'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertNotIn(u'text', requests[0].data[u'message'])
@@ -163,7 +163,7 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(requests[0].data[u'message'][u'html'], u'<p>HTML content</p>')
 
     def test_message_with_neither_text_nor_html_body(self):
-        msg = self._create_message(_omit=[u'text', u'html'])
+        msg = self._create_message(omit=[u'text', u'html'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertNotIn(u'text', requests[0].data[u'message'])
@@ -176,7 +176,7 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
         self.assertEqual(requests[0].data[u'message'][u'headers'], {u'X-Something': u'Value', u'X-Something-Else': u'Another Value'})
 
     def test_message_without_extra_headers(self):
-        msg = self._create_message(_omit=[u'headers'])
+        msg = self._create_message(omit=[u'headers'])
         rcpt = self._create_recipient(message=msg)
         requests = self._run_mail_cron_job()
         self.assertNotIn(u'headers', requests[0].data[u'message'])
@@ -184,11 +184,11 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
     def test_message_to_cc_and_bcc_recipients(self):
         msg = self._create_message()
         to1 = self._create_recipient(message=msg, mail=u'to1@a.com', type=Recipient.TYPES.TO, name=u'To1')
-        to2 = self._create_recipient(message=msg, mail=u'to2@a.com', type=Recipient.TYPES.TO, _omit=[u'name'])
+        to2 = self._create_recipient(message=msg, mail=u'to2@a.com', type=Recipient.TYPES.TO, omit=[u'name'])
         cc1 = self._create_recipient(message=msg, mail=u'cc1@a.com', type=Recipient.TYPES.CC, name=u'Cc1')
-        cc2 = self._create_recipient(message=msg, mail=u'cc2@a.com', type=Recipient.TYPES.CC, _omit=[u'name'])
+        cc2 = self._create_recipient(message=msg, mail=u'cc2@a.com', type=Recipient.TYPES.CC, omit=[u'name'])
         bcc1 = self._create_recipient(message=msg, mail=u'bcc1@a.com', type=Recipient.TYPES.BCC, name=u'Bcc1')
-        bcc2 = self._create_recipient(message=msg, mail=u'bcc2@a.com', type=Recipient.TYPES.BCC, _omit=[u'name'])
+        bcc2 = self._create_recipient(message=msg, mail=u'bcc2@a.com', type=Recipient.TYPES.BCC, omit=[u'name'])
         requests = self._run_mail_cron_job()
         self.assertItemsEqual(requests[0].data[u'message'][u'to'], [
             {u'type': u'to', u'email': u'to1@a.com', u'name': u'To1'},

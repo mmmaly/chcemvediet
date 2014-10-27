@@ -17,10 +17,10 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
         alternatives = kwargs.pop(u'alternatives', None)
         constructor = EmailMessage if alternatives is None else EmailMultiAlternatives
         mail = self._call_with_defaults(constructor, kwargs, {
-            u'subject': u'Subject',
-            u'body': u'content',
-            u'from_email': 'from@example.com',
-            u'to': [u'to@example.com'],
+            u'subject': u'Default Testing Subject',
+            u'body': u'Default Testing Content',
+            u'from_email': 'default_testing_from@example.com',
+            u'to': [u'default_testing_to@example.com'],
             })
         if content_subtype is not None:
             mail.content_subtype = content_subtype
@@ -58,7 +58,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
 
     def test_message_with_default_from_email_if_ommited(self):
         with self.settings(DEFAULT_FROM_EMAIL=u'Default <default@example.com>'):
-            mail = self._send_email(_omit=[u'from_email'])
+            mail = self._send_email(omit=[u'from_email'])
         self.assertEqual(mail.instance.from_name, u'Default')
         self.assertEqual(mail.instance.from_mail, u'default@example.com')
 

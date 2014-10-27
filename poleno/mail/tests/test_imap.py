@@ -25,13 +25,13 @@ class ImapTransportTest(MailTestCaseMixin, TestCase):
         defaults = {
                 u'Content-Type': u'multipart/mixed; boundary="===============1111111111=="',
                 u'MIME-Version': u'1.0',
-                u'Subject': u'Subject',
-                u'From': u'Agent Smith <smith@example.com>',
-                u'To': u'"Smith, John" <smith@example.com>',
-                u'Cc': u'Cc Recipient1 <cc1@a.com>, Cc Recipient2 <cc2@a.com>',
+                u'Subject': u'Default Testing Subject',
+                u'From': u'Default Testing From <default_testing_from@example.com>',
+                u'To': u'Default Testing To <default_testing_to@example.com>',
+                u'Cc': u'Default Testing Cc <default_testing_cc@a.com>',
                 u'Date': u'Sat, 25 Oct 2014 22:32:52 -0000',
                 u'Message-ID': u'<20141025223252.10450.74538@testhost>',
-                u'X-Something': u'Value',
+                u'X-Default-Testing-Extra-Header': u'Default Testing Value',
                 }
         defaults.update(headers)
         for name in omit:
@@ -44,7 +44,7 @@ class ImapTransportTest(MailTestCaseMixin, TestCase):
                     Content-Type: text/plain; charset="utf-8"
                     Content-Transfer-Encoding: 7bit
 
-                    Text content
+                    Default Testing Text Content
                     --===============1111111111==--""")
         return u'%s\n\n%s' % (headers, body)
 
@@ -53,10 +53,10 @@ class ImapTransportTest(MailTestCaseMixin, TestCase):
                 u'EMAIL_OUTBOUND_TRANSPORT': None,
                 u'EMAIL_INBOUND_TRANSPORT': u'poleno.mail.transports.imap.ImapTransport',
                 u'IMAP_SSL': False,
-                u'IMAP_HOST': u'testhost.com',
+                u'IMAP_HOST': u'defaulttestinghost',
                 u'IMAP_PORT': 1234,
-                u'IMAP_USERNAME': u'testusername',
-                u'IMAP_PASSWORD': u'secret',
+                u'IMAP_USERNAME': u'defaulttestingusername',
+                u'IMAP_PASSWORD': u'defaulttestingsecret',
                 }
         overrides.update(override_settings)
 
