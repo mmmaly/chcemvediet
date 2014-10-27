@@ -21,7 +21,7 @@ from ..views import upload, download
 
 class AttachmentViewsTest(TestCase):
     u"""
-    Tests ``...``
+    Tests ``upload()`` and ``download()`` views.
     """
     def upload_view(request):
         user = User.objects.first()

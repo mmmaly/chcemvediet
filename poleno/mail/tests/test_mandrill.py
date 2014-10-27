@@ -2,18 +2,22 @@
 # -*- coding: utf-8 -*-
 import json
 import mock
+import contextlib
 
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, HttpResponseBadRequest
 from django.test import TestCase
 
 from poleno.utils.misc import Bunch, collect_stdout
-from poleno.utils.test import override_signals
+from poleno.utils.test import override_signals, SecureClient
 
 from . import MailTestCaseMixin
 from ..models import Message, Recipient
 from ..cron import mail as mail_cron_job
 from ..signals import message_sent, message_received
+from ..transports.mandrill.signals import webhook_event
 
 class MandrillTransportTest(MailTestCaseMixin, TestCase):
     u"""
@@ -284,3 +288,151 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
             rcpt = Recipient.objects.get(pk=rcpt.pk)
             self.assertEqual(rcpt.remote_id, u'remote-%s' % rcpt.pk)
             self.assertEqual(rcpt.status, statuses[i%len(statuses)][1])
+
+class WebhookViewTest(MailTestCaseMixin, TestCase):
+    u"""
+    Tests ``webhook()`` view.
+    """
+
+    client_class = SecureClient
+    urls = u'poleno.mail.transports.mandrill.urls'
+
+    @contextlib.contextmanager
+    def _overrides(self, delete_settings=(), **override_settings):
+        overrides = {
+                u'MANDRILL_WEBHOOK_SECRET': u'default_testing_secret',
+                u'MANDRILL_WEBHOOK_SECRET_NAME': u'default_testing_secret_name',
+                u'MANDRILL_WEBHOOK_KEYS': [u'default_testing_api_key'],
+                u'MANDRILL_WEBHOOK_URL': u'https://defaulttestinghost/',
+                }
+        overrides.update(override_settings)
+
+        with self.settings(**overrides):
+            for name in delete_settings:
+                delattr(settings, name)
+            with override_signals(webhook_event):
+                yield
+
+    def _webhook_url(self, secret_name=u'default_testing_secret_name', secret=u'default_testing_secret'):
+        return u'%s?%s=%s' % (reverse(u'webhook'), secret_name, secret)
+
+    def _check_response(self, response, klass=HttpResponse, status_code=200, content=None):
+        self.assertEqual(type(response), klass)
+        self.assertEqual(response.status_code, status_code)
+        if content is not None:
+            self.assertEqual(response.content, content)
+
+
+    def test_get_method_not_allowed(self):
+        with self._overrides():
+            response = self.client.get(self._webhook_url(), secure=True)
+        self._check_response(response, HttpResponseNotAllowed, 405)
+        self.assertEqual(response[u'Allow'], u'HEAD, POST')
+
+    def test_head_method_allowed(self):
+        with self._overrides():
+            response = self.client.head(self._webhook_url(), secure=True)
+        self._check_response(response)
+
+    def test_post_method_allowed_and_needs_signature(self):
+        with self._overrides():
+            response = self.client.post(self._webhook_url(), secure=True)
+        self._check_response(response, HttpResponseForbidden, 403, u'X-Mandrill-Signature not set')
+
+    def test_non_secure_requests_forbidden(self):
+        with self._overrides():
+            response = self.client.head(self._webhook_url(), secure=False)
+        self._check_response(response, HttpResponseForbidden, 403)
+
+    def test_undefined_webhook_secret_raises_exception(self):
+        with self._overrides(delete_settings=[u'MANDRILL_WEBHOOK_SECRET']):
+            with self.assertRaisesMessage(ImproperlyConfigured, u'Setting MANDRILL_WEBHOOK_SECRET is not set.'):
+                self.client.head(self._webhook_url(), secure=True)
+
+    def test_webhook_secret_with_custom_name_matches(self):
+        with self._overrides(MANDRILL_WEBHOOK_SECRET_NAME=u'custom_name', MANDRILL_WEBHOOK_SECRET=u'value'):
+            response = self.client.head(self._webhook_url(u'custom_name', u'value'), secure=True)
+        self._check_response(response)
+
+    def test_webhook_secret_with_default_name_matches(self):
+        with self._overrides(MANDRILL_WEBHOOK_SECRET=u'value', delete_settings=[u'MANDRILL_WEBHOOK_SECRET_NAME']):
+            response = self.client.head(self._webhook_url(u'secret', u'value'), secure=True)
+        self._check_response(response)
+
+    def test_webhook_secret_with_custom_name_does_not_match(self):
+        with self._overrides(MANDRILL_WEBHOOK_SECRET_NAME=u'custom_name', MANDRILL_WEBHOOK_SECRET=u'value'):
+            response = self.client.head(self._webhook_url(u'custom_name', u'wrong_value'), secure=True)
+        self._check_response(response, HttpResponseForbidden, 403)
+
+    def test_webhook_secret_with_default_name_does_not_match(self):
+        with self._overrides(MANDRILL_WEBHOOK_SECRET=u'value', delete_settings=[u'MANDRILL_WEBHOOK_SECRET_NAME']):
+            response = self.client.head(self._webhook_url(u'secret', u'wrong_value'), secure=True)
+        self._check_response(response, HttpResponseForbidden, 403)
+
+    def test_undefined_webhook_url_raises_exception_for_post_request(self):
+        with self._overrides(delete_settings=[u'MANDRILL_WEBHOOK_URL']):
+            with self.assertRaisesMessage(ImproperlyConfigured, u'Setting MANDRILL_WEBHOOK_URL is not set.'):
+                response = self.client.post(self._webhook_url(), secure=True)
+
+    def test_undefined_webhook_url_does_not_raise_exception_for_head_request(self):
+        with self._overrides(delete_settings=[u'MANDRILL_WEBHOOK_URL']):
+            response = self.client.head(self._webhook_url(), secure=True)
+        self._check_response(response)
+
+    def test_undefined_webhook_keys_raises_exception_for_post_request(self):
+        with self._overrides(delete_settings=[u'MANDRILL_WEBHOOK_KEYS']):
+            with self.assertRaisesMessage(ImproperlyConfigured, u'Setting MANDRILL_WEBHOOK_KEYS is not set.'):
+                response = self.client.post(self._webhook_url(), secure=True)
+
+    def test_undefined_webhook_keys_does_not_raise_exception_for_head_request(self):
+        with self._overrides(delete_settings=[u'MANDRILL_WEBHOOK_KEYS']):
+            response = self.client.head(self._webhook_url(), secure=True)
+        self._check_response(response)
+
+    def test_post_request_with_missing_signature_forbidden(self):
+        with self._overrides():
+            response = self.client.post(self._webhook_url(), secure=True)
+        self._check_response(response, HttpResponseForbidden, 403, u'X-Mandrill-Signature not set')
+
+    def test_post_request_with_invalid_signature_forbidden(self):
+        with self._overrides():
+            response = self.client.post(self._webhook_url(), secure=True, HTTP_X_MANDRILL_SIGNATURE=u'invalid')
+        self._check_response(response, HttpResponseForbidden, 403, u'Signature does not match')
+
+    def test_post_request_with_valid_signature(self):
+        with self._overrides(MANDRILL_WEBHOOK_URL=u'https://testhost/', MANDRILL_WEBHOOK_KEYS=[u'testkey']):
+            response = self.client.post(self._webhook_url(), secure=True,
+                    data={u'mandrill_events': json.dumps([])},
+                    HTTP_X_MANDRILL_SIGNATURE=u'mOvq6ELcRGPELc0BwAFZn/PLZQA=')
+        self._check_response(response)
+
+    def test_post_request_with_missing_data_returns_bad_request(self):
+        with self._overrides(MANDRILL_WEBHOOK_URL=u'https://testhost/', MANDRILL_WEBHOOK_KEYS=[u'testkey']):
+            response = self.client.post(self._webhook_url(), secure=True,
+                    HTTP_X_MANDRILL_SIGNATURE=u'UkKakpnkvjXLMRLs1kVknNgKXpk=')
+        self._check_response(response, HttpResponseBadRequest, 400, u'Request syntax error')
+
+    def test_post_request_with_invalid_data_returns_bad_request(self):
+        with self._overrides(MANDRILL_WEBHOOK_URL=u'https://testhost/', MANDRILL_WEBHOOK_KEYS=[u'testkey']):
+            response = self.client.post(self._webhook_url(), secure=True,
+                    data={u'mandrill_events': u'invalid'},
+                    HTTP_X_MANDRILL_SIGNATURE=u'Cu4i92MszJnwAhrkRXirRhGBb1o=')
+        self._check_response(response, HttpResponseBadRequest, 400, u'Request syntax error')
+
+    def test_post_request_with_valid_data_emits_webhook_events(self):
+        with self._overrides(MANDRILL_WEBHOOK_URL=u'https://testhost/', MANDRILL_WEBHOOK_KEYS=[u'testkey']):
+            receiver = mock.Mock()
+            webhook_event.connect(receiver)
+            response = self.client.post(self._webhook_url(), secure=True,
+                    data={u'mandrill_events': json.dumps([
+                        {u'event': u'deferral', u'_id': u'remote-1'},
+                        {u'event': u'soft_bounce', u'_id': u'remote-2'},
+                        {u'event': u'click', u'_id': u'remote-3'},
+                        ])},
+                    HTTP_X_MANDRILL_SIGNATURE=u'e/e0y1qBZghx4pyHFFoRrtgqmWg=')
+        self._check_response(response)
+        self.assertItemsEqual(receiver.mock_calls, [
+            mock.call(signal=webhook_event, data={u'_id': u'remote-1', u'event': u'deferral'}, event_type=u'deferral', sender=None),
+            mock.call(signal=webhook_event, data={u'_id': u'remote-2', u'event': u'soft_bounce'}, event_type=u'soft_bounce', sender=None),
+            mock.call(signal=webhook_event, data={u'_id': u'remote-3', u'event': u'click'}, event_type=u'click', sender=None),
+            ])

@@ -27,15 +27,15 @@ def webhook(request):
 
     if not secret:
         raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_SECRET is not set.')
-    if not webhook_url:
-        raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_URL is not set.')
-    if not webhook_keys and request.method == u'POST':
-        raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_KEYS is not set.')
-
     if request.GET.get(secret_name) != secret:
         return HttpResponseForbidden(u'Secret does not match')
 
     if request.method == u'POST':
+        if not webhook_url:
+            raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_URL is not set.')
+        if not webhook_keys:
+            raise ImproperlyConfigured(u'Setting MANDRILL_WEBHOOK_KEYS is not set.')
+
         signature = request.META.get(u'HTTP_X_MANDRILL_SIGNATURE', None)
         if not signature:
             return HttpResponseForbidden(u'X-Mandrill-Signature not set')
@@ -56,7 +56,7 @@ def webhook(request):
 
         try:
             data = json.loads(request.POST.get(u'mandrill_events'))
-        except TypeError:
+        except (TypeError, ValueError):
             return HttpResponseBadRequest(u'Request syntax error')
         for event in data:
             webhook_event.send(sender=None, event_type=event['event'], data=event)
