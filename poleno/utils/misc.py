@@ -96,11 +96,11 @@ def collect_stdout():
         return 'printed: "%s"' % collect.stdout
     """
     orig_stdout = sys.stdout
-    sys.stdout = StringIO()
+    new_stdout = sys.stdout = StringIO()
     res = Bunch(stdout=None)
     try:
         yield res
     finally:
-        sys.stdout.seek(0)
-        res.stdout = sys.stdout.read()
+        new_stdout.seek(0)
+        res.stdout = new_stdout.read()
         sys.stdout = orig_stdout

@@ -311,7 +311,7 @@ class TimewarpTest(TestCase):
         time.sleep(0.1)
         after = datetime.datetime.now()
         elapsed = (after-before).total_seconds()
-        self.assertAlmostEqual(elapsed, 0.0001, places=5)
+        self.assertAlmostEqual(elapsed, 0.0001, delta=0.0001)
 
     def test_jump_negative_speedup(self):
         u"""

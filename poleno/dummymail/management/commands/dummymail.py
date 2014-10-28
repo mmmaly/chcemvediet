@@ -99,8 +99,9 @@ class Command(NoArgsCommand):
         # NOTE: As of 2014-07-24, the bug is fixed in ``localmail`` trunk version, but there is no
         # fixed package on pypi, yet. (2014-09-09)
         addMessage_wrapped = localmail.inbox.MemoryIMAPMailbox.addMessage
-        def addMessage(self, msg_fp, flags=None, date=None):
-            date = date or formatdate()
+        def addMessage(self, msg_fp, flags=None, date=None): # pragma: no cover
+            if not date:
+                date = formatdate()
             addMessage_wrapped(self, msg_fp, flags, date)
         localmail.inbox.MemoryIMAPMailbox.addMessage = addMessage
 
@@ -117,4 +118,3 @@ class Command(NoArgsCommand):
                 time.sleep(1)
         except KeyboardInterrupt:
             pass
-
