@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 import mock
+import datetime
 import contextlib
 
 from django.core.urlresolvers import reverse
@@ -10,6 +11,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, HttpResponseBadRequest
 from django.test import TestCase
 
+from poleno.utils.date import utc_now
 from poleno.utils.misc import Bunch, collect_stdout
 from poleno.utils.test import override_signals, SecureClient
 
@@ -17,7 +19,7 @@ from . import MailTestCaseMixin
 from ..models import Message, Recipient
 from ..cron import mail as mail_cron_job
 from ..signals import message_sent, message_received
-from ..transports.mandrill.signals import webhook_event
+from ..transports.mandrill.signals import webhook_event, message_status_webhook_event, inbound_email_webhook_event
 
 class MandrillTransportTest(MailTestCaseMixin, TestCase):
     u"""
@@ -436,3 +438,253 @@ class WebhookViewTest(MailTestCaseMixin, TestCase):
             mock.call(signal=webhook_event, data={u'_id': u'remote-2', u'event': u'soft_bounce'}, event_type=u'soft_bounce', sender=None),
             mock.call(signal=webhook_event, data={u'_id': u'remote-3', u'event': u'click'}, event_type=u'click', sender=None),
             ])
+
+class MessageStatusWebhookEventTest(MailTestCaseMixin, TestCase):
+    u"""
+    Tests ``message_status_webhook_event()`` event receiver.
+    """
+
+    def _create_message(self, **kwargs):
+        kwargs.setdefault(u'type', Message.TYPES.OUTBOUND)
+        return super(MessageStatusWebhookEventTest, self)._create_message(**kwargs)
+
+    def _create_recipient(self, **kwargs):
+        kwargs.setdefault(u'status', Recipient.STATUSES.UNDEFINED)
+        return super(MessageStatusWebhookEventTest, self)._create_recipient(**kwargs)
+
+
+    def test_event_receiver_is_registered(self):
+        self.assertIn(message_status_webhook_event, webhook_event._live_receivers(sender=None))
+
+    def _test_event_type_changing_recipient_status(self, event_type, status):
+        msg = self._create_message()
+        rcpt = self._create_recipient(message=msg, remote_id=u'remote-1')
+        message_status_webhook_event(sender=None, event_type=event_type, data={u'_id': u'remote-1'})
+        rcpt = Recipient.objects.get(pk=rcpt.pk)
+        self.assertEqual(rcpt.status, status)
+        self.assertEqual(rcpt.status_details, event_type)
+
+    def test_event_type_deferral_changes_recipient_status_to_queued(self):
+        self._test_event_type_changing_recipient_status(u'deferral', Recipient.STATUSES.QUEUED)
+
+    def test_event_type_soft_bounce_changes_recipient_status_to_rejected(self):
+        self._test_event_type_changing_recipient_status(u'soft_bounce', Recipient.STATUSES.REJECTED)
+
+    def test_event_type_hard_bounce_changes_recipient_status_to_rejected(self):
+        self._test_event_type_changing_recipient_status(u'hard_bounce', Recipient.STATUSES.REJECTED)
+
+    def test_event_type_spam_changes_recipient_status_to_rejected(self):
+        self._test_event_type_changing_recipient_status(u'spam', Recipient.STATUSES.REJECTED)
+
+    def test_event_type_reject_changes_recipient_status_to_rejected(self):
+        self._test_event_type_changing_recipient_status(u'reject', Recipient.STATUSES.REJECTED)
+
+    def test_event_type_send_changes_recipient_status_to_sent(self):
+        self._test_event_type_changing_recipient_status(u'send', Recipient.STATUSES.SENT)
+
+    def test_event_type_open_changes_recipient_status_to_opened(self):
+        self._test_event_type_changing_recipient_status(u'open', Recipient.STATUSES.OPENED)
+
+    def test_event_type_click_changes_recipient_status_to_opened(self):
+        self._test_event_type_changing_recipient_status(u'click', Recipient.STATUSES.OPENED)
+
+    def test_event_type_inbound_does_nothing(self):
+        msg = self._create_message()
+        rcpt = self._create_recipient(message=msg, remote_id=u'remote-1', status=Recipient.STATUSES.UNDEFINED, status_details=u'details')
+        message_status_webhook_event(sender=None, event_type=u'inbound', data={u'_id': u'remote-1'})
+        rcpt = Recipient.objects.get(pk=rcpt.pk)
+        self.assertEqual(rcpt.status, Recipient.STATUSES.UNDEFINED)
+        self.assertEqual(rcpt.status_details, u'details')
+
+    def test_other_event_types_do_nothing(self):
+        msg = self._create_message()
+        rcpt = self._create_recipient(message=msg, remote_id=u'remote-1', status=Recipient.STATUSES.UNDEFINED, status_details=u'details')
+        message_status_webhook_event(sender=None, event_type=u'other', data={u'_id': u'remote-1'})
+        rcpt = Recipient.objects.get(pk=rcpt.pk)
+        self.assertEqual(rcpt.status, Recipient.STATUSES.UNDEFINED)
+        self.assertEqual(rcpt.status_details, u'details')
+
+    def test_remote_id_matching_multiple_recipients_does_nothing(self):
+        msg = self._create_message()
+        rcpt1 = self._create_recipient(message=msg, remote_id=u'remote-1', status=Recipient.STATUSES.UNDEFINED, status_details=u'details')
+        rcpt2 = self._create_recipient(message=msg, remote_id=u'remote-1', status=Recipient.STATUSES.UNDEFINED, status_details=u'details')
+        message_status_webhook_event(sender=None, event_type=u'deferral', data={u'_id': u'remote-1'})
+        rcpt1 = Recipient.objects.get(pk=rcpt1.pk)
+        rcpt2 = Recipient.objects.get(pk=rcpt2.pk)
+        self.assertEqual(rcpt1.status, Recipient.STATUSES.UNDEFINED)
+        self.assertEqual(rcpt2.status, Recipient.STATUSES.UNDEFINED)
+        self.assertEqual(rcpt1.status_details, u'details')
+        self.assertEqual(rcpt2.status_details, u'details')
+
+    def test_remote_id_matching_no_recipients_does_nothing(self):
+        msg = self._create_message()
+        rcpt = self._create_recipient(message=msg, remote_id=u'remote-1', status=Recipient.STATUSES.UNDEFINED, status_details=u'details')
+        message_status_webhook_event(sender=None, event_type=u'deferral', data={u'_id': u'remote-2'})
+        rcpt = Recipient.objects.get(pk=rcpt.pk)
+        self.assertEqual(rcpt.status, Recipient.STATUSES.UNDEFINED)
+        self.assertEqual(rcpt.status_details, u'details')
+
+class InboundEmailWebhookEvent(MailTestCaseMixin, TestCase):
+    u"""
+    Tests ``inbound_email_webhook_event()`` event receiver.
+    """
+
+    def _call_webhook(self, event_type=u'inbound', data=None, omit=(), **kwargs):
+        defaults = {
+                u'from_name': u'Default Testing From Name',
+                u'from_email': u'default_testing_from_mail@example.com',
+                u'email': u'default_testing_for_mail@example.com',
+                u'subject': u'Default Testing Subject',
+                u'text': u'Default Testing Text Content',
+                u'html': u'<p>Default Testing HTML Content</p>',
+                u'to': [(u'Default Testing To Name', u'default_testing_to@example.com')],
+                u'cc': [(u'Default Testing Cc Name', u'default_testing_cc@example.com')],
+                u'bcc': [(u'Default Testing Bcc Name', u'default_testing_bcc@example.com')],
+                }
+        defaults.update(kwargs)
+        for key in omit:
+            if key in defaults:
+                del defaults[key]
+        if data is None:
+            data = {u'msg': defaults}
+        with override_signals(message_received):
+            receiver = mock.Mock()
+            message_received.connect(receiver)
+            inbound_email_webhook_event(sender=None, event_type=event_type, data=data)
+
+        msgs = [call[1][u'message'] for call in receiver.call_args_list]
+        return msgs
+
+
+    def test_event_receiver_is_registered(self):
+        self.assertIn(inbound_email_webhook_event, webhook_event._live_receivers(sender=None))
+
+    def test_event_type_inbound_saves_message_and_emits_signal(self):
+        msgs = self._call_webhook()
+        self.assertEqual(len(msgs), 1)
+        self.assertEqual(type(msgs[0]), Message)
+        self.assertIsNotNone(msgs[0].pk)
+        self.assertEqual(msgs[0].type, Message.TYPES.INBOUND)
+
+    def test_event_type_inbound_without_msg_in_data_does_nothig(self):
+        msgs = self._call_webhook(data={})
+        self.assertEqual(msgs, [])
+
+    def test_other_event_types_do_nothing(self):
+        for event_type in [u'deferral', u'soft_bounce', u'hard_bounce', u'spam', u'reject',
+                u'send', u'open', u'click', u'other']:
+            msgs = self._call_webhook(event_type=u'deferral')
+            self.assertEqual(msgs, [])
+
+    def test_message_processed(self):
+        msgs = self._call_webhook()
+        self.assertAlmostEqual(msgs[0].processed, utc_now(), delta=datetime.timedelta(seconds=10))
+
+    def test_message_subject(self):
+        msgs = self._call_webhook(subject=u'Subject')
+        self.assertEqual(msgs[0].subject, u'Subject')
+
+    def test_message_with_data_missing_subject(self):
+        msgs = self._call_webhook(omit=[u'subject'])
+        self.assertEqual(msgs[0].subject, u'')
+
+    def test_message_from_name(self):
+        msgs = self._call_webhook(from_name=u'John Smith')
+        self.assertEqual(msgs[0].from_name, u'John Smith')
+
+    def test_message_with_data_missing_from_name(self):
+        msgs = self._call_webhook(omit=[u'from_name'])
+        self.assertEqual(msgs[0].from_name, u'')
+
+    def test_message_from_mail(self):
+        msgs = self._call_webhook(from_email=u'smith@example.com')
+        self.assertEqual(msgs[0].from_mail, u'smith@example.com')
+
+    def test_message_with_data_missing_from_mail(self):
+        msgs = self._call_webhook(omit=[u'from_email'])
+        self.assertEqual(msgs[0].from_mail, u'')
+
+    def test_message_received_for(self):
+        msgs = self._call_webhook(email=u'agentcobbler@example.com')
+        self.assertEqual(msgs[0].received_for, u'agentcobbler@example.com')
+
+    def test_message_with_data_missing_received_for(self):
+        msgs = self._call_webhook(omit=[u'email'])
+        self.assertEqual(msgs[0].received_for, u'')
+
+    def test_message_headers(self):
+        msgs = self._call_webhook(headers=((u'X-Extra', u'Value'), (u'X-Another', u'Another Value')))
+        self.assertEqual(msgs[0].headers, ((u'X-Extra', u'Value'), (u'X-Another', u'Another Value')))
+
+    def test_message_with_data_missing_headers(self):
+        msgs = self._call_webhook(omit=[u'headers'])
+        self.assertEqual(msgs[0].headers, ())
+
+    def test_message_text_body(self):
+        msgs = self._call_webhook(text=u'Text Content')
+        self.assertEqual(msgs[0].text, u'Text Content')
+
+    def test_message_with_data_missing_text_body(self):
+        msgs = self._call_webhook(omit=[u'text'])
+        self.assertEqual(msgs[0].text, u'')
+
+    def test_message_html_body(self):
+        msgs = self._call_webhook(html=u'<p>HTML Content</p>')
+        self.assertEqual(msgs[0].html, u'<p>HTML Content</p>')
+
+    def test_message_with_data_missing_html_body(self):
+        msgs = self._call_webhook(omit=[u'html'])
+        self.assertEqual(msgs[0].html, u'')
+
+    def test_message_to_cc_and_bcc_recipients_with_and_without_name(self):
+        msgs = self._call_webhook(
+                to=[(u'to1@a.com', u'To1'), (u'to2@a.com', None)],
+                cc=[(u'cc1@a.com', u'Cc1'), (u'cc2@a.com', None)],
+                bcc=[(u'bcc1@a.com', u'Bcc1'), (u'bcc2@a.com', None)],
+                )
+        self.assertEqual(msgs[0].to_formatted, u'To1 <to1@a.com>, to2@a.com')
+        self.assertEqual(msgs[0].cc_formatted, u'Cc1 <cc1@a.com>, cc2@a.com')
+        self.assertEqual(msgs[0].bcc_formatted, u'Bcc1 <bcc1@a.com>, bcc2@a.com')
+
+    def test_message_recipient_without_mail_is_skipped(self):
+        msgs = self._call_webhook(to=[(u'to1@a.com', u'To1'), (u'', u'To2'), (u'to3@a.com', None), (None, None)])
+        self.assertEqual(msgs[0].to_formatted, u'To1 <to1@a.com>, to3@a.com')
+
+    def test_message_recipients_status_is_inbound(self):
+        msgs = self._call_webhook(to=[(u'to1@a.com', u'To1')], cc=[(u'cc1@a.com', u'Cc1')], bcc=[(u'bcc1@a.com', u'Bcc1')])
+        for rcpt in msgs[0].recipient_set.all():
+            self.assertEqual(rcpt.status, Recipient.STATUSES.INBOUND)
+
+    def test_message_attachments(self):
+        msgs = self._call_webhook(attachments={
+            u'file.txt': {u'name': u'file.txt', u'type': u'text/plain', u'content': u'Text Content'},
+            u'file.html': {u'name': u'file.html', u'type': u'text/html', u'content': u'<p>HTML Content</p>'},
+            # attachments with missing ``name``, ``type`` or ``content``
+            u'aaa': {u'type': u'text/plain', u'content': u'Text Content'},
+            u'bbb': {u'name': u'file.txt', u'content': u'Text Content'},
+            u'ccc': {u'name': u'file.txt', u'type': u'text/plain'},
+            })
+        attchs = [(a.name, a.content_type, a.content) for a in msgs[0].attachment_set.all()]
+        self.assertItemsEqual(attchs, [
+            (u'file.txt', u'text/plain', u'Text Content'),
+            (u'file.html', u'text/html', u'<p>HTML Content</p>'),
+            # missing ``name``, ``type`` and ``content`` are replaced with empty strings
+            (u'', u'text/plain', u'Text Content'),
+            (u'file.txt', u'', u'Text Content'),
+            (u'file.txt', u'text/plain', u''),
+            ])
+
+    def test_message_attachment_base64_encoded(self):
+        msgs = self._call_webhook(attachments={
+            u'file.txt': {u'name': u'file.txt', u'type': u'text/plain', u'content': u'Y29udGVudA==', u'base64': True},
+            })
+        attchs = [(a.name, a.content_type, a.content) for a in msgs[0].attachment_set.all()]
+        self.assertItemsEqual(attchs, [
+            (u'file.txt', u'text/plain', u'content'),
+            ])
+
+    def test_message_attachment_base64_encoded_with_invalid_content(self):
+        with self.assertRaisesMessage(TypeError, u'Incorrect padding'):
+            self._call_webhook(attachments={
+                u'file.txt': {u'name': u'file.txt', u'type': u'text/plain', u'content': u'invalid', u'base64': True},
+                })

@@ -38,7 +38,7 @@ def message_status_webhook_event(sender, event_type, data, **kwargs):
 def inbound_email_webhook_event(sender, event_type, data, **kwargs):
     if event_type == u'inbound' and u'msg' in data:
         msg = data[u'msg']
-        headers = msg.get(u'headers', u'')
+        headers = msg.get(u'headers', ())
         from_name = msg.get(u'from_name', u'')
         from_mail = msg.get(u'from_email', u'')
         received_for = msg.get(u'email', u'')
@@ -54,7 +54,7 @@ def inbound_email_webhook_event(sender, event_type, data, **kwargs):
                 if rcp_mail:
                     recipients.append(Recipient(
                             name=rcp_name or u'',
-                            mail=rcp_mail or u'',
+                            mail=rcp_mail,
                             type=type,
                             status=Recipient.STATUSES.INBOUND,
                             ))
