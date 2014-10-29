@@ -12,6 +12,9 @@ class Profile(models.Model):
     city = models.CharField(max_length=255, verbose_name=_(u'City'))
     zip = models.CharField(max_length=10, verbose_name=_(u'Zip'))
 
+    def __unicode__(self):
+        return u'%s' % self.pk
+
 @receiver(post_save, sender=User)
 def create_profile_on_user_post_save(sender, **kwargs):
     user = kwargs[u'instance']
