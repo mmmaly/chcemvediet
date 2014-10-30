@@ -11,11 +11,11 @@ from django.db.models import Q
 
 from poleno.utils.http import JsonResponse
 
-from . import models
+from .models import Obligee
 
 @require_http_methods([u'HEAD', u'GET'])
 def index(request):
-    obligee_list = models.Obligee.objects.pending()
+    obligee_list = Obligee.objects.pending()
     paginator = Paginator(obligee_list, 25)
 
     page = request.GET.get(u'page')
@@ -37,7 +37,7 @@ def autocomplete(request):
     words = (w for w in re.split(r'[^a-z0-9]+', term) if w)
 
     query = reduce(lambda p, q: p & q, (Q(slug__contains=u'-'+w) for w in words), Q())
-    obligee_list = models.Obligee.objects.pending().filter(query).order_by(u'name')[:10]
+    obligee_list = Obligee.objects.pending().filter(query)[:10]
 
     data = [{
         u'label': obligee.name,

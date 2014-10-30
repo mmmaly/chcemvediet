@@ -8,8 +8,9 @@ from . import AccountsTestCaseMixin
 
 class SignupFormTest(AccountsTestCaseMixin, TestCase):
     u"""
-    Tests ``allauth`` ``account_signup`` view using ``SignupForm`` form. Does not check
-    ``account_signup`` functionality, only checks functionality added by ``SignupForm``.
+    Tests ``allauth`` ``account_signup`` view using ``SignupForm`` form registered as
+    "account_signup". Does not check ``account_signup`` functionality, only checks functionality
+    added by ``SignupForm``.
     """
 
     def _create_account_signup_data(self, **kwargs):

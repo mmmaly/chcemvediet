@@ -5,29 +5,19 @@ from django.test import TestCase
 
 from poleno.utils.history import register_history
 
-class RegisterHistoryTestModelCommon(models.Model):
+@register_history
+class RegisterHistoryTestModel(models.Model):
     name = models.CharField(blank=True, max_length=255)
 
     class Meta:
         app_label = u'utils'
-        abstract = True
-
-    # We are not going to mock the user, so we disable tracking of which user made the changes:
-    @property
-    def _history_user(self):
-        return None
-
-    @_history_user.setter
-    def _history_user(self, value):
-        pass # pragma: no cover
-
-@register_history
-class RegisterHistoryTestModel(RegisterHistoryTestModelCommon):
-    pass
 
 @register_history(manager_name=u'hist')
-class RegisterHistoryWithArgumentsTestModel(RegisterHistoryTestModelCommon):
-    pass
+class RegisterHistoryWithArgumentsTestModel(models.Model):
+    name = models.CharField(blank=True, max_length=255)
+
+    class Meta:
+        app_label = u'utils'
 
 
 class RegisterHistoryTest(TestCase):

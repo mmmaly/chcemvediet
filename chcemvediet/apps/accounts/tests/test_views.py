@@ -10,7 +10,7 @@ from . import AccountsTestCaseMixin
 
 class ProfileViewTest(AccountsTestCaseMixin, TestCase):
     u"""
-    Tests ``profile()`` view.
+    Tests ``profile()`` view registered as "accounts:profile".
     """
 
     def setUp(self):

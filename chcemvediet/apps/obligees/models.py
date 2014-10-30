@@ -1,5 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import re
+from unidecode import unidecode
 from email.utils import formataddr, getaddresses
 
 from django.db import models
@@ -14,17 +16,18 @@ class ObligeeQuerySet(QuerySet):
 
 @register_history
 class Obligee(models.Model):
-    # May NOT be empty
+    # Should NOT be empty
     name = models.CharField(max_length=255, verbose_name=_(u'Name'))
     street = models.CharField(max_length=255, verbose_name=_(u'Street'))
     city = models.CharField(max_length=255, verbose_name=_(u'City'))
     zip = models.CharField(max_length=10, verbose_name=_(u'Zip'))
 
-    # May NOT be empty
+    # Should NOT be empty
     emails = models.CharField(max_length=1024, verbose_name=_(u'E-mail'),
             help_text=_(u"""Comma separated list of e-mails. E.g. 'John <john@example.com>, another@example.com, "Smith, Jane" <jane.smith@example.com>'"""))
 
-    # May NOT be empty
+    # Should NOT be empty; Read-only; Automaticly computed in save() whenever creating a new object
+    # or changing its name. Any user defined value is replaced.
     slug = models.SlugField(max_length=255, verbose_name=_(u'Slug'))
 
     # May NOT be NULL
@@ -41,17 +44,25 @@ class Obligee(models.Model):
     objects = ObligeeQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'name']
+        ordering = [u'name', u'pk']
 
     # May NOT be empty; Read-only
     @property
     def emails_parsed(self):
-        return getaddresses([self.emails])
+        return ((n, a) for n, a in getaddresses([self.emails]) if a)
 
     # May NOT be empty; Read-only
     @property
     def emails_formatted(self):
-        return (formataddr(a) for a in getaddresses([self.emails]))
+        return (formataddr((n, a)) for n, a in getaddresses([self.emails]) if a)
+
+    def save(self, *args, **kwargs):
+        # Generate or update slug from name
+        name = unidecode(self.name).lower()
+        words = (w for w in re.split(r'[^a-z0-9]+', name) if w)
+        self.slug = u'-%s-' % u'-'.join(words)
+
+        super(Obligee, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s' % self.pk
