@@ -49,7 +49,6 @@ class AttachmentsFieldTest(TestCase):
         self.user2 = User.objects.create_user(u'smith', u'agent@smith.com', u'big_secret')
         self.attachment2 = Attachment.objects.create(generic_object=self.user2, file=ContentFile(u'content2'), name=u'filename2', content_type=u'text/plain')
 
-
     def tearDown(self):
         self.settings_override.disable()
         self.tempdir.cleanup()
@@ -71,10 +70,28 @@ class AttachmentsFieldTest(TestCase):
                 </span>
                 """, rendered)
 
+    def test_new_form_with_initial_value_as_list_of_attachment_instances(self):
+        attachments = [self.attachment1a, self.attachment1b]
+        form = self.AttachmentsFieldForm(initial={u'attachments': attachments}, attached_to=self.user1)
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",%s,%s,">' % (self.attachment1a.pk, self.attachment1b.pk), rendered)
+        self.assertInHTML(u'<a href="/download/%s/">filename1a</a>' % self.attachment1a.pk, rendered)
+        self.assertInHTML(u'<a href="/download/%s/">filename1b</a>' % self.attachment1b.pk, rendered)
+
+    def test_new_form_with_initial_value_as_comma_separated_string_of_attachment_pks(self):
+        attachments = u'%s,%s' % (self.attachment1a.pk, self.attachment1b.pk)
+        form = self.AttachmentsFieldForm(initial={u'attachments': attachments}, attached_to=self.user1)
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",%s,">' % attachments, rendered)
+        self.assertInHTML(u'<a href="/download/%s/">filename1a</a>' % self.attachment1a.pk, rendered)
+        self.assertInHTML(u'<a href="/download/%s/">filename1b</a>' % self.attachment1b.pk, rendered)
+
     def test_submitted_form_with_no_attachments_but_required(self):
         attachments = u',,,,'
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=self.user1)
         self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'attachments'], [u'This field is required.'])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",,">', rendered)
@@ -83,6 +100,8 @@ class AttachmentsFieldTest(TestCase):
         attachments = u',,,,'
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=self.user1, required=False)
         self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data[u'attachments'], [])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<li>This field is required.</li>', rendered, count=0)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",,">', rendered)
@@ -91,6 +110,8 @@ class AttachmentsFieldTest(TestCase):
         attachments = u',,%s,,' % self.attachment1a.pk
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=self.user1)
         self.assertTrue(form.is_valid())
+        self.assertEqual(list(form.cleaned_data[u'attachments']), [self.attachment1a])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<li>This field is required.</li>', rendered, count=0)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",%s,">' % self.attachment1a.pk, rendered)
@@ -100,6 +121,8 @@ class AttachmentsFieldTest(TestCase):
         attachments = u'%s,%s,%s' % (self.attachment1a.pk, self.attachment1b.pk, self.attachment1c.pk)
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=self.user1)
         self.assertTrue(form.is_valid())
+        self.assertEqual(list(form.cleaned_data[u'attachments']), [self.attachment1a, self.attachment1b, self.attachment1c])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",%s,">' % attachments, rendered)
         self.assertInHTML(u'<a href="/download/%s/">filename1a</a>' % self.attachment1a.pk, rendered)
@@ -110,6 +133,8 @@ class AttachmentsFieldTest(TestCase):
         attachments = u',,%s,,' % self.attachment2.pk
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=self.user1)
         self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'attachments'], [u'Invalid attachments.'])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<ul class="errorlist"><li>Invalid attachments.</li></ul>', rendered)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",,">', rendered)
@@ -118,6 +143,8 @@ class AttachmentsFieldTest(TestCase):
         attachments = u'invalid'
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=self.user1)
         self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'attachments'], [u'Invalid attachments.'])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<ul class="errorlist"><li>Invalid attachments.</li></ul>', rendered)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",,">', rendered)
@@ -126,6 +153,8 @@ class AttachmentsFieldTest(TestCase):
         attachments = u'%s,%s' % (self.attachment1b.pk, self.attachment2.pk)
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=[self.user1, self.user2])
         self.assertTrue(form.is_valid())
+        self.assertEqual(list(form.cleaned_data[u'attachments']), [self.attachment1b, self.attachment2])
+
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",%s,">' % attachments, rendered)
         self.assertInHTML(u'<a href="/download/%s/">filename1b</a>' % self.attachment1b.pk, rendered)

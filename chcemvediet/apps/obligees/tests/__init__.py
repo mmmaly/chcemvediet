@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from django.template import Context, Template
 from django.test import TestCase
 
 from ..models import Obligee
@@ -19,3 +20,7 @@ class ObligeesTestCaseMixin(TestCase):
         for key in omit:
             del defaults[key]
         return Obligee.objects.create(**defaults)
+
+    def _render(self, template, **context):
+        return Template(template).render(Context(context))
+

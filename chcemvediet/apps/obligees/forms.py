@@ -72,6 +72,5 @@ class ObligeeAutocompleteField(forms.Field):
     def widget_attrs(self, widget):
         attrs = super(ObligeeAutocompleteField, self).widget_attrs(widget)
         attrs[u'data-autocomplete-url'] = reverse_lazy(u'obligees:autocomplete')
-        attrs[u'class'] = u'autocomplete %s' % attrs[u'class'] if u'class' in attrs else u'autocomplete'
+        attrs[u'class'] = u'autocomplete %s' % widget.attrs[u'class'] if u'class' in widget.attrs else u'autocomplete'
         return attrs
-
