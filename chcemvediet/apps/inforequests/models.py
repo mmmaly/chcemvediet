@@ -4,7 +4,7 @@ from email.utils import formataddr
 
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
-from django.db import models, IntegrityError
+from django.db import models, IntegrityError, transaction
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -61,18 +61,19 @@ class Inforequest(models.Model):
     # May be empty; m2m through InforequestEmail
     email_set = models.ManyToManyField(u'mail.Message', through=u'InforequestEmail', verbose_name=_(u'E-mail Set'))
 
-    # Frozen Applicant contact information at the time the Inforequest was submitted, in case that
-    # the contact information changes in the future. The information is mandatory and automaticly
-    # frozen in save() when creating a new object.
+    # Should NOT be empty; Read-only; Frozen Applicant contact information at the time the
+    # Inforequest was submitted, in case that the contact information changes in the future. The
+    # information is automaticly frozen in save() when creating a new instance.
     applicant_name = models.CharField(max_length=255, verbose_name=_(u'Applicant Name'))
     applicant_street = models.CharField(max_length=255, verbose_name=_(u'Applicant Street'))
     applicant_city = models.CharField(max_length=255, verbose_name=_(u'Applicant City'))
     applicant_zip = models.CharField(max_length=10, verbose_name=_(u'Applicant Zip'))
 
-    # May NOT be empty; Unique; Automaticly computed in save() when creating a new object.
+    # May NOT be empty; Unique; Read-only; Automaticly computed in save() when creating a new
+    # instance.
     unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail'))
 
-    # May NOT be NULL; Automaticly computed by Django when creating a new object.
+    # May NOT be NULL; Automaticly computed by Django when creating a new instance.
     submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
     # May NOT be NULL
@@ -187,27 +188,32 @@ class Inforequest(models.Model):
         if self.pk is None: # Creating a new object
 
             # Freeze applicant contact information
-            if self.applicant:
-                self.applicant_name = self.applicant.get_full_name()
-                self.applicant_street = self.applicant.profile.street
-                self.applicant_city = self.applicant.profile.city
-                self.applicant_zip = self.applicant.profile.zip
+            assert self.applicant is not None, u'%s.applicant is mandatory' % self.__class__.__name__
+            assert self.applicant_name == u'', u'%s.applicant_name is read-only' % self.__class__.__name__
+            assert self.applicant_street == u'', u'%s.applicant_street is read-only' % self.__class__.__name__
+            assert self.applicant_city == u'', u'%s.applicant_city is read-only' % self.__class__.__name__
+            assert self.applicant_zip == u'', u'%s.applicant_zip is read-only' % self.__class__.__name__
+            self.applicant_name = self.applicant.get_full_name()
+            self.applicant_street = self.applicant.profile.street
+            self.applicant_city = self.applicant.profile.city
+            self.applicant_zip = self.applicant.profile.zip
 
             # Generate unique random email
-            if not self.unique_email:
-                length = 4
-                while True:
-                    token = random_readable_string(length)
-                    self.unique_email = settings.INFOREQUEST_UNIQUE_EMAIL.format(token=token)
-                    try:
+            assert self.unique_email == u'', u'%s.unique_email is read-only' % self.__class__.__name__
+            length = 4
+            while True:
+                token = random_readable_string(length)
+                self.unique_email = settings.INFOREQUEST_UNIQUE_EMAIL.format(token=token)
+                try:
+                    with transaction.atomic():
                         super(Inforequest, self).save(*args, **kwargs)
-                    except IntegrityError:
-                        if length > 10:
-                            self.unique_email = None
-                            raise # Give up
-                        length += 1
-                        continue
-                    return # object is already saved
+                except IntegrityError:
+                    length += 1
+                    if length > 10:
+                        self.unique_email = None
+                        raise # Give up
+                    continue
+                return # object is already saved
 
         super(Inforequest, self).save(*args, **kwargs)
 

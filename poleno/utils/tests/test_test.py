@@ -5,9 +5,10 @@ import mock
 from django.http import HttpResponse
 from django.dispatch.dispatcher import Signal
 from django.conf.urls import patterns, url
+from django.contrib.auth.models import User
 from django.test import TestCase
 
-from ..test import override_signals, SecureClient
+from ..test import override_signals, created_instances, SecureClient
 
 class OverrideSignalsTest(TestCase):
     u"""
@@ -73,6 +74,24 @@ class OverrideSignalsTest(TestCase):
             mock.call(message=u'overriden', sender=None, signal=signal1),
             mock.call(message=u'overriden', sender=None, signal=signal2),
             ])
+
+class CreatedInstancesTest(TestCase):
+    u"""
+    Tests ``created_instances()`` context manager.
+    """
+
+    def test_created_instances(self):
+        user1 = User.objects.create_user(u'john')
+        with created_instances(User.objects) as query_set:
+            user2 = User.objects.create_user(u'george')
+            user3 = User.objects.create_user(u'sam')
+        self.assertItemsEqual(query_set.all(), [user2, user3])
+
+    def test_created_instances_with_no_created_instances(self):
+        user1 = User.objects.create_user(u'john')
+        with created_instances(User.objects) as query_set:
+            pass
+        self.assertItemsEqual(query_set.all(), [])
 
 class SecureClientTest(TestCase):
     u"""

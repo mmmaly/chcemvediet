@@ -31,6 +31,20 @@ def override_signals(*signals):
             signal.receivers = original_receivers[signal]
             signal.sender_receivers_cache.clear()
 
+@contextlib.contextmanager
+def created_instances(query_set):
+    u"""
+    Returns model instances created inside a context block.
+
+    Example:
+        User.objects.create('john')
+        with created_instances(User.objects) as query_set:
+            User.objects.create('george')
+        new_user = query_set.get()
+    """
+    original_pk = (o.pk for o in query_set.all())
+    yield query_set.exclude(pk__in=original_pk)
+
 class SecureClient(Client):
     u"""
     In Django 1.7 you can test HTTPS requests by providing ``secure=True`` argument for testing
