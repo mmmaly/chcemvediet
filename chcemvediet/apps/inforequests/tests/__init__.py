@@ -10,7 +10,7 @@ from django.test.utils import override_settings
 
 from poleno.timewarp import timewarp
 from poleno.attachments.models import Attachment
-from poleno.mail.models import Message
+from poleno.mail.models import Message, Recipient
 from poleno.utils.date import utc_now, local_today
 from chcemvediet.apps.obligees.models import Obligee
 
@@ -89,6 +89,16 @@ class InforequestsTestCaseMixin(TestCase):
                 u'content_type': u'text/plain',
                 })
 
+    def _create_recipient(self, **kwargs):
+        return self._call_with_defaults(Recipient.objects.create, kwargs, {
+            u'name': u'Default Testing Name',
+            u'mail': u'default_testing_mail@example.com',
+            u'type': Recipient.TYPES.TO,
+            u'status': Recipient.STATUSES.INBOUND,
+            u'status_details': u'',
+            u'remote_id': u'',
+            })
+
     def _create_message(self, **kwargs):
         return self._call_with_defaults(Message.objects.create, kwargs, {
             u'type': Message.TYPES.OUTBOUND,
@@ -115,96 +125,114 @@ class InforequestsTestCaseMixin(TestCase):
                 })
 
     def _create_inforequest_scenario__action(self, inforequest, paperwork, args):
-        if isinstance(args, basestring):
-            args = [args]
-
         action_name = args.pop(0)
-        if action_name == u'request':
-            action_type = Action.TYPES.REQUEST
-            mail_type = Message.TYPES.OUTBOUND
-        elif action_name == u'clarification_response':
-            action_type = Action.TYPES.CLARIFICATION_RESPONSE
-            mail_type = Message.TYPES.OUTBOUND
-        elif action_name == u'appeal':
-            action_type = Action.TYPES.APPEAL
-            mail_type = None
-        elif action_name == u'confirmation':
-            action_type = Action.TYPES.CONFIRMATION
-            mail_type = Message.TYPES.INBOUND
-        elif action_name == u'extension':
-            action_type = Action.TYPES.EXTENSION
-            mail_type = Message.TYPES.INBOUND
-        elif action_name == u'advancement':
-            action_type = Action.TYPES.ADVANCEMENT
-            mail_type = Message.TYPES.INBOUND
-        elif action_name == u'clarification_request':
-            action_type = Action.TYPES.CLARIFICATION_REQUEST
-            mail_type = Message.TYPES.INBOUND
-        elif action_name == u'disclosure':
-            action_type = Action.TYPES.DISCLOSURE
-            mail_type = Message.TYPES.INBOUND
-        elif action_name == u'refusal':
-            action_type = Action.TYPES.REFUSAL
-            mail_type = Message.TYPES.INBOUND
-        elif action_name == u'affirmation':
-            action_type = Action.TYPES.AFFIRMATION
-            mail_type = None
-        elif action_name == u'reversion':
-            action_type = Action.TYPES.REVERSION
-            mail_type = None
-        elif action_name == u'remandment':
-            action_type = Action.TYPES.REMANDMENT
-            mail_type = None
-        elif action_name == u'advanced_request':
-            action_type = Action.TYPES.ADVANCED_REQUEST
-            mail_type = None
-        elif action_name == u'expiration':
-            action_type = Action.TYPES.EXPIRATION
-            mail_type = None
-        else:
-            assert action_name == u'appeal_expiration'
-            action_type = Action.TYPES.APPEAL_EXPIRATION
-            mail_type = None
+        action_type = getattr(Action.TYPES, action_name.upper())
+        action_extra = args.pop() if args and isinstance(args[0], dict) else {}
+        action_args = {u'paperwork': paperwork, u'type': action_type}
 
-        email = None
-        action_means = args.pop(0) if args and args[0] in [u'email', u'smail', u'default'] else u'default'
-        if action_means == u'email' or (action_means == u'default' and mail_type is not None):
-            assert mail_type is not None
-            email = self._create_message(type=mail_type)
-            rel_type = InforequestEmail.TYPES.OBLIGEE_ACTION if mail_type == Message.TYPES.INBOUND else InforequestEmail.TYPES.APPLICANT_ACTION
-            rel = InforequestEmail.objects.create(inforequest=inforequest, email=email, type=rel_type)
-        action = self._create_action(paperwork=paperwork, email=email, type=action_type)
+        if action_type in Action.APPLICANT_ACTION_TYPES or action_type in Action.OBLIGEE_ACTION_TYPES:
+            if action_type in Action.APPLICANT_ACTION_TYPES:
+                default_mail_type = Message.TYPES.OUTBOUND
+                default_rel_type = InforequestEmail.TYPES.APPLICANT_ACTION
+                default_from_name, default_from_mail = u'', inforequest.applicant.email
+                default_recipients = [{u'name': n, u'mail': a} for n, a in paperwork.obligee.emails_parsed]
+                default_recipient_status = Recipient.STATUSES.SENT
+            else:
+                default_mail_type = Message.TYPES.INBOUND
+                default_rel_type = InforequestEmail.TYPES.OBLIGEE_ACTION
+                default_from_name, default_from_mail = next(paperwork.obligee.emails_parsed)
+                default_recipients = [{u'mail': inforequest.applicant.email}]
+                default_recipient_status = Recipient.STATUSES.INBOUND
+
+            email_args = {
+                    u'inforequest': inforequest,
+                    u'reltype': default_rel_type,
+                    u'type': default_mail_type,
+                    u'from_name': default_from_name,
+                    u'from_mail': default_from_mail,
+                    }
+            email_args.update(action_extra.pop(u'email', {}))
+            email, _ = self._create_inforequest_email(**email_args)
+            action_args[u'email'] = email
+
+            for recipient_extra in action_extra.pop(u'recipients', default_recipients):
+                recipient_args = {
+                        u'message': email,
+                        u'type': Recipient.TYPES.TO,
+                        u'status': default_recipient_status,
+                        }
+                recipient_args.update(recipient_extra)
+                self._create_recipient(**recipient_args)
+
+        action_args.update(action_extra)
+        action = self._create_action(**action_args)
 
         if action_type == Action.TYPES.ADVANCEMENT:
             paperworks = []
             for arg in args or [[]]:
                 obligee = arg.pop(0) if arg and isinstance(arg[0], Obligee) else self.obligee1
-                paperworks.append(self._create_inforequest_scenario__paperwork(inforequest, obligee, action, [u'advanced_request'] + arg))
+                paperworks.append(self._create_inforequest_scenario__paperwork(inforequest, obligee, action, u'advanced_request', arg))
             return action, paperworks
 
         assert len(args) == 0
         return action
 
-    def _create_inforequest_scenario__paperwork(self, inforequest, obligee, advanced_by, args):
+    def _create_inforequest_scenario__paperwork(self, inforequest, obligee, advanced_by, base_action, args):
         paperwork = Paperwork.objects.create(inforequest=inforequest, obligee=obligee, advanced_by=advanced_by)
+        args = [[a] if isinstance(a, basestring) else list(a) for a in args]
+        if not args or args[0][0] != base_action:
+            args[0:0] = [[base_action]]
         actions = []
         for arg in args:
             actions.append(self._create_inforequest_scenario__action(inforequest, paperwork, arg))
         return paperwork, actions
 
     def _create_inforequest_scenario(self, *args):
+        u"""
+        Synopsis:
+            _create_inforequest_scenario([User], [Obligee], [<action>], ...)
+
+        Where:
+            <action> ::= <action_name> | tuple(<action_name>, [<action_extra>], [<advancement>], ...)
+
+            <action_name>  ::= "request", "confirmation", ...
+            <action_extra> ::= dict([email=<email>], [recipients=<recipients>], <action_args>)
+            <email>        ::= dict(<email_args>)
+            <recipients>   ::= list(<recipient>, ...)
+            <recipient>    ::= dict(<recipient_args>)
+
+            <advancement>  ::= list([Obligee], [<action>], ...)
+
+        Where <action_args> are arguments for ``_create_action()``, <email_args> arguments for
+        ``_create_message()`` and <recipient_args> arguments for ``_create_recipient()``.
+        """
         args = list(args)
         applicant = args.pop(0) if args and isinstance(args[0], User) else self.user1
         obligee = args.pop(0) if args and isinstance(args[0], Obligee) else self.obligee1
         inforequest = Inforequest.objects.create(applicant=applicant)
-        paperwork, actions = self._create_inforequest_scenario__paperwork(inforequest, obligee, None, [u'request'] + args)
+        paperwork, actions = self._create_inforequest_scenario__paperwork(inforequest, obligee, None, u'request', args)
         return inforequest, paperwork, actions
 
     def _create_inforequest_email(self, **kwargs):
-        inforequest = kwargs.pop(u'inforequest')
-        reltype = kwargs.pop(u'reltype', InforequestEmail.TYPES.UNDECIDED)
-        email = self._create_message(**kwargs)
-        rel = InforequestEmail.objects.create(inforequest=inforequest, email=email, type=reltype)
+        create = object()
+
+        relargs = {
+                u'inforequest': kwargs.pop(u'inforequest', None),
+                u'type': kwargs.pop(u'reltype', InforequestEmail.TYPES.UNDECIDED),
+                u'email': kwargs.pop(u'email', create),
+                }
+
+        omit = kwargs.get(u'omit', [])
+        for kwarg, relarg in ((u'inforequest', u'inforequest'), (u'reltype', u'type'), (u'email', u'email')):
+            if kwarg in omit:
+                relargs.pop(relarg)
+                omit.remove(kwarg)
+
+        if relargs.get(u'email') is create:
+            relargs[u'email'] = self._create_message(**kwargs)
+
+        rel = InforequestEmail.objects.create(**relargs)
+        email = relargs.get(u'email')
         return email, rel
 
     def _create_paperwork(self, **kwargs):

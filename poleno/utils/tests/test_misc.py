@@ -6,7 +6,7 @@ import random
 
 from django.test import TestCase
 
-from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze
+from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze, flatten
 from poleno.utils.misc import guess_extension, collect_stdout
 
 class BunchTest(TestCase):
@@ -142,6 +142,35 @@ class SqueezeTest(TestCase):
                 for i in range(1000))
         res = squeeze(sample)
         self.assertRegexpMatches(res, r'^(\S+ )*\S+$')
+
+class FlattenTest(TestCase):
+    u"""
+    Tests ``flatten()`` function.
+    """
+
+    def test_list_with_tuples(self):
+        result = flatten([1, 2, (3, 4, (), (5,), [[[[6]]]],)])
+        self.assertEqual(list(result), [1, 2, 3, 4, 5, 6])
+
+    def test_list_with_strings(self):
+        result = flatten([u'one', [u'two', u'three']])
+        self.assertEqual(list(result), ['one', 'two', 'three'])
+
+    def test_empty_list(self):
+        result = flatten([])
+        self.assertEqual(list(result), [])
+
+    def test_list_with_multiple_references_to_the_same_list(self):
+        a = [1, 2, 3]
+        b = [a, a, a]
+        result = flatten(b)
+        self.assertEqual(list(result), [1, 2, 3, 1, 2, 3, 1, 2, 3])
+
+    def test_list_with_circular_references_raises_error(self):
+        a = [1, 2, 3]
+        a[0] = a
+        with self.assertRaisesMessage(RuntimeError, u'maximum recursion depth exceeded'):
+            list(flatten(a))
 
 class GuessExtensionTest(TestCase):
     u"""

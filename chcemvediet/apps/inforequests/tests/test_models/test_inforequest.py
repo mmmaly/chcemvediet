@@ -28,7 +28,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertEqual(inforequest.applicant, self.user1)
 
     def test_applicant_field_may_not_be_null(self):
-        with self.assertRaisesMessage(User.DoesNotExist, u'Inforequest has no applicant.'):
+        with self.assertRaisesMessage(AssertionError, u'Inforequest.applicant is mandatory'):
             self._create_inforequest(omit=[u'applicant'])
 
     def test_email_set_relation(self):
@@ -162,13 +162,13 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertIsNone(inforequest.last_undecided_email_reminder)
 
     def test_paperwork_set_relation(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, paperwork, _ = self._create_inforequest_scenario()
         result = inforequest.paperwork_set.all()
         self.assertItemsEqual(result, [paperwork])
 
     def test_paperwork_set_relation_with_advancement(self):
         inforequest, paperwork1, actions = self._create_inforequest_scenario(u'advancement')
-        request, (advancement, ((paperwork2, advanced_request),)) = actions
+        _, (_, ((paperwork2, _),)) = actions
         result = inforequest.paperwork_set.all()
         self.assertItemsEqual(result, [paperwork1, paperwork2])
 
@@ -178,14 +178,14 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(result, [])
 
     def test_actiondraft_set_relation(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         draft1 = self._create_action_draft(inforequest=inforequest, type=ActionDraft.TYPES.CONFIRMATION)
         draft2 = self._create_action_draft(inforequest=inforequest, type=ActionDraft.TYPES.EXTENSION)
         result = inforequest.actiondraft_set.all()
         self.assertItemsEqual(result, [draft1, draft2])
 
     def test_actiondraft_set_relation_empty_by_default(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         result = inforequest.actiondraft_set.all()
         self.assertItemsEqual(result, [])
 
@@ -222,12 +222,12 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertEqual(list(result), sorted(inforequests, key=lambda ir: (ir.submission_date, ir.pk)))
 
     def test_paperwork_property(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, paperwork, _ = self._create_inforequest_scenario()
         self.assertEqual(inforequest.paperwork, paperwork)
 
     def test_paperwork_property_with_advancement(self):
         inforequest, paperwork1, actions = self._create_inforequest_scenario(u'advancement')
-        request, (advancement, ((paperwork2, advanced_request),)) = actions
+        _, (_, ((paperwork2, _),)) = actions
         self.assertEqual(inforequest.paperwork, paperwork1)
 
     def test_paperwork_property_raises_exception_if_inforequest_has_no_paperwork(self):
@@ -240,7 +240,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         Tests ``undecided_set`` property and properties ``has_undecided_email``,
         ``oldest_undecided_email`` and ``newest_undecided_email`` using it.
         """
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         email1, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
         email2, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
         email3, rel3 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
@@ -253,7 +253,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(inforequest.undecided_set.all(), [email3, email6])
 
     def test_undecided_set_property_and_friends_with_no_undecided_emails(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         email1, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
         email2, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
         email4, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
@@ -263,8 +263,8 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertIsNone(inforequest.newest_undecided_email)
         self.assertItemsEqual(inforequest.undecided_set.all(), [])
 
-    def test_can_add_xxx_properties_with_one_paperwork(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+    def test_can_add_x_properties_with_one_paperwork(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
         # ``paperwork`` last action is ``REQUEST``
         self.assertFalse(inforequest.can_add_clarification_response)
         self.assertFalse(inforequest.can_add_appeal)
@@ -278,18 +278,18 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_reversion)
         self.assertFalse(inforequest.can_add_remandment)
 
-    def test_can_add_xxx_properties_with_multiple_paperworks(self):
+    def test_can_add_x_properties_with_multiple_paperworks(self):
         u"""
         Checks that the set of actions allowed for an inforequest is the union of sets of actions
         allowed for its paperworks.
         """
-        inforequest, paperwork, actions = self._create_inforequest_scenario([u'advancement',
+        inforequest, _, _ = self._create_inforequest_scenario((u'advancement',
             [u'refusal', u'appeal', u'remandment'],
             [u'clarification_request'],
-            [[u'advancement',
+            [(u'advancement',
                 [u'confirmation'],
-                ]],
-            ])
+                )],
+            ))
         # The main paperwork last action is ``ADVANCEMENT``. The main paperwork adcanced to other
         # three paperworks ending with ``EXTENSION`` and ``CLARIFICATION_REQUEST`` and
         # ``ADVANCEMENT``, respectivelly. The latter advancement advanced to yet another paperwork
@@ -307,7 +307,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_remandment)
 
     def test_can_add_action_method(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         # ``paperwork`` last action is ``REQUEST``
         self.assertFalse(inforequest.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE))
         self.assertFalse(inforequest.can_add_action(Action.TYPES.APPEAL))
@@ -322,7 +322,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_action(Action.TYPES.REMANDMENT))
 
     def test_can_add_action_method_raises_exception_for_request_and_implicit_actions(self):
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_request'"):
             inforequest.can_add_action(Action.TYPES.REQUEST)
         with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_advanced_request'"):
@@ -337,7 +337,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         Checks the notification sender and recipients and that it's queued to be sent.
         """
         user = self._create_user(first_name=u'John', last_name=u'Smith', email=u'smith@example.com')
-        inforequest, paperwork, actions = self._create_inforequest_scenario(user)
+        inforequest, _, _ = self._create_inforequest_scenario(user)
         email, rel = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
 
         with self.settings(DEFAULT_FROM_EMAIL=u'info@example.com'):
@@ -356,7 +356,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         Checks that the sent notification contains received email subject and content and a link to
         to decide the received email.
         """
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         email, rel = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED,
                 subject=u'Received email subject', text=u'Received email text content.')
 
@@ -374,7 +374,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         Checks thet the sent notification contains a link to to decide the received email. Also
         checks that ``last_undecided_email_reminder`` field is updated.
         """
-        inforequest, paperwork, actions = self._create_inforequest_scenario()
+        inforequest, _, _ = self._create_inforequest_scenario()
         email, rel = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
 
         with created_instances(Message.objects) as query_set:
@@ -391,7 +391,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         its ``last_deadline_reminder`` field is updated.
         """
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:22:00'))
-        inforequest, paperwork, (request,) = self._create_inforequest_scenario()
+        inforequest, _, (request,) = self._create_inforequest_scenario()
 
         timewarp.jump(local_datetime_from_local(u'2010-11-08 11:22:00'))
         with created_instances(Message.objects) as query_set:
@@ -408,7 +408,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         its ``last_deadline_reminder`` field is updated.
         """
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:22:00'))
-        inforequest, paperwork, (request, clarification_request) = self._create_inforequest_scenario(u'clarification_request')
+        inforequest, _, (_, clarification_request) = self._create_inforequest_scenario(u'clarification_request')
 
         timewarp.jump(local_datetime_from_local(u'2010-11-08 11:22:00'))
         with created_instances(Message.objects) as query_set:

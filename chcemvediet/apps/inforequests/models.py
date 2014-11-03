@@ -188,7 +188,7 @@ class Inforequest(models.Model):
         if self.pk is None: # Creating a new object
 
             # Freeze applicant contact information
-            assert self.applicant is not None, u'%s.applicant is mandatory' % self.__class__.__name__
+            assert self.applicant_id is not None, u'%s.applicant is mandatory' % self.__class__.__name__
             assert self.applicant_name == u'', u'%s.applicant_name is read-only' % self.__class__.__name__
             assert self.applicant_street == u'', u'%s.applicant_street is read-only' % self.__class__.__name__
             assert self.applicant_city == u'', u'%s.applicant_city is read-only' % self.__class__.__name__
@@ -420,8 +420,9 @@ class Paperwork(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
-            if self.obligee:
-                self.historicalobligee = self.obligee.history.first()
+            assert self.obligee_id is not None, u'%s.obligee is mandatory' % self.__class__.__name__
+            assert self.historicalobligee_id is None, u'%s.historicalobligee is read-only' % self.__class__.__name__
+            self.historicalobligee = self.obligee.history.first()
 
         super(Paperwork, self).save(*args, **kwargs)
 

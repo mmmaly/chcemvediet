@@ -5,6 +5,7 @@ import random
 import string
 import mimetypes
 import contextlib
+import collections
 from StringIO import StringIO
 
 class Bunch(object):
@@ -60,6 +61,22 @@ def squeeze(s):
         "   text   with\nspaces\n\n" -> "text with spaces"
     """
     return u' '.join(s.split())
+
+def flatten(l):
+    u"""
+    Recursively flattens list of lists of lists.
+
+    Example:
+       [] -> []
+       [1, 2, (3, 4, (), (5,), [[[[6]]]],)] -> [1, 2, 3, 4, 5, 6]
+       ['one', ['two', 'three']] -> ['one', 'two', 'three']
+    """
+    for el in l:
+        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+            for sub in flatten(el):
+                yield sub
+        else:
+            yield el
 
 def guess_extension(content_type, default=None):
     u"""

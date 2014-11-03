@@ -93,6 +93,12 @@ class CreatedInstancesTest(TestCase):
             pass
         self.assertItemsEqual(query_set.all(), [])
 
+    def test_created_instances_with_no_original_instances(self):
+        self.assertEqual(User.objects.count(), 0)
+        with created_instances(User.objects) as query_set:
+            user = User.objects.create_user(u'john')
+        self.assertItemsEqual(query_set.all(), [user])
+
 class SecureClientTest(TestCase):
     u"""
     Tests ``SecureClient`` test client class.
