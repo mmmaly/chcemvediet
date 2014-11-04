@@ -283,6 +283,29 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         result = action.advanced_to_set.all()
         self.assertItemsEqual(result, [])
 
+    def test_paperwork_action_set_backward_relation(self):
+        inforequest = self._create_inforequest()
+        paperwork = self._create_paperwork(inforequest=inforequest)
+        action1 = self._create_action(paperwork=paperwork)
+        action2 = self._create_action(paperwork=paperwork)
+        result = paperwork.action_set.all()
+        self.assertItemsEqual(result, [action1, action2])
+
+    def test_paperwork_action_set_backward_relation_empty_by_default(self):
+        inforequest = self._create_inforequest()
+        paperwork = self._create_paperwork(inforequest=inforequest)
+        result = paperwork.action_set.all()
+        self.assertItemsEqual(result, [])
+
+    def test_message_action_backward_relation(self):
+        _, paperwork1, (request,) = self._create_inforequest_scenario()
+        self.assertEqual(request.email.action, request)
+
+    def test_message_action_backward_relation_undefined_by_default(self):
+        email = self._create_message()
+        with self.assertRaisesMessage(Action.DoesNotExist, u'Message has no action.'):
+            email.action
+
     def test_default_ordering_by_effective_date_then_pk(self):
         dates = [
                 u'2014-10-04',

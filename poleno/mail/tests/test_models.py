@@ -19,15 +19,20 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         msg = self._create_message()
         self.assertIsNotNone(msg.pk)
 
-    def test_type_field_with_inbound(self):
-        msg = self._create_message(type=Message.TYPES.INBOUND)
-        self.assertEqual(msg.type, Message.TYPES.INBOUND)
-        self.assertEqual(msg.get_type_display(), u'Inbound')
+    def test_type_field(self):
+        tests = (
+                (Message.TYPES.INBOUND, u'Inbound'),
+                (Message.TYPES.OUTBOUND, u'Outbound'),
+                )
+        # Make sure we are testing all defined message types
+        tested_types = [a for a, _ in tests]
+        defined_types = Message.TYPES._inverse.keys()
+        self.assertItemsEqual(tested_types, defined_types)
 
-    def test_type_field_with_outbound(self):
-        msg = self._create_message(type=Message.TYPES.OUTBOUND)
-        self.assertEqual(msg.type, Message.TYPES.OUTBOUND)
-        self.assertEqual(msg.get_type_display(), u'Outbound')
+        for message_type, expected_display in tests:
+            msg = self._create_message(type=message_type)
+            self.assertEqual(msg.type, message_type)
+            self.assertEqual(msg.get_type_display(), expected_display)
 
     def test_type_field_may_not_be_ommited(self):
         with self.assertRaisesMessage(IntegrityError, u'mail_message.type may not be NULL'):
@@ -233,23 +238,22 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
         self.assertEqual(rcpt.name, u'')
         self.assertEqual(rcpt.mail, u'')
 
-    def test_type_field_with_to(self):
-        msg = self._create_message()
-        rcpt = self._create_recipient(message=msg, type=Recipient.TYPES.TO)
-        self.assertEqual(rcpt.type, Recipient.TYPES.TO)
-        self.assertEqual(rcpt.get_type_display(), u'To')
+    def test_type_field(self):
+        tests = (
+                (Recipient.TYPES.TO,  u'To'),
+                (Recipient.TYPES.CC,  u'Cc'),
+                (Recipient.TYPES.BCC, u'Bcc'),
+                )
+        # Make sure we are testing all defined recipient types
+        tested_types = [a for a, _ in tests]
+        defined_types = Recipient.TYPES._inverse.keys()
+        self.assertItemsEqual(tested_types, defined_types)
 
-    def test_type_field_with_cc(self):
         msg = self._create_message()
-        rcpt = self._create_recipient(message=msg, type=Recipient.TYPES.CC)
-        self.assertEqual(rcpt.type, Recipient.TYPES.CC)
-        self.assertEqual(rcpt.get_type_display(), u'Cc')
-
-    def test_type_field_with_bcc(self):
-        msg = self._create_message()
-        rcpt = self._create_recipient(message=msg, type=Recipient.TYPES.BCC)
-        self.assertEqual(rcpt.type, Recipient.TYPES.BCC)
-        self.assertEqual(rcpt.get_type_display(), u'Bcc')
+        for recipient_type, expected_display in tests:
+            rcpt = self._create_recipient(message=msg, type=recipient_type)
+            self.assertEqual(rcpt.type, recipient_type)
+            self.assertEqual(rcpt.get_type_display(), expected_display)
 
     def test_type_field_may_not_be_ommited(self):
         msg = self._create_message()
@@ -257,21 +261,26 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
             rcpt = self._create_recipient(message=msg, omit=['type'])
 
     def test_status_field_with_explicit_value(self):
-        statuses = (
-                (Recipient.STATUSES.INBOUND, u'Inbound'),
+        tests = (
+                (Recipient.STATUSES.INBOUND,   u'Inbound'),
                 (Recipient.STATUSES.UNDEFINED, u'Undefined'),
-                (Recipient.STATUSES.QUEUED, u'Queued'),
-                (Recipient.STATUSES.REJECTED, u'Rejected'),
-                (Recipient.STATUSES.INVALID, u'Invalid'),
-                (Recipient.STATUSES.SENT, u'Sent'),
+                (Recipient.STATUSES.QUEUED,    u'Queued'),
+                (Recipient.STATUSES.REJECTED,  u'Rejected'),
+                (Recipient.STATUSES.INVALID,   u'Invalid'),
+                (Recipient.STATUSES.SENT,      u'Sent'),
                 (Recipient.STATUSES.DELIVERED, u'Delivered'),
-                (Recipient.STATUSES.OPENED, u'Opened'),
+                (Recipient.STATUSES.OPENED,    u'Opened'),
                 )
-        for status, display in statuses:
-            msg = self._create_message()
-            rcpt = self._create_recipient(message=msg, status=status)
-            self.assertEqual(rcpt.status, status)
-            self.assertEqual(rcpt.get_status_display(), display)
+        # Make sure we are testing all defined recipient statuses
+        tested_statuses = [a for a, _ in tests]
+        defined_statuses = Recipient.STATUSES._inverse.keys()
+        self.assertItemsEqual(tested_statuses, defined_statuses)
+
+        msg = self._create_message()
+        for recipient_status, expected_display in tests:
+            rcpt = self._create_recipient(message=msg, status=recipient_status)
+            self.assertEqual(rcpt.status, recipient_status)
+            self.assertEqual(rcpt.get_status_display(), expected_display)
 
     def test_status_field_may_not_be_ommited(self):
         msg = self._create_message()
@@ -289,6 +298,18 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
         rcpt = self._create_recipient(message=msg, omit=[u'status_details', u'remote_id'])
         self.assertEqual(rcpt.status_details, u'')
         self.assertEqual(rcpt.remote_id, u'')
+
+    def test_message_recipient_set_backward_relation(self):
+        msg = self._create_message()
+        rcpt1 = self._create_recipient(message=msg)
+        rcpt2 = self._create_recipient(message=msg)
+        result = msg.recipient_set.all()
+        self.assertItemsEqual(result, [rcpt1, rcpt2])
+
+    def test_message_recipient_set_backward_relation_empty_by_default(self):
+        msg = self._create_message()
+        result = msg.recipient_set.all()
+        self.assertItemsEqual(result, [])
 
     def test_default_ordering_by_pk(self):
         msg = self._create_message()

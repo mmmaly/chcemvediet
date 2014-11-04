@@ -34,6 +34,14 @@ class InforequestDraft(models.Model):
     # May be empty
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
 
+    # Backward relations added to other models:
+    #
+    #  -- User.inforequestdraft_set
+    #     May be empty
+    #
+    #  -- Obligee.inforequestdraft_set
+    #     May be empty
+
     objects = InforequestDraftQuerySet.as_manager()
 
     class Meta:
@@ -82,7 +90,7 @@ class Inforequest(models.Model):
     # May be NULL; Used by ``cron.undecided_email_reminder``
     last_undecided_email_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Undecided Email Reminder'))
 
-    # Backward relation:
+    # Backward relations:
     #
     #  -- paperwork_set: by Paperwork.inforequest
     #     May NOT be empty
@@ -92,6 +100,14 @@ class Inforequest(models.Model):
     #
     #  -- inforequestemail_set: by InforequestEmail.inforequest
     #     May be empty
+
+    # Backward relations added to other models:
+    #
+    #  -- User.inforequest_set
+    #     May be empty
+    #
+    #  -- Message.inforequest_set
+    #     May be empty; Should NOT have more than one item
 
     objects = InforequestQuerySet.as_manager()
 
@@ -277,6 +293,12 @@ class InforequestEmail(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
 
+    # Backward relations added to other models:
+    #
+    #  -- Inforequest.inforequestemail_set
+    #
+    #  -- Message.inforequestemail_set
+
 class Paperwork(models.Model):
     # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
@@ -297,7 +319,22 @@ class Paperwork(models.Model):
     #  -- action_set: by Action.paperwork
     #     May NOT be empty; The first action of every main paperwork must be REQUEST and the first
     #     action of every advanced paperwork ADVANCED_REQUEST.
+    #
     #  -- actiondraft_set: by ActionDraft.paperwork
+    #     May be empty
+
+    # Backward relations added to other models:
+    #
+    #  -- Inforequest.paperwork_set
+    #     Should NOT be empty
+    #
+    #  -- Obligee.paperwork_set
+    #     May be empty
+    #
+    #  -- HistoricalObligee.paperwork_set
+    #     May be empty
+    #
+    #  -- Action.advanced_to_set
     #     May be empty
 
     objects = QuerySet.as_manager()
@@ -612,7 +649,7 @@ class Action(models.Model):
     # May be NULL
     extension = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline Extension'))
 
-    # May NOT be NULL for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be NULL otherwise
+    # NOT NULL for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; NULL otherwise
     DISCLOSURE_LEVELS = FieldChoices(
             (u'NONE', 1, _(u'No Disclosure at All')),
             (u'PARTIAL', 2, _(u'Partial Disclosure')),
@@ -620,7 +657,7 @@ class Action(models.Model):
             )
     disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
 
-    # May NOT be NULL for REFUSAL, AFFIRMATION; Must be None otherwise
+    # NOT NULL for REFUSAL, AFFIRMATION; NULL otherwise
     REFUSAL_REASONS = FieldChoices(
             (u'DOES_NOT_HAVE', 3, _(u'Does not Have Information')),
             (u'DOES_NOT_PROVIDE', 4, _(u'Does not Provide Information')),
@@ -641,6 +678,14 @@ class Action(models.Model):
     #
     #  -- advanced_to_set: by Paperwork.advanced_by
     #     May NOT be empty for ADVANCEMENT; Must be empty otherwise
+
+    # Backward relations added to other models:
+    #
+    #  -- Paperwork.action_set
+    #     Should NOT be empty
+    #
+    #  -- Message.action
+    #     May be undefined
 
     objects = ActionQuerySet.as_manager()
 
@@ -766,7 +811,7 @@ class ActionDraft(models.Model):
     # May be empty
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
 
-    # May NOT be NULL
+    # May be NULL
     effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))
 
     # May be NULL for EXTENSION; Must be NULL otherwise
@@ -782,6 +827,14 @@ class ActionDraft(models.Model):
 
     # May be empty for ADVANCEMENT; Must be empty otherwise
     obligee_set = models.ManyToManyField(u'obligees.Obligee', verbose_name=_(u'Obligee Set'))
+
+    # Backward relations added to other models:
+    #
+    #  -- Inforequest.actiondraft_set
+    #
+    #  -- Paperwork.actiondraft_set
+    #
+    #  -- Obligee.actiondraft_set
 
     objects = QuerySet.as_manager()
 

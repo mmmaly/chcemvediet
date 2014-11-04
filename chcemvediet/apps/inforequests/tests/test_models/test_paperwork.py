@@ -8,7 +8,7 @@ from django.test import TestCase
 from poleno.timewarp import timewarp
 from poleno.mail.models import Message, Recipient
 from poleno.utils.date import local_datetime_from_local, naive_date
-from poleno.utils.misc import flatten
+from poleno.utils.misc import flatten, Bunch
 from poleno.utils.test import created_instances
 from chcemvediet.apps.obligees.models import Obligee
 
@@ -116,6 +116,55 @@ class PaperworkTest(InforequestsTestCaseMixin, TestCase):
         result = paperwork.actiondraft_set.all()
         self.assertItemsEqual(result, [])
 
+    def test_inforequest_paperwork_set_backward_relation(self):
+        inforequest, paperwork1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (_, [(paperwork2, _)]) = actions
+        result = inforequest.paperwork_set.all()
+        self.assertItemsEqual(result, [paperwork1, paperwork2])
+
+    def test_inforequest_paperwork_set_backward_relation_empty_by_default(self):
+        inforequest = self._create_inforequest()
+        result = inforequest.paperwork_set.all()
+        self.assertItemsEqual(result, [])
+
+    def test_obligee_paperwork_set_backward_relation(self):
+        _, paperwork1, _ = self._create_inforequest_scenario(self.obligee1)
+        _, paperwork2, _ = self._create_inforequest_scenario(self.obligee1)
+        result = self.obligee1.paperwork_set.all()
+        self.assertItemsEqual(result, [paperwork1, paperwork2])
+
+    def test_obligee_paperwork_set_backward_relation_empty_by_default(self):
+        result = self.obligee1.paperwork_set.all()
+        self.assertItemsEqual(result, [])
+
+    def test_historicalobligee_paperwork_set_backward_relation(self):
+        historicalobligee1 = self.obligee1.history.first()
+        _, paperwork1, _ = self._create_inforequest_scenario(self.obligee1)
+        self.obligee1.name = u'Changed'
+        self.obligee1.save()
+        historicalobligee2 = self.obligee1.history.first()
+        _, paperwork2, _ = self._create_inforequest_scenario(self.obligee1)
+        result1 = historicalobligee1.paperwork_set.all()
+        result2 = historicalobligee2.paperwork_set.all()
+        self.assertItemsEqual(result1, [paperwork1])
+        self.assertItemsEqual(result2, [paperwork2])
+
+    def test_historicalobligee_paperwork_set_backward_relation_empty_by_default(self):
+        historicalobligee = self.obligee1.history.first()
+        result = historicalobligee.paperwork_set.all()
+        self.assertItemsEqual(result, [])
+
+    def test_action_advanced_to_set_backward_relation(self):
+        _, paperwork1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (advancement, [(paperwork2, _)]) = actions
+        result = advancement.advanced_to_set.all()
+        self.assertItemsEqual(result, [paperwork2])
+
+    def test_action_advanced_to_set_backward_relation_empty_by_default(self):
+        _, paperwork, (request,) = self._create_inforequest_scenario()
+        result = request.advanced_to_set.all()
+        self.assertItemsEqual(result, [])
+
     def test_default_ordering_by_historicalobligee_name_then_pk(self):
         # Several obligees with the same name and several paperworks with the same obligee, to
         # check secondary ordering.
@@ -153,13 +202,101 @@ class PaperworkTest(InforequestsTestCaseMixin, TestCase):
         paperwork = self._create_paperwork(inforequest=inforequest)
         self.assertIsNone(paperwork.last_action)
 
-    def _test_can_add_x_properties_aux(self, last_action_type, scenario, allowed, expired, branch=0):
-        timewarp.jump(local_datetime_from_local(u'2010-07-05 10:33:00'))
-        objs = self._create_inforequest_scenario(*scenario)
-        paperwork = [o for o in flatten(objs) if isinstance(o, Paperwork)][branch]
-        self.assertEqual(paperwork.last_action.type, last_action_type)
+    def test_can_add_x_properties(self):
+        tests = (
+                (Action.TYPES.REQUEST, Bunch(
+                    scenario=[],
+                    allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    )),
+                (Action.TYPES.CLARIFICATION_RESPONSE, Bunch(
+                    scenario=[u'clarification_request', u'clarification_response'],
+                    allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    )),
+                (Action.TYPES.APPEAL, Bunch(
+                    scenario=[u'expiration', u'appeal'],
+                    allowed=[u'affirmation', u'reversion', u'remandment'],
+                    expired=[u'affirmation', u'reversion', u'remandment'],
+                    )),
+                (Action.TYPES.CONFIRMATION, Bunch(
+                    scenario=[u'confirmation'],
+                    allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    )),
+                (Action.TYPES.EXTENSION, Bunch(
+                    scenario=[u'extension'],
+                    allowed=[           u'disclosure', u'refusal'],
+                    expired=[u'appeal', u'disclosure', u'refusal'],
+                    )),
+                (Action.TYPES.ADVANCEMENT, Bunch(
+                    scenario=[u'advancement'],
+                    allowed=[u'appeal'],
+                    expired=[u'appeal'],
+                    )),
+                (Action.TYPES.CLARIFICATION_REQUEST, Bunch(
+                    scenario=[u'clarification_request'],
+                    allowed=[u'clarification_response', u'clarification_request'],
+                    expired=[u'clarification_response', u'clarification_request'],
+                    )),
+                (Action.TYPES.DISCLOSURE, Bunch(
+                    scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.NONE))],
+                    allowed=[u'appeal'],
+                    expired=[u'appeal'],
+                    )),
+                (Action.TYPES.DISCLOSURE, Bunch(
+                    scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.PARTIAL))],
+                    allowed=[u'appeal'],
+                    expired=[u'appeal'],
+                    )),
+                (Action.TYPES.DISCLOSURE, Bunch(
+                    scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.FULL))],
+                    allowed=[],
+                    expired=[],
+                    )),
+                (Action.TYPES.REFUSAL, Bunch(
+                    scenario=[u'refusal'],
+                    allowed=[u'appeal'],
+                    expired=[u'appeal'],
+                    )),
+                (Action.TYPES.AFFIRMATION, Bunch(
+                    scenario=[u'refusal', u'appeal', u'affirmation'],
+                    allowed=[],
+                    expired=[],
+                    )),
+                (Action.TYPES.REVERSION, Bunch(
+                    scenario=[u'refusal', u'appeal', u'reversion'],
+                    allowed=[],
+                    expired=[],
+                    )),
+                (Action.TYPES.REMANDMENT, Bunch(
+                    scenario=[u'refusal', u'appeal', u'remandment'],
+                    allowed=[           u'extension', u'disclosure', u'refusal'],
+                    expired=[u'appeal', u'extension', u'disclosure', u'refusal'],
+                    )),
+                (Action.TYPES.ADVANCED_REQUEST, Bunch(
+                    branch=1,
+                    scenario=[u'advancement'],
+                    allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    )),
+                (Action.TYPES.EXPIRATION, Bunch(
+                    scenario=[u'expiration'],
+                    allowed=[u'appeal'],
+                    expired=[u'appeal'],
+                    )),
+                (Action.TYPES.APPEAL_EXPIRATION, Bunch(
+                    scenario=[u'refusal', u'appeal', u'appeal_expiration'],
+                    allowed=[],
+                    expired=[],
+                    )),
+                )
+        # Make sure we are testing all defined action types
+        tested_action_types = set(a for a, _ in tests)
+        defined_action_types = Action.TYPES._inverse.keys()
+        self.assertItemsEqual(tested_action_types, defined_action_types)
 
-        can_add_action_names = (
+        can_add_properties = (
                 u'clarification_response',
                 u'appeal',
                 u'confirmation',
@@ -173,247 +310,108 @@ class PaperworkTest(InforequestsTestCaseMixin, TestCase):
                 u'remandment',
                 )
 
-        # Check actions allowed when the last action deadline is not expired yet
-        for action_name in can_add_action_names:
-            value = getattr(paperwork, u'can_add_%s' % action_name)
-            expected = action_name in allowed
-            self.assertEqual(value, expected)
+        for action_type, test in tests:
+            timewarp.jump(local_datetime_from_local(u'2010-07-05 10:33:00'))
+            objs = self._create_inforequest_scenario(*test.scenario)
+            branch = getattr(test, u'branch', 0)
+            paperwork = [o for o in flatten(objs) if isinstance(o, Paperwork)][branch]
+            self.assertEqual(paperwork.last_action.type, action_type)
 
-        # Check actions allowed when the last action deadline is expired
-        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        for action_name in can_add_action_names:
-            value = getattr(paperwork, u'can_add_%s' % action_name)
-            expected = action_name in expired
-            self.assertEqual(value, expected)
+            # Check actions allowed when the last action deadline is not expired yet
+            for can_add_property in can_add_properties:
+                value = getattr(paperwork, u'can_add_%s' % can_add_property)
+                expected = can_add_property in test.allowed
+                self.assertEqual(value, expected)
 
-    def test_can_add_x_properties_with_last_action_request(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.REQUEST,
-                scenario=[],
-                allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'])
-
-    def test_can_add_x_properties_with_last_action_clarification_response(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.CLARIFICATION_RESPONSE,
-                scenario=[u'clarification_request', u'clarification_response'],
-                allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'])
-
-    def test_can_add_x_properties_with_last_action_appeal(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.APPEAL,
-                scenario=[u'expiration', u'appeal'],
-                allowed=[u'affirmation', u'reversion', u'remandment'],
-                expired=[u'affirmation', u'reversion', u'remandment'])
-
-    def test_can_add_x_properties_with_last_action_confirmation(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.CONFIRMATION,
-                scenario=[u'confirmation'],
-                allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'])
-
-    def test_can_add_x_properties_with_last_action_extension(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.EXTENSION,
-                scenario=[u'extension'],
-                allowed=[           u'disclosure', u'refusal'],
-                expired=[u'appeal', u'disclosure', u'refusal'])
-
-    def test_can_add_x_properties_with_last_action_advancement(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.ADVANCEMENT,
-                scenario=[u'advancement'],
-                allowed=[u'appeal'],
-                expired=[u'appeal'])
-
-    def test_can_add_x_properties_with_last_action_clarification_request(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.CLARIFICATION_REQUEST,
-                scenario=[u'clarification_request'],
-                allowed=[u'clarification_response', u'clarification_request'],
-                expired=[u'clarification_response', u'clarification_request'])
-
-    def test_can_add_x_properties_with_last_action_disclosure_with_no_disclosure(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.DISCLOSURE,
-                scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.NONE))],
-                allowed=[u'appeal'],
-                expired=[u'appeal'])
-
-    def test_can_add_x_properties_with_last_action_disclosure_with_partial_disclosure(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.DISCLOSURE,
-                scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.PARTIAL))],
-                allowed=[u'appeal'],
-                expired=[u'appeal'])
-
-    def test_can_add_x_properties_with_last_action_disclosure_with_full_disclosure(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.DISCLOSURE,
-                scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.FULL))],
-                allowed=[],
-                expired=[])
-
-    def test_can_add_x_properties_with_last_action_refusal(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.REFUSAL,
-                scenario=[u'refusal'],
-                allowed=[u'appeal'],
-                expired=[u'appeal'])
-
-    def test_can_add_x_properties_with_last_action_affirmation(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.AFFIRMATION,
-                scenario=[u'affirmation'],
-                allowed=[],
-                expired=[])
-
-    def test_can_add_x_properties_with_last_action_reversion(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.REVERSION,
-                scenario=[u'reversion'],
-                allowed=[],
-                expired=[])
-
-    def test_can_add_x_properties_with_last_action_remandment(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.REMANDMENT,
-                scenario=[u'refusal', u'appeal', u'remandment'],
-                allowed=[           u'extension', u'disclosure', u'refusal'],
-                expired=[u'appeal', u'extension', u'disclosure', u'refusal'])
-
-    def test_can_add_x_properties_with_last_action_advanced_request(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.ADVANCED_REQUEST, branch=1,
-                scenario=[u'advancement'],
-                allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'])
-
-    def test_can_add_x_properties_with_last_action_expiration(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.EXPIRATION,
-                scenario=[u'expiration'],
-                allowed=[u'appeal'],
-                expired=[u'appeal'])
-
-    def test_can_add_x_properties_with_last_action_appeal_expiration(self):
-        self._test_can_add_x_properties_aux(Action.TYPES.APPEAL_EXPIRATION,
-                scenario=[u'appeal_expiration'],
-                allowed=[],
-                expired=[])
+            # Check actions allowed when the last action deadline is expired
+            timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+            for can_add_property in can_add_properties:
+                value = getattr(paperwork, u'can_add_%s' % can_add_property)
+                expected = can_add_property in test.expired
+                self.assertEqual(value, expected)
 
     def test_can_add_action_method(self):
-        _, paperwork, _ = self._create_inforequest_scenario()
+        tests = (                                   # expected result
+                (Action.TYPES.REQUEST,                AttributeError, u"'Paperwork' object has no attribute 'can_add_request'"),
+                (Action.TYPES.CLARIFICATION_RESPONSE, False,          None),
+                (Action.TYPES.APPEAL,                 False,          None),
+                (Action.TYPES.CONFIRMATION,           True,           None),
+                (Action.TYPES.EXTENSION,              True,           None),
+                (Action.TYPES.ADVANCEMENT,            True,           None),
+                (Action.TYPES.CLARIFICATION_REQUEST,  True,           None),
+                (Action.TYPES.DISCLOSURE,             True,           None),
+                (Action.TYPES.REFUSAL,                True,           None),
+                (Action.TYPES.AFFIRMATION,            False,          None),
+                (Action.TYPES.REVERSION,              False,          None),
+                (Action.TYPES.REMANDMENT,             False,          None),
+                (Action.TYPES.ADVANCED_REQUEST,       AttributeError, u"'Paperwork' object has no attribute 'can_add_advanced_request'"),
+                (Action.TYPES.EXPIRATION,             AttributeError, u"'Paperwork' object has no attribute 'can_add_expiration'"),
+                (Action.TYPES.APPEAL_EXPIRATION,      AttributeError, u"'Paperwork' object has no attribute 'can_add_appeal_expiration'"),
+                )
+        # Make sure we are testing all defined action types
+        tested_action_types = set(a for a, _, _ in tests)
+        defined_action_types = Action.TYPES._inverse.keys()
+        self.assertItemsEqual(tested_action_types, defined_action_types)
+
         # ``paperwork`` last action is ``REQUEST``
-        self.assertFalse(paperwork.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE))
-        self.assertFalse(paperwork.can_add_action(Action.TYPES.APPEAL))
-        self.assertTrue(paperwork.can_add_action(Action.TYPES.CONFIRMATION))
-        self.assertTrue(paperwork.can_add_action(Action.TYPES.EXTENSION))
-        self.assertTrue(paperwork.can_add_action(Action.TYPES.ADVANCEMENT))
-        self.assertTrue(paperwork.can_add_action(Action.TYPES.CLARIFICATION_REQUEST))
-        self.assertTrue(paperwork.can_add_action(Action.TYPES.DISCLOSURE))
-        self.assertTrue(paperwork.can_add_action(Action.TYPES.REFUSAL))
-        self.assertFalse(paperwork.can_add_action(Action.TYPES.AFFIRMATION))
-        self.assertFalse(paperwork.can_add_action(Action.TYPES.REVERSION))
-        self.assertFalse(paperwork.can_add_action(Action.TYPES.REMANDMENT))
-
-    def test_can_add_action_method_raises_exception_for_request_and_implicit_actions(self):
         _, paperwork, _ = self._create_inforequest_scenario()
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_request'"):
-            paperwork.can_add_action(Action.TYPES.REQUEST)
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_advanced_request'"):
-            paperwork.can_add_action(Action.TYPES.ADVANCED_REQUEST)
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_expiration'"):
-            paperwork.can_add_action(Action.TYPES.EXPIRATION)
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_appeal_expiration'"):
-            paperwork.can_add_action(Action.TYPES.APPEAL_EXPIRATION)
+        for action_type, expected_result, expected_message in tests:
+            if expected_result is True:
+                self.assertTrue(paperwork.can_add_action(action_type))
+            elif expected_result is False:
+                self.assertFalse(paperwork.can_add_action(action_type))
+            else:
+                with self.assertRaisesMessage(expected_result, expected_message):
+                    self.assertFalse(paperwork.can_add_action(action_type))
 
-    def _test_add_expiration_if_expired_method_aux(self, last_action_type, scenario, added_action_type, branch=0):
-        timewarp.jump(local_datetime_from_local(u'2010-07-05 10:33:00'))
-        objs = self._create_inforequest_scenario(*scenario)
-        paperwork = [o for o in flatten(objs) if isinstance(o, Paperwork)][branch]
-        self.assertEqual(paperwork.last_action.type, last_action_type)
-        original_last_action = paperwork.last_action
+    def test_add_expiration_if_expired_method(self):
+        tests = (                                   # Expected action type,      branch, scenario
+                (Action.TYPES.REQUEST,                Action.TYPES.EXPIRATION,        0, []),
+                (Action.TYPES.CLARIFICATION_RESPONSE, Action.TYPES.EXPIRATION,        0, [u'clarification_request', u'clarification_response']),
+                (Action.TYPES.APPEAL,                 Action.TYPES.APPEAL_EXPIRATION, 0, [u'expiration', u'appeal']),
+                (Action.TYPES.CONFIRMATION,           Action.TYPES.EXPIRATION,        0, [u'confirmation']),
+                (Action.TYPES.EXTENSION,              Action.TYPES.EXPIRATION,        0, [u'extension']),
+                (Action.TYPES.ADVANCEMENT,            None,                           0, [u'advancement']),
+                (Action.TYPES.CLARIFICATION_REQUEST,  None,                           0, [u'clarification_request']),
+                (Action.TYPES.DISCLOSURE,             None,                           0, [u'disclosure']),
+                (Action.TYPES.REFUSAL,                None,                           0, [u'refusal']),
+                (Action.TYPES.AFFIRMATION,            None,                           0, [u'refusal', u'appeal', u'affirmation']),
+                (Action.TYPES.REVERSION,              None,                           0, [u'refusal', u'appeal', u'reversion']),
+                (Action.TYPES.REMANDMENT,             Action.TYPES.EXPIRATION,        0, [u'refusal', u'appeal', u'remandment']),
+                (Action.TYPES.ADVANCED_REQUEST,       Action.TYPES.EXPIRATION,        1, [u'advancement']),
+                (Action.TYPES.EXPIRATION,             None,                           0, [u'expiration']),
+                (Action.TYPES.APPEAL_EXPIRATION,      None,                           0, [u'refusal', u'appeal', u'appeal_expiration']),
+                )
+        # Make sure we are testing all defined action types
+        tested_action_types = set(a for a, _, _, _ in tests)
+        defined_action_types = Action.TYPES._inverse.keys()
+        self.assertItemsEqual(tested_action_types, defined_action_types)
 
-        # Deadline not expired yet
-        with created_instances(Action.objects) as query_set:
-            paperwork.add_expiration_if_expired()
-        self.assertEqual(query_set.count(), 0)
+        for action_type, expected_action_type, branch, scenario in tests:
+            timewarp.jump(local_datetime_from_local(u'2010-07-05 10:33:00'))
+            objs = self._create_inforequest_scenario(*scenario)
+            paperwork = [o for o in flatten(objs) if isinstance(o, Paperwork)][branch]
+            self.assertEqual(paperwork.last_action.type, action_type)
+            original_last_action = paperwork.last_action
 
-        # Any deadline is expired now
-        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        with created_instances(Action.objects) as query_set:
-            paperwork.add_expiration_if_expired()
-
-        if added_action_type is None:
+            # Deadline not expired yet
+            with created_instances(Action.objects) as query_set:
+                paperwork.add_expiration_if_expired()
             self.assertEqual(query_set.count(), 0)
-            self.assertEqual(paperwork.last_action, original_last_action)
-        else:
-            added_action = query_set.get()
-            self.assertEqual(paperwork.last_action, added_action)
-            self.assertEqual(added_action.type, added_action_type)
-            self.assertEqual(added_action.effective_date, naive_date(u'2010-10-05'))
 
-    def test_add_expiration_if_expired_method_with_request_adds_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.REQUEST,
-                scenario=[],
-                added_action_type=Action.TYPES.EXPIRATION)
+            # Any deadline is expired now
+            timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+            with created_instances(Action.objects) as query_set:
+                paperwork.add_expiration_if_expired()
 
-    def test_add_expiration_if_expired_method_with_clarification_response_adds_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.CLARIFICATION_RESPONSE,
-                scenario=[u'clarification_request', u'clarification_response'],
-                added_action_type=Action.TYPES.EXPIRATION)
-
-    def test_add_expiration_if_expired_method_with_appeal_adds_appeal_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.APPEAL,
-                scenario=[u'expiration', u'appeal'],
-                added_action_type=Action.TYPES.APPEAL_EXPIRATION)
-
-    def test_add_expiration_if_expired_method_with_confirmation_adds_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.CONFIRMATION,
-                scenario=[u'confirmation'],
-                added_action_type=Action.TYPES.EXPIRATION)
-
-    def test_add_expiration_if_expired_method_with_extension_adds_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.EXTENSION,
-                scenario=[u'extension'],
-                added_action_type=Action.TYPES.EXPIRATION)
-
-    def test_add_expiration_if_expired_method_with_advancement_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.ADVANCEMENT,
-                scenario=[u'advancement'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_clarification_request_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.CLARIFICATION_REQUEST,
-                scenario=[u'clarification_request'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_disclosure_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.DISCLOSURE,
-                scenario=[u'disclosure'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_refusal_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.REFUSAL,
-                scenario=[u'refusal'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_affirmation_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.AFFIRMATION,
-                scenario=[u'affirmation'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_reversion_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.REVERSION,
-                scenario=[u'reversion'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_remandment_adds_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.REMANDMENT,
-                scenario=[u'refusal', u'appeal', u'remandment'],
-                added_action_type=Action.TYPES.EXPIRATION)
-
-    def test_add_expiration_if_expired_method_with_advanced_request_adds_expiration(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.ADVANCED_REQUEST, branch=1,
-                scenario=[u'advancement'],
-                added_action_type=Action.TYPES.EXPIRATION)
-
-    def test_add_expiration_if_expired_method_with_expiration_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.EXPIRATION,
-                scenario=[u'expiration'],
-                added_action_type=None)
-
-    def test_add_expiration_if_expired_method_with_appeal_expiration_adds_nothing(self):
-        self._test_add_expiration_if_expired_method_aux(Action.TYPES.APPEAL_EXPIRATION,
-                scenario=[u'appeal_expiration'],
-                added_action_type=None)
+            if expected_action_type is None:
+                self.assertEqual(query_set.count(), 0)
+                self.assertEqual(paperwork.last_action, original_last_action)
+            else:
+                added_action = query_set.get()
+                self.assertEqual(paperwork.last_action, added_action)
+                self.assertEqual(added_action.type, expected_action_type)
+                self.assertEqual(added_action.effective_date, naive_date(u'2010-10-05'))
 
     def test_collect_obligee_emails_method(self):
         obligee = self._create_obligee(emails=u'Obligee1 <oblige1@a.com>, oblige2@a.com')

@@ -102,7 +102,7 @@ class Recipient(models.Model):
     # May be empty
     name = models.CharField(blank=True, max_length=255, verbose_name=_(u'Name'))
 
-    # May NOT be empty
+    # Should NOT be empty
     mail = models.CharField(max_length=255, verbose_name=_(u'E-mail'))
 
     # May NOT be NULL
@@ -131,6 +131,11 @@ class Recipient(models.Model):
 
     # May be empty
     remote_id = models.CharField(blank=True, max_length=255, verbose_name=_(u'Remote ID'))
+
+    # Backward relations added to other models:
+    #
+    #  -- Message.recipient_set
+    #     Should NOT be empty
 
     objects = RecipientQuerySet.as_manager()
 

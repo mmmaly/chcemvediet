@@ -252,6 +252,7 @@ class InforequestsTestCaseMixin(TestCase):
 
     def _create_action_draft(self, **kwargs):
         return self._call_with_defaults(ActionDraft.objects.create, kwargs, {
+                u'type': ActionDraft.TYPES.REQUEST,
                 u'subject': u'Default Testing Subject',
                 u'content': u'Default Testing Content',
                 })

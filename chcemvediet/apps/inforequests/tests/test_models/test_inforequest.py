@@ -201,6 +201,27 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         result = inforequest.inforequestemail_set.all()
         self.assertItemsEqual(result, [])
 
+    def test_user_inforequest_set_backward_relation(self):
+        inforequest1 = self._create_inforequest(applicant=self.user1)
+        inforequest2 = self._create_inforequest(applicant=self.user1)
+        result = self.user1.inforequest_set.all()
+        self.assertItemsEqual(result, [inforequest1, inforequest2])
+
+    def test_user_inforequest_set_backward_relation_empty_by_default(self):
+        result = self.user1.inforequest_set.all()
+        self.assertItemsEqual(result, [])
+
+    def test_message_inforequest_set_backward_relation(self):
+        inforequest = self._create_inforequest()
+        email, rel = self._create_inforequest_email(inforequest=inforequest)
+        result = email.inforequest_set.all()
+        self.assertItemsEqual(result, [inforequest])
+
+    def test_message_inforequest_set_backward_relation_empty_by_default(self):
+        email = self._create_message()
+        result = email.inforequest_set.all()
+        self.assertItemsEqual(result, [])
+
     def test_default_ordering_by_submission_date_then_pk(self):
         dates = [
                 u'2014-10-04',
@@ -307,30 +328,38 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_remandment)
 
     def test_can_add_action_method(self):
-        inforequest, _, _ = self._create_inforequest_scenario()
-        # ``paperwork`` last action is ``REQUEST``
-        self.assertFalse(inforequest.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE))
-        self.assertFalse(inforequest.can_add_action(Action.TYPES.APPEAL))
-        self.assertTrue(inforequest.can_add_action(Action.TYPES.CONFIRMATION))
-        self.assertTrue(inforequest.can_add_action(Action.TYPES.EXTENSION))
-        self.assertTrue(inforequest.can_add_action(Action.TYPES.ADVANCEMENT))
-        self.assertTrue(inforequest.can_add_action(Action.TYPES.CLARIFICATION_REQUEST))
-        self.assertTrue(inforequest.can_add_action(Action.TYPES.DISCLOSURE))
-        self.assertTrue(inforequest.can_add_action(Action.TYPES.REFUSAL))
-        self.assertFalse(inforequest.can_add_action(Action.TYPES.AFFIRMATION))
-        self.assertFalse(inforequest.can_add_action(Action.TYPES.REVERSION))
-        self.assertFalse(inforequest.can_add_action(Action.TYPES.REMANDMENT))
+        tests = (                                   # expected result
+                (Action.TYPES.REQUEST,                AttributeError, u"'Paperwork' object has no attribute 'can_add_request'"),
+                (Action.TYPES.CLARIFICATION_RESPONSE, False,          None),
+                (Action.TYPES.APPEAL,                 False,          None),
+                (Action.TYPES.CONFIRMATION,           True,           None),
+                (Action.TYPES.EXTENSION,              True,           None),
+                (Action.TYPES.ADVANCEMENT,            True,           None),
+                (Action.TYPES.CLARIFICATION_REQUEST,  True,           None),
+                (Action.TYPES.DISCLOSURE,             True,           None),
+                (Action.TYPES.REFUSAL,                True,           None),
+                (Action.TYPES.AFFIRMATION,            False,          None),
+                (Action.TYPES.REVERSION,              False,          None),
+                (Action.TYPES.REMANDMENT,             False,          None),
+                (Action.TYPES.ADVANCED_REQUEST,       AttributeError, u"'Paperwork' object has no attribute 'can_add_advanced_request'"),
+                (Action.TYPES.EXPIRATION,             AttributeError, u"'Paperwork' object has no attribute 'can_add_expiration'"),
+                (Action.TYPES.APPEAL_EXPIRATION,      AttributeError, u"'Paperwork' object has no attribute 'can_add_appeal_expiration'"),
+                )
+        # Make sure we are testing all defined action types
+        tested_action_types = set(a for a, _, _ in tests)
+        defined_action_types = Action.TYPES._inverse.keys()
+        self.assertItemsEqual(tested_action_types, defined_action_types)
 
-    def test_can_add_action_method_raises_exception_for_request_and_implicit_actions(self):
+        # ``paperwork`` last action is ``REQUEST``
         inforequest, _, _ = self._create_inforequest_scenario()
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_request'"):
-            inforequest.can_add_action(Action.TYPES.REQUEST)
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_advanced_request'"):
-            inforequest.can_add_action(Action.TYPES.ADVANCED_REQUEST)
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_expiration'"):
-            inforequest.can_add_action(Action.TYPES.EXPIRATION)
-        with self.assertRaisesMessage(AttributeError, u"'Paperwork' object has no attribute 'can_add_appeal_expiration'"):
-            inforequest.can_add_action(Action.TYPES.APPEAL_EXPIRATION)
+        for action_type, expected_result, expected_message in tests:
+            if expected_result is True:
+                self.assertTrue(inforequest.can_add_action(action_type))
+            elif expected_result is False:
+                self.assertFalse(inforequest.can_add_action(action_type))
+            else:
+                with self.assertRaisesMessage(expected_result, expected_message):
+                    self.assertFalse(inforequest.can_add_action(action_type))
 
     def test_send_notification(self):
         u"""

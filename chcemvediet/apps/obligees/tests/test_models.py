@@ -97,15 +97,20 @@ class ObligeeModelTest(ObligeesTestCaseMixin, TestCase):
         oblg = Obligee.objects.get(pk=oblg.pk)
         self.assertEqual(oblg.slug, u'-another-agency-')
 
-    def test_status_field_with_pending_value(self):
-        oblg = self._create_obligee(status=Obligee.STATUSES.PENDING)
-        self.assertEqual(oblg.status, Obligee.STATUSES.PENDING)
-        self.assertEqual(oblg.get_status_display(), u'Pending')
+    def test_status_field(self):
+        tests = (
+                (Obligee.STATUSES.PENDING, u'Pending'),
+                (Obligee.STATUSES.DISSOLVED, u'Dissolved'),
+                )
+        # Make sure we are testing all defined obligee statuses
+        tested_statuses = [a for a, _ in tests]
+        defined_statuses = Obligee.STATUSES._inverse.keys()
+        self.assertItemsEqual(tested_statuses, defined_statuses)
 
-    def test_status_field_with_dissolved_value(self):
-        oblg = self._create_obligee(status=Obligee.STATUSES.DISSOLVED)
-        self.assertEqual(oblg.status, Obligee.STATUSES.DISSOLVED)
-        self.assertEqual(oblg.get_status_display(), u'Dissolved')
+        for status, expected_display in tests:
+            oblg = self._create_obligee(status=status)
+            self.assertEqual(oblg.status, status)
+            self.assertEqual(oblg.get_status_display(), expected_display)
 
     def test_status_field_may_not_be_omitted(self):
         with self.assertRaisesMessage(IntegrityError, u'obligees_obligee.status may not be NULL'):

@@ -57,6 +57,26 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
         result = draft.attachment_set.all()
         self.assertItemsEqual(result, [])
 
+    def test_user_inforequestdraft_set_backward_relation(self):
+        draft1 = self._create_inforequest_draft(applicant=self.user1)
+        draft2 = self._create_inforequest_draft(applicant=self.user1)
+        result = self.user1.inforequestdraft_set.all()
+        self.assertItemsEqual(result, [draft1, draft2])
+
+    def test_user_inforequestdraft_set_backward_relation_empty_by_default(self):
+        result = self.user1.inforequestdraft_set.all()
+        self.assertItemsEqual(result, [])
+
+    def test_obligee_inforequestdraft_set_backward_relation(self):
+        draft1 = self._create_inforequest_draft(obligee=self.obligee1)
+        draft2 = self._create_inforequest_draft(obligee=self.obligee1)
+        result = self.obligee1.inforequestdraft_set.all()
+        self.assertItemsEqual(result, [draft1, draft2])
+
+    def test_obligee_inforequestdraft_set_backward_relation_empty_by_default(self):
+        result = self.obligee1.inforequestdraft_set.all()
+        self.assertItemsEqual(result, [])
+
     def test_default_ordering_by_pk(self):
         drafts = [self._create_inforequest_draft() for i in range(10)]
         sample = random.sample(drafts, 5)
