@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 import contextlib
 
-from django.test import Client
+from django.core.urlresolvers import reverse
+from django.utils.http import urlencode
+from django.test import TestCase, Client
 
 @contextlib.contextmanager
 def override_signals(*signals):
@@ -65,3 +67,48 @@ class SecureClient(Client):
                 u'wsgi.url_scheme': str('https'),
                 })
         return super(SecureClient, self).request(**request)
+
+class ViewTestCaseMixin(TestCase):
+
+    def assert_allowed_http_methods(self, allowed, url):
+        u"""
+        Makes requests with all http methods to the given ``url`` and checks that only ``allowed``
+        methods are allowed. Method that are not allowed should give "405: Method not Allowed"
+        status code. Usefull for testing views decorated with ``@require_http_methods()``
+        decorator.
+
+        Example:
+            @require_http_methods([u'HEAD', u'GET'])
+            def some_view(request):
+                return HttpResponse()
+
+            class SomeViewTestCase(ViewTestCaseMixin, TestCase):
+                def test_methods(self):
+                    allowed = [u'HEAD', u'GET']
+                    self.assert_allowed_http_methods(allowed, reverse('some_view'))
+        """
+        methods = [u'HEAD', u'GET', u'POST', u'OPTIONS', u'PUT', u'PATCH', u'DELETE']
+        for method in methods:
+            response = getattr(self.client, method.lower())(url)
+            if method in allowed:
+                self.assertNotEqual(response.status_code, 405, u'%s is not allowed' % method)
+            else:
+                self.assertEqual(response.status_code, 405, u'%s is allowed' % method)
+
+    def assert_anonymous_user_is_redirected(self, url):
+        u"""
+        Makes anonymous request to the given ``url`` and checks that the request gets redirected to
+        the login page. Usefull for testing views decorated with ``@login_required`` decorator.
+
+        Example:
+            @login_required
+            def some_view(request):
+                return HttpResponse()
+
+            class SomeViewTestCase(ViewTestCaseMixin, TestCase):
+                def test_anonymous(self):
+                    self.assert_anonymous_user_is_redirected(reverse('some_view'))
+        """
+        response = self.client.get(url, follow=True)
+        expected_url = reverse(u'account_login') + u'?' + urlencode({u'next': url})
+        self.assertRedirects(response, expected_url)

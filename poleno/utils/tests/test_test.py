@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 import mock
 
+from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 from django.dispatch.dispatcher import Signal
 from django.conf.urls import patterns, url
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from ..test import override_signals, created_instances, SecureClient
+from poleno.utils.views import login_required
+
+from ..test import override_signals, created_instances, SecureClient, ViewTestCaseMixin
 
 class OverrideSignalsTest(TestCase):
     u"""
@@ -123,3 +126,59 @@ class SecureClientTest(TestCase):
     def test_request_is_non_secure_by_default(self):
         response = self.client.get(u'/')
         self.assertEqual(response.content, u'is_secure=False, port=80, scheme=http')
+
+class ViewTestCaseMixinAssertAllowedHttpMethodsTest(ViewTestCaseMixin, TestCase):
+    u"""
+    Tests ``assert_allowed_http_methods()`` method of ``ViewTestCaseMixin`` class.
+    """
+
+    @require_http_methods([u'HEAD', u'GET'])
+    def mock_view(request):
+        return HttpResponse()
+
+    urls = tuple(patterns(u'',
+        url(r'^$', mock_view),
+    ))
+
+    def test_with_all_methods_allowed_as_expected(self):
+        allowed = [u'HEAD', u'GET']
+        self.assert_allowed_http_methods(allowed, u'/')
+
+    def test_with_allowed_method_which_should_not_be_allowed(self):
+        allowed = [u'HEAD']
+        with self.assertRaisesMessage(AssertionError, u'GET is allowed'):
+            self.assert_allowed_http_methods(allowed, u'/')
+
+    def test_with_not_allowed_method_which_shoud_be_allowed(self):
+        allowed = [u'HEAD', u'GET', u'POST']
+        with self.assertRaisesMessage(AssertionError, u'POST is not allowed'):
+            self.assert_allowed_http_methods(allowed, u'/')
+
+class ViewTestCaseMixinAssertAnonymousUserIsRedirected(ViewTestCaseMixin, TestCase):
+    u"""
+    Tests ``assert_anonymous_user_is_redirected()`` method of ``ViewTestCaseMixin`` class.
+    """
+
+    @login_required
+    def with_login_required_view(request):
+        pass
+
+    def without_login_required_view(request):
+        return HttpResponse()
+
+    def login_view(request):
+        return HttpResponse()
+
+    urls = tuple(patterns(u'',
+        url(r'^with_login_required/$', with_login_required_view, name=u'aa'),
+        url(r'^without_login_required/$', without_login_required_view),
+        url(r'^accounts/login/$', login_view, name=u'account_login'),
+    ))
+
+    def test_on_wiew_with_login_required_passes(self):
+        with mock.patch(u'poleno.utils.test.urlencode', return_value=u'next=/with_login_required/'):
+            self.assert_anonymous_user_is_redirected(u'/with_login_required/')
+
+    def test_on_wiew_without_login_required_fails(self):
+        with self.assertRaisesMessage(AssertionError, u"Response didn't redirect as expected: Response code was 200"):
+            self.assert_anonymous_user_is_redirected(u'/without_login_required/')

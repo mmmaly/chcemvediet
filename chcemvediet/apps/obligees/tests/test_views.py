@@ -7,27 +7,19 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from poleno.utils.http import JsonResponse
+from poleno.utils.test import ViewTestCaseMixin
 
 from . import ObligeesTestCaseMixin
 from ..models import Obligee
 
-class IndexViewTest(ObligeesTestCaseMixin, TestCase):
+class IndexViewTest(ObligeesTestCaseMixin, ViewTestCaseMixin, TestCase):
     u"""
     Tests ``index()`` view registered as "obligees:index".
     """
 
-    def test_head_method_is_allowed(self):
-        response = self.client.head(reverse(u'obligees:index'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_method_is_allowed(self):
-        response = self.client.get(reverse(u'obligees:index'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_post_method_is_not_allowed(self):
-        response = self.client.post(reverse(u'obligees:index'))
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response[u'Allow'], u'HEAD, GET')
+    def test_allowed_http_methods(self):
+        allowed = [u'HEAD', u'GET']
+        self.assert_allowed_http_methods(allowed, reverse(u'obligees:index'))
 
     def test_obligees_index(self):
         response = self.client.get(reverse(u'obligees:index'))
@@ -68,23 +60,14 @@ class IndexViewTest(ObligeesTestCaseMixin, TestCase):
         self.assertEqual(repr(response.context[u'obligee_page']), u'<Page 1 of 1>')
         self.assertEqual(list(response.context[u'obligee_page']), [])
 
-class AutocompleteViewTest(ObligeesTestCaseMixin, TestCase):
+class AutocompleteViewTest(ObligeesTestCaseMixin, ViewTestCaseMixin, TestCase):
     u"""
     Tests ``autocomplete()`` view registered as "obligees:autocomplete".
     """
 
-    def test_head_method_is_allowed(self):
-        response = self.client.head(reverse(u'obligees:autocomplete'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_method_is_allowed(self):
-        response = self.client.get(reverse(u'obligees:autocomplete'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_post_method_is_not_allowed(self):
-        response = self.client.post(reverse(u'obligees:autocomplete'))
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response[u'Allow'], u'HEAD, GET')
+    def test_allowed_http_methods(self):
+        allowed = [u'HEAD', u'GET']
+        self.assert_allowed_http_methods(allowed, reverse(u'obligees:autocomplete'))
 
     def test_autocomplete_returns_json_with_correct_structure(self):
         oblg1 = self._create_obligee(name=u'Agency', street=u'Westend', city=u'Winterfield', zip=u'12345', emails=u'agency@a.com')

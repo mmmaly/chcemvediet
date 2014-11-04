@@ -13,7 +13,7 @@ from django.test import TestCase
 
 from poleno.utils.date import utc_now
 from poleno.utils.misc import Bunch, collect_stdout
-from poleno.utils.test import override_signals, SecureClient
+from poleno.utils.test import override_signals, SecureClient, ViewTestCaseMixin
 
 from . import MailTestCaseMixin
 from ..models import Message, Recipient
@@ -291,7 +291,7 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
             self.assertEqual(rcpt.remote_id, u'remote-%s' % rcpt.pk)
             self.assertEqual(rcpt.status, statuses[i%len(statuses)][1])
 
-class WebhookViewTest(MailTestCaseMixin, TestCase):
+class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
     u"""
     Tests ``webhook()`` view.
     """
@@ -325,18 +325,11 @@ class WebhookViewTest(MailTestCaseMixin, TestCase):
             self.assertEqual(response.content, content)
 
 
-    def test_get_method_not_allowed(self):
-        with self._overrides():
-            response = self.client.get(self._webhook_url(), secure=True)
-        self._check_response(response, HttpResponseNotAllowed, 405)
-        self.assertEqual(response[u'Allow'], u'HEAD, POST')
+    def test_allowed_http_methods(self):
+        allowed = [u'HEAD', u'POST']
+        self.assert_allowed_http_methods(allowed, self._webhook_url())
 
-    def test_head_method_allowed(self):
-        with self._overrides():
-            response = self.client.head(self._webhook_url(), secure=True)
-        self._check_response(response)
-
-    def test_post_method_allowed_and_needs_signature(self):
+    def test_post_method_needs_signature(self):
         with self._overrides():
             response = self.client.post(self._webhook_url(), secure=True)
         self._check_response(response, HttpResponseForbidden, 403, u'X-Mandrill-Signature not set')

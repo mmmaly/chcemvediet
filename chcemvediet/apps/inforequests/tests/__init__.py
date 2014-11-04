@@ -71,6 +71,11 @@ class InforequestsTestCaseMixin(TestCase):
         user.profile.save()
         return user
 
+    def _login_user(self, user=None, password=None):
+        user = user or self.user1
+        password = password or u'default_testing_secret'
+        self.client.login(username=user.username, password=password)
+
     def _create_obligee(self, **kwargs):
         return self._call_with_defaults(Obligee.objects.create, kwargs, {
                 u'name': u'Default Testing Name',
