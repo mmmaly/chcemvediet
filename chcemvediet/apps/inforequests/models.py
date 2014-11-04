@@ -209,10 +209,10 @@ class Inforequest(models.Model):
                         super(Inforequest, self).save(*args, **kwargs)
                 except IntegrityError:
                     length += 1
-                    if length > 10:
-                        self.unique_email = None
-                        raise # Give up
-                    continue
+                    if length <= 10:
+                        continue
+                    self.unique_email = None
+                    raise # Give up
                 return # object is already saved
 
         super(Inforequest, self).save(*args, **kwargs)
@@ -503,7 +503,7 @@ class Action(models.Model):
     # May NOT be NULL
     paperwork = models.ForeignKey(u'Paperwork', verbose_name=_(u'Paperwork'))
 
-    # May NOT be NULL for actions sent or received by email; NULL otherwise
+    # NOT NULL for actions sent or received by email; NULL otherwise
     email = models.OneToOneField(u'mail.Message', blank=True, null=True, verbose_name=_(u'E-mail'))
 
     # May NOT be NULL
@@ -694,10 +694,13 @@ class Action(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
+
+            assert self.type is not None, u'%s.type is mandatory' % self.__class__.__name__
             if self.deadline is None:
                 type_name = self.TYPES._inverse[self.type]
                 deadline = getattr(self.DEFAULT_DEADLINES, type_name)
                 self.deadline = deadline(self) if callable(deadline) else deadline
+
         super(Action, self).save(*args, **kwargs)
 
     def days_passed_at(self, at):
@@ -716,7 +719,7 @@ class Action(models.Model):
 
     def send_by_email(self):
         if not self.is_applicant_action:
-            raise TypeError
+            raise TypeError(u'%s is not applicant action' % self.get_type_display())
 
         sender_name = self.paperwork.inforequest.applicant_name
         sender_address = self.paperwork.inforequest.unique_email

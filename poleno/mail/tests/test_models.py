@@ -181,7 +181,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
 
     def test_repr(self):
         msg = self._create_message()
-        self.assertEqual(repr(msg), u'<%s: %s>' % (Message.__name__, msg.pk))
+        self.assertEqual(repr(msg), u'<Message: %s>' % msg.pk)
 
     def test_inbound_and_outbound_query_methods(self):
         obj1 = self._create_message(type=Message.TYPES.INBOUND)
@@ -329,7 +329,7 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
     def test_repr(self):
         msg = self._create_message()
         rcpt = self._create_recipient(message=msg)
-        self.assertEqual(repr(rcpt), u'<%s: %s>' % (Recipient.__name__, rcpt.pk))
+        self.assertEqual(repr(rcpt), u'<Recipient: %s>' % rcpt.pk)
 
     def test_to_cc_and_bcc_query_methods(self):
         msg = self._create_message()

@@ -131,38 +131,40 @@ class InforequestsTestCaseMixin(TestCase):
         action_args = {u'paperwork': paperwork, u'type': action_type}
 
         if action_type in Action.APPLICANT_ACTION_TYPES or action_type in Action.OBLIGEE_ACTION_TYPES:
-            if action_type in Action.APPLICANT_ACTION_TYPES:
-                default_mail_type = Message.TYPES.OUTBOUND
-                default_rel_type = InforequestEmail.TYPES.APPLICANT_ACTION
-                default_from_name, default_from_mail = u'', inforequest.applicant.email
-                default_recipients = [{u'name': n, u'mail': a} for n, a in paperwork.obligee.emails_parsed]
-                default_recipient_status = Recipient.STATUSES.SENT
-            else:
-                default_mail_type = Message.TYPES.INBOUND
-                default_rel_type = InforequestEmail.TYPES.OBLIGEE_ACTION
-                default_from_name, default_from_mail = next(paperwork.obligee.emails_parsed)
-                default_recipients = [{u'mail': inforequest.applicant.email}]
-                default_recipient_status = Recipient.STATUSES.INBOUND
+            email_extra = action_extra.pop(u'email', {})
+            if email_extra is not False:
+                if action_type in Action.APPLICANT_ACTION_TYPES:
+                    default_mail_type = Message.TYPES.OUTBOUND
+                    default_rel_type = InforequestEmail.TYPES.APPLICANT_ACTION
+                    default_from_name, default_from_mail = u'', inforequest.applicant.email
+                    default_recipients = [{u'name': n, u'mail': a} for n, a in paperwork.obligee.emails_parsed]
+                    default_recipient_status = Recipient.STATUSES.SENT
+                else:
+                    default_mail_type = Message.TYPES.INBOUND
+                    default_rel_type = InforequestEmail.TYPES.OBLIGEE_ACTION
+                    default_from_name, default_from_mail = next(paperwork.obligee.emails_parsed)
+                    default_recipients = [{u'mail': inforequest.applicant.email}]
+                    default_recipient_status = Recipient.STATUSES.INBOUND
 
-            email_args = {
-                    u'inforequest': inforequest,
-                    u'reltype': default_rel_type,
-                    u'type': default_mail_type,
-                    u'from_name': default_from_name,
-                    u'from_mail': default_from_mail,
-                    }
-            email_args.update(action_extra.pop(u'email', {}))
-            email, _ = self._create_inforequest_email(**email_args)
-            action_args[u'email'] = email
-
-            for recipient_extra in action_extra.pop(u'recipients', default_recipients):
-                recipient_args = {
-                        u'message': email,
-                        u'type': Recipient.TYPES.TO,
-                        u'status': default_recipient_status,
+                email_args = {
+                        u'inforequest': inforequest,
+                        u'reltype': default_rel_type,
+                        u'type': default_mail_type,
+                        u'from_name': default_from_name,
+                        u'from_mail': default_from_mail,
                         }
-                recipient_args.update(recipient_extra)
-                self._create_recipient(**recipient_args)
+                email_args.update(email_extra)
+                email, _ = self._create_inforequest_email(**email_args)
+                action_args[u'email'] = email
+
+                for recipient_extra in action_extra.pop(u'recipients', default_recipients):
+                    recipient_args = {
+                            u'message': email,
+                            u'type': Recipient.TYPES.TO,
+                            u'status': default_recipient_status,
+                            }
+                    recipient_args.update(recipient_extra)
+                    self._create_recipient(**recipient_args)
 
         action_args.update(action_extra)
         action = self._create_action(**action_args)
@@ -242,6 +244,7 @@ class InforequestsTestCaseMixin(TestCase):
 
     def _create_action(self, **kwargs):
         return self._call_with_defaults(Action.objects.create, kwargs, {
+                u'type': Action.TYPES.REQUEST,
                 u'subject': u'Default Testing Subject',
                 u'content': u'Default Testing Content',
                 u'effective_date': local_today(),

@@ -185,7 +185,7 @@ class ObligeeModelTest(ObligeesTestCaseMixin, TestCase):
 
     def test_repr(self):
         oblg = self._create_obligee()
-        self.assertEqual(repr(oblg), u'<%s: %s>' % (Obligee.__name__, oblg.pk))
+        self.assertEqual(repr(oblg), u'<Obligee: %s>' % oblg.pk)
 
     def test_pending_query_method(self):
         oblg1 = self._create_obligee(status=Obligee.STATUSES.DISSOLVED)

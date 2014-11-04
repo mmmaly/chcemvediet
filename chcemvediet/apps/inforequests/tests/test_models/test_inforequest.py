@@ -421,7 +421,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
 
     def test_repr(self):
         inforequest = self._create_inforequest()
-        self.assertEqual(repr(inforequest), u'<%s: %s>' % (Inforequest.__name__, inforequest.pk))
+        self.assertEqual(repr(inforequest), u'<Inforequest: %s>' % inforequest.pk)
 
     def test_owned_by_query_method(self):
         inforequest1 = self._create_inforequest(applicant=self.user1)

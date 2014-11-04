@@ -48,4 +48,4 @@ class ProfileModelTest(AccountsTestCaseMixin, TestCase):
 
     def test_repr(self):
         user = User.objects.create_user(u'john', u'lennon@thebeatles.com', u'johnpassword')
-        self.assertEqual(repr(user.profile), u'<%s: %s>' % (Profile.__name__, user.profile.pk))
+        self.assertEqual(repr(user.profile), u'<Profile: %s>' % user.profile.pk)

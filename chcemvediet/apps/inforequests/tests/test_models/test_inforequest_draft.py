@@ -65,7 +65,7 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
 
     def test_repr(self):
         draft = self._create_inforequest_draft()
-        self.assertEqual(repr(draft), u'<%s: %s>' % (InforequestDraft.__name__, draft.pk))
+        self.assertEqual(repr(draft), u'<InforequestDraft: %s>' % draft.pk)
 
     def test_owned_by_query_method(self):
         draft1 = self._create_inforequest_draft(applicant=self.user1)

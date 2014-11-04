@@ -505,4 +505,4 @@ class PaperworkTest(InforequestsTestCaseMixin, TestCase):
 
     def test_repr(self):
         _, paperwork, _ = self._create_inforequest_scenario()
-        self.assertEqual(repr(paperwork), u'<%s: %s>' % (Paperwork.__name__, paperwork.pk))
+        self.assertEqual(repr(paperwork), u'<Paperwork: %s>' % paperwork.pk)

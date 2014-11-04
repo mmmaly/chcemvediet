@@ -193,7 +193,7 @@ class AttachmentModelTest(TestCase):
 
     def test_repr(self):
         obj = self._create_instance()
-        self.assertEqual(repr(obj), u'<%s: %s>' % (Attachment.__name__, obj.pk))
+        self.assertEqual(repr(obj), u'<Attachment: %s>' % obj.pk)
 
     def test_attached_to_query_method_with_queryset(self):
         obj1 = self._create_instance(generic_object=self.user)
