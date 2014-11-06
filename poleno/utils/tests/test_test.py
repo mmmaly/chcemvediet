@@ -187,3 +187,11 @@ class ViewTestCaseMixinAssertAnonymousUserIsRedirected(ViewTestCaseMixin, TestCa
     def test_on_wiew_without_login_required_fails(self):
         with self.assertRaisesMessage(AssertionError, u"Response didn't redirect as expected: Response code was 200"):
             self.assert_anonymous_user_is_redirected(u'/without_login_required/')
+
+    def test_with_custom_method_on_wiew_with_login_required_passes(self):
+        with mock.patch(u'poleno.utils.test.urlencode', return_value=u'next=/with_login_required/'):
+            self.assert_anonymous_user_is_redirected(u'/with_login_required/', method=u'POST')
+
+    def test_with_custom_method_on_wiew_without_login_required_fails(self):
+        with self.assertRaisesMessage(AssertionError, u"Response didn't redirect as expected: Response code was 200"):
+            self.assert_anonymous_user_is_redirected(u'/without_login_required/', method=u'POST')

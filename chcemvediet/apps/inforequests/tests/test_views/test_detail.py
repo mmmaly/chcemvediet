@@ -9,7 +9,7 @@ from poleno.utils.test import ViewTestCaseMixin
 
 from .. import InforequestsTestCaseMixin
 
-class IndexViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
+class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
     u"""
     Tests ``detail()`` view registered as "inforequests:detail".
     """

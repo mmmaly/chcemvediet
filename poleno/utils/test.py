@@ -99,7 +99,7 @@ class ViewTestCaseMixin(TestCase):
         for header in allow_headers:
             self.assertItemsEqual(header.split(u', '), allowed)
 
-    def assert_anonymous_user_is_redirected(self, url):
+    def assert_anonymous_user_is_redirected(self, url, method=u'GET'):
         u"""
         Makes anonymous request to the given ``url`` and checks that the request gets redirected to
         the login page. Usefull for testing views decorated with ``@login_required`` decorator.
@@ -112,7 +112,9 @@ class ViewTestCaseMixin(TestCase):
             class SomeViewTestCase(ViewTestCaseMixin, TestCase):
                 def test_anonymous(self):
                     self.assert_anonymous_user_is_redirected(reverse('some_view'))
+                def test_anonymous_post(self):
+                    self.assert_anonymous_user_is_redirected(reverse('some_view'), method='POST')
         """
-        response = self.client.get(url, follow=True)
+        response = getattr(self.client, method.lower())(url, follow=True)
         expected_url = reverse(u'account_login') + u'?' + urlencode({u'next': url})
         self.assertRedirects(response, expected_url)
