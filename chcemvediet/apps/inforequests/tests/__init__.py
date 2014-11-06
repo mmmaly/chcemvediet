@@ -220,7 +220,8 @@ class InforequestsTestCaseMixin(TestCase):
         args = list(args)
         applicant = args.pop(0) if args and isinstance(args[0], User) else self.user1
         obligee = args.pop(0) if args and isinstance(args[0], Obligee) else self.obligee1
-        inforequest = Inforequest.objects.create(applicant=applicant)
+        extra = args.pop(0) if args and isinstance(args[0], dict) else {}
+        inforequest = Inforequest.objects.create(applicant=applicant, **extra)
         paperwork, actions = self._create_inforequest_scenario__paperwork(inforequest, obligee, None, u'request', args)
         return inforequest, paperwork, actions
 
