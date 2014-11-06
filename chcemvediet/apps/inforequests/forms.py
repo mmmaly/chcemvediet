@@ -63,8 +63,7 @@ class InforequestForm(PrefixedForm):
             self.fields[u'content'].required = False
 
     def save(self, inforequest):
-        if not self.is_valid():
-            raise ValueError
+        assert self.is_valid()
 
         @after_saved(inforequest)
         def deferred():
@@ -86,8 +85,7 @@ class InforequestForm(PrefixedForm):
             action.attachment_set = self.cleaned_data[u'attachments']
 
     def save_to_draft(self, draft):
-        if not self.is_valid():
-            raise ValueError
+        assert self.is_valid()
 
         draft.obligee = self.cleaned_data[u'obligee']
         draft.subject = self.cleaned_data[u'subject']

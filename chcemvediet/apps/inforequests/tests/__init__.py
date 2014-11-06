@@ -58,6 +58,7 @@ class InforequestsTestCaseMixin(TestCase):
         street = kwargs.pop(u'street', u'Default User Street')
         city = kwargs.pop(u'city', u'Default User City')
         zip = kwargs.pop(u'zip', u'00000')
+        email_verified = kwargs.pop(u'email_verified', True)
         user = self._call_with_defaults(User.objects.create_user, kwargs, {
                 u'username': 'default_testing_username_%s' % tag,
                 u'first_name': 'Default Testing First Name',
@@ -69,6 +70,8 @@ class InforequestsTestCaseMixin(TestCase):
         user.profile.city = city
         user.profile.zip = zip
         user.profile.save()
+        if email_verified:
+            user.emailaddress_set.create(email=user.email, verified=True)
         return user
 
     def _login_user(self, user=None, password=None):
@@ -89,6 +92,7 @@ class InforequestsTestCaseMixin(TestCase):
     def _create_attachment(self, **kwargs):
         content = kwargs.pop(u'content', u'Default Testing Content')
         return self._call_with_defaults(Attachment.objects.create, kwargs, {
+                u'generic_object': self.user1,
                 u'file': ContentFile(content, name=u'filename.txt'),
                 u'name': u'filename.txt',
                 u'content_type': u'text/plain',

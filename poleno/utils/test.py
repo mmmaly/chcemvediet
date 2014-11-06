@@ -88,12 +88,16 @@ class ViewTestCaseMixin(TestCase):
                     self.assert_allowed_http_methods(allowed, reverse('some_view'))
         """
         methods = [u'HEAD', u'GET', u'POST', u'OPTIONS', u'PUT', u'PATCH', u'DELETE']
+        allow_headers = []
         for method in methods:
             response = getattr(self.client, method.lower())(url)
             if method in allowed:
                 self.assertNotEqual(response.status_code, 405, u'%s is not allowed' % method)
             else:
                 self.assertEqual(response.status_code, 405, u'%s is allowed' % method)
+                allow_headers.append(response[u'Allow'])
+        for header in allow_headers:
+            self.assertItemsEqual(header.split(u', '), allowed)
 
     def assert_anonymous_user_is_redirected(self, url):
         u"""

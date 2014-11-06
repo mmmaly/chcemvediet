@@ -154,6 +154,11 @@ class ViewTestCaseMixinAssertAllowedHttpMethodsTest(ViewTestCaseMixin, TestCase)
         with self.assertRaisesMessage(AssertionError, u'POST is not allowed'):
             self.assert_allowed_http_methods(allowed, u'/')
 
+    def test_invalid_method(self):
+        allowed = [u'HEAD', u'GET', u'INVALID']
+        with self.assertRaisesMessage(AssertionError, u'Element counts were not equal'):
+            self.assert_allowed_http_methods(allowed, u'/')
+
 class ViewTestCaseMixinAssertAnonymousUserIsRedirected(ViewTestCaseMixin, TestCase):
     u"""
     Tests ``assert_anonymous_user_is_redirected()`` method of ``ViewTestCaseMixin`` class.

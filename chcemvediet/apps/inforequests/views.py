@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.shortcuts import render
@@ -41,9 +41,9 @@ def create(request, draft_pk=None):
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'submit', u'draft'])
-        form = forms.InforequestForm(request.POST, draft=(button == u'draft'), attached_to=attached_to)
 
         if button == u'draft':
+            form = forms.InforequestForm(request.POST, draft=True, attached_to=attached_to)
             if form.is_valid():
                 if not draft:
                     draft = InforequestDraft(applicant=request.user)
@@ -51,7 +51,8 @@ def create(request, draft_pk=None):
                 draft.save()
                 return HttpResponseRedirect(reverse(u'inforequests:index'))
 
-        if button == u'submit':
+        elif button == u'submit':
+            form = forms.InforequestForm(request.POST, attached_to=attached_to)
             if form.is_valid():
                 inforequest = Inforequest(applicant=request.user)
                 form.save(inforequest)
@@ -63,6 +64,9 @@ def create(request, draft_pk=None):
                 if draft:
                     draft.delete()
                 return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+
+        else: # Invalid button
+            return HttpResponseBadRequest()
 
     else:
         form = forms.InforequestForm(attached_to=attached_to)

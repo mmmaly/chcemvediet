@@ -149,6 +149,15 @@ class AttachmentsFieldTest(TestCase):
         self.assertInHTML(u'<ul class="errorlist"><li>Invalid attachments.</li></ul>', rendered)
         self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",,">', rendered)
 
+    def test_submitted_form_with_missing_argument(self):
+        form = self.AttachmentsFieldForm({}, attached_to=self.user1)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'attachments'], [u'This field is required.'])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered)
+        self.assertInHTML(u'<input id="id_attachments" name="attachments" type="text" value=",,">', rendered)
+
     def test_form_with_attached_to_as_list(self):
         attachments = u'%s,%s' % (self.attachment1b.pk, self.attachment2.pk)
         form = self.AttachmentsFieldForm({u'attachments': attachments}, attached_to=[self.user1, self.user2])
