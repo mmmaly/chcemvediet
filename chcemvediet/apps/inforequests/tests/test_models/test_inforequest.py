@@ -370,9 +370,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         email, rel = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
 
         with self.settings(DEFAULT_FROM_EMAIL=u'info@example.com'):
-            with created_instances(Message.objects) as query_set:
+            with created_instances(Message.objects) as message_set:
                 inforequest.send_received_email_notification(email)
-        msg = query_set.get()
+        msg = message_set.get()
 
         self.assertEqual(msg.type, Message.TYPES.OUTBOUND)
         self.assertIsNone(msg.processed)
@@ -389,9 +389,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         email, rel = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED,
                 subject=u'Received email subject', text=u'Received email text content.')
 
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             inforequest.send_received_email_notification(email)
-        msg = query_set.get()
+        msg = message_set.get()
 
         url = u'%s#decide' % reverse(u'inforequests:detail', args=(inforequest.pk,))
         self.assertIn(url, msg.text)
@@ -406,9 +406,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         inforequest, _, _ = self._create_inforequest_scenario()
         email, rel = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
 
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             inforequest.send_undecided_email_reminder()
-        msg = query_set.get()
+        msg = message_set.get()
 
         url = u'%s#decide' % reverse(u'inforequests:detail', args=(inforequest.pk,))
         self.assertIn(url, msg.text)
@@ -423,9 +423,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         inforequest, _, (request,) = self._create_inforequest_scenario()
 
         timewarp.jump(local_datetime_from_local(u'2010-11-08 11:22:00'))
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             inforequest.send_obligee_deadline_reminder(request)
-        msg = query_set.get()
+        msg = message_set.get()
 
         url = u'%s#action-%s' % (reverse(u'inforequests:detail', args=(inforequest.pk,)), request.pk)
         self.assertIn(url, msg.text)
@@ -440,9 +440,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         inforequest, _, (_, clarification_request) = self._create_inforequest_scenario(u'clarification_request')
 
         timewarp.jump(local_datetime_from_local(u'2010-11-08 11:22:00'))
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             inforequest.send_applicant_deadline_reminder(clarification_request)
-        msg = query_set.get()
+        msg = message_set.get()
 
         url = u'%s#action-%s' % (reverse(u'inforequests:detail', args=(inforequest.pk,)), clarification_request.pk)
         self.assertIn(url, msg.text)

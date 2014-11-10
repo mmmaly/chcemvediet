@@ -22,7 +22,7 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
 
     def _create_post_data(self, omit=(), **kwargs):
         defaults = {
-                u'obligee': u'Default Testing Name',
+                u'obligee': u'Default Testing Name 1',
                 u'subject': u'Default Testing Subject',
                 u'content': u'Default Testing Content',
                 u'attachments': u',,,',
@@ -51,13 +51,13 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         user = self._create_user(email=u'smith@example.com', email_verified=False)
         self._login_user(user)
         with self.settings(DEFAULT_FROM_EMAIL=u'Something <from@example.com>'):
-            with created_instances(Message.objects) as query_set:
+            with created_instances(Message.objects) as message_set:
                 response = self.client.get(reverse(u'inforequests:create'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'account/verified_email_required.html')
 
         # Check confirmation email
-        msg = query_set.get()
+        msg = message_set.get()
         self.assertTemplateUsed(response, u'account/email/email_confirmation_subject.txt')
         self.assertTemplateUsed(response, u'account/email/email_confirmation_message.txt')
         self.assertEqual(msg.type, Message.TYPES.OUTBOUND)
@@ -124,10 +124,10 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
                 attachments=u'%s,%s' % (attachment1.pk, attachment2.pk))
 
         self._login_user(self.user1)
-        with created_instances(InforequestDraft.objects) as query_set:
+        with created_instances(InforequestDraft.objects) as inforequestdraft_set:
             response = self.client.post(reverse(u'inforequests:create'), data)
+        draft = inforequestdraft_set.get()
 
-        draft = query_set.get()
         self.assertEqual(draft.applicant, self.user1)
         self.assertEqual(draft.obligee, obligee)
         self.assertEqual(draft.subject, u'Subject')
@@ -145,10 +145,10 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
                 attachments=u'%s,%s' % (attachment1.pk, attachment3.pk))
 
         self._login_user(self.user1)
-        with created_instances(InforequestDraft.objects) as query_set:
+        with created_instances(InforequestDraft.objects) as inforequestdraft_set:
             response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft.pk,)), data)
+        self.assertFalse(inforequestdraft_set.exists())
 
-        self.assertFalse(query_set.exists())
         draft = InforequestDraft.objects.get(pk=draft.pk)
         self.assertEqual(draft.applicant, self.user1)
         self.assertEqual(draft.obligee, obligee)
@@ -165,17 +165,17 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
     def test_post_with_draft_button_and_invalid_data_does_not_create_new_draft_instance(self):
         data = self._create_post_data(button=u'draft', obligee=u'Invalid')
         self._login_user(self.user1)
-        with created_instances(InforequestDraft.objects) as query_set:
+        with created_instances(InforequestDraft.objects) as inforequestdraft_set:
             response = self.client.post(reverse(u'inforequests:create'), data)
-        self.assertFalse(query_set.exists())
+        self.assertFalse(inforequestdraft_set.exists())
 
     def test_post_with_draft_button_and_invalid_data_does_not_update_existing_draft_instance(self):
         draft = self._create_inforequest_draft(applicant=self.user1, subject=u'Old Subject')
         data = self._create_post_data(button=u'draft', obligee=u'Invalid')
         self._login_user(self.user1)
-        with created_instances(InforequestDraft.objects) as query_set:
+        with created_instances(InforequestDraft.objects) as inforequestdraft_set:
             response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft.pk,)), data)
-        self.assertFalse(query_set.exists())
+        self.assertFalse(inforequestdraft_set.exists())
         draft = InforequestDraft.objects.get(pk=draft.pk)
         self.assertEqual(draft.subject, u'Old Subject')
 
@@ -195,10 +195,10 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
                 attachments=u'%s,%s' % (attachment1.pk, attachment2.pk))
 
         self._login_user(self.user1)
-        with created_instances(Inforequest.objects) as query_set:
+        with created_instances(Inforequest.objects) as inforequest_set:
             response = self.client.post(reverse(u'inforequests:create'), data)
 
-        inforequest = query_set.get()
+        inforequest = inforequest_set.get()
         paperwork = inforequest.paperwork
         action = paperwork.last_action
         self.assertEqual(inforequest.applicant, self.user1)
@@ -239,17 +239,17 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
     def test_post_with_submit_button_and_valid_data_redirects_to_inforequests_detail(self):
         data = self._create_post_data(button=u'submit')
         self._login_user(self.user1)
-        with created_instances(Inforequest.objects) as query_set:
+        with created_instances(Inforequest.objects) as inforequest_set:
             response = self.client.post(reverse(u'inforequests:create'), data, follow=True)
-        inforequest = query_set.get()
+        inforequest = inforequest_set.get()
         self.assertRedirects(response, reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
     def test_post_with_submit_button_and_invalid_data_does_not_create_inforequest(self):
         data = self._create_post_data(button=u'submit', obligee=u'invalid')
         self._login_user()
-        with created_instances(Inforequest.objects) as query_set:
+        with created_instances(Inforequest.objects) as inforequest_set:
             response = self.client.post(reverse(u'inforequests:create'), data)
-        self.assertFalse(query_set.exists())
+        self.assertFalse(inforequest_set.exists())
 
     def test_post_with_submit_button_and_invalid_data_does_not_send_inforequest_email(self):
         data = self._create_post_data(button=u'submit', obligee=u'invalid')

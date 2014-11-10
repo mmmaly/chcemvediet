@@ -481,9 +481,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         for action_type, can_send in tests:
             action = self._create_action(paperwork=paperwork, type=action_type)
             if can_send:
-                with created_instances(Message.objects) as query_set:
+                with created_instances(Message.objects) as message_set:
                     action.send_by_email()
-                email = query_set.get()
+                email = message_set.get()
                 self.assertEqual(email.type, Message.TYPES.OUTBOUND)
                 self.assertEqual(action.email, email)
                 self.assertIn(email, inforequest.email_set.all())
@@ -491,10 +491,10 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
                 self.assertEqual(rel.inforequest, inforequest)
                 self.assertEqual(rel.type, InforequestEmail.TYPES.APPLICANT_ACTION)
             else:
-                with created_instances(Message.objects) as query_set:
+                with created_instances(Message.objects) as message_set:
                     with self.assertRaisesMessage(TypeError, u'is not applicant action'):
                         action.send_by_email()
-                self.assertEqual(query_set.count(), 0)
+                self.assertEqual(message_set.count(), 0)
 
     def test_send_by_email_from_name_and_from_mail(self):
         with self.settings(INFOREQUEST_UNIQUE_EMAIL=u'{token}@example.com'):
@@ -504,9 +504,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
                 paperwork = self._create_paperwork(inforequest=inforequest)
                 action = self._create_action(paperwork=paperwork)
 
-                with created_instances(Message.objects) as query_set:
+                with created_instances(Message.objects) as message_set:
                     action.send_by_email()
-                email = query_set.get()
+                email = message_set.get()
 
                 self.assertEqual(email.from_name, u'John Smith')
                 self.assertEqual(email.from_mail, u'aaaa@example.com')
@@ -534,9 +534,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
                 )
         action = self._create_action(paperwork=paperwork)
 
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             action.send_by_email()
-        email = query_set.get()
+        email = message_set.get()
 
         result = [r.formatted for r in email.recipient_set.to()]
         self.assertItemsEqual(result, [
@@ -556,9 +556,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         paperwork = self._create_paperwork(inforequest=inforequest)
         action = self._create_action(paperwork=paperwork, subject=u'Subject', content=u'Content')
 
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             action.send_by_email()
-        email = query_set.get()
+        email = message_set.get()
 
         self.assertEqual(email.subject, u'Subject')
         self.assertEqual(email.text, u'Content')
@@ -571,9 +571,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         attachment1 = self._create_attachment(generic_object=action, name=u'filename.txt', content=u'Content', content_type=u'text/plain')
         attachment2 = self._create_attachment(generic_object=action, name=u'filename.html', content=u'<p>Content</p>', content_type=u'text/html')
 
-        with created_instances(Message.objects) as query_set:
+        with created_instances(Message.objects) as message_set:
             action.send_by_email()
-        email = query_set.get()
+        email = message_set.get()
 
         result = ((a.name, a.content, a.content_type) for a in email.attachment_set.all())
         self.assertItemsEqual(result, [

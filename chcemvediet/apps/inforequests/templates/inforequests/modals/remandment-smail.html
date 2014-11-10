@@ -9,7 +9,7 @@
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:add_smail' 'remandment' inforequest.pk %}">
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:add_smail_remandment' inforequest.pk %}">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>

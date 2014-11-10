@@ -151,6 +151,3 @@ class QuerySet(models.query.QuerySet):
         one object is found.
         """
         return get_object_or_404(self, *args, **kwargs)
-
-
-

@@ -7,7 +7,6 @@ import stat
 from django.http import HttpResponse, HttpResponseNotModified, CompatibleStreamingHttpResponse
 from django.views.static import was_modified_since
 from django.template import  RequestContext
-from django.template.loader import render_to_string
 from django.utils.http import http_date, urlquote
 
 class JsonResponse(HttpResponse):

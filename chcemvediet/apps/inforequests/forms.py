@@ -136,15 +136,11 @@ class ActionAbstractForm(PrefixedForm):
             self.fields[u'paperwork'].required = False
 
     def save(self, action):
-        if not self.is_valid():
-            raise ValueError
-
+        assert self.is_valid()
         action.paperwork = self.cleaned_data[u'paperwork']
 
     def save_to_draft(self, draft):
-        if not self.is_valid():
-            raise ValueError
-
+        assert self.is_valid()
         draft.paperwork = self.cleaned_data[u'paperwork']
 
     def load_from_draft(self, draft):

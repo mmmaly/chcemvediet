@@ -32,9 +32,9 @@ class InforequestsTestCaseMixin(TestCase):
 
         self.user1 = self._create_user()
         self.user2 = self._create_user()
-        self.obligee1 = self._create_obligee()
-        self.obligee2 = self._create_obligee()
-        self.obligee3 = self._create_obligee()
+        self.obligee1 = self._create_obligee(name=u'Default Testing Name 1')
+        self.obligee2 = self._create_obligee(name=u'Default Testing Name 2')
+        self.obligee3 = self._create_obligee(name=u'Default Testing Name 3')
 
     def _post_teardown(self):
         self.settings_override.disable()
@@ -266,6 +266,3 @@ class InforequestsTestCaseMixin(TestCase):
                 u'subject': u'Default Testing Subject',
                 u'content': u'Default Testing Content',
                 })
-
-    def _render(self, template, **context):
-        return Template(template).render(Context(context))

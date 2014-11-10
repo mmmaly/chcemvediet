@@ -395,20 +395,20 @@ class PaperworkTest(InforequestsTestCaseMixin, TestCase):
             original_last_action = paperwork.last_action
 
             # Deadline not expired yet
-            with created_instances(Action.objects) as query_set:
+            with created_instances(Action.objects) as action_set:
                 paperwork.add_expiration_if_expired()
-            self.assertEqual(query_set.count(), 0)
+            self.assertEqual(action_set.count(), 0)
 
             # Any deadline is expired now
             timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-            with created_instances(Action.objects) as query_set:
+            with created_instances(Action.objects) as action_set:
                 paperwork.add_expiration_if_expired()
 
             if expected_action_type is None:
-                self.assertEqual(query_set.count(), 0)
+                self.assertEqual(action_set.count(), 0)
                 self.assertEqual(paperwork.last_action, original_last_action)
             else:
-                added_action = query_set.get()
+                added_action = action_set.get()
                 self.assertEqual(paperwork.last_action, added_action)
                 self.assertEqual(added_action.type, expected_action_type)
                 self.assertEqual(added_action.effective_date, naive_date(u'2010-10-05'))
