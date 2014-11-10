@@ -395,7 +395,7 @@ class DisclosureLevelMixin(ActionAbstractForm):
 
     def save_to_draft(self, draft):
         super(DisclosureLevelMixin, self).save_to_draft(draft)
-        draft.disclosure_level = self.cleaned_data[u'disclosure_level'] if self.cleaned_data[u'disclosure_level'] != u'' else None
+        draft.disclosure_level = self.cleaned_data[u'disclosure_level']
 
     def load_from_draft(self, draft):
         super(DisclosureLevelMixin, self).load_from_draft(draft)
@@ -420,7 +420,7 @@ class RefusalReasonMixin(ActionAbstractForm):
 
     def save_to_draft(self, draft):
         super(RefusalReasonMixin, self).save_to_draft(draft)
-        draft.refusal_reason = self.cleaned_data[u'refusal_reason'] if self.cleaned_data[u'refusal_reason'] != u'' else None
+        draft.refusal_reason = self.cleaned_data[u'refusal_reason']
 
     def load_from_draft(self, draft):
         super(RefusalReasonMixin, self).load_from_draft(draft)
@@ -522,9 +522,8 @@ class ExtendDeadlineForm(PrefixedForm):
             )
 
     def save(self, action):
-        if not self.is_valid():
-            raise ValueError
+        assert self.is_valid()
+        assert action.deadline is not None
 
         # User sets the extended deadline relative to today.
-        if action.deadline is not None:
-            action.extension = action.days_passed - action.deadline + self.cleaned_data[u'extension']
+        action.extension = action.days_passed - action.deadline + self.cleaned_data[u'extension']

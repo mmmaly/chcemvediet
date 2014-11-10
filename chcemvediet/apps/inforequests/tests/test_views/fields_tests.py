@@ -691,6 +691,19 @@ class DraftPaperworkFieldTests(PaperworkFieldTests):
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)
         self.assertEqual(draft.paperwork, scenario.paperwork)
 
+    def test_draft_paperwork_field_with_empty_value_is_saved_to_draft(self):
+        scenario = self._create_scenario(draft_args=dict())
+        scenario.draft.paperwork = scenario.paperwork
+        scenario.draft.save()
+        data = self._create_post_data(button=u'draft', paperwork=u'')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        draft = ActionDraft.objects.get(pk=scenario.draft.pk)
+        self.assertIsNone(draft.paperwork)
+
     def test_draft_paperwork_field_is_not_required(self):
         scenario = self._create_scenario()
         data = self._create_post_data(button=u'draft', omit=[u'paperwork'])
@@ -723,6 +736,17 @@ class DraftEffectiveDateFieldTests(EffectiveDateFieldTests):
 
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)
         self.assertEqual(draft.effective_date, naive_date(u'2010-10-13'))
+
+    def test_draft_effective_date_field_with_empty_value_is_saved_to_draft(self):
+        scenario = self._create_scenario(draft_args=dict(effective_date=naive_date(u'2010-10-05')))
+        data = self._create_post_data(button=u'draft', effective_date=u'')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        draft = ActionDraft.objects.get(pk=scenario.draft.pk)
+        self.assertIsNone(draft.effective_date)
 
     def test_draft_effective_date_field_is_not_required(self):
         scenario = self._create_scenario()
@@ -967,6 +991,17 @@ class DraftDisclosureLevelFieldTests(DisclosureLevelFieldTests):
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)
         self.assertEqual(draft.disclosure_level, Action.DISCLOSURE_LEVELS.NONE)
 
+    def test_draft_disclosure_level_field_with_empty_value_is_saved_to_draft(self):
+        scenario = self._create_scenario(draft_args=dict(disclosure_level=Action.DISCLOSURE_LEVELS.FULL))
+        data = self._create_post_data(button=u'draft', disclosure_level=u'')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        draft = ActionDraft.objects.get(pk=scenario.draft.pk)
+        self.assertIsNone(draft.disclosure_level)
+
     def test_draft_disclosure_level_field_is_not_required(self):
         scenario = self._create_scenario()
         data = self._create_post_data(button=u'draft', omit=[u'disclosure_level'])
@@ -999,6 +1034,17 @@ class DraftRefusalReasonFieldTests(RefusalReasonFieldTests):
 
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)
         self.assertEqual(draft.refusal_reason, Action.REFUSAL_REASONS.PERSONAL)
+
+    def test_draft_refusal_reason_field_with_empty_value_is_saved_to_draft(self):
+        scenario = self._create_scenario(draft_args=dict(refusal_reason=Action.REFUSAL_REASONS.CONFIDENTIAL))
+        data = self._create_post_data(button=u'draft', refusal_reason=u'')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        draft = ActionDraft.objects.get(pk=scenario.draft.pk)
+        self.assertIsNone(draft.refusal_reason)
 
     def test_draft_refusal_reason_field_is_not_required(self):
         scenario = self._create_scenario()

@@ -74,9 +74,9 @@ class InforequestsTestCaseMixin(TestCase):
             user.emailaddress_set.create(email=user.email, verified=True)
         return user
 
-    def _login_user(self, user=None, password=None):
-        user = user or self.user1
-        password = password or u'default_testing_secret'
+    def _login_user(self, user=None, password=u'default_testing_secret'):
+        if user is None:
+            user = self.user1
         self.client.login(username=user.username, password=password)
 
     def _create_obligee(self, **kwargs):
