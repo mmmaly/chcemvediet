@@ -9,7 +9,12 @@ from poleno.utils.date import local_date, local_today
 
 from .models import Inforequest
 
-@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
+# All these jobs do all their work the first time they are run in a day. Any later runs in the same
+# day should do nothing. However, we run them multiple times in a day in case something was broken
+# at the morning and the jobs failed.
+RUN_AT_TIMES = [u'09:00', u'10:00', u'11:00', u'12:00', u'13:00', u'14:00']
+
+@cron_job(run_at_times=RUN_AT_TIMES)
 def undecided_email_reminder():
     with translation(settings.LANGUAGE_CODE):
         for inforequest in Inforequest.objects.not_closed().with_undecided_email():
@@ -24,7 +29,7 @@ def undecided_email_reminder():
             print(u'Sending undecided email reminder: %s' % repr(inforequest))
             inforequest.send_undecided_email_reminder()
 
-@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
+@cron_job(run_at_times=RUN_AT_TIMES)
 def obligee_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
         for inforequest in Inforequest.objects.not_closed().without_undecided_email():
@@ -46,7 +51,7 @@ def obligee_deadline_reminder():
                 print(u'Sending obligee deadline reminder: %s' % repr(paperwork.last_action))
                 inforequest.send_obligee_deadline_reminder(paperwork.last_action)
 
-@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
+@cron_job(run_at_times=RUN_AT_TIMES)
 def applicant_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
         for inforequest in Inforequest.objects.not_closed().without_undecided_email():
@@ -66,7 +71,7 @@ def applicant_deadline_reminder():
                 print(u'Sending applicant deadline reminder: %s' % repr(paperwork.last_action))
                 inforequest.send_applicant_deadline_reminder(paperwork.last_action)
 
-@cron_job(run_at_times=[u'09:00'], retry_after_failure_mins=30)
+@cron_job(run_at_times=RUN_AT_TIMES)
 def close_inforequests():
     for inforequest in Inforequest.objects.not_closed():
         for paperwork in inforequest.paperwork_set.all():
