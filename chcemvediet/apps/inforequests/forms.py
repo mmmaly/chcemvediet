@@ -17,7 +17,7 @@ from poleno.utils.misc import squeeze
 from poleno.utils.date import local_today
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
 
-from .models import Paperwork, Action
+from .models import Branch, Action
 
 
 class InforequestForm(PrefixedForm):
@@ -67,14 +67,14 @@ class InforequestForm(PrefixedForm):
 
         @after_saved(inforequest)
         def deferred():
-            paperwork = Paperwork(
+            branch = Branch(
                     obligee=self.cleaned_data[u'obligee'],
                     inforequest=inforequest,
                     )
-            paperwork.save()
+            branch.save()
 
             action = Action(
-                    paperwork=paperwork,
+                    branch=branch,
                     subject=self.cleaned_data[u'subject'],
                     content=self.cleaned_data[u'content'],
                     effective_date=inforequest.submission_date,
@@ -103,7 +103,7 @@ class InforequestForm(PrefixedForm):
 
 
 class ActionAbstractForm(PrefixedForm):
-    paperwork = forms.TypedChoiceField(
+    branch = forms.TypedChoiceField(
             label=_(u'Obligee'),
             empty_value=None,
             widget=AutoSuppressedSelect(suppressed_attrs={
@@ -117,11 +117,11 @@ class ActionAbstractForm(PrefixedForm):
         self.draft = kwargs.pop(u'draft', False)
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
 
-        # Assumes that converting a Paperwork to a string gives its ``pk``
-        field = self.fields[u'paperwork']
-        field.choices = [(paperwork, paperwork.historicalobligee.name)
-                for paperwork in self.inforequest.paperwork_set.all()
-                if paperwork.can_add_action(self.action_type)]
+        # Assumes that converting a Branch to a string gives its ``pk``
+        field = self.fields[u'branch']
+        field.choices = [(branch, branch.historicalobligee.name)
+                for branch in self.inforequest.branch_set.all()
+                if branch.can_add_action(self.action_type)]
         if len(field.choices) > 1:
             field.choices = [(u'', u'')] + field.choices
 
@@ -133,18 +133,18 @@ class ActionAbstractForm(PrefixedForm):
         field.coerce = coerce
 
         if self.draft:
-            self.fields[u'paperwork'].required = False
+            self.fields[u'branch'].required = False
 
     def save(self, action):
         assert self.is_valid()
-        action.paperwork = self.cleaned_data[u'paperwork']
+        action.branch = self.cleaned_data[u'branch']
 
     def save_to_draft(self, draft):
         assert self.is_valid()
-        draft.paperwork = self.cleaned_data[u'paperwork']
+        draft.branch = self.cleaned_data[u'branch']
 
     def load_from_draft(self, draft):
-        self.initial[u'paperwork'] = draft.paperwork
+        self.initial[u'branch'] = draft.branch
 
 class EffectiveDateMixin(ActionAbstractForm):
     effective_date = forms.DateField(
@@ -165,11 +165,11 @@ class EffectiveDateMixin(ActionAbstractForm):
         cleaned_data = super(EffectiveDateMixin, self).clean()
 
         if not self.draft:
-            paperwork = cleaned_data.get(u'paperwork', None)
+            branch = cleaned_data.get(u'branch', None)
             effective_date = cleaned_data.get(u'effective_date', None)
             if effective_date:
                 try:
-                    if paperwork and effective_date < paperwork.last_action.effective_date:
+                    if branch and effective_date < branch.last_action.effective_date:
                         raise ValidationError(_(u'May not be older than previous action.'))
                     if effective_date > local_today():
                         raise ValidationError(_(u'May not be from future.'))
@@ -323,12 +323,12 @@ class AdvancedToMixin(ActionAbstractForm):
         cleaned_data = super(AdvancedToMixin, self).clean()
 
         if not self.draft:
-            paperwork = cleaned_data.get(u'paperwork', None)
+            branch = cleaned_data.get(u'branch', None)
             for i, field in enumerate(self.ADVANCED_TO_FIELDS):
                 advanced_to = cleaned_data.get(field, None)
                 if advanced_to:
                     try:
-                        if paperwork and advanced_to == paperwork.obligee:
+                        if branch and advanced_to == branch.obligee:
                             raise ValidationError(_(u'May not advance to the same obligee.'))
                         for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
                             advanced_to_2 = cleaned_data.get(field_2, None)
@@ -348,15 +348,15 @@ class AdvancedToMixin(ActionAbstractForm):
             for field in self.ADVANCED_TO_FIELDS:
                 obligee = self.cleaned_data[field]
                 if obligee:
-                    sub_paperwork = Paperwork(
+                    sub_branch = Branch(
                             obligee=obligee,
-                            inforequest=action.paperwork.inforequest,
+                            inforequest=action.branch.inforequest,
                             advanced_by=action,
                             )
-                    sub_paperwork.save()
+                    sub_branch.save()
 
                     sub_action = Action(
-                            paperwork=sub_paperwork,
+                            branch=sub_branch,
                             effective_date=action.effective_date,
                             type=Action.TYPES.ADVANCED_REQUEST,
                             )

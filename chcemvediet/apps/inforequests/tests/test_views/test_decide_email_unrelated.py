@@ -28,7 +28,7 @@ class DecideEmailUnrelatedViewTest(
         res = Bunch()
 
         inforequest_args = kwargs.pop(u'inforequest_args', [])
-        res.inforequest, res.paperwork, res.actions = self._create_inforequest_scenario(*inforequest_args)
+        res.inforequest, res.branch, res.actions = self._create_inforequest_scenario(*inforequest_args)
 
         email_args = kwargs.pop(u'email_args', {})
         email_args.setdefault(u'inforequest', res.inforequest)

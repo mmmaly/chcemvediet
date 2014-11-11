@@ -6,7 +6,7 @@
  %
  % Context:
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
- %  -- paperwork: chcemvediet.apps.inforequests.models.Paperwork
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- action: chcemvediet.apps.inforequests.models.Action
  %  -- forloop
  %
@@ -83,22 +83,22 @@
     </div>
   {% endif %}
   {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_email %}
-    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.pk paperwork.pk action.pk %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.pk branch.pk action.pk %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
     <span id="extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
   {% endif %}
-  {% for sub_paperwork in action.advanced_to_set.all %}
+  {% for sub_branch in action.advanced_to_set.all %}
     <div class="well well-inverse">
       <div class="row-fluid">
         <p class="span2 text-right">{% blocktrans %}New Obligee{% endblocktrans %}:</p>
         <div class="span10">
-          <p>{{ sub_paperwork.historicalobligee.name }}</p>
-          <p>{{ sub_paperwork.historicalobligee.street }}<br>
-            {{ sub_paperwork.historicalobligee.zip }} {{ sub_paperwork.historicalobligee.city }}</p>
+          <p>{{ sub_branch.historicalobligee.name }}</p>
+          <p>{{ sub_branch.historicalobligee.street }}<br>
+            {{ sub_branch.historicalobligee.zip }} {{ sub_branch.historicalobligee.city }}</p>
         </div>
       </div>
       {# Workaround for Django bug causing infinite recursion #}
-      {% with template_name="inforequests/detail-paperwork.html" %}
-        {% include template_name with inforequest=inforequest paperwork=sub_paperwork %}
+      {% with template_name="inforequests/detail-branch.html" %}
+        {% include template_name with inforequest=inforequest branch=sub_branch %}
       {% endwith %}
     </div>
   {% endfor %}

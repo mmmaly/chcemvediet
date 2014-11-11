@@ -223,7 +223,7 @@ class ObligeeDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCase
         message_set = self._call_cron_job()
         self.assertEqual(message_set.count(), 4)
 
-    def test_obligee_deadline_reminder_with_inforequest_with_multiple_paperworks(self):
+    def test_obligee_deadline_reminder_with_inforequest_with_multiple_branches(self):
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
         inforequest, _, _ = self._create_inforequest_scenario((u'advancement', [], [], []))
 
@@ -388,7 +388,7 @@ class ApplicantDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCa
         message_set = self._call_cron_job()
         self.assertEqual(message_set.count(), 4)
 
-    def test_applicant_deadline_reminder_with_inforequest_with_multiple_paperworks(self):
+    def test_applicant_deadline_reminder_with_inforequest_with_multiple_branches(self):
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
         inforequest, _, _ = self._create_inforequest_scenario((u'advancement',
             [u'clarification_request'], [u'clarification_request'], [u'clarification_request']))
@@ -544,10 +544,10 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
 
     def test_expiration_added_if_last_action_has_obligee_deadline(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
-        _, paperwork, _ = self._create_inforequest_scenario()
+        _, branch, _ = self._create_inforequest_scenario()
 
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        with created_instances(paperwork.action_set) as action_set:
+        with created_instances(branch.action_set) as action_set:
             self._call_cron_job()
         action = action_set.get()
 
@@ -555,36 +555,36 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
 
     def test_expiration_not_added_if_last_action_does_not_have_obligee_deadline(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
-        _, paperwork, _ = self._create_inforequest_scenario(u'disclosure')
+        _, branch, _ = self._create_inforequest_scenario(u'disclosure')
 
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        with created_instances(paperwork.action_set) as action_set:
+        with created_instances(branch.action_set) as action_set:
             self._call_cron_job()
         self.assertFalse(action_set.exists())
 
     def test_expiration_not_added_if_inforequest_is_already_closed(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
-        _, paperwork, _ = self._create_inforequest_scenario(dict(closed=True))
+        _, branch, _ = self._create_inforequest_scenario(dict(closed=True))
 
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        with created_instances(paperwork.action_set) as action_set:
+        with created_instances(branch.action_set) as action_set:
             self._call_cron_job()
         self.assertFalse(action_set.exists())
 
-    def test_expirations_added_for_inforequest_with_multiple_paperworks(self):
+    def test_expirations_added_for_inforequest_with_multiple_branches(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
-        _, paperwork, actions = self._create_inforequest_scenario((u'advancement',
+        _, branch, actions = self._create_inforequest_scenario((u'advancement',
                 [u'confirmation'],
                 [u'clarification_request'],
                 [u'clarification_request', u'clarification_response'],
                 ))
-        _, (_, [(paperwork1, _), (paperwork2, _), (paperwork3, _)]) = actions
+        _, (_, [(branch1, _), (branch2, _), (branch3, _)]) = actions
 
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        with created_instances(paperwork.action_set) as action_set:
-            with created_instances(paperwork1.action_set) as action_set1:
-                with created_instances(paperwork2.action_set) as action_set2:
-                    with created_instances(paperwork3.action_set) as action_set3:
+        with created_instances(branch.action_set) as action_set:
+            with created_instances(branch1.action_set) as action_set1:
+                with created_instances(branch2.action_set) as action_set2:
+                    with created_instances(branch3.action_set) as action_set3:
                         self._call_cron_job()
         self.assertFalse(action_set.exists())
         self.assertTrue(action_set1.exists())
@@ -622,7 +622,7 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
         inforequest = Inforequest.objects.get(pk=inforequest.pk)
         self.assertTrue(inforequest.closed)
 
-    def test_inforequest_is_not_closed_if_at_least_one_paperwork_prevents_it(self):
+    def test_inforequest_is_not_closed_if_at_least_one_branch_prevents_it(self):
         inforequest, _, _ = self._create_inforequest_scenario((u'advancement',
                 [u'refusal', u'appeal', u'affirmation'],
                 [(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.PARTIAL))],
@@ -633,7 +633,7 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
         inforequest = Inforequest.objects.get(pk=inforequest.pk)
         self.assertFalse(inforequest.closed)
 
-    def test_inforequest_is_closed_if_no_paperwork_prevents_it(self):
+    def test_inforequest_is_closed_if_no_branch_prevents_it(self):
         inforequest, _, _ = self._create_inforequest_scenario((u'advancement',
                 [u'refusal', u'appeal', u'affirmation'],
                 [(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.FULL))],

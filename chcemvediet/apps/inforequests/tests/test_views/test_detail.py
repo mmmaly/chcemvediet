@@ -52,7 +52,7 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
         # Three actions in single branch
-        self.assertTemplateUsedCount(response, u'inforequests/detail-paperwork.html', 1)
+        self.assertTemplateUsedCount(response, u'inforequests/detail-branch.html', 1)
         self.assertTemplateUsedCount(response, u'inforequests/detail-action.html', 3)
 
     def test_inforequest_with_multiple_branches(self):
@@ -84,7 +84,7 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         #                  -- branch:
         #                      -- advanced_request
         #                      -- refusal
-        self.assertTemplateUsedCount(response, u'inforequests/detail-paperwork.html', 5)
+        self.assertTemplateUsedCount(response, u'inforequests/detail-branch.html', 5)
         self.assertTemplateUsedCount(response, u'inforequests/detail-action.html', 12)
 
     def test_inforequest_with_undecided_email(self):

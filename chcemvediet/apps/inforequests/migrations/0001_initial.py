@@ -42,20 +42,20 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'inforequests', ['InforequestEmail'])
 
-        # Adding model 'Paperwork'
-        db.create_table(u'inforequests_paperwork', (
+        # Adding model 'Branch'
+        db.create_table(u'inforequests_branch', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('inforequest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Inforequest'])),
             ('obligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.Obligee'])),
             ('historicalobligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.HistoricalObligee'])),
             ('advanced_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name=u'advanced_to_set', null=True, to=orm['inforequests.Action'])),
         ))
-        db.send_create_signal(u'inforequests', ['Paperwork'])
+        db.send_create_signal(u'inforequests', ['Branch'])
 
         # Adding model 'Action'
         db.create_table(u'inforequests_action', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('paperwork', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Paperwork'])),
+            ('branch', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Branch'])),
             ('email', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['mail.Message'], unique=True, null=True, blank=True)),
             ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
@@ -73,7 +73,7 @@ class Migration(SchemaMigration):
         db.create_table(u'inforequests_actiondraft', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('inforequest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Inforequest'])),
-            ('paperwork', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Paperwork'], null=True, blank=True)),
+            ('branch', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Branch'], null=True, blank=True)),
             ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
@@ -104,8 +104,8 @@ class Migration(SchemaMigration):
         # Deleting model 'InforequestEmail'
         db.delete_table(u'inforequests_inforequestemail')
 
-        # Deleting model 'Paperwork'
-        db.delete_table(u'inforequests_paperwork')
+        # Deleting model 'Branch'
+        db.delete_table(u'inforequests_branch')
 
         # Deleting model 'Action'
         db.delete_table(u'inforequests_action')
@@ -156,6 +156,7 @@ class Migration(SchemaMigration):
         },
         u'inforequests.action': {
             'Meta': {'ordering': "[u'effective_date', u'pk']", 'object_name': 'Action'},
+            'branch': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Branch']"}),
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'deadline': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'disclosure_level': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -164,13 +165,13 @@ class Migration(SchemaMigration):
             'extension': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_deadline_reminder': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'paperwork': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Paperwork']"}),
             'refusal_reason': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'type': ('django.db.models.fields.SmallIntegerField', [], {})
         },
         u'inforequests.actiondraft': {
             'Meta': {'ordering': "[u'pk']", 'object_name': 'ActionDraft'},
+            'branch': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Branch']", 'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'deadline': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'disclosure_level': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -178,10 +179,17 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
             'obligee_set': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['obligees.Obligee']", 'symmetrical': 'False'}),
-            'paperwork': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Paperwork']", 'null': 'True', 'blank': 'True'}),
             'refusal_reason': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'type': ('django.db.models.fields.SmallIntegerField', [], {})
+        },
+        u'inforequests.branch': {
+            'Meta': {'ordering': "[u'historicalobligee__name', u'pk']", 'object_name': 'Branch'},
+            'advanced_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'advanced_to_set'", 'null': 'True', 'to': u"orm['inforequests.Action']"}),
+            'historicalobligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.HistoricalObligee']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
+            'obligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.Obligee']"})
         },
         u'inforequests.inforequest': {
             'Meta': {'ordering': "[u'submission_date', u'pk']", 'object_name': 'Inforequest'},
@@ -212,14 +220,6 @@ class Migration(SchemaMigration):
             'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
             'type': ('django.db.models.fields.SmallIntegerField', [], {})
         },
-        u'inforequests.paperwork': {
-            'Meta': {'ordering': "[u'historicalobligee__name', u'pk']", 'object_name': 'Paperwork'},
-            'advanced_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'advanced_to_set'", 'null': 'True', 'to': u"orm['inforequests.Action']"}),
-            'historicalobligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.HistoricalObligee']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
-            'obligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.Obligee']"})
-        },
         u'mail.message': {
             'Meta': {'ordering': "[u'processed', u'pk']", 'object_name': 'Message'},
             'from_mail': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
@@ -249,7 +249,7 @@ class Migration(SchemaMigration):
             'zip': ('django.db.models.fields.CharField', [], {'max_length': '10'})
         },
         u'obligees.obligee': {
-            'Meta': {'ordering': "[u'name']", 'object_name': 'Obligee'},
+            'Meta': {'ordering': "[u'name', u'pk']", 'object_name': 'Obligee'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'emails': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

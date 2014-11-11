@@ -1,0 +1,15 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %
+{% endcomment %}
+
+{% for action in branch.action_set.all %}
+  <div id="action-{{ action.pk }}">
+    {% include "inforequests/detail-action.html" with inforequest=inforequest branch=branch action=action forloop=forloop %}
+  </div>
+{% endfor %}

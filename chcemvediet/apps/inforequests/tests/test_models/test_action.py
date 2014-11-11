@@ -15,34 +15,34 @@ from poleno.utils.date import local_datetime_from_local, naive_date, local_today
 from poleno.utils.test import created_instances
 
 from .. import InforequestsTestCaseMixin
-from ...models import InforequestEmail, Paperwork, Action
+from ...models import InforequestEmail, Action
 
 class ActionTest(InforequestsTestCaseMixin, TestCase):
     u"""
     Tests ``Action`` model.
     """
 
-    def test_paperwork_field(self):
+    def test_branch_field(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork)
-        self.assertEqual(action.paperwork, paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
+        self.assertEqual(action.branch, branch)
 
-    def test_paperwork_field_may_not_be_null(self):
-        with self.assertRaisesMessage(IntegrityError, u'inforequests_action.paperwork_id may not be NULL'):
-            self._create_action(omit=[u'paperwork'])
+    def test_branch_field_may_not_be_null(self):
+        with self.assertRaisesMessage(IntegrityError, u'inforequests_action.branch_id may not be NULL'):
+            self._create_action(omit=[u'branch'])
 
     def test_email_field(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         email = self._create_message()
-        action = self._create_action(paperwork=paperwork, email=email)
+        action = self._create_action(branch=branch, email=email)
         self.assertEqual(action.email, email)
 
     def test_email_field_default_value_if_ommited(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, omit=[u'email'])
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, omit=[u'email'])
         self.assertIsNone(action.email)
 
     def test_type_field(self):
@@ -69,57 +69,57 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for action_type, expected_display in tests:
-            action = self._create_action(paperwork=paperwork, type=action_type)
+            action = self._create_action(branch=branch, type=action_type)
             self.assertEqual(action.type, action_type)
             self.assertEqual(action.get_type_display(), expected_display)
 
     def test_type_field_may_not_be_null(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         with self.assertRaisesMessage(AssertionError, u'Action.type is mandatory'):
-            self._create_action(paperwork=paperwork, omit=[u'type'])
+            self._create_action(branch=branch, omit=[u'type'])
 
     def test_subject_and_content_fields(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, subject=u'Subject', content=u'Content')
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, subject=u'Subject', content=u'Content')
         self.assertEqual(action.subject, u'Subject')
         self.assertEqual(action.content, u'Content')
 
     def test_subject_and_content_fields_adefault_values_if_omitted(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, omit=[u'subject', u'content'])
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, omit=[u'subject', u'content'])
         self.assertEqual(action.subject, u'')
         self.assertEqual(action.content, u'')
 
     def test_attachment_set_relation(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
         attachment1 = self._create_attachment(generic_object=action)
         attachment2 = self._create_attachment(generic_object=action)
         self.assertItemsEqual(action.attachment_set.all(), [attachment1, attachment2])
 
     def test_attachment_set_relation_empty_by_default(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
         self.assertItemsEqual(action.attachment_set.all(), [])
 
     def test_effective_date_field(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, effective_date=naive_date(u'2010-10-05'))
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, effective_date=naive_date(u'2010-10-05'))
         self.assertEqual(action.effective_date, naive_date(u'2010-10-05'))
 
     def test_effective_date_field_may_not_be_null(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         with self.assertRaisesMessage(IntegrityError, u'inforequests_action.effective_date may not be NULL'):
-            self._create_action(paperwork=paperwork, omit=[u'effective_date'])
+            self._create_action(branch=branch, omit=[u'effective_date'])
 
     def test_deadline_field_with_explicit_value(self):
         tests = (
@@ -144,9 +144,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tests, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for action_type in tests:
-            action = self._create_action(paperwork=paperwork, type=action_type, deadline=3)
+            action = self._create_action(branch=branch, type=action_type, deadline=3)
             self.assertEqual(action.deadline, 3)
 
     def test_deadline_field_with_default_value_if_omitted(self):
@@ -175,15 +175,15 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for action_type, expected_deadline, extra_args in tests:
-            action = self._create_action(paperwork=paperwork, type=action_type, omit=[u'deadline'], **extra_args)
+            action = self._create_action(branch=branch, type=action_type, omit=[u'deadline'], **extra_args)
             self.assertEqual(action.deadline, expected_deadline)
 
     def test_deadline_field_is_not_reset_to_default_value_if_saving_existing_instance(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, deadline=3)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, deadline=3)
         action.subject = u'Changed'
         action.save()
         action = Action.objects.get(pk=action.pk)
@@ -191,14 +191,14 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_extension_field(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, extension=3)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, extension=3)
         self.assertEqual(action.extension, 3)
 
     def test_extension_field_default_value_if_omitted(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, omit=[u'extension'])
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, omit=[u'extension'])
         self.assertIsNone(action.extension)
 
     def test_disclosure_level_field(self):
@@ -213,16 +213,16 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_disclosure_levels, defined_disclosure_levels)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for disclosure_level, expected_display in tests:
-            action = self._create_action(paperwork=paperwork, disclosure_level=disclosure_level)
+            action = self._create_action(branch=branch, disclosure_level=disclosure_level)
             self.assertEqual(action.disclosure_level, disclosure_level)
             self.assertEqual(action.get_disclosure_level_display(), expected_display)
 
     def test_disclosure_level_field_default_value_if_omitted(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, omit=[u'disclosure_level'])
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, omit=[u'disclosure_level'])
         self.assertIsNone(action.disclosure_level)
 
     def test_refusal_reason_field(self):
@@ -243,33 +243,33 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_refusal_reasons, defined_refusal_reasons)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for refusal_reason, expected_display in tests:
-            action = self._create_action(paperwork=paperwork, refusal_reason=refusal_reason)
+            action = self._create_action(branch=branch, refusal_reason=refusal_reason)
             self.assertEqual(action.refusal_reason, refusal_reason)
             self.assertEqual(action.get_refusal_reason_display(), expected_display)
 
     def test_refusal_reason_field_default_value_if_omitted(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, omit=[u'refusal_reason'])
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, omit=[u'refusal_reason'])
         self.assertIsNone(action.refusal_reason)
 
     def test_last_deadline_reminder_field(self):
         dt = local_datetime_from_local(u'2014-10-05 10:33:00')
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, last_deadline_reminder=dt)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, last_deadline_reminder=dt)
         self.assertEqual(action.last_deadline_reminder, dt)
 
     def test_last_deadline_reminder_field_default_value_if_omitted(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, omit=[u'last_deadline_reminder'])
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, omit=[u'last_deadline_reminder'])
         self.assertIsNone(action.last_deadline_reminder)
 
     def test_advanced_to_set_relation(self):
-        _, paperwork1, actions = self._create_inforequest_scenario(
+        _, branch1, actions = self._create_inforequest_scenario(
                 (u'advancement', [], [], [], []), # Advanced to 4 branches
                 )
         _, (advancement, [(p1, _), (p2, _), (p3, _), (p4, _)]) = actions
@@ -278,27 +278,27 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_advanced_to_set_relation_empty_by_default(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
         result = action.advanced_to_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_paperwork_action_set_backward_relation(self):
+    def test_branch_action_set_backward_relation(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action1 = self._create_action(paperwork=paperwork)
-        action2 = self._create_action(paperwork=paperwork)
-        result = paperwork.action_set.all()
+        branch = self._create_branch(inforequest=inforequest)
+        action1 = self._create_action(branch=branch)
+        action2 = self._create_action(branch=branch)
+        result = branch.action_set.all()
         self.assertItemsEqual(result, [action1, action2])
 
-    def test_paperwork_action_set_backward_relation_empty_by_default(self):
+    def test_branch_action_set_backward_relation_empty_by_default(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        result = paperwork.action_set.all()
+        branch = self._create_branch(inforequest=inforequest)
+        result = branch.action_set.all()
         self.assertItemsEqual(result, [])
 
     def test_message_action_backward_relation(self):
-        _, paperwork1, (request,) = self._create_inforequest_scenario()
+        _, branch1, (request,) = self._create_inforequest_scenario()
         self.assertEqual(request.email.action, request)
 
     def test_message_action_backward_relation_undefined_by_default(self):
@@ -320,10 +320,10 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
                 ]
         random.shuffle(dates)
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         actions = []
         for date in dates:
-            actions.append(self._create_action(paperwork=paperwork, effective_date=naive_date(date)))
+            actions.append(self._create_action(branch=branch, effective_date=naive_date(date)))
         result = Action.objects.all()
         self.assertEqual(list(result), sorted(actions, key=lambda a: (a.effective_date, a.pk)))
 
@@ -351,9 +351,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for action_type, is_applicant, is_obligee, is_implicit in tests:
-            action = self._create_action(paperwork=paperwork, type=action_type)
+            action = self._create_action(branch=branch, type=action_type)
             self.assertEqual(action.is_applicant_action, is_applicant)
             self.assertEqual(action.is_obligee_action, is_obligee)
             self.assertEqual(action.is_implicit_action, is_implicit)
@@ -361,8 +361,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
     @contextlib.contextmanager
     def _test_deadline_missed_aux(self, **kwargs):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, effective_date=naive_date(u'2010-10-05'), **kwargs)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, effective_date=naive_date(u'2010-10-05'), **kwargs)
         timewarp.jump(local_datetime_from_local(u'2010-10-10 10:33:00'))
         with mock.patch(u'chcemvediet.apps.inforequests.models.workdays.between', side_effect=lambda a,b: (b-a).days):
             yield action
@@ -446,9 +446,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for action_type, has_deadline, has_applicant_deadline, has_obligee_deadline, extra_args in tests:
-            action = self._create_action(paperwork=paperwork, type=action_type, **extra_args)
+            action = self._create_action(branch=branch, type=action_type, **extra_args)
             self.assertEqual(action.has_deadline, has_deadline)
             self.assertEqual(action.has_applicant_deadline, has_applicant_deadline)
             self.assertEqual(action.has_obligee_deadline, has_obligee_deadline)
@@ -477,9 +477,9 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         for action_type, can_send in tests:
-            action = self._create_action(paperwork=paperwork, type=action_type)
+            action = self._create_action(branch=branch, type=action_type)
             if can_send:
                 with created_instances(Message.objects) as message_set:
                     action.send_by_email()
@@ -501,8 +501,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
             with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string', return_value=u'aaaa'):
                 user = self._create_user(first_name=u'John', last_name=u'Smith')
                 inforequest = self._create_inforequest(applicant=user)
-                paperwork = self._create_paperwork(inforequest=inforequest)
-                action = self._create_action(paperwork=paperwork)
+                branch = self._create_branch(inforequest=inforequest)
+                action = self._create_action(branch=branch)
 
                 with created_instances(Message.objects) as message_set:
                     action.send_by_email()
@@ -513,7 +513,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_send_by_email_collected_recipients(self):
         obligee = self._create_obligee(emails=u'Obligee1 <oblige1@a.com>, oblige2@a.com')
-        _, paperwork, _ = self._create_inforequest_scenario(obligee,
+        _, branch, _ = self._create_inforequest_scenario(obligee,
                 (u'request', dict(
                     email=dict(from_name=u'Request From', from_mail=u'request-from@a.com'),
                     recipients=[
@@ -532,7 +532,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
                         ],
                     )),
                 )
-        action = self._create_action(paperwork=paperwork)
+        action = self._create_action(branch=branch)
 
         with created_instances(Message.objects) as message_set:
             action.send_by_email()
@@ -553,8 +553,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_send_by_email_subject_and_content(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork, subject=u'Subject', content=u'Content')
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch, subject=u'Subject', content=u'Content')
 
         with created_instances(Message.objects) as message_set:
             action.send_by_email()
@@ -566,8 +566,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_send_by_email_attachments(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
         attachment1 = self._create_attachment(generic_object=action, name=u'filename.txt', content=u'Content', content_type=u'text/plain')
         attachment2 = self._create_attachment(generic_object=action, name=u'filename.html', content=u'<p>Content</p>', content_type=u'text/html')
 
@@ -583,8 +583,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_repr(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        action = self._create_action(paperwork=paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
         self.assertEqual(repr(action), u'<Action: %s>' % action.pk)
 
     def test_action_type_query_methods(self):
@@ -611,11 +611,11 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         actions = defaultdict(list)
         for i in range(3):
             for action_type, _ in tests:
-                actions[action_type].append(self._create_action(paperwork=paperwork, type=action_type))
+                actions[action_type].append(self._create_action(branch=branch, type=action_type))
 
         for action_type, query_method in tests:
             result = getattr(Action.objects, query_method)()
@@ -645,13 +645,13 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
+        branch = self._create_branch(inforequest=inforequest)
         applicant_actions = []
         obligee_actions = []
         implicit_actions = []
         for i in range(3):
             for action_type, is_applicant, is_obligee, is_implicit in tests:
-                action = self._create_action(paperwork=paperwork, type=action_type)
+                action = self._create_action(branch=branch, type=action_type)
                 if is_applicant:
                     applicant_actions.append(action)
                 if is_obligee:
@@ -667,7 +667,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(implicit_result, implicit_actions)
 
     def test_by_email_and_by_smail_query_methods(self):
-        _, paperwork, actions = self._create_inforequest_scenario(
+        _, branch, actions = self._create_inforequest_scenario(
                 u'confirmation',
                 u'refusal',
                 (u'appeal', dict(email=False)),

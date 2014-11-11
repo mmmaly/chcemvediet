@@ -24,16 +24,16 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertRaisesMessage(IntegrityError, u'inforequests_actiondraft.inforequest_id may not be NULL'):
             self._create_action_draft(omit=[u'inforequest'])
 
-    def test_paperwork_field(self):
+    def test_branch_field(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        draft = self._create_action_draft(inforequest=inforequest, paperwork=paperwork)
-        self.assertEqual(draft.paperwork, paperwork)
+        branch = self._create_branch(inforequest=inforequest)
+        draft = self._create_action_draft(inforequest=inforequest, branch=branch)
+        self.assertEqual(draft.branch, branch)
 
-    def test_paperwork_field_default_value_if_omitted(self):
+    def test_branch_field_default_value_if_omitted(self):
         inforequest = self._create_inforequest()
-        draft = self._create_action_draft(inforequest=inforequest, omit=[u'paperwork'])
-        self.assertIsNone(draft.paperwork)
+        draft = self._create_action_draft(inforequest=inforequest, omit=[u'branch'])
+        self.assertIsNone(draft.branch)
 
     def test_type_field(self):
         tests = (
@@ -233,18 +233,18 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         result = inforequest.actiondraft_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_paperwork_actiondraft_set_backward_relation(self):
+    def test_branch_actiondraft_set_backward_relation(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        draft1 = self._create_action_draft(inforequest=inforequest, paperwork=paperwork)
-        draft2 = self._create_action_draft(inforequest=inforequest, paperwork=paperwork)
-        result = paperwork.actiondraft_set.all()
+        branch = self._create_branch(inforequest=inforequest)
+        draft1 = self._create_action_draft(inforequest=inforequest, branch=branch)
+        draft2 = self._create_action_draft(inforequest=inforequest, branch=branch)
+        result = branch.actiondraft_set.all()
         self.assertItemsEqual(result, [draft1, draft2])
 
-    def test_paperwork_actiondraft_set_backward_relation_empty_by_default(self):
+    def test_branch_actiondraft_set_backward_relation_empty_by_default(self):
         inforequest = self._create_inforequest()
-        paperwork = self._create_paperwork(inforequest=inforequest)
-        result = paperwork.actiondraft_set.all()
+        branch = self._create_branch(inforequest=inforequest)
+        result = branch.actiondraft_set.all()
         self.assertItemsEqual(result, [])
 
     def test_obligee_actiondraft_set_backward_relation(self):

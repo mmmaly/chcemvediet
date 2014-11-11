@@ -16,7 +16,7 @@ from poleno.utils.date import local_datetime_from_local, local_datetime_from_utc
 from poleno.utils.test import created_instances
 
 from .. import InforequestsTestCaseMixin
-from ...models import Inforequest, InforequestEmail, Paperwork, Action, ActionDraft
+from ...models import Inforequest, InforequestEmail, Branch, Action, ActionDraft
 
 class InforequestTest(InforequestsTestCaseMixin, TestCase):
     u"""
@@ -161,20 +161,20 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         inforequest = self._create_inforequest(omit=[u'last_undecided_email_reminder'])
         self.assertIsNone(inforequest.last_undecided_email_reminder)
 
-    def test_paperwork_set_relation(self):
-        inforequest, paperwork, _ = self._create_inforequest_scenario()
-        result = inforequest.paperwork_set.all()
-        self.assertItemsEqual(result, [paperwork])
+    def test_branch_set_relation(self):
+        inforequest, branch, _ = self._create_inforequest_scenario()
+        result = inforequest.branch_set.all()
+        self.assertItemsEqual(result, [branch])
 
-    def test_paperwork_set_relation_with_advancement(self):
-        inforequest, paperwork1, actions = self._create_inforequest_scenario(u'advancement')
-        _, (_, ((paperwork2, _),)) = actions
-        result = inforequest.paperwork_set.all()
-        self.assertItemsEqual(result, [paperwork1, paperwork2])
+    def test_branch_set_relation_with_advancement(self):
+        inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (_, ((branch2, _),)) = actions
+        result = inforequest.branch_set.all()
+        self.assertItemsEqual(result, [branch1, branch2])
 
-    def test_paperwork_set_relation_empty_by_default(self):
+    def test_branch_set_relation_empty_by_default(self):
         inforequest = self._create_inforequest()
-        result = inforequest.paperwork_set.all()
+        result = inforequest.branch_set.all()
         self.assertItemsEqual(result, [])
 
     def test_actiondraft_set_relation(self):
@@ -242,19 +242,19 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         result = Inforequest.objects.all()
         self.assertEqual(list(result), sorted(inforequests, key=lambda ir: (ir.submission_date, ir.pk)))
 
-    def test_paperwork_property(self):
-        inforequest, paperwork, _ = self._create_inforequest_scenario()
-        self.assertEqual(inforequest.paperwork, paperwork)
+    def test_branch_property(self):
+        inforequest, branch, _ = self._create_inforequest_scenario()
+        self.assertEqual(inforequest.branch, branch)
 
-    def test_paperwork_property_with_advancement(self):
-        inforequest, paperwork1, actions = self._create_inforequest_scenario(u'advancement')
-        _, (_, ((paperwork2, _),)) = actions
-        self.assertEqual(inforequest.paperwork, paperwork1)
+    def test_branch_property_with_advancement(self):
+        inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (_, ((branch2, _),)) = actions
+        self.assertEqual(inforequest.branch, branch1)
 
-    def test_paperwork_property_raises_exception_if_inforequest_has_no_paperwork(self):
+    def test_branch_property_raises_exception_if_inforequest_has_no_branch(self):
         inforequest = self._create_inforequest()
-        with self.assertRaisesMessage(Paperwork.DoesNotExist, u'Paperwork matching query does not exist.'):
-            inforequest.paperwork
+        with self.assertRaisesMessage(Branch.DoesNotExist, u'Branch matching query does not exist.'):
+            inforequest.branch
 
     def test_undecided_set_property_and_friends(self):
         u"""
@@ -284,9 +284,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertIsNone(inforequest.newest_undecided_email)
         self.assertItemsEqual(inforequest.undecided_set.all(), [])
 
-    def test_can_add_x_properties_with_one_paperwork(self):
+    def test_can_add_x_properties_with_one_branch(self):
         inforequest, _, _ = self._create_inforequest_scenario()
-        # ``paperwork`` last action is ``REQUEST``
+        # ``branch`` last action is ``REQUEST``
         self.assertFalse(inforequest.can_add_clarification_response)
         self.assertFalse(inforequest.can_add_appeal)
         self.assertTrue(inforequest.can_add_confirmation)
@@ -299,10 +299,10 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_reversion)
         self.assertFalse(inforequest.can_add_remandment)
 
-    def test_can_add_x_properties_with_multiple_paperworks(self):
+    def test_can_add_x_properties_with_multiple_branches(self):
         u"""
         Checks that the set of actions allowed for an inforequest is the union of sets of actions
-        allowed for its paperworks.
+        allowed for its branches.
         """
         inforequest, _, _ = self._create_inforequest_scenario((u'advancement',
             [u'refusal', u'appeal', u'remandment'],
@@ -311,9 +311,9 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                 [u'confirmation'],
                 )],
             ))
-        # The main paperwork last action is ``ADVANCEMENT``. The main paperwork adcanced to other
-        # three paperworks ending with ``EXTENSION`` and ``CLARIFICATION_REQUEST`` and
-        # ``ADVANCEMENT``, respectivelly. The latter advancement advanced to yet another paperwork
+        # The main branch last action is ``ADVANCEMENT``. The main branch adcanced to other
+        # three branches ending with ``EXTENSION`` and ``CLARIFICATION_REQUEST`` and
+        # ``ADVANCEMENT``, respectivelly. The latter advancement advanced to yet another branch
         # ending with ``CONFIRMATION``.
         self.assertTrue(inforequest.can_add_clarification_response) # from ``CLARIFICATION_REQUEST``
         self.assertTrue(inforequest.can_add_appeal)                 # from ``ADVANCEMENT``
@@ -329,7 +329,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
 
     def test_can_add_action_method(self):
         tests = (                                   # expected result
-                (Action.TYPES.REQUEST,                AttributeError, u"'Paperwork' object has no attribute 'can_add_request'"),
+                (Action.TYPES.REQUEST,                AttributeError, u"'Branch' object has no attribute 'can_add_request'"),
                 (Action.TYPES.CLARIFICATION_RESPONSE, False,          None),
                 (Action.TYPES.APPEAL,                 False,          None),
                 (Action.TYPES.CONFIRMATION,           True,           None),
@@ -341,16 +341,16 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                 (Action.TYPES.AFFIRMATION,            False,          None),
                 (Action.TYPES.REVERSION,              False,          None),
                 (Action.TYPES.REMANDMENT,             False,          None),
-                (Action.TYPES.ADVANCED_REQUEST,       AttributeError, u"'Paperwork' object has no attribute 'can_add_advanced_request'"),
-                (Action.TYPES.EXPIRATION,             AttributeError, u"'Paperwork' object has no attribute 'can_add_expiration'"),
-                (Action.TYPES.APPEAL_EXPIRATION,      AttributeError, u"'Paperwork' object has no attribute 'can_add_appeal_expiration'"),
+                (Action.TYPES.ADVANCED_REQUEST,       AttributeError, u"'Branch' object has no attribute 'can_add_advanced_request'"),
+                (Action.TYPES.EXPIRATION,             AttributeError, u"'Branch' object has no attribute 'can_add_expiration'"),
+                (Action.TYPES.APPEAL_EXPIRATION,      AttributeError, u"'Branch' object has no attribute 'can_add_appeal_expiration'"),
                 )
         # Make sure we are testing all defined action types
         tested_action_types = set(a for a, _, _ in tests)
         defined_action_types = Action.TYPES._inverse.keys()
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
-        # ``paperwork`` last action is ``REQUEST``
+        # ``branch`` last action is ``REQUEST``
         inforequest, _, _ = self._create_inforequest_scenario()
         for action_type, expected_result, expected_message in tests:
             if expected_result is True:

@@ -34,8 +34,8 @@ class ExtendDeadlineViewTest(
         inforequest_args = kwargs.pop(u'inforequest_args', [])
         inforequest_scenario = kwargs.pop(u'inforequest_scenario', [u'request'])
         inforequest_args = list(inforequest_args) + list(inforequest_scenario)
-        res.inforequest, res.paperwork, res.actions = self._create_inforequest_scenario(*inforequest_args)
-        res.action = res.paperwork.action_set.last()
+        res.inforequest, res.branch, res.actions = self._create_inforequest_scenario(*inforequest_args)
+        res.action = res.branch.action_set.last()
 
         now = kwargs.pop(u'now', u'2010-07-08 10:33:00')
         timewarp.jump(local_datetime_from_local(now))
@@ -46,9 +46,9 @@ class ExtendDeadlineViewTest(
 
     def _create_url(self, scenario, **kwargs):
         inforequest_pk = kwargs.pop(u'inforequest_pk', scenario.inforequest.pk)
-        paperwork_pk = kwargs.pop(u'paperwork_pk', scenario.paperwork.pk)
+        branch_pk = kwargs.pop(u'branch_pk', scenario.branch.pk)
         action_pk = kwargs.pop(u'action_pk', scenario.action.pk)
-        url = reverse(u'inforequests:extend_deadline', args=(inforequest_pk, paperwork_pk, action_pk))
+        url = reverse(u'inforequests:extend_deadline', args=(inforequest_pk, branch_pk, action_pk))
 
         self.assertEqual(kwargs, {})
         return url
@@ -60,26 +60,26 @@ class ExtendDeadlineViewTest(
         return super(ExtendDeadlineViewTest, self)._create_post_data(**kwargs)
 
 
-    def test_invalid_paperwork_returns_404_not_found(self):
+    def test_invalid_branch_returns_404_not_found(self):
         scenario = self._create_scenario()
-        url = self._create_url(scenario, paperwork_pk=47)
+        url = self._create_url(scenario, branch_pk=47)
 
         self._login_user()
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
 
-    def test_paperwork_assigned_to_another_inforequest_returns_404_not_found(self):
-        _, paperwork, _ = self._create_inforequest_scenario()
+    def test_branch_assigned_to_another_inforequest_returns_404_not_found(self):
+        _, branch, _ = self._create_inforequest_scenario()
         scenario = self._create_scenario()
-        url = self._create_url(scenario, paperwork_pk=paperwork.pk)
+        url = self._create_url(scenario, branch_pk=branch.pk)
 
         self._login_user()
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
 
-    def test_paperwork_assigned_to_inforequest_returns_200_ok(self):
+    def test_branch_assigned_to_inforequest_returns_200_ok(self):
         scenario = self._create_scenario()
-        url = self._create_url(scenario, paperwork_pk=scenario.paperwork.pk)
+        url = self._create_url(scenario, branch_pk=scenario.branch.pk)
 
         self._login_user()
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
@@ -93,7 +93,7 @@ class ExtendDeadlineViewTest(
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
 
-    def test_action_assigned_to_another_paperwork_return_404_not_found(self):
+    def test_action_assigned_to_another_branch_return_404_not_found(self):
         scenario = self._create_scenario(inforequest_scenario=[u'advancement'])
         _, (_, [(_, [advanced_request])]) = scenario.actions
         url = self._create_url(scenario, action_pk=advanced_request.pk)
@@ -102,7 +102,7 @@ class ExtendDeadlineViewTest(
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
 
-    def test_action_that_is_not_last_paperwork_action_returns_404_not_found(self):
+    def test_action_that_is_not_last_branch_action_returns_404_not_found(self):
         scenario = self._create_scenario(inforequest_scenario=[u'request', u'confirmation'])
         request, _ = scenario.actions
         url = self._create_url(scenario, action_pk=request.pk)
@@ -127,7 +127,7 @@ class ExtendDeadlineViewTest(
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
 
-    def test_last_paperwork_action_with_missed_obligee_deadline_returns_200_ok(self):
+    def test_last_branch_action_with_missed_obligee_deadline_returns_200_ok(self):
         scenario = self._create_scenario(inforequest_scenario=[u'request', u'confirmation'], created=u'2010-05-10', now=u'2010-09-11')
         _, confirmation = scenario.actions
         url = self._create_url(scenario, action_pk=confirmation.pk)
@@ -154,7 +154,7 @@ class ExtendDeadlineViewTest(
 
         self.assertTemplateUsed(response, u'inforequests/modals/extend-deadline.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
-        self.assertEqual(response.context[u'paperwork'], scenario.paperwork)
+        self.assertEqual(response.context[u'branch'], scenario.branch)
         self.assertEqual(response.context[u'action'], scenario.action)
         self.assertIsInstance(response.context[u'form'], ExtendDeadlineForm)
         self.assertEqual(response.context[u'form'][u'extension'].value(), 5)
@@ -216,7 +216,7 @@ class ExtendDeadlineViewTest(
         self.assertIsInstance(response, JsonResponse)
         self.assertTemplateUsed(response, u'inforequests/modals/extend-deadline.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
-        self.assertEqual(response.context[u'paperwork'], scenario.paperwork)
+        self.assertEqual(response.context[u'branch'], scenario.branch)
         self.assertEqual(response.context[u'action'], scenario.action)
         self.assertIsInstance(response.context[u'form'], ExtendDeadlineForm)
 

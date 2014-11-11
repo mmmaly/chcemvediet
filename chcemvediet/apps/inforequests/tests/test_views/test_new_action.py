@@ -15,13 +15,13 @@ from ... import forms
 from ...models import Action
 from .common_tests import CommonDecoratorsTests, CanAddActionTests, OwnedNotClosedInforequestArgTests
 from .common_tests import AddSmailAndNewActionCommonTests
-from .fields_tests import DraftPaperworkFieldTests, DraftSubjectContentAttachmentsFieldsTests
+from .fields_tests import DraftBranchFieldTests, DraftSubjectContentAttachmentsFieldsTests
 
 class NewActionTests(
         CommonDecoratorsTests,
         OwnedNotClosedInforequestArgTests,
         CanAddActionTests,
-        DraftPaperworkFieldTests,
+        DraftBranchFieldTests,
         DraftSubjectContentAttachmentsFieldsTests,
         AddSmailAndNewActionCommonTests,
         ):
@@ -39,7 +39,7 @@ class NewActionTests(
         inforequest_args = kwargs.pop(u'inforequest_args', [])
         inforequest_scenario = kwargs.pop(u'inforequest_scenario', self.good_scenario)
         inforequest_args = list(inforequest_args) + list(inforequest_scenario)
-        res.inforequest, res.paperwork, res.actions = self._create_inforequest_scenario(*inforequest_args)
+        res.inforequest, res.branch, res.actions = self._create_inforequest_scenario(*inforequest_args)
 
         draft_args = kwargs.pop(u'draft_args', None)
         if draft_args is not None:
@@ -66,11 +66,11 @@ class NewActionTests(
     def test_post_with_default_button_and_valid_data_creates_action_with_effective_date_today(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
 
@@ -78,7 +78,7 @@ class NewActionTests(
 
     def test_post_with_print_button_and_valid_data_returns_json_with_rendered_print(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'print', paperwork=scenario.paperwork)
+        data = self._create_post_data(button=u'print', branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -122,11 +122,11 @@ class NewActionClarificationResponseViewTests(
 
     def test_post_with_email_button_and_valid_data_sends_action_by_email(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'email', paperwork=scenario.paperwork)
+        data = self._create_post_data(button=u'email', branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             with created_instances(Message.objects) as message_set:
                 response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
@@ -137,7 +137,7 @@ class NewActionClarificationResponseViewTests(
 
     def test_post_with_email_button_and_invalid_data_does_not_send_email(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'email', paperwork=u'invalid')
+        data = self._create_post_data(button=u'email', branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
@@ -179,12 +179,12 @@ class NewActionAppealViewTests(
     def test_post_with_default_button_and_valid_data_adds_expiration_if_expired(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
         scenario = self._create_scenario(inforequest_scenario=[u'request'])
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         timewarp.jump(local_datetime_from_local(u'2010-08-06 10:33:00'))
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action_types = [a.type for a in action_set.all()]
         self.assertEqual(action_types, [Action.TYPES.EXPIRATION, Action.TYPES.APPEAL])
@@ -192,12 +192,12 @@ class NewActionAppealViewTests(
     def test_post_with_default_button_and_invalid_data_does_not_add_expiration_if_expired(self):
         timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
         scenario = self._create_scenario(inforequest_scenario=[u'request'])
-        data = self._create_post_data(paperwork=u'invalid')
+        data = self._create_post_data(branch=u'invalid')
         url = self._create_url(scenario)
 
         timewarp.jump(local_datetime_from_local(u'2010-08-06 10:33:00'))
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertFalse(action_set.exists())
 

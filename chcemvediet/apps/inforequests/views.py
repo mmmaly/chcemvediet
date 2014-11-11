@@ -58,7 +58,7 @@ def create(request, draft_pk=None):
                 form.save(inforequest)
                 inforequest.save()
 
-                action = inforequest.paperwork.action_set.requests().first()
+                action = inforequest.branch.action_set.requests().first()
                 action.send_by_email()
 
                 if draft:
@@ -370,7 +370,7 @@ def _new_action(request, inforequest_pk, action_type, form_class, template, can_
             form = form_class(request.POST, inforequest=inforequest, action_type=action_type, attached_to=attached_to)
             if form.is_valid():
                 if action_type == Action.TYPES.APPEAL:
-                    form.cleaned_data[u'paperwork'].add_expiration_if_expired()
+                    form.cleaned_data[u'branch'].add_expiration_if_expired()
 
                 action = Action(effective_date=local_today(), type=action_type)
                 form.save(action)
@@ -431,12 +431,12 @@ def new_action_appeal(request, inforequest_pk):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def extend_deadline(request, inforequest_pk, paperwork_pk, action_pk):
+def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    paperwork = inforequest.paperwork_set.get_or_404(pk=paperwork_pk)
-    action = paperwork.action_set.get_or_404(pk=action_pk)
+    branch = inforequest.branch_set.get_or_404(pk=branch_pk)
+    action = branch.action_set.get_or_404(pk=action_pk)
 
-    if action != paperwork.action_set.last():
+    if action != branch.action_set.last():
         return HttpResponseNotFound()
     if not action.has_obligee_deadline:
         return HttpResponseNotFound()
@@ -462,7 +462,7 @@ def extend_deadline(request, inforequest_pk, paperwork_pk, action_pk):
                 u'result': u'invalid',
                 u'content': render_to_string(u'inforequests/modals/extend-deadline.html', context_instance=RequestContext(request), dictionary={
                     u'inforequest': inforequest,
-                    u'paperwork': paperwork,
+                    u'branch': branch,
                     u'action': action,
                     u'form': form,
                     }),
@@ -472,7 +472,7 @@ def extend_deadline(request, inforequest_pk, paperwork_pk, action_pk):
         form = forms.ExtendDeadlineForm(prefix=action.pk)
         return render(request, u'inforequests/modals/extend-deadline.html', {
                 u'inforequest': inforequest,
-                u'paperwork': paperwork,
+                u'branch': branch,
                 u'action': action,
                 u'form': form,
                 })
@@ -491,7 +491,7 @@ def download_attachment(request, attachment_pk):
             request.user,
             EmailMessage.objects.filter(inforequest__applicant=request.user),
             InforequestDraft.objects.filter(applicant=request.user),
-            Action.objects.filter(paperwork__inforequest__applicant=request.user),
+            Action.objects.filter(branch__inforequest__applicant=request.user),
             ActionDraft.objects.filter(inforequest__applicant=request.user),
             )
     attachment = Attachment.objects.attached_to(*attached_to).get_or_404(pk=attachment_pk)

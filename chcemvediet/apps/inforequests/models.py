@@ -92,7 +92,7 @@ class Inforequest(models.Model):
 
     # Backward relations:
     #
-    #  -- paperwork_set: by Paperwork.inforequest
+    #  -- branch_set: by Branch.inforequest
     #     May NOT be empty
     #
     #  -- actiondraft_set: by ActionDraft.inforequest
@@ -116,8 +116,8 @@ class Inforequest(models.Model):
 
     # May NOT be NULL; Read-only
     @property
-    def paperwork(self):
-        return self.paperwork_set.get(advanced_by=None)
+    def branch(self):
+        return self.branch_set.get(advanced_by=None)
 
     # May be empty; Read-only
     @property
@@ -195,8 +195,8 @@ class Inforequest(models.Model):
         return self.can_add_action(Action.TYPES.REMANDMENT)
 
     def can_add_action(self, action_type):
-        for paperwork in self.paperwork_set.all():
-            if paperwork.can_add_action(action_type):
+        for branch in self.branch_set.all():
+            if branch.can_add_action(action_type):
                 return True
         return False
 
@@ -299,7 +299,7 @@ class InforequestEmail(models.Model):
     #
     #  -- Message.inforequestemail_set
 
-class Paperwork(models.Model):
+class Branch(models.Model):
     # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
@@ -311,27 +311,27 @@ class Paperwork(models.Model):
             help_text=_(u'Frozen Obligee at the time the Inforequest was submitted or advanced to it.'))
 
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
-    # main paperwork. Inforequest must contain exactly one paperwork with ``advanced_by`` set to None.
+    # main branch. Inforequest must contain exactly one branch with ``advanced_by`` set to None.
     advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, verbose_name=_(u'Advanced By'))
 
     # Backward relations:
     #
-    #  -- action_set: by Action.paperwork
-    #     May NOT be empty; The first action of every main paperwork must be REQUEST and the first
-    #     action of every advanced paperwork ADVANCED_REQUEST.
+    #  -- action_set: by Action.branch
+    #     May NOT be empty; The first action of every main branch must be REQUEST and the first
+    #     action of every advanced branch ADVANCED_REQUEST.
     #
-    #  -- actiondraft_set: by ActionDraft.paperwork
+    #  -- actiondraft_set: by ActionDraft.branch
     #     May be empty
 
     # Backward relations added to other models:
     #
-    #  -- Inforequest.paperwork_set
+    #  -- Inforequest.branch_set
     #     Should NOT be empty
     #
-    #  -- Obligee.paperwork_set
+    #  -- Obligee.branch_set
     #     May be empty
     #
-    #  -- HistoricalObligee.paperwork_set
+    #  -- HistoricalObligee.branch_set
     #     May be empty
     #
     #  -- Action.advanced_to_set
@@ -461,12 +461,12 @@ class Paperwork(models.Model):
             assert self.historicalobligee_id is None, u'%s.historicalobligee is read-only' % self.__class__.__name__
             self.historicalobligee = self.obligee.history.first()
 
-        super(Paperwork, self).save(*args, **kwargs)
+        super(Branch, self).save(*args, **kwargs)
 
     def add_expiration_if_expired(self):
         if self.last_action.has_obligee_deadline and self.last_action.deadline_missed:
             expiration = Action(
-                    paperwork=self,
+                    branch=self,
                     type=(Action.TYPES.APPEAL_EXPIRATION if self.last_action.type == Action.TYPES.APPEAL else Action.TYPES.EXPIRATION),
                     effective_date=local_today(),
                     )
@@ -538,7 +538,7 @@ class ActionQuerySet(QuerySet):
 
 class Action(models.Model):
     # May NOT be NULL
-    paperwork = models.ForeignKey(u'Paperwork', verbose_name=_(u'Paperwork'))
+    branch = models.ForeignKey(u'Branch', verbose_name=_(u'Branch'))
 
     # NOT NULL for actions sent or received by email; NULL otherwise
     email = models.OneToOneField(u'mail.Message', blank=True, null=True, verbose_name=_(u'E-mail'))
@@ -676,12 +676,12 @@ class Action(models.Model):
 
     # Backward relations:
     #
-    #  -- advanced_to_set: by Paperwork.advanced_by
+    #  -- advanced_to_set: by Branch.advanced_by
     #     May NOT be empty for ADVANCEMENT; Must be empty otherwise
 
     # Backward relations added to other models:
     #
-    #  -- Paperwork.action_set
+    #  -- Branch.action_set
     #     Should NOT be empty
     #
     #  -- Message.action
@@ -766,10 +766,10 @@ class Action(models.Model):
         if not self.is_applicant_action:
             raise TypeError(u'%s is not applicant action' % self.get_type_display())
 
-        sender_name = self.paperwork.inforequest.applicant_name
-        sender_address = self.paperwork.inforequest.unique_email
+        sender_name = self.branch.inforequest.applicant_name
+        sender_address = self.branch.inforequest.unique_email
         sender_formatted = formataddr((squeeze(sender_name), sender_address))
-        recipients = (formataddr(r) for r in self.paperwork.collect_obligee_emails())
+        recipients = (formataddr(r) for r in self.branch.collect_obligee_emails())
 
         # FIXME: Attachment name and content type are set by client and not to be trusted. The name
         # must be sanitized and the content type white listed for known content types. Any unknown
@@ -781,7 +781,7 @@ class Action(models.Model):
         msg.send()
 
         inforequestemail = InforequestEmail(
-                inforequest=self.paperwork.inforequest,
+                inforequest=self.branch.inforequest,
                 email=msg.instance,
                 type=InforequestEmail.TYPES.APPLICANT_ACTION,
                 )
@@ -798,7 +798,7 @@ class ActionDraft(models.Model):
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
     # May be NULL; Must be owned by the inforequest if set.
-    paperwork = models.ForeignKey(u'Paperwork', blank=True, null=True, verbose_name=_(u'Paperwork'))
+    branch = models.ForeignKey(u'Branch', blank=True, null=True, verbose_name=_(u'Branch'))
 
     # May NOT be NULL
     TYPES = Action.TYPES
@@ -832,7 +832,7 @@ class ActionDraft(models.Model):
     #
     #  -- Inforequest.actiondraft_set
     #
-    #  -- Paperwork.actiondraft_set
+    #  -- Branch.actiondraft_set
     #
     #  -- Obligee.actiondraft_set
 

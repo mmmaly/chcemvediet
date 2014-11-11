@@ -12,7 +12,7 @@ from poleno.utils.test import created_instances
 from ... import forms
 from ...models import InforequestEmail, Action
 from . import CustomTestCase
-from .fields_tests import PaperworkFieldTests, DeadlineFieldTests, AdvancedToFieldsTests
+from .fields_tests import BranchFieldTests, DeadlineFieldTests, AdvancedToFieldsTests
 from .fields_tests import DisclosureLevelFieldTests, RefusalReasonFieldTests
 from .common_tests import CommonDecoratorsTests, CanAddActionTests
 from .common_tests import OwnedNotClosedInforequestArgTests, OldestUndecitedEmailArgTests
@@ -23,7 +23,7 @@ class DecideEmailTests(
         OwnedNotClosedInforequestArgTests,
         OldestUndecitedEmailArgTests,
         CanAddActionTests,
-        PaperworkFieldTests,
+        BranchFieldTests,
         ):
     u"""
     Absract tests for ``decide_email_*()`` views registered as "inforequests:decide_email_*".
@@ -42,7 +42,7 @@ class DecideEmailTests(
         inforequest_args = kwargs.pop(u'inforequest_args', [])
         inforequest_scenario = kwargs.pop(u'inforequest_scenario', self.good_scenario)
         inforequest_args = list(inforequest_args) + list(inforequest_scenario)
-        res.inforequest, res.paperwork, res.actions = self._create_inforequest_scenario(*inforequest_args)
+        res.inforequest, res.branch, res.actions = self._create_inforequest_scenario(*inforequest_args)
 
         email_args = kwargs.pop(u'email_args', {})
         email_args.setdefault(u'inforequest', res.inforequest)
@@ -76,11 +76,11 @@ class DecideEmailTests(
         scenario = self._create_scenario(email_args=dict(subject=u'Subject', text=u'Content', processed=utc_datetime_from_local(u'2010-10-05 00:33:00')))
         attachment1 = self._create_attachment(generic_object=scenario.email, name=u'filename.txt', content=u'content', content_type=u'text/plain')
         attachment2 = self._create_attachment(generic_object=scenario.email, name=u'filename.html', content=u'<p>content</p>', content_type=u'text/html')
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
 
@@ -101,11 +101,11 @@ class DecideEmailTests(
 
     def test_post_with_valid_data_returns_json_with_success_and_inforequests_detail(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
 
@@ -120,7 +120,7 @@ class DecideEmailTests(
 
     def test_post_with_invalid_data_does_not_create_action_instance(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=u'invalid')
+        data = self._create_post_data(branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
@@ -133,7 +133,7 @@ class DecideEmailTests(
 
     def test_post_with_invalid_data_returns_json_with_invalid_and_rendered_form(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=u'invalid')
+        data = self._create_post_data(branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()

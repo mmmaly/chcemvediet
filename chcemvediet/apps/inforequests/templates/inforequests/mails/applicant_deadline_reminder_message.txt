@@ -17,9 +17,9 @@
 {% else %}
   Your deadline after {{ action.get_type_display }} is about to be missed in {{ action.deadline_remaining }} working days.
 {% endif %}
-{% if action.paperwork.can_add_clarification_response %}
+{% if action.branch.can_add_clarification_response %}
   You should send a Clarification Response as soon as possible.
-{% elif action.paperwork.can_add_appeal %}
+{% elif action.branch.can_add_appeal %}
   You should make an Appeal as soon as possible if you want to make one.
 {% endif %}
 {% endfilter %}

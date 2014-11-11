@@ -14,7 +14,7 @@ from poleno.mail.models import Message, Recipient
 from poleno.utils.date import utc_now, local_today
 from chcemvediet.apps.obligees.models import Obligee
 
-from ..models import InforequestDraft, Inforequest, InforequestEmail, Paperwork, Action, ActionDraft
+from ..models import InforequestDraft, Inforequest, InforequestEmail, Branch, Action, ActionDraft
 
 class InforequestsTestCaseMixin(TestCase):
 
@@ -133,11 +133,11 @@ class InforequestsTestCaseMixin(TestCase):
                 u'applicant': self.user1,
                 })
 
-    def _create_inforequest_scenario__action(self, inforequest, paperwork, args):
+    def _create_inforequest_scenario__action(self, inforequest, branch, args):
         action_name = args.pop(0)
         action_type = getattr(Action.TYPES, action_name.upper())
         action_extra = args.pop() if args and isinstance(args[0], dict) else {}
-        action_args = {u'paperwork': paperwork, u'type': action_type}
+        action_args = {u'branch': branch, u'type': action_type}
 
         if action_type in Action.APPLICANT_ACTION_TYPES or action_type in Action.OBLIGEE_ACTION_TYPES:
             email_extra = action_extra.pop(u'email', {})
@@ -146,12 +146,12 @@ class InforequestsTestCaseMixin(TestCase):
                     default_mail_type = Message.TYPES.OUTBOUND
                     default_rel_type = InforequestEmail.TYPES.APPLICANT_ACTION
                     default_from_name, default_from_mail = u'', inforequest.applicant.email
-                    default_recipients = [{u'name': n, u'mail': a} for n, a in paperwork.obligee.emails_parsed]
+                    default_recipients = [{u'name': n, u'mail': a} for n, a in branch.obligee.emails_parsed]
                     default_recipient_status = Recipient.STATUSES.SENT
                 else:
                     default_mail_type = Message.TYPES.INBOUND
                     default_rel_type = InforequestEmail.TYPES.OBLIGEE_ACTION
-                    default_from_name, default_from_mail = next(paperwork.obligee.emails_parsed)
+                    default_from_name, default_from_mail = next(branch.obligee.emails_parsed)
                     default_recipients = [{u'mail': inforequest.applicant.email}]
                     default_recipient_status = Recipient.STATUSES.INBOUND
 
@@ -179,24 +179,24 @@ class InforequestsTestCaseMixin(TestCase):
         action = self._create_action(**action_args)
 
         if action_type == Action.TYPES.ADVANCEMENT:
-            paperworks = []
+            branches = []
             for arg in args or [[]]:
                 obligee = arg.pop(0) if arg and isinstance(arg[0], Obligee) else self.obligee1
-                paperworks.append(self._create_inforequest_scenario__paperwork(inforequest, obligee, action, u'advanced_request', arg))
-            return action, paperworks
+                branches.append(self._create_inforequest_scenario__branch(inforequest, obligee, action, u'advanced_request', arg))
+            return action, branches
 
         assert len(args) == 0
         return action
 
-    def _create_inforequest_scenario__paperwork(self, inforequest, obligee, advanced_by, base_action, args):
-        paperwork = Paperwork.objects.create(inforequest=inforequest, obligee=obligee, advanced_by=advanced_by)
+    def _create_inforequest_scenario__branch(self, inforequest, obligee, advanced_by, base_action, args):
+        branch = Branch.objects.create(inforequest=inforequest, obligee=obligee, advanced_by=advanced_by)
         args = [[a] if isinstance(a, basestring) else list(a) for a in args]
         if not args or args[0][0] != base_action:
             args[0:0] = [[base_action]]
         actions = []
         for arg in args:
-            actions.append(self._create_inforequest_scenario__action(inforequest, paperwork, arg))
-        return paperwork, actions
+            actions.append(self._create_inforequest_scenario__action(inforequest, branch, arg))
+        return branch, actions
 
     def _create_inforequest_scenario(self, *args):
         u"""
@@ -222,8 +222,8 @@ class InforequestsTestCaseMixin(TestCase):
         obligee = args.pop(0) if args and isinstance(args[0], Obligee) else self.obligee1
         extra = args.pop(0) if args and isinstance(args[0], dict) else {}
         inforequest = Inforequest.objects.create(applicant=applicant, **extra)
-        paperwork, actions = self._create_inforequest_scenario__paperwork(inforequest, obligee, None, u'request', args)
-        return inforequest, paperwork, actions
+        branch, actions = self._create_inforequest_scenario__branch(inforequest, obligee, None, u'request', args)
+        return inforequest, branch, actions
 
     def _create_inforequest_email(self, **kwargs):
         create = object()
@@ -247,8 +247,8 @@ class InforequestsTestCaseMixin(TestCase):
         email = relargs.get(u'email')
         return email, rel
 
-    def _create_paperwork(self, **kwargs):
-        return self._call_with_defaults(Paperwork.objects.create, kwargs, {
+    def _create_branch(self, **kwargs):
+        return self._call_with_defaults(Branch.objects.create, kwargs, {
                 u'obligee': self.obligee1,
                 })
 

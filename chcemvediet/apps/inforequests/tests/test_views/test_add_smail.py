@@ -9,14 +9,14 @@ from ... import forms
 from ...models import Action
 from .common_tests import CommonDecoratorsTests, CanAddActionTests, OwnedNotClosedInforequestArgTests
 from .common_tests import AddSmailAndNewActionCommonTests
-from .fields_tests import DraftPaperworkFieldTests, DraftEffectiveDateFieldTests, DraftSubjectContentAttachmentsFieldsTests
+from .fields_tests import DraftBranchFieldTests, DraftEffectiveDateFieldTests, DraftSubjectContentAttachmentsFieldsTests
 from .fields_tests import DraftDeadlineFieldTests, DraftAdvancedToFieldsTests, DraftDisclosureLevelFieldTests, DraftRefusalReasonFieldTests
 
 class AddSmailTests(
         CommonDecoratorsTests,
         OwnedNotClosedInforequestArgTests,
         CanAddActionTests,
-        DraftPaperworkFieldTests,
+        DraftBranchFieldTests,
         DraftEffectiveDateFieldTests,
         DraftSubjectContentAttachmentsFieldsTests,
         AddSmailAndNewActionCommonTests,
@@ -35,7 +35,7 @@ class AddSmailTests(
         inforequest_args = kwargs.pop(u'inforequest_args', [])
         inforequest_scenario = kwargs.pop(u'inforequest_scenario', self.good_scenario)
         inforequest_args = list(inforequest_args) + list(inforequest_scenario)
-        res.inforequest, res.paperwork, res.actions = self._create_inforequest_scenario(*inforequest_args)
+        res.inforequest, res.branch, res.actions = self._create_inforequest_scenario(*inforequest_args)
 
         draft_args = kwargs.pop(u'draft_args', None)
         if draft_args is not None:

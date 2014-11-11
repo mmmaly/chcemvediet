@@ -166,7 +166,7 @@ class CanAddActionTests(AbstractTests):
 
     def test_post_with_bad_scenario_returns_200_ok_or_404_not_found(self):
         scenario = self._create_scenario(inforequest_scenario=self.bad_scenario)
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -211,8 +211,8 @@ class CanAddActionTests(AbstractTests):
             else:
                 self.assertEqual(response.status_code, 404, u'Can add "%s" after "%s"' % (action_name, test_name))
 
-            for paperwork in scenario.inforequest.paperwork_set.all():
-                tested_action_types.add(paperwork.last_action.type)
+            for branch in scenario.inforequest.branch_set.all():
+                tested_action_types.add(branch.last_action.type)
 
         # Make sure we tested all defined action types
         defined_action_types = Action.TYPES._inverse.keys()
@@ -240,7 +240,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
     def test_post_with_undecided_email_returns_200_ok(self):
         scenario = self._create_scenario()
         email = self._create_inforequest_email(inforequest=scenario.inforequest)
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -260,7 +260,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_draft_button_and_valid_data_creates_new_draft_instance(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'draft', paperwork=scenario.paperwork)
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -269,11 +269,11 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         draft = actiondraft_set.get()
 
         self.assertEqual(draft.inforequest, scenario.inforequest)
-        self.assertEqual(draft.paperwork, scenario.paperwork)
+        self.assertEqual(draft.branch, scenario.branch)
 
     def test_post_with_draft_button_and_valid_data_updates_existing_draft_instance(self):
-        scenario = self._create_scenario(draft_args=dict(paperwork=None))
-        data = self._create_post_data(button=u'draft', paperwork=scenario.paperwork)
+        scenario = self._create_scenario(draft_args=dict(branch=None))
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -283,11 +283,11 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)
         self.assertEqual(draft.inforequest, scenario.inforequest)
-        self.assertEqual(draft.paperwork, scenario.paperwork)
+        self.assertEqual(draft.branch, scenario.branch)
 
     def test_post_with_draft_button_and_valid_data_returns_json_with_success(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'draft', paperwork=scenario.paperwork)
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -300,7 +300,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_draft_button_and_invalid_data_does_not_create_new_draft_instance(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'draft', paperwork=u'invalid')
+        data = self._create_post_data(button=u'draft', branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
@@ -310,10 +310,10 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_draft_button_and_invalid_data_does_not_update_existing_draft_instance(self):
         scenario = self._create_scenario(draft_args=dict())
-        data = self._create_post_data(button=u'draft', paperwork=u'invalid')
+        data = self._create_post_data(button=u'draft', branch=u'invalid')
         url = self._create_url(scenario)
 
-        self.assertIsNone(scenario.draft.paperwork)
+        self.assertIsNone(scenario.draft.branch)
 
         self._login_user()
         with created_instances(ActionDraft.objects) as actiondraft_set:
@@ -322,11 +322,11 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)
         self.assertEqual(draft.inforequest, scenario.inforequest)
-        self.assertIsNone(draft.paperwork)
+        self.assertIsNone(draft.branch)
 
     def test_post_with_draft_button_and_invalid_data_returns_json_with_invalid_and_rendered_form(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(button=u'draft', paperwork=u'invalid')
+        data = self._create_post_data(button=u'draft', branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
@@ -343,21 +343,21 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_default_button_and_valid_data_creates_action(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
 
         self.assertIsNone(action.email)
         self.assertEqual(action.type, self.action_type)
-        self.assertEqual(action.paperwork, scenario.paperwork)
+        self.assertEqual(action.branch, scenario.branch)
 
     def test_post_with_default_button_and_valid_data_deletes_draft(self):
         scenario = self._create_scenario(draft_args=dict())
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -367,11 +367,11 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_default_button_and_valid_data_returns_json_with_success_and_inforequests_detail(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
 
@@ -386,17 +386,17 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_default_button_and_invalid_data_does_not_create_action(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=u'invalid')
+        data = self._create_post_data(branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
-        with created_instances(scenario.paperwork.action_set) as action_set:
+        with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertFalse(action_set.exists())
 
     def test_post_with_default_button_and_invalid_data_does_not_delete_draft(self):
         scenario = self._create_scenario(draft_args=dict())
-        data = self._create_post_data(paperwork=u'invalid')
+        data = self._create_post_data(branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
@@ -406,7 +406,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
     def test_post_with_default_button_and_invalid_data_returns_json_with_invalid_and_rendered_form(self):
         scenario = self._create_scenario()
-        data = self._create_post_data(paperwork=u'invalid')
+        data = self._create_post_data(branch=u'invalid')
         url = self._create_url(scenario)
 
         self._login_user()
@@ -433,7 +433,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
     def test_form_with_undecided_emails_is_invalid(self):
         scenario = self._create_scenario()
         email, _ = self._create_inforequest_email(inforequest=scenario.inforequest)
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -447,7 +447,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
     def test_form_with_no_undecided_emails_is_valid(self):
         scenario = self._create_scenario()
         email, _ = self._create_inforequest_email(inforequest=scenario.inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
-        data = self._create_post_data(paperwork=scenario.paperwork)
+        data = self._create_post_data(branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
@@ -459,7 +459,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
     def test_draft_form_with_undecided_emails_is_valid(self):
         scenario = self._create_scenario()
         email, _ = self._create_inforequest_email(inforequest=scenario.inforequest)
-        data = self._create_post_data(button=u'draft', paperwork=scenario.paperwork)
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
         url = self._create_url(scenario)
 
         self._login_user()
