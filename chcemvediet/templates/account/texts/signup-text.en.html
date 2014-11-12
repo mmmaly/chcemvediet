@@ -1,0 +1,13 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- login_url: string
+ %
+{% endcomment %}
+
+<p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>. Or, you can sign up
+with one of your existing third party accounts.</p>
+<p>{% lorem 41 %}</p>

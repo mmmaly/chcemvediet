@@ -1,7 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno.utils %}
 
 {% comment %}
  %
@@ -15,7 +14,7 @@
 {% block content %}
   <h1>{% blocktrans %}E-mail Addresses{% endblocktrans %}</h1>
   {% if user.emailaddress_set.all %}
-    <p>{% blocktrans %}The following e-mail addresses are associated with your account:{% endblocktrans %}</p>
+    {% include "account/texts/email-list.html" %}
     <form class="form-horizontal" method="post" action="{% url 'account_email' %}">
       {% csrf_token %}
       <div class="control-group">
@@ -43,11 +42,11 @@
       </div>
     </form>
   {% else %}
-    <p>{% blocktrans %}<strong>Warning:</strong> You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc.{% endblocktrans %}</p>
+    {% include "account/texts/email-empty.html" %}
   {% endif %}
 
   <h3>{% blocktrans %}Add E-mail Address{% endblocktrans %}</h3>
-  <p>[{% lorem 32 %}]</p>
+  {% include "account/texts/email-add.html" %}
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     {% include "main/snippets/form_horizontal.html" with form=form %}
@@ -56,4 +55,3 @@
     </div>
   </form>
 {% endblock %}
-

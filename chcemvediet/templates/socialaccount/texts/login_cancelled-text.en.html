@@ -1,0 +1,13 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
+<p>{% lorem 41 %}</p>
+<p>You decided to cancel logging in to our site using one of your existing accounts. If this was
+a mistake, please proceed to <a href="{% url 'account_login' %}">sign in</a>.</p>

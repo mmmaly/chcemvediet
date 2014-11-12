@@ -1,0 +1,16 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
+<p>{% lorem 41 %}</p>
+<p>{% lorem 42 %}</p>
+<p>{% lorem 43 %}</p>
+<div class="alert alert-info">
+  <strong>Lorem:</strong> {% lorem 41 %} <a href="{% url 'account_email' %}">Zmenit</a>.
+</div>

@@ -14,5 +14,5 @@
 
 {% block content %}
   <h1>{% blocktrans %}Confirm E-mail Address{% endblocktrans %}</h1>
-  <p>{% blocktrans with email_address.email as email and email_address.user.get_full_name as user %}You have confirmed that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user }}.{% endblocktrans %}</p>
+  {% include "account/texts/email_confirmed-text.html" %}
 {% endblock %}

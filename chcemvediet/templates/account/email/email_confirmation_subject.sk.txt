@@ -11,7 +11,5 @@
 {% endcomment %}
 
 {% autoescape off %}
-User {{ user.get_full_name }} at {{ current_site.name }} has given this as an email address.
-
-To confirm this is correct, go to {{ activate_url }}
+Confirm E-mail Address
 {% endautoescape %}

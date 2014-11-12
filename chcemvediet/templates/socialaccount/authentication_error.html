@@ -13,5 +13,5 @@
 
 {% block content %}
   <h1>{% blocktrans %}Social Network Login Failure{% endblocktrans %}</h1>
-  <p>{% blocktrans %}An error occurred while attempting to login via your social network account.{% endblocktrans %}</p>
+  {% include "socialaccount/texts/authentication_error-text.html" %}
 {% endblock %}

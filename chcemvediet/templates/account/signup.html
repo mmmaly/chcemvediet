@@ -19,7 +19,9 @@
   <form class="form-horizontal" method="post" action="{% url 'account_signup' %}">
     {% csrf_token %}
     <div class="row">
-      <p class="span6">{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>. Or, you can sign up with one of your existing third party accounts.{% endblocktrans %}</p>
+      <div class="span6">
+        {% include "account/texts/signup-text.html" with login_url=login_url %}
+      </div>
     </div>
     <div class="row">
       <div class="span6">
@@ -35,9 +37,7 @@
         </div>
       </div>
       <div class="span6">
-        <div class="alert alert-block alert-info">
-          {% include "account/snippets/login_why_register.html" %}
-        </div>
+        {% include "account/texts/why_register.html" with login_url=login_url %}
       </div>
     </div>
     <div class="form-actions">

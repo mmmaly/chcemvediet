@@ -1,0 +1,16 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- login_url: string (optional)
+ %  -- signup_url: string (optional)
+ %
+{% endcomment %}
+
+<div class="alert alert-block alert-info">
+  <h4>Prečo sa zaregistrovať?</h4>
+  <p>{% lorem 41 %}</p>
+  <p>{% lorem 42 %}</p>
+</div>

@@ -1,0 +1,12 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- login_url: string
+ %
+{% endcomment %}
+
+<p>{% lorem 41 %} <a href="{{ login_url }}">Prihlásiť sa</a>.</p>
+<p>{% lorem 42 %}</p>

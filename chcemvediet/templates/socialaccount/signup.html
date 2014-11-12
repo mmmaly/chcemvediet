@@ -5,7 +5,6 @@
 {% comment %}
  %
  % Context:
- %  -- site: django.contrib.sites.models.Site
  %  -- account: allauth.socialaccount.models.SocialLogin
  %  -- form: allauth.socialaccount.forms.SignupForm
  %  -- redirect_field_name: string
@@ -20,7 +19,9 @@
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     <div class="row">
-      <p class="span6">{% blocktrans with account.get_provider.name as provider %}You are about to use your {{ provider }} account to login to this site. As a final step, please complete the following form:{% endblocktrans %}</p>
+      <div class="span6">
+        {% include "socialaccount/texts/signup-text.html" with account=account%}
+      </div>
     </div>
     <div class="row">
       <div class="span6">
@@ -30,9 +31,7 @@
         {% endif %}
       </div>
       <div class="span6">
-        <div class="alert alert-block alert-info">
-          {% include "account/snippets/login_why_register.html" %}
-        </div>
+        {% include "account/texts/why_register.html" %}
       </div>
     </div>
     <div class="form-actions">

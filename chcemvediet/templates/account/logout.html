@@ -14,7 +14,7 @@
 
 {% block content %}
   <h1>{% blocktrans %}Sign Out{% endblocktrans %}</h1>
-  <p>{% blocktrans %}Are you sure you want to sign out?{% endblocktrans %}</p>
+  {% include "account/texts/logout-text.html" %}
   <form method="post" action="{% url 'account_logout' %}">
     {% csrf_token %}
     {% if redirect_field_value %}

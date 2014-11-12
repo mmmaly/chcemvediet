@@ -1,0 +1,14 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- email_address: allauth.account.models.EmailAddress (not sure)
+ %  -- confirmation: allauth.account.models.EmailConfirmation (not sure)
+ %
+{% endcomment %}
+
+<p>{% lorem 41 %} {{ email_address.user.get_full_name }},
+<a href="mailto:{{ email_address.email }}">{{ email_address.email }}</a></p>
+<p>{% lorem 42 %}</p>

@@ -1,7 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem from poleno.utils %}
 
 {% comment %}
  %
@@ -15,7 +14,7 @@
 {% block content %}
   <h1>{% blocktrans %}Account Connections{% endblocktrans %}</h1>
   {% if form.accounts %}
-    <p>{% blocktrans %}You can sign in to your account using any of the following third party accounts:{% endblocktrans %}</p>
+    {% include "socialaccount/texts/connections-list.html" %}
     <form class="form-horizontal" method="post" action=".">
       {% csrf_token %}
       {% if form.non_field_errors %}
@@ -40,11 +39,11 @@
       </div>
     </form>
   {% else %}
-    <p>{% blocktrans %}You currently have no social network accounts connected to this account.{% endblocktrans %}</p>
+    {% include "socialaccount/texts/connections-empty.html" %}
   {% endif %}
 
   <h3>{% blocktrans %}Add a 3rd Party Account{% endblocktrans %}</h3>
-  <p>[{% lorem 37 %}]</p>
+  {% include "socialaccount/texts/connections-add.html" %}
   <div class="row">
     <p class="span2 text-right" style="padding-top: 5px;">{% blocktrans %}Connect With{% endblocktrans %}:</p>
     <p class="span10">
@@ -52,6 +51,3 @@
     </p>
   </div>
 {% endblock %}
-
-
-

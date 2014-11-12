@@ -1,7 +1,7 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load blocktrans from i18n %}
-{% load lorem range from poleno.utils %}
+{% load range from poleno.utils %}
 
 {% comment %}
  %
@@ -14,7 +14,7 @@
 
 {% block content %}
   <h1>{% blocktrans %}Obligees List{% endblocktrans %}</h1>
-  <p>[{% lorem %}]</p>
+  {% include "obligees/texts/index-text.html" with obligee_page=obligee_page %}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -51,4 +51,3 @@
     </ul>
   </div>
 {% endblock %}
-

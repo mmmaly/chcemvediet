@@ -1,0 +1,12 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- account: allauth.socialaccount.models.SocialLogin
+ %
+{% endcomment %}
+
+<p>{% lorem 41 %} {{ account.get_provider.name }}.</p>
+<p>{% lorem 42 %}</p>
