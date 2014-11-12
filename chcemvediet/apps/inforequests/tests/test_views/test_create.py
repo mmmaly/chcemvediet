@@ -58,8 +58,8 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
 
         # Check confirmation email
         msg = message_set.get()
-        self.assertTemplateUsed(response, u'account/email/email_confirmation_subject.txt')
-        self.assertTemplateUsed(response, u'account/email/email_confirmation_message.txt')
+        self.assertTemplateUsed(response, u'account/email/email_confirmation_subject.en.txt')
+        self.assertTemplateUsed(response, u'account/email/email_confirmation_message.en.txt')
         self.assertEqual(msg.type, Message.TYPES.OUTBOUND)
         self.assertEqual(msg.from_formatted, u'Something <from@example.com>')
         self.assertEqual(msg.to_formatted, u'smith@example.com')
