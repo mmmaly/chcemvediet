@@ -85,8 +85,8 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         form = response.context[u'form']
         self.assertIsInstance(form, forms.InforequestForm)
         self.assertIsNone(form[u'obligee'].value())
-        self.assertEqual(force_text(form[u'subject'].value()), u'Information request')
-        self.assertRegexpMatches(force_text(form[u'content'].value()), u'^Lorem ipsum')
+        self.assertIsNone(form[u'subject'].value())
+        self.assertIsNone(form[u'content'].value())
         self.assertIsNone(form[u'attachments'].value())
 
     def test_get_with_draft_shows_form_with_values_from_draft(self):

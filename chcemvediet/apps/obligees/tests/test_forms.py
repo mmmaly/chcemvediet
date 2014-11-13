@@ -128,28 +128,21 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<label for="id_obligee">Obligee:</label>', rendered)
         self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text">
-                  <div class="obligee_with_address_input_details obligee_with_address_input_hide">
-                    <span class="obligee_with_address_input_street"></span><br>
-                    <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
-                    E-mail: <span class="obligee_with_address_input_email"></span>
-                  </div>
-                </div>
+                <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
+        self.assertInHTML(u"""
+                <div class="obligee_with_address_input_details obligee_with_address_input_hide">
+                  <span class="obligee_with_address_input_street"></span><br>
+                  <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
+                  E-mail: <span class="obligee_with_address_input_email"></span>
+                </div>
+                """, rendered)
 
     def test_new_form_with_custom_widget_class_and_attributes(self):
         form = self.FormWithWidgetAttrs()
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete custom-class" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" custom-attribute="value">
-                  <div class="obligee_with_address_input_details obligee_with_address_input_hide">
-                    <span class="obligee_with_address_input_street"></span><br>
-                    <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
-                    E-mail: <span class="obligee_with_address_input_email"></span>
-                  </div>
-                </div>
+                <input class="autocomplete custom-class" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" custom-attribute="value">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
 
     def test_new_form_with_initial_value_as_obligee_instance(self):
@@ -158,15 +151,15 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
         form = self.Form(initial={u'obligee': oblgs[2]})
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="ccc">
-                  <div class="obligee_with_address_input_details ">
-                    <span class="obligee_with_address_input_street">ccc street</span><br>
-                    <span class="obligee_with_address_input_zip">12345</span> <span class="obligee_with_address_input_city">ccc city</span><br>
-                    E-mail: <span class="obligee_with_address_input_email">ccc@a.com</span>
-                  </div>
-                </div>
+                <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="ccc">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
+        self.assertInHTML(u"""
+                <div class="obligee_with_address_input_details ">
+                  <span class="obligee_with_address_input_street">ccc street</span><br>
+                  <span class="obligee_with_address_input_zip">12345</span> <span class="obligee_with_address_input_city">ccc city</span><br>
+                  E-mail: <span class="obligee_with_address_input_email">ccc@a.com</span>
+                </div>
+                """, rendered)
 
     def test_new_form_with_initial_value_as_obligee_name(self):
         names = [u'aaa', u'bbb', u'ccc', u'ddd']
@@ -174,15 +167,15 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
         form = self.Form(initial={u'obligee': u'ccc'})
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="ccc">
-                  <div class="obligee_with_address_input_details ">
-                    <span class="obligee_with_address_input_street">ccc street</span><br>
-                    <span class="obligee_with_address_input_zip">12345</span> <span class="obligee_with_address_input_city">ccc city</span><br>
-                    E-mail: <span class="obligee_with_address_input_email">ccc@a.com</span>
-                  </div>
-                </div>
+                <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="ccc">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
+        self.assertInHTML(u"""
+                <div class="obligee_with_address_input_details ">
+                  <span class="obligee_with_address_input_street">ccc street</span><br>
+                  <span class="obligee_with_address_input_zip">12345</span> <span class="obligee_with_address_input_city">ccc city</span><br>
+                  E-mail: <span class="obligee_with_address_input_email">ccc@a.com</span>
+                </div>
+                """, rendered)
 
     def test_submitted_with_empty_value_but_required(self):
         form = self.Form({u'obligee': u''})
@@ -191,16 +184,6 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
 
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered)
-        self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text">
-                  <div class="obligee_with_address_input_details obligee_with_address_input_hide">
-                    <span class="obligee_with_address_input_street"></span><br>
-                    <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
-                    E-mail: <span class="obligee_with_address_input_email"></span>
-                  </div>
-                </div>
-                """.format(url=reverse(u'obligees:autocomplete')), rendered)
 
     def test_submitted_with_empty_value_but_not_required(self):
         form = self.Form({u'obligee': u''})
@@ -209,16 +192,7 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
         self.assertIsNone(form.cleaned_data[u'obligee'])
 
         rendered = self._render(u'{{ form }}', form=form)
-        self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text">
-                  <div class="obligee_with_address_input_details obligee_with_address_input_hide">
-                    <span class="obligee_with_address_input_street"></span><br>
-                    <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
-                    E-mail: <span class="obligee_with_address_input_email"></span>
-                  </div>
-                </div>
-                """.format(url=reverse(u'obligees:autocomplete')), rendered)
+        self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered, count=0)
 
     def test_submitted_with_valid_obligee_name(self):
         names = [u'aaa', u'bbb', u'ccc', u'ddd']
@@ -229,15 +203,15 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
 
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="bbb">
-                  <div class="obligee_with_address_input_details ">
-                    <span class="obligee_with_address_input_street">bbb street</span><br>
-                    <span class="obligee_with_address_input_zip">12345</span> <span class="obligee_with_address_input_city">bbb city</span><br>
-                    E-mail: <span class="obligee_with_address_input_email">bbb@a.com</span>
-                  </div>
-                </div>
+                <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="bbb">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
+        self.assertInHTML(u"""
+                <div class="obligee_with_address_input_details ">
+                  <span class="obligee_with_address_input_street">bbb street</span><br>
+                  <span class="obligee_with_address_input_zip">12345</span> <span class="obligee_with_address_input_city">bbb city</span><br>
+                  E-mail: <span class="obligee_with_address_input_email">bbb@a.com</span>
+                </div>
+                """, rendered)
 
     def test_submitted_with_nonexisting_obligee_name(self):
         names = [u'aaa', u'bbb', u'ccc', u'ddd']
@@ -249,12 +223,12 @@ class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCase
         rendered = self._render(u'{{ form }}', form=form)
         self.assertInHTML(u'<ul class="errorlist"><li>Invalid obligee name. Select one form the menu.</li></ul>', rendered)
         self.assertInHTML(u"""
-                <div class="obligee_with_address_input">
-                  <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="invalid">
-                  <div class="obligee_with_address_input_details obligee_with_address_input_hide">
-                    <span class="obligee_with_address_input_street"></span><br>
-                    <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
-                    E-mail: <span class="obligee_with_address_input_email"></span>
-                  </div>
-                </div>
+                <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="invalid">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
+        self.assertInHTML(u"""
+                <div class="obligee_with_address_input_details obligee_with_address_input_hide">
+                  <span class="obligee_with_address_input_street"></span><br>
+                  <span class="obligee_with_address_input_zip"></span> <span class="obligee_with_address_input_city"></span><br>
+                  E-mail: <span class="obligee_with_address_input_email"></span>
+                </div>
+                """, rendered)

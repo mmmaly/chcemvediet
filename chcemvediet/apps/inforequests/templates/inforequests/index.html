@@ -58,13 +58,7 @@
       <tbody>
         {% for draft in draft_list %}
           <tr>
-            <td>
-              {% if draft.obligee %}
-                <a href="{% url 'inforequests:create_from_draft' draft.pk %}">{{ draft.obligee.name }}</a>
-              {% else %}
-                {% blocktrans %}(empty){% endblocktrans %}
-              {% endif %}
-            </td>
+            <td><a href="{% url 'inforequests:create_from_draft' draft.pk %}">{% if draft.obligee %}{{ draft.obligee.name }}{% else %}{% blocktrans %}(no obligee selected){% endblocktrans %}{% endif %}</a></td>
             <td class="text-right">
               <a class="btn" href="{% url 'inforequests:create_from_draft' draft.pk %}"><i class="icon-edit"></i> Edit and Submit</a>
               <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.pk %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}"><i class="icon-trash"></i> Delete</a>

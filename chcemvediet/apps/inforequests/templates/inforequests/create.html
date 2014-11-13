@@ -14,7 +14,7 @@
 
 {% block content %}
   <h1>{% blocktrans %}New Inforequest{% endblocktrans %}</h1>
-  <p>[{% lorem 21 %}]</p>
+  {% include "inforequests/texts/create-text.html" %}
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     <div class="control-group">
@@ -27,9 +27,9 @@
     </div>
     {% include "main/snippets/form_horizontal.html" with form=form %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary" name="button" value="submit">{% blocktrans %}Submit Request{% endblocktrans %}</button>
-      <button type="submit" class="btn" name="button" value="draft">{% blocktrans %}Save as Draft{% endblocktrans %}</button>
-      <a class="btn pull-right" href="{% url 'inforequests:index' %}">Cancel</a>
+      <button type="submit" class="btn btn-primary with-tooltip" name="button" value="submit" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-submit.txt" %}{% endspaceless %}"><i class="icon-envelope icon-white"></i> {% blocktrans %}Submit Request{% endblocktrans %}</button>
+      <button type="submit" class="btn with-tooltip" name="button" value="draft" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-draft.txt" %}{% endspaceless %}"><i class="icon-file"></i> {% blocktrans %}Save as Draft{% endblocktrans %}</button>
+      <a class="btn pull-right with-tooltip" href="{% url 'inforequests:index' %}" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-cancel.txt" %}{% endspaceless %}"><i class="icon-remove"></i> Cancel</a>
     </div>
   </form>
 {% endblock %}

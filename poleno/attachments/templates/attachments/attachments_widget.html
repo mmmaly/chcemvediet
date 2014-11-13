@@ -13,7 +13,8 @@
 {% endcomment %}
 
 {{ textinput }}
-<span class="btn btn-default btn-file">Browse<input class="fileupload" type="file" name="files" multiple="multiple" data-url="{{ funcs|method:"upload_url"|call }}" data-field="#id_{{name}}" data-target="#{{name}}-target"></span>
+<span class="btn btn-default btn-file"><i class="icon-folder-open"></i> Browse<input class="fileupload" type="file" name="files" multiple="multiple" data-url="{{ funcs|method:"upload_url"|call }}" data-field="#id_{{name}}" data-target="#{{name}}-target"></span>
+&ensp;
 <span id="{{name}}-target">
   <span class="fileupload-template hide">
     <span class="label label-info fileupload-label" data-attachment=""><a href=""></a> <button type="button" class="label-close fileupload-label-close">&times;</button></span>

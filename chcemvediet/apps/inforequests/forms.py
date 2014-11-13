@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.encoding import smart_text
+from django.utils.functional import lazy
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 
 from poleno.attachments.forms import AttachmentsField
@@ -25,19 +26,23 @@ class InforequestForm(PrefixedForm):
             label=_(u'Obligee'),
             widget=ObligeeWithAddressInput(attrs={
                 u'placeholder': _(u'Obligee'),
+                u'class': u'with-tooltip span5',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'data-container': u'body',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/tooltips/create-obligee.txt'),
                 }),
             )
     subject = forms.CharField(
             label=_(u'Subject'),
-            initial=_(u'Information request'),
             max_length=255,
             widget=forms.TextInput(attrs={
                 u'placeholder': _(u'Subject'),
+                u'class': u'span5',
                 }),
             )
     content = forms.CharField(
             label=_(u'Request'),
-            initial=lorem(1)[0],
             widget=forms.Textarea(attrs={
                 u'placeholder': _(u'Request'),
                 u'class': u'input-block-level',

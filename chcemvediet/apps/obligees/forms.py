@@ -21,6 +21,7 @@ class ObligeeWithAddressInput(forms.TextInput):
         textinput = super(ObligeeWithAddressInput, self).render(name, textinput_value, attrs)
 
         return render_to_string(u'obligees/widgets/obligee_with_address_input.html', {
+                u'name': name,
                 u'textinput': textinput,
                 u'obligee': obligee,
                 })

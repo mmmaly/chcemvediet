@@ -4,13 +4,17 @@
 {% comment %}
  %
  % Context:
+ %  -- name: string
  %  -- textinput: html string
  %  -- obligee: chcemvediet.apps.obligees.models.Obligee | None
  %
 {% endcomment %}
 
 <div class="obligee_with_address_input">
-  {{ textinput }}
+  <div class="input-append">
+    {{ textinput }}
+    <label class="add-on" for="id_{{ name }}"><i class="icon-search"></i></label>
+  </div>
   <div class="obligee_with_address_input_details {% if not obligee %}obligee_with_address_input_hide{% endif %}">
     <span class="obligee_with_address_input_street">{{ obligee.street|default:'' }}</span><br>
     <span class="obligee_with_address_input_zip">{{ obligee.zip|default:'' }}</span> <span class="obligee_with_address_input_city">{{ obligee.city|default:'' }}</span><br>

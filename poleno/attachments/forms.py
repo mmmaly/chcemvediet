@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Attachment
 
 class AttachmentsWidget(forms.TextInput):
+    input_type = 'hidden'
+
     def __init__(self, *args, **kwargs):
         super(AttachmentsWidget, self).__init__(*args, **kwargs)
         self.upload_url_func = None
