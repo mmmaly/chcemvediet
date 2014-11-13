@@ -43,3 +43,5 @@
 /* Fix text position if used instead a controll in a form */
 .suppressed-control { padding: 5px; height: 20px; line-height: 20px; display: inline-block; vertical-align: center; }
 
+/* Fix .text-right for table cells */
+.table th.text-right, .table td.text-right { text-align: right; }

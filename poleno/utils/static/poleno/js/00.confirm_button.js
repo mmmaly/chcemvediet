@@ -15,7 +15,7 @@ $(function(){
 		// The handler must be attached directly to the target element. If we were to wait
 		// until the event bubbles down to the document element, some other handler might
 		// have intercepted the event earlier while bubbling.
-		$(base).find('.confirm').not('.hasConfirm').addClass('.hasConfirm').on('click', function(event){
+		$(base).find('.confirm').not('.hasConfirm').addClass('hasConfirm').on('click', function(event){
 			var message = $(this).data('confirm');
 			if (!confirm(message)) {
 				event.preventDefault();

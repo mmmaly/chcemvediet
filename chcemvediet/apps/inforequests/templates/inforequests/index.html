@@ -16,28 +16,38 @@
 {% block content %}
   <h1>{% blocktrans %}Submitted Inforequests{% endblocktrans %}</h1>
   {% if inforequest_list %}
+    {% include "inforequests/texts/index-submitted-list.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>{% blocktrans %}Obligee{% endblocktrans %}</th>
-          <th>{% blocktrans %}Submission Date{% endblocktrans %}</th>
-          <th></th>
+          <th class="span7">{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th class="span2"></th>
+          <th class="span3">{% blocktrans %}Submission Date{% endblocktrans %}</th>
         </tr>
       </thead>
       <tbody>
         {% for inforequest in inforequest_list %}
           <tr>
             <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.branch.historicalobligee.name }}</a></td>
+            <td>
+              {% if inforequest.has_undecided_email %}
+                <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/index-new_mail.txt" %}{% endspaceless %}"><i class="icon-envelope"></i> New E-mail</span>
+              {% endif %}
+            </td>
             <td>{{ inforequest.submission_date }}</td>
-            <td>{% if inforequest.has_undecided_email %}New e-mail waiting{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+  {% else %}
+    {% include "inforequests/texts/index-submitted-empty.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
   {% endif %}
-  <p>{% blocktrans %}Number of submitted inforequests{% endblocktrans %}: {{ inforequest_list|length }}</p>
+  <div class="clearfix">
+    <a class="btn btn-primary btn-large pull-right" href="{% url 'inforequests:create' %}"><i class="icon-plus icon-white"></i> {% blocktrans %}New Inforequest{% endblocktrans %}</a>
+  </div>
   {% if draft_list %}
     <h2>{% blocktrans %}Inforequest Drafts{% endblocktrans %}</h1>
+    {% include "inforequests/texts/index-drafts.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
     <table class="table table-striped">
       <thead>
         <tr>
@@ -48,26 +58,30 @@
       <tbody>
         {% for draft in draft_list %}
           <tr>
-            <td>{% if draft.obligee %}{{ draft.obligee.name }}{% else %}{% blocktrans %}(empty){% endblocktrans %}{% endif %}</a></td>
+            <td>
+              {% if draft.obligee %}
+                <a href="{% url 'inforequests:create_from_draft' draft.pk %}">{{ draft.obligee.name }}</a>
+              {% else %}
+                {% blocktrans %}(empty){% endblocktrans %}
+              {% endif %}
+            </td>
             <td class="text-right">
-              <a class="btn" href="{% url 'inforequests:create_from_draft' draft.pk %}">Edit and Submit</a>
-              <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.pk %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}">Delete</a>
+              <a class="btn" href="{% url 'inforequests:create_from_draft' draft.pk %}"><i class="icon-edit"></i> Edit and Submit</a>
+              <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.pk %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}"><i class="icon-trash"></i> Delete</a>
             </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   {% endif %}
-  <p>
-    <a class="btn" href="{% url 'inforequests:create' %}">{% blocktrans %}New Inforequest{% endblocktrans %}</a>
-  </p>
   {% if closed_list %}
     <h2>{% blocktrans %}Closed Inforequests{% endblocktrans %}</h1>
+    {% include "inforequests/texts/index-closed.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>{% blocktrans %}Obligee{% endblocktrans %}</th>
-          <th>{% blocktrans %}Submission Date{% endblocktrans %}</th>
+          <th class="span9">{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th class="span3">{% blocktrans %}Submission Date{% endblocktrans %}</th>
         </tr>
       </thead>
       <tbody>
