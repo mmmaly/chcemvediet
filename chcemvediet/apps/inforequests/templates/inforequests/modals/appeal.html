@@ -16,14 +16,14 @@
     <h3>Appeal</h3>
   </div>
   <div class="modal-body">
-    <p>[{% lorem 7 %}]</p>
+    {% include "inforequests/modals/texts/appeal-text.html" %}
     <div>
       {% include "main/snippets/form_horizontal.html" with form=form %}
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="print">Print and Send by Regular Mail</button>
-    <button type="submit" class="btn" name="button" value="draft">Save as Draft</button>
-    <button type="button" class="btn" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" name="button" value="print"><i class="icon-print icon-white"></i> Print and Send by Regular Mail</button>
+    <button type="submit" class="btn" name="button" value="draft"><i class="icon-file"></i> Save as Draft</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
   </div>
 </form>

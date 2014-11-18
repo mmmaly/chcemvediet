@@ -141,6 +141,11 @@ class Inforequest(models.Model):
 
     # May NOT be NULL; Read-only
     @property
+    def can_add_request(self):
+        return self.can_add_action(Action.TYPES.REQUEST)
+
+    # May NOT be NULL; Read-only
+    @property
     def can_add_clarification_response(self):
         return self.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE)
 
@@ -194,9 +199,29 @@ class Inforequest(models.Model):
     def can_add_remandment(self):
         return self.can_add_action(Action.TYPES.REMANDMENT)
 
-    def can_add_action(self, action_type):
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_applicant_action(self):
+        return self.can_add_action(*Action.APPLICANT_ACTION_TYPES)
+
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_applicant_email_action(self):
+        return self.can_add_action(*Action.APPLICANT_EMAIL_ACTION_TYPES)
+
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_obligee_action(self):
+        return self.can_add_action(*Action.OBLIGEE_ACTION_TYPES)
+
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_obligee_email_action(self):
+        return self.can_add_action(*Action.OBLIGEE_EMAIL_ACTION_TYPES)
+
+    def can_add_action(self, *action_types):
         for branch in self.branch_set.all():
-            if branch.can_add_action(action_type):
+            if branch.can_add_action(*action_types):
                 return True
         return False
 
@@ -349,6 +374,11 @@ class Branch(models.Model):
 
     # May NOT be NULL; Read-only
     @property
+    def can_add_request(self):
+        return False
+
+    # May NOT be NULL; Read-only
+    @property
     def can_add_clarification_response(self):
         return self.last_action.type == Action.TYPES.CLARIFICATION_REQUEST
 
@@ -451,9 +481,32 @@ class Branch(models.Model):
     def can_add_remandment(self):
         return self.last_action.type == Action.TYPES.APPEAL
 
-    def can_add_action(self, action_type):
-        type_name = Action.TYPES._inverse[action_type]
-        return getattr(self, u'can_add_%s' % type_name.lower())
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_applicant_action(self):
+        return self.can_add_action(*Action.APPLICANT_ACTION_TYPES)
+
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_applicant_email_action(self):
+        return self.can_add_action(*Action.APPLICANT_EMAIL_ACTION_TYPES)
+
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_obligee_action(self):
+        return self.can_add_action(*Action.OBLIGEE_ACTION_TYPES)
+
+    # May NOT be NULL; Read-only
+    @property
+    def can_add_obligee_email_action(self):
+        return self.can_add_action(*Action.OBLIGEE_EMAIL_ACTION_TYPES)
+
+    def can_add_action(self, *action_types):
+        for action_type in action_types:
+            type_name = Action.TYPES._inverse[action_type]
+            if getattr(self, u'can_add_%s' % type_name.lower()):
+                return True
+        return False
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
@@ -569,6 +622,11 @@ class Action(models.Model):
             TYPES.CLARIFICATION_RESPONSE,
             TYPES.APPEAL,
             )
+    # FIXME: tests
+    APPLICANT_EMAIL_ACTION_TYPES = (
+            TYPES.REQUEST,
+            TYPES.CLARIFICATION_RESPONSE,
+            )
     OBLIGEE_ACTION_TYPES = (
             TYPES.CONFIRMATION,
             TYPES.EXTENSION,
@@ -579,6 +637,15 @@ class Action(models.Model):
             TYPES.AFFIRMATION,
             TYPES.REVERSION,
             TYPES.REMANDMENT,
+            )
+    # FIXME: tests
+    OBLIGEE_EMAIL_ACTION_TYPES = (
+            TYPES.CONFIRMATION,
+            TYPES.EXTENSION,
+            TYPES.ADVANCEMENT,
+            TYPES.CLARIFICATION_REQUEST,
+            TYPES.DISCLOSURE,
+            TYPES.REFUSAL,
             )
     IMPLICIT_ACTION_TYPES = (
             TYPES.ADVANCED_REQUEST,

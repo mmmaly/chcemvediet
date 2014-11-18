@@ -1,0 +1,11 @@
+{# vim: set filetype=django :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+{{ action.deadline_remaining }} WD remains. {% lorem 41 %}

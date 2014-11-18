@@ -9,26 +9,30 @@
 {% endcomment %}
 
 <h2>Add Received Regular Mail</h2>
-<div class="well">
-  <p>[{% lorem 20 %}]</p>
-  <div class="btn-group">
-      {% if inforequest.can_add_confirmation %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_confirmation' inforequest.pk %}" data-type="html" data-target="#confirmation-smail-modal" data-fail-target="#ajax-fail-modal">Confirmation</button>{% endif %}
-      {% if inforequest.can_add_extension %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_extension' inforequest.pk %}" data-type="html" data-target="#extension-smail-modal" data-fail-target="#ajax-fail-modal">Extension</button>{% endif %}
-      {% if inforequest.can_add_advancement %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_advancement' inforequest.pk %}" data-type="html" data-target="#advancement-smail-modal" data-fail-target="#ajax-fail-modal">Advancement</button>{% endif %}
-      {% if inforequest.can_add_clarification_request %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_clarification_request' inforequest.pk %}" data-type="html" data-target="#clarification-request-smail-modal" data-fail-target="#ajax-fail-modal">Clarification Request</button>{% endif %}
-      {% if inforequest.can_add_disclosure %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_disclosure' inforequest.pk %}" data-type="html" data-target="#disclosure-smail-modal" data-fail-target="#ajax-fail-modal">Disclosure</button>{% endif %}
-      {% if inforequest.can_add_refusal %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_refusal' inforequest.pk %}" data-type="html" data-target="#refusal-smail-modal" data-fail-target="#ajax-fail-modal">Refusal</button>{% endif %}
-      {% if inforequest.can_add_affirmation %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_affirmation' inforequest.pk %}" data-type="html" data-target="#affirmation-smail-modal" data-fail-target="#ajax-fail-modal">Affirmation</button>{% endif %}
-      {% if inforequest.can_add_reversion %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_reversion' inforequest.pk %}" data-type="html" data-target="#reversion-smail-modal" data-fail-target="#ajax-fail-modal">Reversion</button>{% endif %}
-      {% if inforequest.can_add_remandment %}<button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:add_smail_remandment' inforequest.pk %}" data-type="html" data-target="#remandment-smail-modal" data-fail-target="#ajax-fail-modal">Remandment</button>{% endif %}
+{% if inforequest.can_add_obligee_action %}
+  <div class="well">
+    {% include "inforequests/texts/detail-add_smail-text.html" with inforequest=inforequest %}
+    <div class="btn-group">
+        {% if inforequest.can_add_confirmation          %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_confirmation'          inforequest.pk %}" data-type="html" data-target="#confirmation-smail-modal"          data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-confirmation.txt"          %}{% endspaceless %}">Confirmation</button>{% endif %}
+        {% if inforequest.can_add_extension             %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_extension'             inforequest.pk %}" data-type="html" data-target="#extension-smail-modal"             data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-extension.txt"             %}{% endspaceless %}">Extension</button>{% endif %}
+        {% if inforequest.can_add_advancement           %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_advancement'           inforequest.pk %}" data-type="html" data-target="#advancement-smail-modal"           data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-advancement.txt"           %}{% endspaceless %}">Advancement</button>{% endif %}
+        {% if inforequest.can_add_clarification_request %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_clarification_request' inforequest.pk %}" data-type="html" data-target="#clarification-request-smail-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-clarification_request.txt" %}{% endspaceless %}">Clarification Request</button>{% endif %}
+        {% if inforequest.can_add_disclosure            %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_disclosure'            inforequest.pk %}" data-type="html" data-target="#disclosure-smail-modal"            data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-disclosure.txt"            %}{% endspaceless %}">Disclosure</button>{% endif %}
+        {% if inforequest.can_add_refusal               %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_refusal'               inforequest.pk %}" data-type="html" data-target="#refusal-smail-modal"               data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-refusal.txt"               %}{% endspaceless %}">Refusal</button>{% endif %}
+        {% if inforequest.can_add_affirmation           %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_affirmation'           inforequest.pk %}" data-type="html" data-target="#affirmation-smail-modal"           data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-affirmation.txt"           %}{% endspaceless %}">Affirmation</button>{% endif %}
+        {% if inforequest.can_add_reversion             %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_reversion'             inforequest.pk %}" data-type="html" data-target="#reversion-smail-modal"             data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-reversion.txt"             %}{% endspaceless %}">Reversion</button>{% endif %}
+        {% if inforequest.can_add_remandment            %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:add_smail_remandment'            inforequest.pk %}" data-type="html" data-target="#remandment-smail-modal"            data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-add_smail-remandment.txt"            %}{% endspaceless %}">Remandment</button>{% endif %}
+    </div>
+    <div id="confirmation-smail-modal"          class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="extension-smail-modal"             class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="advancement-smail-modal"           class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="clarification-request-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="disclosure-smail-modal"            class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="refusal-smail-modal"               class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="affirmation-smail-modal"           class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="reversion-smail-modal"             class="modal inforequest-ajax-modal modal-large hide fade"></div>
+    <div id="remandment-smail-modal"            class="modal inforequest-ajax-modal modal-large hide fade"></div>
   </div>
-  <div id="confirmation-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="extension-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="advancement-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="clarification-request-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="disclosure-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="refusal-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="affirmation-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="reversion-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-  <div id="remandment-smail-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
-</div>
+{% else %}
+  {% include "inforequests/texts/detail-add_smail-nothing.html" with inforequest=inforequest %}
+{% endif %}

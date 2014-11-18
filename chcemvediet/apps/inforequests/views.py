@@ -96,6 +96,8 @@ def delete_draft(request, draft_pk):
 @require_ajax
 @login_required(raise_exception=True)
 def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, template):
+    assert action_type in Action.OBLIGEE_EMAIL_ACTION_TYPES
+
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
     email = inforequest.undecided_set.get_or_404(pk=email_pk)
     inforequestemail = inforequest.inforequestemail_set.get(email=email)
@@ -235,6 +237,8 @@ def decide_email_unknown(request, inforequest_pk, email_pk):
 @require_ajax
 @login_required(raise_exception=True)
 def _add_smail(request, inforequest_pk, action_type, form_class, template):
+    assert action_type in Action.OBLIGEE_ACTION_TYPES
+
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     if request.method != u'POST': # The user cas save a draft even if he may not submit.
@@ -337,7 +341,9 @@ def add_smail_remandment(request, inforequest_pk):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
 @login_required(raise_exception=True)
-def _new_action(request, inforequest_pk, action_type, form_class, template, can_email):
+def _new_action(request, inforequest_pk, action_type, form_class, template):
+    assert action_type in Action.APPLICANT_ACTION_TYPES
+
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     if request.method != u'POST': # The user cas save a draft even if he may not submit.
@@ -350,7 +356,7 @@ def _new_action(request, inforequest_pk, action_type, form_class, template, can_
     attached_to = (request.user, draft) if draft else (request.user,)
 
     if request.method == u'POST':
-        if can_email:
+        if action_type in Action.APPLICANT_EMAIL_ACTION_TYPES:
             button = clean_button(request.POST, [u'email', u'print', u'draft'])
         else:
             button = clean_button(request.POST, [u'print', u'draft'])
@@ -420,13 +426,11 @@ def _new_action(request, inforequest_pk, action_type, form_class, template, can_
 
 def new_action_clarification_response(request, inforequest_pk):
     return _new_action(request, inforequest_pk, Action.TYPES.CLARIFICATION_RESPONSE,
-            forms.ClarificationResponseForm, u'inforequests/modals/clarification_response.html',
-            can_email=True)
+            forms.ClarificationResponseForm, u'inforequests/modals/clarification_response.html')
 
 def new_action_appeal(request, inforequest_pk):
     return _new_action(request, inforequest_pk, Action.TYPES.APPEAL,
-            forms.AppealForm, u'inforequests/modals/appeal.html',
-            can_email=False)
+            forms.AppealForm, u'inforequests/modals/appeal.html')
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax

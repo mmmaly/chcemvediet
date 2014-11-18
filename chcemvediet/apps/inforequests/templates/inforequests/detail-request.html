@@ -26,7 +26,7 @@
 </div>
 <div class="row">
   <p class="span2 text-right">{% blocktrans %}Unique E-mail{% endblocktrans %}:</p>
-  <p class="span10">{{ inforequest.unique_email }}</p>
+  <p class="span10">{{ inforequest.unique_email }} <i class="icon-question-sign with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-request-unique_email.txt" %}{% endspaceless %}"></i></p>
 </div>
 <div class="row">
   <p class="span2 text-right">{% blocktrans %}Submission Date{% endblocktrans %}:</p>

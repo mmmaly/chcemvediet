@@ -1,5 +1,4 @@
 {# vim: set filetype=htmldjango :#}
-{% load subtract from poleno.utils %}
 {% load blocktrans from i18n %}
 
 {% comment %}
@@ -11,12 +10,7 @@
 
 {% if inforequest.undecided_set.count >= 2 %}
   <div class="alert alert-info alert-block clearfix">
-    <h4>More e-mails</h4>
-    <p>
-      {% blocktrans with inforequest.undecided_set.count|subtract:1 as count %}{{ count }} other e-mails are waiting
-      for your decision. First decide the above e-mail and then the rest. You must decide them
-      in the order they were received.{% endblocktrans %}
-    </p>
+    {% include "inforequests/texts/detail-undecided-text.html" with inforequest=inforequest %}
     <p><button class="btn" data-toggle="collapse" data-target="#undecided-collapse">{% blocktrans %}Show them{% endblocktrans %}</button></p>
   </div>
   <div id="undecided-collapse" class="collapse">

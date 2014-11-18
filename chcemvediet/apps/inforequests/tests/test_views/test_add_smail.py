@@ -27,7 +27,7 @@ class AddSmailTests(
     view_name = None
     good_scenario = None # Some scenario the view will be successfull on
     post_with_bad_scenario_returns_404 = False
-    undecided_email_message_template = u'inforequests/messages/add_smail-undecided_emails.txt'
+    undecided_email_message_template = u'inforequests/messages/add_smail-undecided_emails.en.txt'
 
     def _create_scenario(self, **kwargs):
         res = Bunch()

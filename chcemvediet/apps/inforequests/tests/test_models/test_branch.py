@@ -206,48 +206,48 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         tests = (
                 (Action.TYPES.REQUEST, Bunch(
                     scenario=[],
-                    allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                    expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action'],
+                    expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action', u'applicant_action'],
                     )),
                 (Action.TYPES.CLARIFICATION_RESPONSE, Bunch(
                     scenario=[u'clarification_request', u'clarification_response'],
-                    allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                    expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action'],
+                    expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action', u'applicant_action'],
                     )),
                 (Action.TYPES.APPEAL, Bunch(
                     scenario=[u'expiration', u'appeal'],
-                    allowed=[u'affirmation', u'reversion', u'remandment'],
-                    expired=[u'affirmation', u'reversion', u'remandment'],
+                    allowed=[u'affirmation', u'reversion', u'remandment', u'obligee_action'],
+                    expired=[u'affirmation', u'reversion', u'remandment', u'obligee_action'],
                     )),
                 (Action.TYPES.CONFIRMATION, Bunch(
                     scenario=[u'confirmation'],
-                    allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                    expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    allowed=[           u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action'],
+                    expired=[u'appeal', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action', u'applicant_action'],
                     )),
                 (Action.TYPES.EXTENSION, Bunch(
                     scenario=[u'extension'],
-                    allowed=[           u'disclosure', u'refusal'],
-                    expired=[u'appeal', u'disclosure', u'refusal'],
+                    allowed=[           u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action'],
+                    expired=[u'appeal', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action', u'applicant_action'],
                     )),
                 (Action.TYPES.ADVANCEMENT, Bunch(
                     scenario=[u'advancement'],
-                    allowed=[u'appeal'],
-                    expired=[u'appeal'],
+                    allowed=[u'appeal', u'applicant_action'],
+                    expired=[u'appeal', u'applicant_action'],
                     )),
                 (Action.TYPES.CLARIFICATION_REQUEST, Bunch(
                     scenario=[u'clarification_request'],
-                    allowed=[u'clarification_response', u'clarification_request'],
-                    expired=[u'clarification_response', u'clarification_request'],
+                    allowed=[u'clarification_response', u'clarification_request', u'obligee_action', u'obligee_email_action', u'applicant_action', u'applicant_email_action'],
+                    expired=[u'clarification_response', u'clarification_request', u'obligee_action', u'obligee_email_action', u'applicant_action', u'applicant_email_action'],
                     )),
                 (Action.TYPES.DISCLOSURE, Bunch(
                     scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.NONE))],
-                    allowed=[u'appeal'],
-                    expired=[u'appeal'],
+                    allowed=[u'appeal', u'applicant_action'],
+                    expired=[u'appeal', u'applicant_action'],
                     )),
                 (Action.TYPES.DISCLOSURE, Bunch(
                     scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.PARTIAL))],
-                    allowed=[u'appeal'],
-                    expired=[u'appeal'],
+                    allowed=[u'appeal', u'applicant_action'],
+                    expired=[u'appeal', u'applicant_action'],
                     )),
                 (Action.TYPES.DISCLOSURE, Bunch(
                     scenario=[(u'disclosure', dict(disclosure_level=Action.DISCLOSURE_LEVELS.FULL))],
@@ -256,8 +256,8 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                     )),
                 (Action.TYPES.REFUSAL, Bunch(
                     scenario=[u'refusal'],
-                    allowed=[u'appeal'],
-                    expired=[u'appeal'],
+                    allowed=[u'appeal', u'applicant_action'],
+                    expired=[u'appeal', u'applicant_action'],
                     )),
                 (Action.TYPES.AFFIRMATION, Bunch(
                     scenario=[u'refusal', u'appeal', u'affirmation'],
@@ -271,19 +271,19 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                     )),
                 (Action.TYPES.REMANDMENT, Bunch(
                     scenario=[u'refusal', u'appeal', u'remandment'],
-                    allowed=[           u'extension', u'disclosure', u'refusal'],
-                    expired=[u'appeal', u'extension', u'disclosure', u'refusal'],
+                    allowed=[           u'extension', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action'],
+                    expired=[u'appeal', u'extension', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action', u'applicant_action'],
                     )),
                 (Action.TYPES.ADVANCED_REQUEST, Bunch(
                     branch=1,
                     scenario=[u'advancement'],
-                    allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
-                    expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal'],
+                    allowed=[           u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action'],
+                    expired=[u'appeal', u'confirmation', u'extension', u'advancement', u'clarification_request', u'disclosure', u'refusal', u'obligee_action', u'obligee_email_action', u'applicant_action'],
                     )),
                 (Action.TYPES.EXPIRATION, Bunch(
                     scenario=[u'expiration'],
-                    allowed=[u'appeal'],
-                    expired=[u'appeal'],
+                    allowed=[u'appeal', u'applicant_action'],
+                    expired=[u'appeal', u'applicant_action'],
                     )),
                 (Action.TYPES.APPEAL_EXPIRATION, Bunch(
                     scenario=[u'refusal', u'appeal', u'appeal_expiration'],
@@ -297,6 +297,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(tested_action_types, defined_action_types)
 
         can_add_properties = (
+                u'request',
                 u'clarification_response',
                 u'appeal',
                 u'confirmation',
@@ -308,6 +309,10 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                 u'affirmation',
                 u'reversion',
                 u'remandment',
+                u'applicant_action',
+                u'applicant_email_action',
+                u'obligee_action',
+                u'obligee_email_action',
                 )
 
         for action_type, test in tests:
@@ -321,18 +326,18 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
             for can_add_property in can_add_properties:
                 value = getattr(branch, u'can_add_%s' % can_add_property)
                 expected = can_add_property in test.allowed
-                self.assertEqual(value, expected)
+                self.assertEqual(value, expected, u'can_add_%s is %s after %r' % (can_add_property, value, test.scenario))
 
             # Check actions allowed when the last action deadline is expired
             timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
             for can_add_property in can_add_properties:
                 value = getattr(branch, u'can_add_%s' % can_add_property)
                 expected = can_add_property in test.expired
-                self.assertEqual(value, expected)
+                self.assertEqual(value, expected, u'can_add_%s is %s after expired %r' % (can_add_property, value, test.scenario))
 
     def test_can_add_action_method(self):
         tests = (                                   # expected result
-                (Action.TYPES.REQUEST,                AttributeError, u"'Branch' object has no attribute 'can_add_request'"),
+                (Action.TYPES.REQUEST,                False,          None),
                 (Action.TYPES.CLARIFICATION_RESPONSE, False,          None),
                 (Action.TYPES.APPEAL,                 False,          None),
                 (Action.TYPES.CONFIRMATION,           True,           None),
@@ -362,7 +367,27 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                 self.assertFalse(branch.can_add_action(action_type))
             else:
                 with self.assertRaisesMessage(expected_result, expected_message):
-                    self.assertFalse(branch.can_add_action(action_type))
+                    branch.can_add_action(action_type)
+
+    def test_can_add_action_method_with_multiple_arguments(self):
+        tests = (
+                ([Action.TYPES.REQUEST,      Action.TYPES.APPEAL,     Action.TYPES.REVERSION], False,          None),
+                ([Action.TYPES.CONFIRMATION, Action.TYPES.EXTENSION],                          True,           None),
+                ([Action.TYPES.APPEAL,       Action.TYPES.EXTENSION,  Action.TYPES.REVERSION], True,           None),
+                ([Action.TYPES.AFFIRMATION,  Action.TYPES.EXPIRATION, Action.TYPES.EXTENSION], AttributeError, u"'Branch' object has no attribute 'can_add_expiration'"),
+                ([],                                                                           False,          None),
+                )
+
+        # ``branch`` last action is ``REQUEST``
+        _, branch, _ = self._create_inforequest_scenario()
+        for action_types, expected_result, expected_message in tests:
+            if expected_result is True:
+                self.assertTrue(branch.can_add_action(*action_types), u'can_add_action(%s) is False' % action_types)
+            elif expected_result is False:
+                self.assertFalse(branch.can_add_action(*action_types), u'can_add_action(%s) is True' % action_types)
+            else:
+                with self.assertRaisesMessage(expected_result, expected_message):
+                    branch.can_add_action(*action_types)
 
     def test_add_expiration_if_expired_method(self):
         tests = (                                   # Expected action type,      branch, scenario

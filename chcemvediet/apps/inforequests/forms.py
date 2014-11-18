@@ -25,7 +25,7 @@ class InforequestForm(PrefixedForm):
     obligee = ObligeeAutocompleteField(
             label=_(u'Obligee'),
             widget=ObligeeWithAddressInput(attrs={
-                u'placeholder': _(u'Obligee'),
+                u'placeholder': _(u'Search Obligee'),
                 u'class': u'with-tooltip span5',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -111,9 +111,16 @@ class ActionAbstractForm(PrefixedForm):
     branch = forms.TypedChoiceField(
             label=_(u'Obligee'),
             empty_value=None,
-            widget=AutoSuppressedSelect(suppressed_attrs={
-                u'class': u'suppressed-control',
-                }),
+            widget=AutoSuppressedSelect(
+                attrs={
+                    u'class': u'with-tooltip span5',
+                    u'data-toggle': u'tooltip',
+                    u'data-placement': u'right',
+                    u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/branch-field.txt'),
+                    },
+                suppressed_attrs={
+                    u'class': u'suppressed-control',
+                    }),
             )
 
     def __init__(self, *args, **kwargs):
@@ -157,7 +164,10 @@ class EffectiveDateMixin(ActionAbstractForm):
             localize=True,
             widget=forms.DateInput(attrs={
                 u'placeholder': pgettext_lazy(u'Form Date Placeholder', u'mm/dd/yyyy'),
-                u'class': u'datepicker',
+                u'class': u'datepicker with-tooltip',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/effective_date-field.txt'),
                 }),
             )
 
@@ -204,6 +214,7 @@ class SubjectContentMixin(ActionAbstractForm):
             max_length=255,
             widget=forms.TextInput(attrs={
                 u'placeholder': _(u'Subject'),
+                u'class': u'span5',
                 }),
             )
     content = forms.CharField(
@@ -275,6 +286,10 @@ class DeadlineMixin(ActionAbstractForm):
             max_value=100,
             widget=forms.NumberInput(attrs={
                 u'placeholder': _(u'Deadline'),
+                u'class': u'with-tooltip',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/deadline-field.txt'),
                 }),
             )
 
@@ -300,6 +315,11 @@ class AdvancedToMixin(ActionAbstractForm):
             label=_(u'Advanced To'),
             widget=ObligeeWithAddressInput(attrs={
                 u'placeholder': _(u'Obligee'),
+                u'class': u'with-tooltip span5',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'data-container': u'.modal.in',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to-field.txt'),
                 }),
             )
     advanced_to_2 = ObligeeAutocompleteField(
@@ -307,6 +327,11 @@ class AdvancedToMixin(ActionAbstractForm):
             required=False,
             widget=ObligeeWithAddressInput(attrs={
                 u'placeholder': _(u'Obligee'),
+                u'class': u'with-tooltip span5',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'data-container': u'.modal.in',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to-field.txt'),
                 }),
             )
     advanced_to_3 = ObligeeAutocompleteField(
@@ -314,6 +339,11 @@ class AdvancedToMixin(ActionAbstractForm):
             required=False,
             widget=ObligeeWithAddressInput(attrs={
                 u'placeholder': _(u'Obligee'),
+                u'class': u'with-tooltip span5',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'data-container': u'.modal.in',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to-field.txt'),
                 }),
             )
     ADVANCED_TO_FIELDS = [u'advanced_to_1', u'advanced_to_2', u'advanced_to_3']
@@ -387,6 +417,12 @@ class DisclosureLevelMixin(ActionAbstractForm):
             choices=[(u'', u'')] + Action.DISCLOSURE_LEVELS._choices,
             coerce=int,
             empty_value=None,
+            widget=forms.Select(attrs={
+                u'class': u'with-tooltip',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/disclosure_level-field.txt'),
+                }),
             )
 
     def __init__(self, *args, **kwargs):
@@ -412,6 +448,12 @@ class RefusalReasonMixin(ActionAbstractForm):
             choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
             coerce=int,
             empty_value=None,
+            widget=forms.Select(attrs={
+                u'class': u'with-tooltip',
+                u'data-toggle': u'tooltip',
+                u'data-placement': u'right',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/refusal_reason-field.txt'),
+                }),
             )
 
     def __init__(self, *args, **kwargs):
@@ -523,6 +565,9 @@ class ExtendDeadlineForm(PrefixedForm):
             max_value=100,
             widget=forms.NumberInput(attrs={
                 u'placeholder': _(u'Working Days'),
+                u'class': u'with-tooltip',
+                u'data-toggle': u'tooltip',
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/extend_deadline.txt'),
                 }),
             )
 

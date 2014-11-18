@@ -287,6 +287,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
     def test_can_add_x_properties_with_one_branch(self):
         inforequest, _, _ = self._create_inforequest_scenario()
         # ``branch`` last action is ``REQUEST``
+        self.assertFalse(inforequest.can_add_request)
         self.assertFalse(inforequest.can_add_clarification_response)
         self.assertFalse(inforequest.can_add_appeal)
         self.assertTrue(inforequest.can_add_confirmation)
@@ -298,6 +299,11 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_affirmation)
         self.assertFalse(inforequest.can_add_reversion)
         self.assertFalse(inforequest.can_add_remandment)
+
+        self.assertFalse(inforequest.can_add_applicant_action)
+        self.assertFalse(inforequest.can_add_applicant_email_action)
+        self.assertTrue(inforequest.can_add_obligee_action)
+        self.assertTrue(inforequest.can_add_obligee_email_action)
 
     def test_can_add_x_properties_with_multiple_branches(self):
         u"""
@@ -315,6 +321,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         # three branches ending with ``EXTENSION`` and ``CLARIFICATION_REQUEST`` and
         # ``ADVANCEMENT``, respectivelly. The latter advancement advanced to yet another branch
         # ending with ``CONFIRMATION``.
+        self.assertFalse(inforequest.can_add_request)
         self.assertTrue(inforequest.can_add_clarification_response) # from ``CLARIFICATION_REQUEST``
         self.assertTrue(inforequest.can_add_appeal)                 # from ``ADVANCEMENT``
         self.assertFalse(inforequest.can_add_confirmation)
@@ -327,9 +334,14 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertFalse(inforequest.can_add_reversion)
         self.assertFalse(inforequest.can_add_remandment)
 
+        self.assertTrue(inforequest.can_add_applicant_action)
+        self.assertTrue(inforequest.can_add_applicant_email_action)
+        self.assertTrue(inforequest.can_add_obligee_action)
+        self.assertTrue(inforequest.can_add_obligee_email_action)
+
     def test_can_add_action_method(self):
         tests = (                                   # expected result
-                (Action.TYPES.REQUEST,                AttributeError, u"'Branch' object has no attribute 'can_add_request'"),
+                (Action.TYPES.REQUEST,                False,          None),
                 (Action.TYPES.CLARIFICATION_RESPONSE, False,          None),
                 (Action.TYPES.APPEAL,                 False,          None),
                 (Action.TYPES.CONFIRMATION,           True,           None),
@@ -359,7 +371,27 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                 self.assertFalse(inforequest.can_add_action(action_type))
             else:
                 with self.assertRaisesMessage(expected_result, expected_message):
-                    self.assertFalse(inforequest.can_add_action(action_type))
+                    inforequest.can_add_action(action_type)
+
+    def test_can_add_action_method_with_multiple_arguments(self):
+        tests = (
+                ([Action.TYPES.REQUEST,      Action.TYPES.APPEAL,     Action.TYPES.REVERSION], False,          None),
+                ([Action.TYPES.CONFIRMATION, Action.TYPES.EXTENSION],                          True,           None),
+                ([Action.TYPES.APPEAL,       Action.TYPES.EXTENSION,  Action.TYPES.REVERSION], True,           None),
+                ([Action.TYPES.AFFIRMATION,  Action.TYPES.EXPIRATION, Action.TYPES.EXTENSION], AttributeError, u"'Branch' object has no attribute 'can_add_expiration'"),
+                ([],                                                                           False,          None),
+                )
+
+        # ``branch`` last action is ``REQUEST``
+        inforequest, _, _ = self._create_inforequest_scenario()
+        for action_types, expected_result, expected_message in tests:
+            if expected_result is True:
+                self.assertTrue(inforequest.can_add_action(*action_types), u'can_add_action(%s) is False' % action_types)
+            elif expected_result is False:
+                self.assertFalse(inforequest.can_add_action(*action_types), u'can_add_action(%s) is True' % action_types)
+            else:
+                with self.assertRaisesMessage(expected_result, expected_message):
+                    inforequest.can_add_action(*action_types)
 
     def test_send_notification(self):
         u"""

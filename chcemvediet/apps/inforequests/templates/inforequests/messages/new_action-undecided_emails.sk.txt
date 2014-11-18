@@ -1,0 +1,13 @@
+{# vim: set filetype=django :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+{% autoescape off %}
+{% lorem %}
+{% endautoescape %}

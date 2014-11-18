@@ -14,7 +14,7 @@
   <h3>Print {{ action.get_type_display }}</h3>
 </div>
 <div class="modal-body">
-  <p>[{% lorem 20 %}]</p>
+  {% include "inforequests/modals/texts/print-text.html" %}
   <div style="margin: 5%; padding: 5%; border: solid 1px black;">
     <div id="print-area">
       <div style="border-bottom: solid 1px black;">
@@ -41,7 +41,7 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary print" data-target="#print-area">Print</button>
-  <button type="button" class="btn" data-dismiss="modal">Close</button>
+  <button type="button" class="btn btn-primary print" data-target="#print-area"><i class="icon-print icon-white"></i> Print</button>
+  <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
 </div>
 

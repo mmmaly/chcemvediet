@@ -17,14 +17,13 @@
     <h3>Deadline Extension</h3>
   </div>
   <div class="modal-body">
-    <p>Are you sure you want to mark this e-mail as a deadline extension of your inforequest?</p>
-    <p>[{% lorem 7 %}]</p>
+    {% include "inforequests/modals/texts/extension-email-text.html" %}
     <div>
       {% include "main/snippets/form_horizontal.html" with form=form %}
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="decide">Mark as Deadline Extension</button>
-    <button type="button" class="btn" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" name="button" value="decide"><i class="icon-plus icon-white"></i> Mark as Deadline Extension</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
   </div>
 </form>

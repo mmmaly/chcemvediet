@@ -1,0 +1,15 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+<p>Extend deadline of {{ action.get_type_display }} regarding your inforequest to {{ inforequest.branch.historicalobligee.name }}{% if inforequest.branch != branch %} advanced to {{ branch.historicalobligee.name }}{% endif %}.</p>
+<p>Its original deadline was {{ action.deadline }} working days since {{ action.effective_date }}{% if action.extension %} extended by another {{ action.extension }} working days by you{% endif %}. Up to today {{ action.days_passed }} working days passed.</p>
+<p>{% lorem 7 %}</p>

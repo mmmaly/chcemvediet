@@ -18,8 +18,11 @@
     <p class="span2 text-right">Effective Date:</p>
     <p class="span10">{{ action.effective_date }}
       {% if forloop.last and action.deadline %}&mdash;
-        Deadline: {{ action.deadline }} WD{% if action.extension %} + {{ action.extension }} WD{% endif %},
-        {% if action.deadline_missed %}Deadline is Missed{% else %}{{ action.deadline_remaining }} WD remains{% endif %}
+        <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-deadline.txt" with action=action %}{% endspaceless %}">
+          Deadline: {{ action.deadline }} WD{% if action.extension %} + {{ action.extension }} WD{% endif %},
+          {% if action.deadline_missed %}Deadline is Missed{% else %}{{ action.deadline_remaining }} WD remains{% endif %}
+          <i class="icon-question-sign"></i>
+        </span>
       {% endif %}
     </p>
   </div>
@@ -38,12 +41,12 @@
             {% else %}
               <span>{{ recipient.formatted }}</span>
             {% endif %}
-            {% if recipient.status == recipient.STATUSES.QUEUED %}<span class="label">{{ recipient.get_status_display }}</span>{% endif %}
-            {% if recipient.status == recipient.STATUSES.REJECTED %}<span class="label label-important">{{ recipient.get_status_display }}</span>{% endif %}
-            {% if recipient.status == recipient.STATUSES.INVALID %}<span class="label label-important">{{ recipient.get_status_display }}</span>{% endif %}
-            {% if recipient.status == recipient.STATUSES.SENT %}<span class="label label-info">{{ recipient.get_status_display }}</span>{% endif %}
-            {% if recipient.status == recipient.STATUSES.DELIVERED %}<span class="label label-success">{{ recipient.get_status_display }}</span>{% endif %}
-            {% if recipient.status == recipient.STATUSES.OPENED %}<span class="label label-success">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.QUEUED    %}<span class="label                 with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-queued.txt"    %}{% endspaceless %}">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.REJECTED  %}<span class="label label-important with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-rejected.txt"  %}{% endspaceless %}">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.INVALID   %}<span class="label label-important with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-invalid.txt"   %}{% endspaceless %}">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.SENT      %}<span class="label label-info      with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-sent.txt"      %}{% endspaceless %}">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.DELIVERED %}<span class="label label-success   with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-delivered.txt" %}{% endspaceless %}">{{ recipient.get_status_display }}</span>{% endif %}
+            {% if recipient.status == recipient.STATUSES.OPENED    %}<span class="label label-success   with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-opened.txt"    %}{% endspaceless %}">{{ recipient.get_status_display }}</span>{% endif %}
           {% endfilter %}{% if not forloop.last %},{% endif %}
         {% endfor %}
       </p>
@@ -83,7 +86,7 @@
     </div>
   {% endif %}
   {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_email %}
-    <button type="button" class="btn btn-primary ajax ajax-modal-once" action="{% url 'inforequests:extend_deadline' inforequest.pk branch.pk action.pk %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal">Deadline is Missed, Extend it</button>
+    <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:extend_deadline' inforequest.pk branch.pk action.pk %}" data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-extend_deadline.txt" %}{% endspaceless %}">Deadline is Missed, Extend it</button>
     <span id="extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
   {% endif %}
   {% for sub_branch in action.advanced_to_set.all %}

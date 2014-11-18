@@ -1,0 +1,15 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem subtract from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+<h4>More e-mails</h4>
+<p>{{ inforequest.undecided_set.count|subtract:1 }} other e-mails are waiting for your decision.
+First decide the above e-mail and then the rest. You must decide them in the order they were
+received.</p>
+<p>{% lorem %}</p>

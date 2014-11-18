@@ -16,11 +16,10 @@
     <h3>I don't Know, What This E-mail Is</h3>
   </div>
   <div class="modal-body">
-    <p>Are you sure you don't know how to decide and you want ask our admin for help?</p>
-    <p>[{% lorem 7 %}]</p>
+    {% include "inforequests/modals/texts/unknown-email-text.html" %}
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="decide">Ask Admin for Help</button>
-    <button type="button" class="btn" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" name="button" value="decide"><i class="icon-question-sign icon-white"></i> Ask Admin for Help</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
   </div>
 </form>
