@@ -8,13 +8,13 @@
  %
 {% endcomment %}
 
-<h2>What You Can Do</h2>
+<h2>{% blocktrans %}What You Can Do{% endblocktrans %}</h2>
 {% if inforequest.can_add_applicant_action %}
   <div class="well">
     {% include "inforequests/texts/detail-new_action-text.html" with inforequest=inforequest %}
     <div class="btn-group">
-      {% if inforequest.can_add_clarification_response %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:new_action_clarification_response' inforequest.pk %}" data-type="html" data-target="#clarification-response-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-new_action-clarification_response.txt" %}{% endspaceless %}">Clarification Response</button>{% endif %}
-      {% if inforequest.can_add_appeal                 %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:new_action_appeal'                 inforequest.pk %}" data-type="html" data-target="#appeal-modal"                 data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-new_action-appeal.txt"                 %}{% endspaceless %}">Appeal</button>{% endif %}
+      {% if inforequest.can_add_clarification_response %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:new_action_clarification_response' inforequest.pk %}" data-type="html" data-target="#clarification-response-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-new_action-clarification_response.txt" %}{% endspaceless %}">{% blocktrans %}Clarification Response{% endblocktrans %}</button>{% endif %}
+      {% if inforequest.can_add_appeal                 %}<button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:new_action_appeal'                 inforequest.pk %}" data-type="html" data-target="#appeal-modal"                 data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="bottom" data-container="body" title="{% spaceless %}{% include "inforequests/tooltips/detail-new_action-appeal.txt"                 %}{% endspaceless %}">{% blocktrans %}Appeal{% endblocktrans %}</button>{% endif %}
     </div>
     <div id="clarification-response-modal" class="modal inforequest-ajax-modal modal-large hide fade"></div>
     <div id="appeal-modal"                 class="modal inforequest-ajax-modal modal-large hide fade"></div>

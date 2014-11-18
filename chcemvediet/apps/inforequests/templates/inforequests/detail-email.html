@@ -38,7 +38,7 @@
 </div>
 {% if email.attachment_set.exists %}
   <div class="row-fluid">
-    <p class="span2 text-right">Attachments:</p>
+    <p class="span2 text-right">{% blocktrans %}Attachments{% endblocktrans %}:</p>
     <p class="span10">
       {% for attachment in email.attachment_set.all %}
         <a href="{% url 'inforequests:download_attachment' attachment.pk %}"><span class="label label-info">{{ attachment.name }}</span></a>

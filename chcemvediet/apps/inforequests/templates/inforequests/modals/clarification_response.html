@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
 {% load lorem from poleno.utils %}
 
 {% comment %}
@@ -13,7 +14,7 @@
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>Clarification Response</h3>
+    <h3>{% blocktrans %}Clarification Response{% endblocktrans %}</h3>
   </div>
   <div class="modal-body">
     {% include "inforequests/modals/texts/clarification_response-text.html" %}
@@ -22,9 +23,9 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="email"><i class="icon-envelope icon-white"></i> Send by E-mail</button>
-    <button type="submit" class="btn btn-primary" name="button" value="print"><i class="icon-print icon-white"></i> Print and Send by Regular Mail</button>
-    <button type="submit" class="btn" name="button" value="draft"><i class="icon-file"></i> Save as Draft</button>
-    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
+    <button type="submit" class="btn btn-primary" name="button" value="email"><i class="icon-envelope icon-white"></i> {% blocktrans %}Send by E-mail{% endblocktrans %}</button>
+    <button type="submit" class="btn btn-primary" name="button" value="print"><i class="icon-print icon-white"></i> {% blocktrans %}Print and Send by Regular Mail{% endblocktrans %}</button>
+    <button type="submit" class="btn" name="button" value="draft"><i class="icon-file"></i> {% blocktrans %}Save as Draft{% endblocktrans %}</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% blocktrans %}Close{% endblocktrans %}</button>
   </div>
 </form>

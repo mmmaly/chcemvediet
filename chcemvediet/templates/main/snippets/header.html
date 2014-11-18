@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
 {% load active from poleno.utils %}
 
 {% comment %}
@@ -16,7 +17,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="brand {% if request|active:'index' %}active{% endif %}" href="{% url 'index' %}">Chcem Vedieť</a>
+      <a class="brand {% if request|active:'index' %}active{% endif %}" href="{% url 'index' %}">{% blocktrans %}Chcem Vedieť{% endblocktrans %}</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
           {% include "main/snippets/header-menu.html" %}

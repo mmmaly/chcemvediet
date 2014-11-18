@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
 {% load lorem from poleno.utils %}
 
 {% comment %}
@@ -13,13 +14,13 @@
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>I don't Know, What This E-mail Is</h3>
+    <h3>{% blocktrans %}I don't Know, What This E-mail Is{% endblocktrans %}</h3>
   </div>
   <div class="modal-body">
     {% include "inforequests/modals/texts/unknown-email-text.html" %}
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="decide"><i class="icon-question-sign icon-white"></i> Ask Admin for Help</button>
-    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
+    <button type="submit" class="btn btn-primary" name="button" value="decide"><i class="icon-question-sign icon-white"></i> {% blocktrans %}Ask Admin for Help{% endblocktrans %}</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% blocktrans %}Close{% endblocktrans %}</button>
   </div>
 </form>

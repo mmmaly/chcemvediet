@@ -29,7 +29,7 @@
     <div class="form-actions">
       <button type="submit" class="btn btn-primary with-tooltip" name="button" value="submit" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-submit.txt" %}{% endspaceless %}"><i class="icon-envelope icon-white"></i> {% blocktrans %}Submit Request{% endblocktrans %}</button>
       <button type="submit" class="btn with-tooltip" name="button" value="draft" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-draft.txt" %}{% endspaceless %}"><i class="icon-file"></i> {% blocktrans %}Save as Draft{% endblocktrans %}</button>
-      <a class="btn pull-right with-tooltip" href="{% url 'inforequests:index' %}" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-cancel.txt" %}{% endspaceless %}"><i class="icon-remove"></i> Cancel</a>
+      <a class="btn pull-right with-tooltip" href="{% url 'inforequests:index' %}" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-cancel.txt" %}{% endspaceless %}"><i class="icon-remove"></i> {% blocktrans %}Cancel{% endblocktrans %}</a>
     </div>
   </form>
 {% endblock %}

@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% load blocktrans from i18n %}
 {% load method with call from poleno.utils %}
 
 {% comment %}
@@ -13,7 +14,7 @@
 {% endcomment %}
 
 {{ textinput }}
-<span class="btn btn-default btn-file"><i class="icon-folder-open"></i> Browse<input class="fileupload" type="file" name="files" multiple="multiple" data-url="{{ funcs|method:"upload_url"|call }}" data-field="#id_{{name}}" data-target="#{{name}}-target"></span>
+<span class="btn btn-default btn-file"><i class="icon-folder-open"></i> {% blocktrans %}Browse{% endblocktrans %}<input class="fileupload" type="file" name="files" multiple="multiple" data-url="{{ funcs|method:"upload_url"|call }}" data-field="#id_{{name}}" data-target="#{{name}}-target"></span>
 &ensp;
 <span id="{{name}}-target">
   <span class="fileupload-template hide">
