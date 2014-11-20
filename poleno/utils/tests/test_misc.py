@@ -7,7 +7,7 @@ import random
 from django.test import TestCase
 
 from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze, flatten
-from poleno.utils.misc import guess_extension, collect_stdout
+from poleno.utils.misc import guess_extension, collect_stdout, decorate
 
 class BunchTest(TestCase):
     u"""
@@ -213,3 +213,25 @@ class CollectStdoutTest(TestCase):
         self.assertEqual(inner.stdout, u'Inner\n')
         self.assertEqual(outer.stdout, u'Outer before\nOuter after\n')
 
+class DecorateTest(TestCase):
+    u"""
+    Tests ``decorate()`` decorator.
+    """
+
+    def test_as_decorator(self):
+        @decorate(moo=4, foo=7)
+        @decorate(goo=47)
+        def func(a, b):
+            return a + b
+
+        self.assertEqual(func.moo, 4)
+        self.assertEqual(func.foo, 7)
+        self.assertEqual(func.goo, 47)
+        self.assertEqual(func(2, 3), 5)
+
+    def test_as_function(self):
+        func = decorate(lambda a, b: a + b, moo=4, foo=7)
+
+        self.assertEqual(func.moo, 4)
+        self.assertEqual(func.foo, 7)
+        self.assertEqual(func(2, 3), 5)

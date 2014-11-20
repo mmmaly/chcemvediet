@@ -121,3 +121,34 @@ def collect_stdout():
         new_stdout.seek(0)
         res.stdout = new_stdout.read()
         sys.stdout = orig_stdout
+
+def decorate(func=None, **kwargs):
+    u"""
+    Decorates given function with attributes. May be used as a decorator or a function.
+
+    Example:
+        @decorate(moo=4, foo=7)
+        @decorate(goo=47)
+        def func():
+            pass
+
+        Now we have:
+            func.moo == 4
+            func.foo == 7
+            func.goo == 47
+
+    Example:
+        func = decorate(lambda a: a+a, moo=4, foo=7)
+
+        Again we have:
+            func.moo == 4
+            func.foo == 7
+    """
+    def actual_decorator(func):
+        for key, val in kwargs.iteritems():
+            setattr(func, key, val)
+        return func
+    if func:
+        return actual_decorator(func)
+    else:
+        return actual_decorator
