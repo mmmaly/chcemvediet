@@ -75,3 +75,8 @@ class InforequestEmailTest(InforequestsTestCaseMixin, TestCase):
         email = self._create_message()
         result = email.inforequestemail_set.all()
         self.assertItemsEqual(result, [])
+
+    def test_repr(self):
+        inforequest = self._create_inforequest()
+        email, rel = self._create_inforequest_email(inforequest=inforequest)
+        self.assertEqual(repr(rel), u'<InforequestEmail: %s>' % rel.pk)
