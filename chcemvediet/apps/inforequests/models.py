@@ -324,6 +324,9 @@ class InforequestEmail(models.Model):
     #
     #  -- Message.inforequestemail_set
 
+    def __unicode__(self):
+        return u'%s' % self.pk
+
 class Branch(models.Model):
     # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))

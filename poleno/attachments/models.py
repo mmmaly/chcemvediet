@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.models import QuerySet
 from poleno.utils.date import utc_now
-from poleno.utils.misc import random_string
+from poleno.utils.misc import random_string, squeeze
 
 class AttachmentQuerySet(QuerySet):
     def attached_to(self, *args):
@@ -45,14 +45,21 @@ class Attachment(models.Model):
     file = models.FileField(upload_to=u'attachments', max_length=255, verbose_name=_(u'File'))
 
     # May be empty; May NOT be trusted, set by client.
-    name = models.CharField(max_length=255, verbose_name=_(u'Name'))
-    content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'))
+    name = models.CharField(max_length=255, verbose_name=_(u'Name'),
+            help_text=_(u'Attachment file name, e.g. "document.pdf"'))
+    content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'),
+            help_text=_(u'Attachment content type, e.g. "application/pdf"'))
 
     # May NOT be NULL; Automaticly computed in save() when creating a new object if undefined.
-    created = models.DateTimeField(verbose_name=_(u'Created'))
+    created = models.DateTimeField(blank=True, verbose_name=_(u'Created'),
+            help_text=squeeze(_(u"""
+                Date and time the attachment was uploaded or received by an email. Leave blank for
+                current time.
+                """)))
 
-    # May NOT by NULL; Atomatically computed in save() when creating a new object.
-    size = models.IntegerField(verbose_name=_(u'Size'))
+    # May NOT by NULL; Automatically computed in save() when creating a new object.
+    size = models.IntegerField(blank=True, verbose_name=_(u'Size'),
+            help_text=_(u'Attachment file size. Automatically computed when creating a new object.'))
 
     objects = AttachmentQuerySet.as_manager()
 
