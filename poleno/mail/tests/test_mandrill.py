@@ -13,7 +13,7 @@ from django.test import TestCase
 
 from poleno.utils.date import utc_now
 from poleno.utils.misc import Bunch, collect_stdout
-from poleno.utils.test import override_signals, SecureClient, ViewTestCaseMixin
+from poleno.utils.test import override_signals, created_instances, SecureClient, ViewTestCaseMixin
 
 from . import MailTestCaseMixin
 from ..models import Message, Recipient
@@ -540,38 +540,36 @@ class InboundEmailWebhookEvent(MailTestCaseMixin, TestCase):
                 del defaults[key]
         if data is None:
             data = {u'msg': defaults}
-        with override_signals(message_received):
-            receiver = mock.Mock()
-            message_received.connect(receiver)
-            inbound_email_webhook_event(sender=None, event_type=event_type, data=data)
 
-        msgs = [call[1][u'message'] for call in receiver.call_args_list]
+        with created_instances(Message.objects) as msg_set:
+            inbound_email_webhook_event(sender=None, event_type=event_type, data=data)
+        msgs = msg_set.all()
+
         return msgs
 
 
     def test_event_receiver_is_registered(self):
         self.assertIn(inbound_email_webhook_event, webhook_event._live_receivers(sender=None))
 
-    def test_event_type_inbound_saves_message_and_emits_signal(self):
+    def test_event_type_inbound_saves_message(self):
         msgs = self._call_webhook()
         self.assertEqual(len(msgs), 1)
-        self.assertEqual(type(msgs[0]), Message)
         self.assertIsNotNone(msgs[0].pk)
         self.assertEqual(msgs[0].type, Message.TYPES.INBOUND)
 
     def test_event_type_inbound_without_msg_in_data_does_nothig(self):
         msgs = self._call_webhook(data={})
-        self.assertEqual(msgs, [])
+        self.assertItemsEqual(msgs, [])
 
     def test_other_event_types_do_nothing(self):
         for event_type in [u'deferral', u'soft_bounce', u'hard_bounce', u'spam', u'reject',
                 u'send', u'open', u'click', u'other']:
             msgs = self._call_webhook(event_type=u'deferral')
-            self.assertEqual(msgs, [])
+            self.assertItemsEqual(msgs, [])
 
-    def test_message_processed(self):
+    def test_message_is_not_processed(self):
         msgs = self._call_webhook()
-        self.assertAlmostEqual(msgs[0].processed, utc_now(), delta=datetime.timedelta(seconds=10))
+        self.assertIsNone(msgs[0].processed)
 
     def test_message_subject(self):
         msgs = self._call_webhook(subject=u'Subject')
@@ -607,11 +605,11 @@ class InboundEmailWebhookEvent(MailTestCaseMixin, TestCase):
 
     def test_message_headers(self):
         msgs = self._call_webhook(headers=((u'X-Extra', u'Value'), (u'X-Another', u'Another Value')))
-        self.assertEqual(msgs[0].headers, ((u'X-Extra', u'Value'), (u'X-Another', u'Another Value')))
+        self.assertEqual(msgs[0].headers, [[u'X-Extra', u'Value'], [u'X-Another', u'Another Value']])
 
     def test_message_with_data_missing_headers(self):
         msgs = self._call_webhook(omit=[u'headers'])
-        self.assertEqual(msgs[0].headers, ())
+        self.assertEqual(msgs[0].headers, [])
 
     def test_message_text_body(self):
         msgs = self._call_webhook(text=u'Text Content')

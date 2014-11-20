@@ -11,6 +11,23 @@ from .signals import message_sent, message_received
 
 @cron_job(run_every_mins=1)
 def mail():
+    # Get inbound mail
+    path = getattr(settings, u'EMAIL_INBOUND_TRANSPORT', None)
+    if path:
+        klass = import_by_path(path)
+        with klass() as transport:
+            for message in transport.get_messages():
+                print(u'Received email: %s' % repr(message))
+
+    # Process inbound mail
+    messages = Message.objects.inbound().not_processed()[:10] # At most 10 messages in one batch
+    for message in messages:
+        print(u'Processing received email: %s...' % repr(message))
+        message.processed = utc_now()
+        message.save()
+        message_received.send(sender=None, message=message)
+        print(u'Done.')
+
     # Send outbound mail
     path = getattr(settings, u'EMAIL_OUTBOUND_TRANSPORT', None)
     if path:
@@ -23,14 +40,5 @@ def mail():
                     transport.send_message(message)
                     message.processed = utc_now()
                     message.save()
-                    print(u'Done.')
                     message_sent.send(sender=None, message=message)
-
-    # Get inbound mail
-    path = getattr(settings, u'EMAIL_INBOUND_TRANSPORT', None)
-    if path:
-        klass = import_by_path(path)
-        with klass() as transport:
-            for message in transport.get_message():
-                print(u'Received email: %s' % repr(message))
-                message_received.send(sender=None, message=message)
+                    print(u'Done.')

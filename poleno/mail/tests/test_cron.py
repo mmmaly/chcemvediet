@@ -30,16 +30,16 @@ class MailCronjobTest(MailTestCaseMixin, TestCase):
 
     def _run_mail_cron_job(self, outbound=False, inbound=False,
             send_message_method=mock.DEFAULT, message_sent_receiver=None,
-            get_message_method=mock.DEFAULT, message_received_receiver=None):
+            get_messages_method=mock.DEFAULT, message_received_receiver=None):
         u"""
-        Mocks mail transport, overrides ``send_message`` and ``get_message`` signals, calls
+        Mocks mail transport, overrides ``message_sent`` and ``message_received`` signals, calls
         ``mail`` cron job and eats any stdout prited by the called job.
         """
         transport = u'poleno.mail.transports.base.BaseTransport'
         outbound_transport = transport if outbound else None
         inbound_transport = transport if inbound else None
         with self.settings(EMAIL_OUTBOUND_TRANSPORT=outbound_transport, EMAIL_INBOUND_TRANSPORT=inbound_transport):
-            with mock.patch.multiple(transport, send_message=send_message_method, get_message=get_message_method):
+            with mock.patch.multiple(transport, send_message=send_message_method, get_messages=get_messages_method):
                 with override_signals(message_sent, message_received):
                     if message_sent_receiver is not None:
                         message_sent.connect(message_sent_receiver)
@@ -114,17 +114,17 @@ class MailCronjobTest(MailTestCaseMixin, TestCase):
     def test_inbound_transport(self):
         u"""
         Checks that ``message_received`` signal is emmited for all messages returned by the
-        transport ``get_message`` method.
+        transport ``get_messages`` method.
         """
         msgs = []
         def method(transport):
             for i in range(3):
-                msg = self._create_message(type=Message.TYPES.INBOUND)
+                msg = self._create_message(type=Message.TYPES.INBOUND, processed=None)
                 msgs.append(msg)
                 yield msg
 
         receiver = mock.Mock()
-        self._run_mail_cron_job(inbound=True, get_message_method=method, message_received_receiver=receiver)
+        self._run_mail_cron_job(inbound=True, get_messages_method=method, message_received_receiver=receiver)
         self.assertItemsEqual(receiver.mock_calls, [mock.call(message=m, sender=None, signal=message_received) for m in msgs])
 
     def test_inbound_transport_with_no_received_messages(self):
@@ -132,5 +132,35 @@ class MailCronjobTest(MailTestCaseMixin, TestCase):
             return []
 
         receiver = mock.Mock()
-        self._run_mail_cron_job(inbound=True, get_message_method=method, message_received_receiver=receiver)
+        self._run_mail_cron_job(inbound=True, get_messages_method=method, message_received_receiver=receiver)
         self.assertItemsEqual(receiver.mock_calls, [])
+
+    def test_inbound_transport_processes_at_most_10_messages_in_one_batch(self):
+        msgs = []
+        def method(transport):
+            for i in range(20):
+                msg = self._create_message(type=Message.TYPES.INBOUND, processed=None)
+                msgs.append(msg)
+                yield msg
+
+        receiver = mock.Mock()
+        self._run_mail_cron_job(inbound=True, get_messages_method=method, message_received_receiver=receiver)
+
+        # We expect only first 10 messages (sorted by their ``pk``) to be processed.
+        processed = Message.objects.filter(pk__in=sorted(m.pk for m in msgs)[:10])
+        remaining = Message.objects.filter(pk__in=sorted(m.pk for m in msgs)[10:])
+        self.assertEqual(len(processed), 10)
+        self.assertEqual(len(remaining), 10)
+        for msg in processed:
+            self.assertAlmostEqual(msg.processed, utc_now(), delta=datetime.timedelta(seconds=10))
+        for msg in remaining:
+            self.assertIsNone(msg.processed)
+
+    def test_inbound_transport_processes_prequeued_message(self):
+        msg = self._create_message(type=Message.TYPES.INBOUND, processed=None)
+        def method(transport):
+            return []
+
+        receiver = mock.Mock()
+        self._run_mail_cron_job(inbound=True, get_messages_method=method, message_received_receiver=receiver)
+        self.assertItemsEqual(receiver.mock_calls, [mock.call(message=msg, sender=None, signal=message_received)])

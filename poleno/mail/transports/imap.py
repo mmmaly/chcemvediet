@@ -10,7 +10,6 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 
 from poleno.attachments.models import Attachment
-from poleno.utils.date import utc_now
 from poleno.utils.misc import guess_extension
 
 from .base import BaseTransport
@@ -101,7 +100,7 @@ class ImapTransport(BaseTransport):
 
         message = Message(
                 type=Message.TYPES.INBOUND,
-                processed=utc_now(),
+                processed=None,
                 from_name=from_name,
                 from_mail=from_mail,
                 subject=subject,
@@ -121,7 +120,7 @@ class ImapTransport(BaseTransport):
 
         return message
 
-    def get_message(self):
+    def get_messages(self):
         # Based on django_mailbox.transports.imap.ImapTransport
         _, inbox = self.connection.search(None, u'ALL')
         if inbox[0]:

@@ -21,5 +21,5 @@ class BaseTransport(object):
     def send_message(self, message):
         raise NotImplementedError
 
-    def get_message(self):
+    def get_messages(self):
         raise NotImplementedError

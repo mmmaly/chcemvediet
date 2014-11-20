@@ -6,10 +6,8 @@ from django.core.files.base import ContentFile
 from django.dispatch import Signal, receiver
 
 from poleno.attachments.models import Attachment
-from poleno.utils.date import utc_now
 
 from ...models import Message, Recipient
-from ...signals import message_received
 
 webhook_event = Signal(providing_args=['event_type', 'data'])
 
@@ -74,7 +72,7 @@ def inbound_email_webhook_event(sender, event_type, data, **kwargs):
 
         message = Message(
                 type=Message.TYPES.INBOUND,
-                processed=utc_now(),
+                processed=None,
                 from_name=from_name,
                 from_mail=from_mail,
                 received_for=received_for,
@@ -92,5 +90,3 @@ def inbound_email_webhook_event(sender, event_type, data, **kwargs):
         for attachment in attachments:
             attachment.generic_object = message
             attachment.save()
-
-        message_received.send(sender=None, message=message)
