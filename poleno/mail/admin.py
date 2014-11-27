@@ -7,27 +7,13 @@ from django.utils import formats
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
-from django.contrib.contenttypes import generic
 
 from poleno.attachments.models import Attachment
+from poleno.attachments.admin import AttachmentInline
 from poleno.utils.misc import decorate
+from poleno.utils.admin import simple_list_filter_factory
 
 from .models import Message, Recipient
-
-class AttachmentInline(generic.GenericTabularInline):
-    model = Attachment
-    ct_field = u'generic_type'
-    ct_fk_field = u'generic_id'
-    extra = 0
-
-    readonly_fields = [u'size']
-    fields = [
-            u'file',
-            u'name',
-            u'content_type',
-            u'created',
-            u'size',
-            ]
 
 class RecipientInlineForm(forms.ModelForm):
     def clean(self):
@@ -57,7 +43,7 @@ class RecipientInlineFormSet(forms.models.BaseInlineFormSet):
             if form.cleaned_data and not form.cleaned_data.get(u'DELETE'):
                 break # There is a valid recipint
         else:
-            raise ValidationError(u'Recipients are required.')
+            raise ValidationError(_(u'Recipients are required.'))
 
 class RecipientInline(admin.TabularInline):
     model = Recipient
@@ -97,59 +83,46 @@ class RecipientInline(admin.TabularInline):
 
         return new_formset
 
-class ProcessedListFilter(admin.SimpleListFilter):
-    title = _(u'Processed')
-    parameter_name = u'processed'
-
-    def lookups(self, request, model_admin):
-        yield (u'1', _(u'Processed'))
-        yield (u'0', _(u'Not Processed'))
-
-    def queryset(self, request, queryset):
-        if self.value() == '1':
-            return queryset.processed()
-        if self.value() == '0':
-            return queryset.not_processed()
-
 class MessageAdmin(admin.ModelAdmin):
     # FIXME: Only admins with correct permissions should be able to add/edit/delete messages.
     # FIXME: Some admins should only be able to change recipient statuses.
+
     list_display = [
             u'message_column',
             u'type',
-            u'subject',
-            u'from_column',
-            u'recipients_column',
+            u'from_formatted_column',
+            u'recipients_formatted_column',
             u'processed',
             ]
     list_filter = [
             u'type',
-            ProcessedListFilter,
+            simple_list_filter_factory(_(u'Processed'), u'processed', [
+                (u'1', _(u'Yes'), lambda qs: qs.processed()),
+                (u'0', _(u'No'),  lambda qs: qs.not_processed()),
+                ]),
             u'processed',
             ]
     search_fields = [
+            u'=id',
             u'from_name',
             u'from_mail',
-            u'received_for',
-            u'subject',
-            u'text',
-            u'html',
             u'recipient__name',
             u'recipient__mail',
+            u'received_for',
             ]
 
     @decorate(short_description=_(u'Message'))
     @decorate(admin_order_field=u'pk')
     def message_column(self, message):
-        return repr(message)
+        return u'<%s: %s>' % (message.__class__.__name__, message.pk)
 
     @decorate(short_description=_(u'From'))
     @decorate(admin_order_field=u'from_mail')
-    def from_column(self, message):
+    def from_formatted_column(self, message):
         return message.from_formatted
 
     @decorate(short_description=_(u'Recipients'))
-    def recipients_column(self, message):
+    def recipients_formatted_column(self, message):
         res = []
         for label, formatted in [
                 (u'To', message.to_formatted),
@@ -165,7 +138,8 @@ class MessageAdmin(admin.ModelAdmin):
                 u'fields': [
                     u'type',
                     u'processed',
-                    (u'from_name', u'from_mail'),
+                    u'from_name',
+                    u'from_mail',
                     u'received_for',
                     u'subject',
                     (u'text', u'html'),
