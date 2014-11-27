@@ -192,6 +192,12 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         result = Branch.objects.order_by(u'obligee__name').all()
         self.assertEqual(list(result), [branch2, branch1])
 
+    def test_is_main_property(self):
+        _, branch1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (_, [(branch2, _)]) = actions
+        self.assertTrue(branch1.is_main)
+        self.assertFalse(branch2.is_main)
+
     def test_last_action_property(self):
         _, branch, actions = self._create_inforequest_scenario(u'confirmation', u'extension')
         _, _, extension = actions
@@ -529,3 +535,11 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
     def test_repr(self):
         _, branch, _ = self._create_inforequest_scenario()
         self.assertEqual(repr(branch), u'<Branch: %s>' % branch.pk)
+
+    def test_main_and_advanced_query_methods(self):
+        _, branch1, actions = self._create_inforequest_scenario((u'advancement', [], []))
+        _, (_, [(branch2, _), (branch3, _)]) = actions
+        result = Branch.objects.main()
+        self.assertItemsEqual(result, [branch1])
+        result = Branch.objects.advanced()
+        self.assertItemsEqual(result, [branch2, branch3])

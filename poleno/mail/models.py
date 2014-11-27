@@ -4,6 +4,7 @@ from email.utils import formataddr, parseaddr
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import escape
 from django.contrib.contenttypes import generic
 
 from jsonfield import JSONField
@@ -37,28 +38,47 @@ class Message(models.Model):
                 """)))
 
     # May be empty
-    from_name = models.CharField(blank=True, max_length=255, verbose_name=_(u'From Name'))
+    from_name = models.CharField(blank=True, max_length=255, verbose_name=_(u'From Name'),
+            help_text=escape(squeeze(_(u"""
+                Sender full name. For instance setting name to "John Smith" and e-mail to
+                "smith@example.com" will set the sender address to "John Smith <smith@example.com>".
+                """))))
 
     # Should NOT be empty
-    from_mail = models.EmailField(max_length=255, verbose_name=_(u'From E-mail'))
+    from_mail = models.EmailField(max_length=255, verbose_name=_(u'From E-mail'),
+            help_text=squeeze(_(u"""
+                Sender e-mail address, e.g. "smith@example.com".
+                """)))
 
     # May be empty for inbound messages; Empty for outbound messages
     received_for = models.EmailField(blank=True, max_length=255, verbose_name=_(u'Received for'),
             help_text=squeeze(_(u"""
                 The address we received the massage for. It may, but does not have to be among the
                 message recipients, as the address may have heen bcc-ed to. The address is empty
-                for all outbound messages and may be empty for some inbound messages.
+                for all outbound messages. It may also be empty for inbound messages if we don't
+                know it, or the used mail transport does not support it.
                 """)))
 
     # May be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
 
     # May be empty
-    text = models.TextField(blank=True, verbose_name=_(u'Text Content'))
-    html = models.TextField(blank=True, verbose_name=_(u'HTML Content'))
+    text = models.TextField(blank=True, verbose_name=_(u'Text Content'),
+            help_text=squeeze(_(u"""
+                "text/plain" message body alternative.
+                """)))
+    html = models.TextField(blank=True, verbose_name=_(u'HTML Content'),
+            help_text=squeeze(_(u"""
+                "text/html" message body alternative.
+                """)))
 
     # Dict: String->(String|[String]); May be empty
-    headers = JSONField(blank=True, default={}, verbose_name=_(u'Headers'))
+    headers = JSONField(blank=True, default={}, verbose_name=_(u'Headers'),
+            help_text=squeeze(_(u"""
+                Dictionary mapping header names to their values, or lists of their values. For
+                outbound messages it contains only extra headers added by the sender. For inbound
+                messages it contains all message headers.
+                """)))
 
     # May be empty; Backward generic relation
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
@@ -111,10 +131,10 @@ class Recipient(models.Model):
 
     # May be empty
     name = models.CharField(blank=True, max_length=255, verbose_name=_(u'Name'),
-            help_text=squeeze(_(u"""
+            help_text=escape(squeeze(_(u"""
                 Recipient full name. For instance setting name to "John Smith" and e-mail to
                 "smith@example.com" will send the message to "John Smith <smith@example.com>".
-                """)))
+                """))))
 
     # Should NOT be empty
     mail = models.EmailField(max_length=255, verbose_name=_(u'E-mail'),

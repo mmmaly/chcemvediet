@@ -22,10 +22,16 @@ class InforequestDraftQuerySet(QuerySet):
 
 class InforequestDraft(models.Model):
     # May NOT be NULL
-    applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
+    applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'),
+            help_text=squeeze(_(u"""
+                The draft owner, the future inforequest applicant.
+                """)))
 
     # May be NULL
-    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True, verbose_name=_(u'Obligee'))
+    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True, verbose_name=_(u'Obligee'),
+            help_text=squeeze(_(u"""
+                The obligee the inforequest will be sent to, if the user has already set it.
+                """)))
 
     # May be empty
     subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
@@ -64,7 +70,10 @@ class InforequestQuerySet(QuerySet):
 
 class Inforequest(models.Model):
     # May NOT be NULL
-    applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'))
+    applicant = models.ForeignKey(User, verbose_name=_(u'Applicant'),
+            help_text=squeeze(_(u"""
+                The inforequest owner, the user who submitted it.
+                """)))
 
     # May be empty; m2m through InforequestEmail
     email_set = models.ManyToManyField(u'mail.Message', through=u'InforequestEmail', verbose_name=_(u'E-mail Set'))
@@ -72,20 +81,34 @@ class Inforequest(models.Model):
     # Should NOT be empty; Read-only; Frozen Applicant contact information at the time the
     # Inforequest was submitted, in case that the contact information changes in the future. The
     # information is automaticly frozen in save() when creating a new instance.
-    applicant_name = models.CharField(max_length=255, verbose_name=_(u'Applicant Name'))
+    applicant_name = models.CharField(max_length=255, verbose_name=_(u'Applicant Name'),
+            help_text=squeeze(_(u"""
+                Frozen applicant contact information for the case he changes it in the future. The
+                information is frozen to its state at the moment the inforequest was
+                submitted.
+                """)))
     applicant_street = models.CharField(max_length=255, verbose_name=_(u'Applicant Street'))
     applicant_city = models.CharField(max_length=255, verbose_name=_(u'Applicant City'))
     applicant_zip = models.CharField(max_length=10, verbose_name=_(u'Applicant Zip'))
 
     # May NOT be empty; Unique; Read-only; Automaticly computed in save() when creating a new
     # instance.
-    unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail'))
+    unique_email = models.EmailField(max_length=255, unique=True, verbose_name=_(u'Unique E-mail'),
+            help_text=squeeze(_(u"""
+                Unique email address used to identify which obligee email belongs to which
+                inforequest. If the inforequest was advanced to other obligees, the same email
+                address is used for communication with all such obligees, as there is no way to
+                tell them to send their response to a different email address.
+                """)))
 
     # May NOT be NULL; Automaticly computed by Django when creating a new instance.
     submission_date = models.DateField(auto_now_add=True, verbose_name=_(u'Submission Date'))
 
     # May NOT be NULL
-    closed = models.BooleanField(default=False, verbose_name=_(u'Closed'))
+    closed = models.BooleanField(default=False, verbose_name=_(u'Closed'),
+            help_text=squeeze(_(u"""
+                True if the inforequest is closed and the applicant may not act on it any more.
+                """)))
 
     # May be NULL; Used by ``cron.undecided_email_reminder``
     last_undecided_email_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Undecided Email Reminder'))
@@ -117,7 +140,7 @@ class Inforequest(models.Model):
     # May NOT be NULL; Read-only
     @property
     def branch(self):
-        return self.branch_set.get(advanced_by=None)
+        return self.branch_set.main().get()
 
     # May be empty; Read-only
     @property
@@ -316,7 +339,17 @@ class InforequestEmail(models.Model):
             (u'UNRELATED', 4, _(u'Unrelated')),
             (u'UNKNOWN', 5, _(u'Unknown')),
             )
-    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
+    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'),
+            help_text=squeeze(_(u"""
+                "Applicant Action": the email represents an applicant action;
+                "Obligee Action": the email represents an obligee action;
+                "Undecided": The email is waiting for applicant decision;
+                "Unrelated": Marked as an unrelated email;
+                "Unknown": Marked as an email the applicant didn't know how to decide.
+                It must be "Applicant Action" for outbound mesages or one of the remaining values
+                for inbound messages.
+                """
+                )))
 
     # Backward relations added to other models:
     #
@@ -327,12 +360,19 @@ class InforequestEmail(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+class BranchQuerySet(QuerySet):
+    def main(self):
+        return self.filter(advanced_by__isnull=True)
+    def advanced(self):
+        return self.filter(advanced_by__isnull=False)
+
 class Branch(models.Model):
     # May NOT be NULL
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
     # May NOT be NULL
-    obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'))
+    obligee = models.ForeignKey(u'obligees.Obligee', verbose_name=_(u'Obligee'),
+            help_text=_(u'The obligee the inforequest was sent or advanced to.'))
 
     # May NOT be NULL; Automaticly frozen in save() when creating a new object.
     historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee', verbose_name=_(u'Historical Obligee'),
@@ -340,7 +380,11 @@ class Branch(models.Model):
 
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
     # main branch. Inforequest must contain exactly one branch with ``advanced_by`` set to None.
-    advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, verbose_name=_(u'Advanced By'))
+    advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, verbose_name=_(u'Advanced By'),
+            help_text=squeeze(_(u"""
+                NULL for main branches. The advancement action the inforequest was advanced by for
+                advanced branches. Every Inforequest must contain exactly one main branch.
+                """)))
 
     # Backward relations:
     #
@@ -365,10 +409,16 @@ class Branch(models.Model):
     #  -- Action.advanced_to_set
     #     May be empty
 
-    objects = QuerySet.as_manager()
+    objects = BranchQuerySet.as_manager()
 
     class Meta:
         ordering = [u'historicalobligee__name', u'pk']
+        verbose_name_plural = _(u'Branches')
+
+    # May NOT be NULL; Read-only
+    @property
+    def is_main(self):
+        return self.advanced_by is None
 
     # May NOT be NULL; Read-only
     @property
@@ -625,7 +675,6 @@ class Action(models.Model):
             TYPES.CLARIFICATION_RESPONSE,
             TYPES.APPEAL,
             )
-    # FIXME: tests
     APPLICANT_EMAIL_ACTION_TYPES = (
             TYPES.REQUEST,
             TYPES.CLARIFICATION_RESPONSE,
@@ -641,7 +690,6 @@ class Action(models.Model):
             TYPES.REVERSION,
             TYPES.REMANDMENT,
             )
-    # FIXME: tests
     OBLIGEE_EMAIL_ACTION_TYPES = (
             TYPES.CONFIRMATION,
             TYPES.EXTENSION,
@@ -665,7 +713,12 @@ class Action(models.Model):
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
 
     # May NOT be NULL
-    effective_date = models.DateField(verbose_name=_(u'Effective Date'))
+    effective_date = models.DateField(verbose_name=_(u'Effective Date'),
+            help_text=squeeze(_(u"""
+                The date at which the action was sent or received. If the action was sent/received
+                by e‑mail it's set automatically. If it was sent/received by s‑mail it's filled by
+                the applicant.
+                """)))
 
     # May NOT be NULL for actions that set deadline; Must be NULL otherwise. Default value is
     # determined and automaticly set in save() when creating a new object. All actions that set
@@ -714,10 +767,22 @@ class Action(models.Model):
             # Implicit actions
             TYPES.ADVANCED_REQUEST,
             )
-    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
+    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'),
+            help_text=squeeze(_(u"""
+                The deadline that apply after the action, if the action sets a deadline, NULL
+                otherwise. The deadline is expressed in a number of working days (WD) counting
+                since the effective date. It may apply to the applicant or to the obligee,
+                depending on the action type.
+                """)))
 
     # May be NULL
-    extension = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline Extension'))
+    extension = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline Extension'),
+            help_text=squeeze(_(u"""
+                Applicant extension to the deadline, if the action sets an obligee deadline. The
+                applicant may extend the deadline after it is missed in order to be patient and
+                wait a little longer. He may extend it multiple times. Applicant deadlines may not
+                be extended.
+                """)))
 
     # NOT NULL for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; NULL otherwise
     DISCLOSURE_LEVELS = FieldChoices(
@@ -725,7 +790,12 @@ class Action(models.Model):
             (u'PARTIAL', 2, _(u'Partial Disclosure')),
             (u'FULL', 3, _(u'Full Disclosure')),
             )
-    disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
+    disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'),
+            help_text=squeeze(_(u"""
+                Mandatory choice for advancement, disclosure, reversion and remandment actions,
+                NULL otherwise. Specifies if the obligee disclosed any requested information by
+                this action.
+                """)))
 
     # NOT NULL for REFUSAL, AFFIRMATION; NULL otherwise
     REFUSAL_REASONS = FieldChoices(
@@ -739,7 +809,11 @@ class Action(models.Model):
             (u'NO_REASON', -1, _(u'No Reason Specified')),
             (u'OTHER_REASON', -2, _(u'Other Reason')),
             )
-    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
+    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'),
+            help_text=squeeze(_(u"""
+                Mandatory choice for refusal and affirmation actions, NULL otherwise. Specifies the
+                reason why the obligee refused to disclose the information.
+                """)))
 
     # May be NULL; Used by ``cron.obligee_deadline_reminder`` and ``cron.applicant_deadline_reminder``
     last_deadline_reminder = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Last Deadline Reminder'))
@@ -868,7 +942,8 @@ class ActionDraft(models.Model):
     inforequest = models.ForeignKey(u'Inforequest', verbose_name=_(u'Inforequest'))
 
     # May be NULL; Must be owned by the inforequest if set.
-    branch = models.ForeignKey(u'Branch', blank=True, null=True, verbose_name=_(u'Branch'))
+    branch = models.ForeignKey(u'Branch', blank=True, null=True, verbose_name=_(u'Branch'),
+            help_text=_(u'Must be owned by inforequest if set'))
 
     # May NOT be NULL
     TYPES = Action.TYPES
@@ -885,18 +960,22 @@ class ActionDraft(models.Model):
     effective_date = models.DateField(blank=True, null=True, verbose_name=_(u'Effective Date'))
 
     # May be NULL for EXTENSION; Must be NULL otherwise
-    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'))
+    deadline = models.IntegerField(blank=True, null=True, verbose_name=_(u'Deadline'),
+            help_text=_(u'Optional for extension actions. Must be NULL for all other actions.'))
 
     # May be NULL for ADVANCEMENT, DISCLOSURE, REVERSION and REMANDMENT; Must be NULL otherwise
     DISCLOSURE_LEVELS = Action.DISCLOSURE_LEVELS
-    disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'))
+    disclosure_level = models.SmallIntegerField(choices=DISCLOSURE_LEVELS._choices, blank=True, null=True, verbose_name=_(u'Disclosure Level'),
+            help_text=_(u'Optional for advancement, disclosure, reversion and remandment actions. Must be NULL for all other actions.'))
 
     # May be NULL for REFUSAL and AFFIRMATION; Must be NULL otherwise
     REFUSAL_REASONS = Action.REFUSAL_REASONS
-    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'))
+    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True, verbose_name=_(u'Refusal Reason'),
+            help_text=_(u'Optional for refusal and affirmation actions. Must be NULL for all other actions.'))
 
     # May be empty for ADVANCEMENT; Must be empty otherwise
-    obligee_set = models.ManyToManyField(u'obligees.Obligee', verbose_name=_(u'Obligee Set'))
+    obligee_set = models.ManyToManyField(u'obligees.Obligee', blank=True, verbose_name=_(u'Obligee Set'),
+            help_text=_(u'May be empty for advancement actions. Must be empty for all other actions.'))
 
     # Backward relations added to other models:
     #

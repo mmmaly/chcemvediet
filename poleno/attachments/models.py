@@ -46,9 +46,15 @@ class Attachment(models.Model):
 
     # May be empty; May NOT be trusted, set by client.
     name = models.CharField(max_length=255, verbose_name=_(u'Name'),
-            help_text=_(u'Attachment file name, e.g. "document.pdf"'))
+            help_text=squeeze(_(u"""
+                Attachment file name, e.g. "document.pdf". The value does not have to be a valid
+                filename. It may be set by the user.
+                """)))
     content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'),
-            help_text=_(u'Attachment content type, e.g. "application/pdf"'))
+            help_text=squeeze(_(u"""
+                Attachment content type, e.g. "application/pdf". The value does not have to be
+                a valid content type. It may be set by the user.
+                """)))
 
     # May NOT be NULL; Automaticly computed in save() when creating a new object if undefined.
     created = models.DateTimeField(blank=True, verbose_name=_(u'Created'),
@@ -59,7 +65,9 @@ class Attachment(models.Model):
 
     # May NOT by NULL; Automatically computed in save() when creating a new object.
     size = models.IntegerField(blank=True, verbose_name=_(u'Size'),
-            help_text=_(u'Attachment file size. Automatically computed when creating a new object.'))
+            help_text=squeeze(_(u"""
+                Attachment file size in bytes. Automatically computed when creating a new object.
+                """)))
 
     objects = AttachmentQuerySet.as_manager()
 
