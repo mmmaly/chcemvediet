@@ -102,6 +102,22 @@ def guess_extension(content_type, default=None):
         res = default
     return res
 
+def filesize(size):
+    u"""
+    Formats file sizes in bytes into a human readable form.
+
+    Example:
+        0 -> "0 bytes"
+        1023 -> "1023 bytes"
+        49573834547 -> "46.2 GB"
+        -3847 -> "-3.8 kB"
+    """
+    for fmt in ['%.0f bytes', u'%.1f kB', u'%.1f MB', u'%.1f GB', u'%.1f TB']:
+        if abs(size) < 1024.0:
+            return fmt % size
+        size /= 1024.0
+    return u'%.1f PB' % size
+
 @contextlib.contextmanager
 def collect_stdout():
     u"""
