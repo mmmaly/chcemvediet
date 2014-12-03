@@ -926,6 +926,7 @@ class ActionDraftAdmin(admin.ModelAdmin):
                     u'disclosure_level',
                     u'refusal_reason',
                     u'obligee_set',
+                    u'obligee_set_details_field',
                     ],
                 }),
             ]
@@ -940,6 +941,7 @@ class ActionDraftAdmin(admin.ModelAdmin):
             u'inforequest_closed_field',
             u'branch_details_field',
             u'branch_obligee_field',
+            u'obligee_set_details_field',
             ]
     inlines = [
             AttachmentInline,
@@ -973,6 +975,12 @@ class ActionDraftAdmin(admin.ModelAdmin):
     def branch_obligee_field(self, draft):
         obligee = draft.branch.obligee if draft.branch else None
         return admin_obj_link(obligee, u'\n%s' % obligee.name, show_pk=True) if obligee else u'--'
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
+    @decorate(allow_tags=True)
+    def obligee_set_details_field(self, draft):
+        obligees = draft.obligee_set.all()
+        return u'\n'.join(admin_obj_link(o, u' %s' % o.name, show_pk=True) for o in obligees) if obligees else u'--'
 
     def has_add_permission(self, request):
         return False
