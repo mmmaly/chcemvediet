@@ -25,6 +25,7 @@ urlpatterns += i18n_patterns(u'',
     url(r'^accounts/', include(u'allauth.urls')),
     url(r'^accounts/', include(u'chcemvediet.apps.accounts.urls', namespace=u'accounts')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin_tools/', include(u'admin_tools.urls')),
     url(r'^i18n/', include(u'django.conf.urls.i18n')),
 )
 

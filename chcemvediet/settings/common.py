@@ -143,6 +143,11 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    # For django-admin-tools; must be before "django.contrib.auth":
+    u'admin_tools',
+    u'admin_tools.theming',
+    u'admin_tools.menu',
+    u'admin_tools.dashboard',
     # For django itself:
     u'django.contrib.auth',
     u'django.contrib.contenttypes',
@@ -311,3 +316,8 @@ PIPELINE_CSS = {
 }
 EXTERNAL_JS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.js')]
 EXTERNAL_CSS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.css')]
+
+# Django-admin-tools settings
+ADMIN_TOOLS_MENU = u'chcemvediet.admin.CustomMenu'
+ADMIN_TOOLS_INDEX_DASHBOARD = u'chcemvediet.admin.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = u'chcemvediet.admin.CustomAppIndexDashboard'

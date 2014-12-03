@@ -12,7 +12,7 @@ from poleno.utils.forms import clean_button
 from . import forms
 from .timewarp import timewarp
 
-@admin.site.register_view(u'timewarp/', name=_(u'Timewarp'), urlname=u'timewarp')
+@admin.site.register_view(u'timewarp/', name=_(u'Timewarp'), urlname=u'timewarp', visible=False)
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 def index(request):
     if request.method == u'POST':
