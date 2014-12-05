@@ -10,10 +10,12 @@ from aggregate_if import Count
 from poleno.attachments.models import Attachment
 from poleno.attachments.admin import AttachmentInline
 from poleno.mail.models import Message
-from poleno.utils.misc import decorate
+from poleno.utils.models import after_saved
+from poleno.utils.misc import decorate, squeeze
 from poleno.utils.admin import simple_list_filter_factory, admin_obj_link, extend_model_admin
 
 from .models import InforequestDraft, Inforequest, InforequestEmail, Branch, Action, ActionDraft
+
 
 ADMIN_FIELD_INDENT = u'    • '
 
@@ -31,6 +33,40 @@ def action_deadline_details(action):
     else:
         return _(u'Action has no deadline.')
 
+
+class InforequestDraftAdminAddForm(forms.Form):
+    applicant = InforequestDraft._meta.get_field(u'applicant').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                InforequestDraft._meta.get_field(u'applicant').rel, admin.site),
+            )
+    obligee = InforequestDraft._meta.get_field(u'obligee').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                InforequestDraft._meta.get_field(u'obligee').rel, admin.site),
+            )
+    subject = InforequestDraft._meta.get_field(u'subject').formfield(
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    content = InforequestDraft._meta.get_field(u'content').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    # FIXME: attachments
+
+    def save(self, commit=True):
+        # Django admin runs it with commit=False only
+        assert commit is False
+        assert self.is_valid()
+
+        draft = InforequestDraft(
+                applicant=self.cleaned_data[u'applicant'],
+                obligee=self.cleaned_data[u'obligee'],
+                subject=self.cleaned_data[u'subject'],
+                content=self.cleaned_data[u'content'],
+                )
+
+        return draft
+
+    def save_m2m(self):
+        pass
 
 class InforequestDraftAdmin(admin.ModelAdmin):
     list_display = [
@@ -67,13 +103,27 @@ class InforequestDraftAdmin(admin.ModelAdmin):
         obligee = draft.obligee
         return admin_obj_link(obligee, obligee.name) if obligee else u'--'
 
-    fields = [
-            u'applicant',
-            u'applicant_details_field',
-            u'obligee',
-            u'obligee_details_field',
-            u'subject',
-            u'content',
+    fieldsets = [
+            (None, {
+                u'fields': [
+                    u'applicant',
+                    u'applicant_details_field',
+                    u'obligee',
+                    u'obligee_details_field',
+                    u'subject',
+                    u'content',
+                    ],
+                }),
+            ]
+    fieldsets_add = [
+            (None, {
+                u'fields': [
+                    u'applicant',
+                    u'obligee',
+                    u'subject',
+                    u'content',
+                    ],
+                }),
             ]
     readonly_fields = [
             u'applicant_details_field',
@@ -98,6 +148,22 @@ class InforequestDraftAdmin(admin.ModelAdmin):
     def obligee_details_field(self, draft):
         obligee = draft.obligee
         return admin_obj_link(obligee, u'\n%s' % obligee.name, show_pk=True) if obligee else u'--'
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.fieldsets_add
+        return super(InforequestDraftAdmin, self).get_fieldsets(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is None:
+            return InforequestDraftAdminAddForm
+        return super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_formsets(self, request, obj=None):
+        if obj is None:
+            return []
+        return super(InforequestDraftAdmin, self).get_formsets(request, obj)
+
 
 class InforequestAdminBranchInline(admin.TabularInline):
     model = Branch
@@ -205,6 +271,65 @@ class InforequestAdminActionDraftInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+class InforequestAdminAddForm(forms.Form):
+    applicant = Inforequest._meta.get_field(u'applicant').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                Inforequest._meta.get_field(u'applicant').rel, admin.site),
+            )
+    obligee = Branch._meta.get_field(u'obligee').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                Branch._meta.get_field(u'obligee').rel, admin.site),
+            )
+    subject = Action._meta.get_field(u'subject').formfield(
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    content = Action._meta.get_field(u'content').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    send_email = forms.BooleanField(
+            required=False,
+            help_text=squeeze(_(u"""
+                Check to send the inforequest to the obligee by e-mail. Leave the checkbox empty if
+                you just want to create a fake inforequest without sending any real e-mail to the
+                obligee.
+                """)),
+            )
+    # FIXME: attachments
+
+    def save(self, commit=True):
+        # Django admin runs it with commit=False only
+        assert commit is False
+        assert self.is_valid()
+
+        inforequest = Inforequest(
+                applicant=self.cleaned_data[u'applicant'],
+                )
+
+        @after_saved(inforequest)
+        def deferred():
+            branch = Branch(
+                    inforequest=inforequest,
+                    obligee=self.cleaned_data[u'obligee'],
+                    )
+            branch.save()
+
+            action = Action(
+                    branch=branch,
+                    type=Action.TYPES.REQUEST,
+                    subject=self.cleaned_data[u'subject'],
+                    content=self.cleaned_data[u'content'],
+                    effective_date=inforequest.submission_date,
+                    )
+            action.save()
+
+            if self.cleaned_data[u'send_email']:
+                action.send_by_email()
+
+        return inforequest
+
+    def save_m2m(self):
+        pass
+
 class InforequestAdmin(admin.ModelAdmin):
     list_display = [
             u'inforequest_column',
@@ -278,6 +403,17 @@ class InforequestAdmin(admin.ModelAdmin):
                     ],
                 }),
             ]
+    fieldsets_add = [
+            (None, {
+                u'fields': [
+                    u'applicant',
+                    u'obligee',
+                    u'subject',
+                    u'content',
+                    u'send_email',
+                    ],
+                }),
+            ]
     readonly_fields = [
             u'applicant_details_field',
             u'obligee_details_field',
@@ -309,9 +445,6 @@ class InforequestAdmin(admin.ModelAdmin):
     def undecided_emails_field(self, inforequest):
         return inforequest.undecided_set.count()
 
-    def has_add_permission(self, request):
-        return False
-
     def get_queryset(self, request):
         queryset = super(InforequestAdmin, self).get_queryset(request)
         # We are interested in main branches only
@@ -320,6 +453,22 @@ class InforequestAdmin(admin.ModelAdmin):
         queryset = queryset.annotate(undecided__count=Count(u'inforequestemail',
             only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
         return queryset
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.fieldsets_add
+        return super(InforequestAdmin, self).get_fieldsets(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is None:
+            return InforequestAdminAddForm
+        return super(InforequestAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_formsets(self, request, obj=None):
+        if obj is None:
+            return []
+        return super(InforequestAdmin, self).get_formsets(request, obj)
+
 
 class InforequestEmailAdmin(admin.ModelAdmin):
     list_display = [
@@ -455,6 +604,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
         # We are interested in main branches only now
         queryset = queryset.filter(inforequest__branch__advanced_by__isnull=True)
         return queryset
+
 
 class BranchAdminActionInline(admin.TabularInline):
     model = Action
@@ -623,6 +773,7 @@ class BranchAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
 
 class ActionAdminAdvancedToInline(admin.TabularInline):
     model = Branch
@@ -844,6 +995,7 @@ class ActionAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+
 class ActionDraftAdmin(admin.ModelAdmin):
     list_display = [
             u'actiondraft_column',
@@ -985,6 +1137,7 @@ class ActionDraftAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+
 class UserAdminMixinInforequestInline(admin.TabularInline):
     model = Inforequest
     extra = 0
@@ -1120,6 +1273,7 @@ class MessageAdminMixin(admin.ModelAdmin):
         except Action.DoesNotExist:
             action = None
         return admin_obj_link(action) if action else u'--'
+
 
 admin.site.register(InforequestDraft, InforequestDraftAdmin)
 admin.site.register(Inforequest, InforequestAdmin)
