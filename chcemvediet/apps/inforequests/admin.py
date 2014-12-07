@@ -640,6 +640,42 @@ class BranchAdminActionInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+class BranchAdminAddForm(forms.Form):
+    obligee = Branch._meta.get_field(u'obligee').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                Branch._meta.get_field(u'obligee').rel, admin.site),
+            )
+    advanced_by = Branch._meta.get_field(u'advanced_by').formfield(
+            required=True,
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                Branch._meta.get_field(u'advanced_by').rel, admin.site),
+            )
+
+    def save(self, commit=True):
+        # Django admin runs it with commit=False only
+        assert commit is False
+        assert self.is_valid()
+
+        branch = Branch(
+                inforequest=self.cleaned_data[u'advanced_by'].branch.inforequest,
+                obligee=self.cleaned_data[u'obligee'],
+                advanced_by=self.cleaned_data[u'advanced_by'],
+                )
+
+        @after_saved(branch)
+        def deferred():
+            action = Action(
+                    branch=branch,
+                    effective_date=self.cleaned_data[u'advanced_by'].effective_date,
+                    type=Action.TYPES.ADVANCED_REQUEST,
+                    )
+            action.save()
+
+        return branch
+
+    def save_m2m(self):
+        pass
+
 class BranchAdmin(admin.ModelAdmin):
     list_display = [
             u'branch_column',
@@ -703,17 +739,29 @@ class BranchAdmin(admin.ModelAdmin):
     def main_branch_column(self, branch):
         return branch.is_main
 
-    fields = [
-            u'inforequest',
-            u'inforequest_details_field',
-            u'inforequest_applicant_field',
-            u'inforequest_closed_field',
-            u'obligee',
-            u'obligee_details_field',
-            u'historicalobligee',
-            u'historicalobligee_details_field',
-            u'advanced_by',
-            u'advanced_by_details_field',
+    fieldsets = [
+            (None, {
+                u'fields': [
+                    u'inforequest',
+                    u'inforequest_details_field',
+                    u'inforequest_applicant_field',
+                    u'inforequest_closed_field',
+                    u'obligee',
+                    u'obligee_details_field',
+                    u'historicalobligee',
+                    u'historicalobligee_details_field',
+                    u'advanced_by',
+                    u'advanced_by_details_field',
+                    ],
+                }),
+            ]
+    fieldsets_add = [
+            (None, {
+                u'fields': [
+                    u'obligee',
+                    u'advanced_by',
+                    ],
+                }),
             ]
     raw_id_fields = [
             u'inforequest',
@@ -768,11 +816,23 @@ class BranchAdmin(admin.ModelAdmin):
         action = branch.advanced_by
         return admin_obj_link(action, u' %s' % action.get_type_display(), show_pk=True) if action else u'--'
 
-    def has_add_permission(self, request):
-        return False
-
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.fieldsets_add
+        return super(BranchAdmin, self).get_fieldsets(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is None:
+            return BranchAdminAddForm
+        return super(BranchAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_formsets(self, request, obj=None):
+        if obj is None:
+            return []
+        return super(BranchAdmin, self).get_formsets(request, obj)
 
 
 class ActionAdminAdvancedToInline(admin.TabularInline):
@@ -803,6 +863,97 @@ class ActionAdminAdvancedToInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+class ActionAdminAddForm(forms.Form):
+    branch = Action._meta.get_field(u'branch').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                Action._meta.get_field(u'branch').rel, admin.site),
+            )
+    type = Action._meta.get_field(u'type').formfield(
+            )
+    subject = Action._meta.get_field(u'subject').formfield(
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    content = Action._meta.get_field(u'content').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    effective_date = Action._meta.get_field(u'effective_date').formfield(
+            widget=admin.widgets.AdminDateWidget(),
+            )
+    deadline = Action._meta.get_field(u'deadline').formfield(
+            widget=admin.widgets.AdminIntegerFieldWidget(),
+            )
+    extension = Action._meta.get_field(u'extension').formfield(
+            widget=admin.widgets.AdminIntegerFieldWidget(),
+            )
+    disclosure_level = Action._meta.get_field(u'disclosure_level').formfield(
+            )
+    refusal_reason = Action._meta.get_field(u'refusal_reason').formfield(
+            )
+    obligee_set = ActionDraft._meta.get_field(u'obligee_set').formfield(
+            widget=admin.widgets.ManyToManyRawIdWidget(
+                ActionDraft._meta.get_field(u'obligee_set').rel, admin.site),
+            )
+    send_email = forms.BooleanField(
+            required=False,
+            help_text=squeeze(_(u"""
+                Check to send an e-mail with the created action to the obligee. Leave the checkbox
+                empty if do not want to send any e-mail. Applicable for applicant actions only.
+                """)),
+            )
+    # FIXME: attachments
+
+    def clean(self):
+        cleaned_data = super(ActionAdminAddForm, self).clean()
+
+        if u'send_email' in cleaned_data and u'type' in cleaned_data:
+            if cleaned_data[u'send_email'] and cleaned_data[u'type'] not in Action.APPLICANT_ACTION_TYPES:
+                self._errors[u'send_email'] = self.error_class([_(u'Ony applicant actions may be send by e-mail.')])
+                del cleaned_data[u'send_email']
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        # Django admin runs it with commit=False only
+        assert commit is False
+        assert self.is_valid()
+
+        action = Action(
+                branch=self.cleaned_data[u'branch'],
+                type=self.cleaned_data[u'type'],
+                subject=self.cleaned_data[u'subject'],
+                content=self.cleaned_data[u'content'],
+                effective_date=self.cleaned_data[u'effective_date'],
+                deadline=self.cleaned_data[u'deadline'],
+                extension=self.cleaned_data[u'extension'],
+                disclosure_level=self.cleaned_data[u'disclosure_level'],
+                refusal_reason=self.cleaned_data[u'refusal_reason'],
+                )
+
+        @after_saved(action)
+        def deferred():
+            for obligee in self.cleaned_data[u'obligee_set']:
+                sub_branch = Branch(
+                        inforequest=action.branch.inforequest,
+                        obligee=obligee,
+                        advanced_by=action,
+                        )
+                sub_branch.save()
+
+                sub_action = Action(
+                        branch=sub_branch,
+                        type=Action.TYPES.ADVANCED_REQUEST,
+                        effective_date=action.effective_date,
+                        )
+                sub_action.save()
+
+            if self.cleaned_data[u'send_email']:
+                action.send_by_email()
+
+        return action
+
+    def save_m2m(self):
+        pass
 
 class ActionAdmin(admin.ModelAdmin):
     list_display = [
@@ -915,6 +1066,24 @@ class ActionAdmin(admin.ModelAdmin):
                     ],
                 }),
             ]
+    fieldsets_add = [
+            (None, {
+                u'classes': [u'wide'],
+                u'fields': [
+                    u'branch',
+                    u'type',
+                    u'subject',
+                    u'content',
+                    u'effective_date',
+                    u'deadline',
+                    u'extension',
+                    u'disclosure_level',
+                    u'refusal_reason',
+                    u'obligee_set',
+                    u'send_email',
+                    ],
+                }),
+            ]
     raw_id_fields = [
             u'branch',
             u'email',
@@ -992,8 +1161,20 @@ class ActionAdmin(admin.ModelAdmin):
     def deadline_details_field(self, action):
         return action_deadline_details(action)
 
-    def has_add_permission(self, request):
-        return False
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.fieldsets_add
+        return super(ActionAdmin, self).get_fieldsets(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is None:
+            return ActionAdminAddForm
+        return super(ActionAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_formsets(self, request, obj=None):
+        if obj is None:
+            return []
+        return super(ActionAdmin, self).get_formsets(request, obj)
 
 
 class ActionDraftAdmin(admin.ModelAdmin):
