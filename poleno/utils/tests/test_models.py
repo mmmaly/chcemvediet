@@ -125,6 +125,25 @@ class AfterSavedTest(TestCase):
         obj1.save()
         self.assertEqual(counter, [1])
 
+    def test_instance_saved_in_deffered_function(self):
+        u"""
+        Checks that the deffered function is called only once event if the instance is saved again
+        while executing the deffered function. That is the deffered function is not called
+        recursively.
+        """
+
+        obj = TestModelsModel(name=u'first')
+        counter = [0]
+
+        @after_saved(obj)
+        def deffered():
+            counter[0] += 1
+            obj.save()
+
+        self.assertEqual(counter, [0])
+        obj.save()
+        self.assertEqual(counter, [1])
+
 class FieldChoicesTest(TestCase):
     u"""
     Tests ``FieldChoices`` by hand without using model. Checks if choice constants, inverse

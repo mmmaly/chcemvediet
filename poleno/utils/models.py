@@ -40,8 +40,8 @@ def after_saved(model):
         uid=(id(func), id(model))
         def receiver(sender, instance, **kwargs):
             if instance is model:
-                func()
                 post_save.disconnect(sender=model.__class__, dispatch_uid=uid)
+                func()
         post_save.connect(receiver, sender=model.__class__, weak=False, dispatch_uid=uid)
         return func
     return _decorator
