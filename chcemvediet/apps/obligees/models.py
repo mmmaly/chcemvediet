@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import escape
 
 from poleno.utils.models import FieldChoices, QuerySet
+from poleno.utils.forms import validate_comma_separated_emails
 from poleno.utils.history import register_history
 from poleno.utils.misc import squeeze
 
@@ -26,6 +27,7 @@ class Obligee(models.Model):
 
     # Should NOT be empty
     emails = models.CharField(max_length=1024, verbose_name=_(u'E-mails'),
+            validators=[validate_comma_separated_emails],
             help_text=escape(squeeze(_(u"""
                 Comma separated list of e-mails. E.g. 'John <john@example.com>,
                 another@example.com, "Smith, Jane" <jane.smith@example.com>'

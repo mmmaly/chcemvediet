@@ -109,7 +109,9 @@ class ObligeeAdmin(SimpleHistoryAdmin):
         return field
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        if obj is None:
+            return True
+        return not obj.branch_set.exists()
 
     def get_queryset(self, request):
         queryset = super(ObligeeAdmin, self).get_queryset(request)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import random
 
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
 
@@ -52,6 +53,20 @@ class ObligeeModelTest(ObligeesTestCaseMixin, TestCase):
     def test_emails_field_default_value_if_omitted(self):
         oblg = self._create_obligee(omit=[u'emails'])
         self.assertEqual(oblg.emails, u'')
+
+    def test_emails_field_validation_with_invalid_email(self):
+        oblg = self._create_obligee(emails=u'invalid')
+        with self.assertRaisesMessage(ValidationError, u'"invalid" is not a valid email address'):
+            oblg.full_clean()
+
+    def test_emails_field_validation_with_normalized_email(self):
+        oblg = self._create_obligee(emails=u'"John" Smith <smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: John Smith <smith@example.com>'):
+            oblg.full_clean()
+
+    def test_emails_field_validation_with_valid_email(self):
+        oblg = self._create_obligee(emails=u'John Smith <smith@example.com>')
+        oblg.full_clean()
 
     def test_slug_field_computed_value(self):
         oblg = self._create_obligee(name=u'Agency')

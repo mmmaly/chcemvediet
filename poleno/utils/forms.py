@@ -1,9 +1,13 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from itertools import chain
+from email.utils import formataddr, getaddresses
 
 from django import forms
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.forms.util import flatatt
+from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
 
 def clean_button(post, clean_values, default_value=None, key=u'button'):
@@ -68,3 +72,14 @@ class PrefixedForm(forms.Form):
         super(PrefixedForm, self).__init__(*args, **kwargs)
         self.prefix = u'%s%s%s' % (self.prefix or u'', u'-' if self.prefix else u'', self.__class__.__name__.lower())
 
+def validate_comma_separated_emails(value):
+    parsed = getaddresses([value])
+    for name, address in parsed:
+        try:
+            validate_email(address)
+        except ValidationError:
+            raise ValidationError(_(u'"{0}" is not a valid email address.').format(address))
+
+    formatted = u', '.join(formataddr((n, a)) for n, a in parsed)
+    if formatted != value:
+        raise ValidationError(_(u'Parsed value differs from the original. Parsed as: {0}').format(formatted))
