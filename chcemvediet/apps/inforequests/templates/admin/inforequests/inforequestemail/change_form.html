@@ -3,8 +3,8 @@
 {% load blocktrans from i18n %}
 
 {% block object-tools-items %}
-  {% if reply_url %}
-    <li><a href="{{ reply_url }}">{% blocktrans %}Reply{% endblocktrans %}</a></li>
+  {% if decide_url %}
+    <li><a href="{{ decide_url }}">{% blocktrans %}Decide E-mail{% endblocktrans %}</a></li>
   {% endif %}
   {{ block.super }}
 {% endblock %}

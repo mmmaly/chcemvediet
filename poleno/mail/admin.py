@@ -1,16 +1,21 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from email.utils import parseaddr, getaddresses
+
 from django import forms
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.utils import formats
 from django.utils.http import urlencode
+from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 
 from poleno.attachments.models import Attachment
 from poleno.attachments.admin import AttachmentInline
-from poleno.utils.misc import decorate
+from poleno.utils.models import after_saved
+from poleno.utils.forms import validate_formatted_email, validate_comma_separated_emails
+from poleno.utils.misc import decorate, squeeze
 from poleno.utils.admin import simple_list_filter_factory
 
 from .models import Message, Recipient
@@ -60,33 +65,123 @@ class RecipientInline(admin.TabularInline):
             u'remote_id',
             ]
 
-    def get_extra(self, request, obj=None, **kwargs):
-        try:
-            return int(request.GET[u'recipients'])
-        except (ValueError, KeyError):
-            return 0
+class MessageAdminAddForm(forms.Form):
+    type = Message._meta.get_field(u'type').formfield(
+            )
+    processed = Message._meta.get_field(u'processed').formfield(
+            widget=admin.widgets.AdminSplitDateTime(),
+            )
+    from_formatted = forms.CharField(
+            label=_(u'From'),
+            help_text=escape(squeeze(_(u"""
+                Sender e-mail address, e.g. "John Smith <smith@example.com>".
+                """))),
+            validators=[validate_formatted_email],
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    to_formatted = forms.CharField(
+            label=_(u'To'),
+            help_text=escape(squeeze(_(u"""
+                Comma separated list of 'To' recipients, e.g. "John Smith <smith@example.com>,
+                agency@example.com".
+                """))),
+            required=False,
+            validators=[validate_comma_separated_emails],
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    cc_formatted = forms.CharField(
+            label=_(u'Cc'),
+            help_text=escape(squeeze(_(u"""
+                Comma separated list of 'Cc' recipients, e.g. "John Smith <smith@example.com>,
+                agency@example.com".
+                """))),
+            required=False,
+            validators=[validate_comma_separated_emails],
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    bcc_formatted = forms.CharField(
+            label=_(u'Bcc'),
+            help_text=escape(squeeze(_(u"""
+                Comma separated list of 'Bcc' recipients, e.g. "John Smith <smith@example.com>,
+                agency@example.com".
+                """))),
+            required=False,
+            validators=[validate_comma_separated_emails],
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    received_for = Message._meta.get_field(u'received_for').formfield(
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    subject = Message._meta.get_field(u'subject').formfield(
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    text = Message._meta.get_field(u'text').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    html = Message._meta.get_field(u'html').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    headers = Message._meta.get_field(u'headers').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    # FIXME: attachments
 
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super(RecipientInline, self).get_formset(request, obj, **kwargs)
+    def clean(self):
+        cleaned_data = super(MessageAdminAddForm, self).clean()
 
-        # Recipients initial values passed in GET
-        initial = []
-        count = self.get_extra(request, obj, **kwargs)
-        for i in range(count):
-            prefix = u'recipients-%s-' % i
-            initial.append({k[len(prefix):]: v for k, v in request.GET.items() if k.startswith(prefix)})
+        if u'to_formatted' in cleaned_data and u'cc_formatted' in cleaned_data and u'bcc_formatted' in cleaned_data:
+            if not cleaned_data[u'to_formatted'] and not cleaned_data[u'cc_formatted'] and not cleaned_data[u'bcc_formatted']:
+                self._errors[u'to_formatted'] = self.error_class([_(u"At least one of 'To', 'Cc' or 'Bcc' is required.")])
+                del cleaned_data[u'to_formatted']
 
-        class new_formset(formset):
-            def __init__(self, *args, **kwargs):
-                kwargs.update({u'initial': initial})
-                formset.__init__(self, *args, **kwargs)
+        return cleaned_data
 
-        return new_formset
+    def save(self, commit=True):
+        assert self.is_valid()
+
+        from_name, from_mail = parseaddr(self.cleaned_data[u'from_formatted'])
+
+        message = Message(
+                type=self.cleaned_data[u'type'],
+                processed=self.cleaned_data[u'processed'],
+                from_name=from_name,
+                from_mail=from_mail,
+                received_for=self.cleaned_data[u'received_for'],
+                subject=self.cleaned_data[u'subject'],
+                text=self.cleaned_data[u'text'],
+                html=self.cleaned_data[u'html'],
+                headers=self.cleaned_data[u'headers'],
+                )
+
+        @after_saved(message)
+        def deferred():
+            status = (Recipient.STATUSES.INBOUND if message.type == Message.TYPES.INBOUND else
+                      Recipient.STATUSES.QUEUED if message.processed is None else
+                      Recipient.STATUSES.SENT)
+
+            for field, type in [
+                    (u'to_formatted', Recipient.TYPES.TO),
+                    (u'cc_formatted', Recipient.TYPES.CC),
+                    (u'bcc_formatted', Recipient.TYPES.BCC),
+                    ]:
+                for name, mail in getaddresses([self.cleaned_data[field]]):
+                    recipient = Recipient(
+                            message=message,
+                            name=name,
+                            mail=mail,
+                            type=type,
+                            status=status,
+                            )
+                    recipient.save()
+
+        if commit:
+            message.save()
+        return message
+
+    def save_m2m(self):
+        pass
 
 class MessageAdmin(admin.ModelAdmin):
-    # FIXME: Only admins with correct permissions should be able to add/edit/delete messages.
-    # FIXME: Some admins should only be able to change recipient statuses.
-
     list_display = [
             u'message_column',
             u'type',
@@ -152,6 +247,27 @@ class MessageAdmin(admin.ModelAdmin):
                     ],
                 }),
             )
+    fieldsets_add = (
+            (None, {
+                u'fields': [
+                    u'type',
+                    u'processed',
+                    u'from_formatted',
+                    u'to_formatted',
+                    u'cc_formatted',
+                    u'bcc_formatted',
+                    u'received_for',
+                    u'subject',
+                    (u'text', u'html'),
+                    ],
+                }),
+            (_(u'Advanced'), {
+                u'classes': [u'collapse'],
+                u'fields': [
+                    u'headers',
+                    ],
+                }),
+            )
     inlines = [
             RecipientInline,
             AttachmentInline,
@@ -164,7 +280,15 @@ class MessageAdmin(admin.ModelAdmin):
         if message and message.processed:
             query = {}
             query[u'type'] = Message.TYPES.INBOUND if message.type == Message.TYPES.OUTBOUND else Message.TYPES.OUTBOUND
-            query[u'subject'] = message.subject if message.subject.startswith(u'Re: ') else u'Re: %s' % message.subject
+            query[u'to_formatted'] = message.from_formatted
+            query[u'subject'] = u'%s%s' % (u'' if message.subject.startswith(u'Re:') else u'Re: ', message.subject)
+
+            if message.received_for:
+                query[u'from_formatted'] = message.received_for
+            else:
+                sender = message.recipient_set.to().first() or message.recipient_set.first()
+                if sender:
+                    query[u'from_formatted'] = sender.formatted
 
             date = formats.date_format(message.processed, u'DATETIME_FORMAT')
             name = message.from_name or message.from_mail
@@ -172,22 +296,23 @@ class MessageAdmin(admin.ModelAdmin):
             query[u'text'] = u'\n\n%s\n%s\n' % (quote, u'\n'.join(u'> %s' % l for l in message.text.split(u'\n')))
             query[u'html'] = u'\n\n%s\n%s\n' % (quote, u'\n'.join(u'> %s' % l for l in message.html.split(u'\n')))
 
-            if message.received_for:
-                query[u'from_mail'] = message.received_for
-            else:
-                sender = message.recipient_set.to().first() or message.recipient_set.first()
-                if sender:
-                    query[u'from_name'] = sender.name
-                    query[u'from_mail'] = sender.mail
-
-            query[u'recipients'] = 1
-            query[u'recipients-0-name'] = message.from_name
-            query[u'recipients-0-mail'] = message.from_mail
-            query[u'recipients-0-type'] = Recipient.TYPES.TO
-            query[u'recipients-0-status'] = Recipient.STATUSES.INBOUND if message.type == Message.TYPES.OUTBOUND else Recipient.STATUSES.QUEUED
-
             context[u'reply_url'] = u'%s?%s' % (reverse(u'admin:mail_message_add'), urlencode(query))
 
         return super(MessageAdmin, self).render_change_form(request, context, **kwargs)
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.fieldsets_add
+        return super(MessageAdmin, self).get_fieldsets(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is None:
+            return MessageAdminAddForm
+        return super(MessageAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_formsets(self, request, obj=None):
+        if obj is None:
+            return []
+        return super(MessageAdmin, self).get_formsets(request, obj)
 
 admin.site.register(Message, MessageAdmin)

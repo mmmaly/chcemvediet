@@ -1,17 +1,26 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django import forms
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.conf.urls import patterns, url
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_text
+from django.utils.html import format_html
+from django.utils.http import urlencode
+from django.shortcuts import render
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.admin import helpers
 from aggregate_if import Count
 
 from poleno.attachments.models import Attachment
 from poleno.attachments.admin import AttachmentInline
 from poleno.mail.models import Message
 from poleno.utils.models import after_saved
-from poleno.utils.misc import decorate, squeeze
+from poleno.utils.date import local_date
+from poleno.utils.misc import try_except, decorate, squeeze
 from poleno.utils.admin import simple_list_filter_factory, admin_obj_link, extend_model_admin
 
 from .models import InforequestDraft, Inforequest, InforequestEmail, Branch, Action, ActionDraft
@@ -52,8 +61,6 @@ class InforequestDraftAdminAddForm(forms.Form):
     # FIXME: attachments
 
     def save(self, commit=True):
-        # Django admin runs it with commit=False only
-        assert commit is False
         assert self.is_valid()
 
         draft = InforequestDraft(
@@ -63,6 +70,8 @@ class InforequestDraftAdminAddForm(forms.Form):
                 content=self.cleaned_data[u'content'],
                 )
 
+        if commit:
+            draft.save()
         return draft
 
     def save_m2m(self):
@@ -297,8 +306,6 @@ class InforequestAdminAddForm(forms.Form):
     # FIXME: attachments
 
     def save(self, commit=True):
-        # Django admin runs it with commit=False only
-        assert commit is False
         assert self.is_valid()
 
         inforequest = Inforequest(
@@ -325,6 +332,8 @@ class InforequestAdminAddForm(forms.Form):
             if self.cleaned_data[u'send_email']:
                 action.send_by_email()
 
+        if commit:
+            inforequest.save()
         return inforequest
 
     def save_m2m(self):
@@ -470,6 +479,146 @@ class InforequestAdmin(admin.ModelAdmin):
         return super(InforequestAdmin, self).get_formsets(request, obj)
 
 
+class InforequestEmailAdminAddForm(forms.Form):
+    inforequest = InforequestEmail._meta.get_field(u'inforequest').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                InforequestEmail._meta.get_field(u'inforequest').rel, admin.site),
+            )
+    email = InforequestEmail._meta.get_field(u'email').formfield(
+            widget=admin.widgets.ForeignKeyRawIdWidget(
+                InforequestEmail._meta.get_field(u'email').rel, admin.site),
+            )
+    type = InforequestEmail._meta.get_field(u'type').formfield(
+            )
+
+    def clean(self):
+        cleaned_data = super(InforequestEmailAdminAddForm, self).clean()
+
+        if u'email' in cleaned_data:
+            if cleaned_data[u'email'].inforequestemail_set.exists():
+                self._errors[u'email'] = self.error_class([_(u'This e-mail is already assigned to an inforequest.')])
+                del cleaned_data[u'email']
+
+        if u'email' in cleaned_data and u'type' in cleaned_data:
+            if cleaned_data[u'email'].type == Message.TYPES.INBOUND:
+                if cleaned_data[u'type'] == InforequestEmail.TYPES.APPLICANT_ACTION:
+                    self._errors[u'type'] = self.error_class([_(u"Inbound message type may not be 'Applicant Action'.")])
+                    del cleaned_data[u'type']
+            else: # Message.TYPES.OUTBOUND
+                if cleaned_data[u'type'] != InforequestEmail.TYPES.APPLICANT_ACTION:
+                    self._errors[u'type'] = self.error_class([_(u"Outbound message type must be 'Applicant Action'.")])
+                    del cleaned_data[u'type']
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        assert self.is_valid()
+
+        inforequestemail = InforequestEmail(
+                inforequest=self.cleaned_data[u'inforequest'],
+                email=self.cleaned_data[u'email'],
+                type=self.cleaned_data[u'type'],
+                )
+
+        if commit:
+            inforequestemail.save()
+        return inforequestemail
+
+    def save_m2m(self):
+        pass
+
+class InforequestEmailAdminDecideFormBranchWidget(admin.widgets.ForeignKeyRawIdWidget):
+    def __init__(self, *args, **kwargs):
+        super(InforequestEmailAdminDecideFormBranchWidget, self).__init__(*args, **kwargs)
+        self.url_params = {}
+
+    def base_url_parameters(self):
+        params = super(InforequestEmailAdminDecideFormBranchWidget, self).base_url_parameters()
+        params.update(self.url_params)
+        return params
+
+class InforequestEmailAdminDecideForm(forms.Form):
+    branch = Action._meta.get_field(u'branch').formfield(
+            widget=InforequestEmailAdminDecideFormBranchWidget(
+                Action._meta.get_field(u'branch').rel, admin.site),
+            )
+    type = Action._meta.get_field(u'type').formfield(
+            choices=[(u'', u'')] + [(c, l) for c, l in Action.TYPES._choices if c in Action.OBLIGEE_ACTION_TYPES]
+            )
+    subject = Action._meta.get_field(u'subject').formfield(
+            widget=admin.widgets.AdminTextInputWidget(),
+            )
+    content = Action._meta.get_field(u'content').formfield(
+            widget=admin.widgets.AdminTextareaWidget(),
+            )
+    effective_date = Action._meta.get_field(u'effective_date').formfield(
+            widget=admin.widgets.AdminDateWidget(),
+            )
+    deadline = Action._meta.get_field(u'deadline').formfield(
+            widget=admin.widgets.AdminIntegerFieldWidget(),
+            )
+    extension = Action._meta.get_field(u'extension').formfield(
+            widget=admin.widgets.AdminIntegerFieldWidget(),
+            )
+    disclosure_level = Action._meta.get_field(u'disclosure_level').formfield(
+            )
+    refusal_reason = Action._meta.get_field(u'refusal_reason').formfield(
+            )
+    obligee_set = ActionDraft._meta.get_field(u'obligee_set').formfield(
+            widget=admin.widgets.ManyToManyRawIdWidget(
+                ActionDraft._meta.get_field(u'obligee_set').rel, admin.site),
+            )
+    # FIXME: attachments
+
+    class _meta:
+        model = InforequestEmail
+
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.pop(u'instance')
+        super(InforequestEmailAdminDecideForm, self).__init__(*args, **kwargs)
+        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.inforequest)
+        self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.inforequest)
+        self.fields[u'subject'].initial = self.instance.email.subject
+        self.fields[u'content'].initial = self.instance.email.text
+        self.fields[u'effective_date'].initial = local_date(self.instance.email.processed)
+
+    def save(self, commit=True):
+        assert self.is_valid()
+
+        action = Action(
+                branch=self.cleaned_data[u'branch'],
+                email=self.instance.email,
+                type=self.cleaned_data[u'type'],
+                subject=self.cleaned_data[u'subject'],
+                content=self.cleaned_data[u'content'],
+                effective_date=self.cleaned_data[u'effective_date'],
+                deadline=self.cleaned_data[u'deadline'],
+                extension=self.cleaned_data[u'extension'],
+                disclosure_level=self.cleaned_data[u'disclosure_level'],
+                refusal_reason=self.cleaned_data[u'refusal_reason'],
+                )
+
+        @after_saved(action)
+        def deferred():
+            for obligee in self.cleaned_data[u'obligee_set']:
+                sub_branch = Branch(
+                        inforequest=action.branch.inforequest,
+                        obligee=obligee,
+                        advanced_by=action,
+                        )
+                sub_branch.save()
+
+                sub_action = Action(
+                        branch=sub_branch,
+                        type=Action.TYPES.ADVANCED_REQUEST,
+                        effective_date=action.effective_date,
+                        )
+                sub_action.save()
+
+        if commit:
+            action.save()
+        return action
+
 class InforequestEmailAdmin(admin.ModelAdmin):
     list_display = [
             u'inforequestemail_column',
@@ -478,6 +627,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
             u'inforequest_applicant_column',
             u'email_column',
             u'email_from_column',
+            u'action_column',
             u'type',
             ]
     list_filter = [
@@ -531,6 +681,13 @@ class InforequestEmailAdmin(admin.ModelAdmin):
     def email_from_column(self, inforequestemail):
         return inforequestemail.email.from_mail
 
+    @decorate(short_description=_(u'Action'))
+    @decorate(admin_order_field=u'email__action__pk')
+    @decorate(allow_tags=True)
+    def action_column(self, inforequestemail):
+        action = try_except(lambda: inforequestemail.email.action, None, Action.DoesNotExist)
+        return admin_obj_link(action) if action else u'--'
+
     fieldsets = [
             (None, {
                 u'classes': [u'wide'],
@@ -543,7 +700,36 @@ class InforequestEmailAdmin(admin.ModelAdmin):
                     u'email_details_field',
                     u'email_from_field',
                     u'email_subject_field',
+                    u'email_action_field',
                     u'type',
+                    ],
+                }),
+            ]
+    fieldsets_add = [
+            (None, {
+                u'fields': [
+                    u'inforequest',
+                    u'email',
+                    u'type',
+                    ],
+                }),
+            ]
+    fieldsets_decide = [
+            (None, {
+                u'classes': [u'wide'],
+                u'fields': [
+                    u'inforequest_decide_field',
+                    u'email_decide_field',
+                    u'branch',
+                    u'type',
+                    u'subject',
+                    u'content',
+                    u'effective_date',
+                    u'deadline',
+                    u'extension',
+                    u'disclosure_level',
+                    u'refusal_reason',
+                    u'obligee_set',
                     ],
                 }),
             ]
@@ -558,6 +744,11 @@ class InforequestEmailAdmin(admin.ModelAdmin):
             u'email_details_field',
             u'email_from_field',
             u'email_subject_field',
+            u'email_action_field',
+            ]
+    readonly_fields_decide = [
+            u'inforequest_decide_field',
+            u'email_decide_field',
             ]
     inlines = [
             ]
@@ -593,17 +784,108 @@ class InforequestEmailAdmin(admin.ModelAdmin):
     def email_subject_field(self, inforequestemail):
         return inforequestemail.email.subject
 
-    def has_add_permission(self, request):
-        return False
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Action')))
+    @decorate(allow_tags=True)
+    def email_action_field(self, inforequestemail):
+        action = try_except(lambda: inforequestemail.email.action, None, Action.DoesNotExist)
+        return admin_obj_link(action) if action else u'--'
+
+    @decorate(short_description=_(u'Inforequest'))
+    @decorate(allow_tags=True)
+    def inforequest_decide_field(self, inforequestemail):
+        inforequest = inforequestemail.inforequest
+        return admin_obj_link(inforequest)
+
+    @decorate(short_description=_(u'E-mail'))
+    @decorate(allow_tags=True)
+    def email_decide_field(self, inforequestemail):
+        email = inforequestemail.email
+        return admin_obj_link(email)
+
+    def decide_view(self, request, inforequestemail_pk):
+        inforequestemail = self.get_object(request, inforequestemail_pk)
+        message = inforequestemail.email if inforequestemail else None
+        action = try_except(lambda: message.action, None, Action.DoesNotExist) if message else None
+
+        if (inforequestemail is None or inforequestemail.type != InforequestEmail.TYPES.UNDECIDED or
+                message.type != Message.TYPES.INBOUND or not message.processed or action is not None):
+            return HttpResponseNotFound()
+
+        if request.method == u'POST':
+            form = InforequestEmailAdminDecideForm(request.POST, instance=inforequestemail)
+            if form.is_valid():
+                new_action = form.save(commit=False)
+                new_action.save()
+                inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
+                inforequestemail.save()
+                info = new_action._meta.app_label, new_action._meta.module_name
+                return HttpResponseRedirect(reverse(u'admin:%s_%s_change' % info, args=[new_action.pk]))
+        else:
+            form = InforequestEmailAdminDecideForm(instance=inforequestemail)
+
+        opts = self.model._meta
+        template = u'admin/%s/%s/decide_form.html' % (opts.app_label, opts.model_name)
+        adminForm = helpers.AdminForm(form,
+                fieldsets=self.fieldsets_decide,
+                prepopulated_fields={},
+                readonly_fields=self.readonly_fields_decide,
+                model_admin=self,
+                )
+
+        return render(request, template, {
+            u'object': inforequestemail,
+            u'title': _('Decide %s') % force_text(opts.verbose_name),
+            u'opts': opts,
+            u'adminform': adminForm,
+            u'media': self.media + adminForm.media,
+            })
+
+    def render_change_form(self, request, context, **kwargs):
+        inforequestemail = kwargs.get(u'obj', None)
+
+        # Decide button
+        if inforequestemail and inforequestemail.type == InforequestEmail.TYPES.UNDECIDED:
+            message = inforequestemail.email
+            action = try_except(lambda: message.action, None, Action.DoesNotExist)
+            if message.type == Message.TYPES.INBOUND and message.processed and action is None:
+                context[u'decide_url'] = reverse(u'admin:inforequests_inforequestemail_decide', args=[inforequestemail.pk])
+
+        return super(InforequestEmailAdmin, self).render_change_form(request, context, **kwargs)
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        if not obj:
+            return True
+        # Only messages that are not a part of an action may be unassigned.
+        action = try_except(lambda: obj.email.action, None, Action.DoesNotExist)
+        return action is None
 
     def get_queryset(self, request):
         queryset = super(InforequestEmailAdmin, self).get_queryset(request)
         # We are interested in main branches only now
         queryset = queryset.filter(inforequest__branch__advanced_by__isnull=True)
         return queryset
+
+    def get_urls(self):
+        info = self.model._meta.app_label, self.model._meta.model_name
+        urls = patterns('',
+                url(_(r'^(.+)/decide/$'), self.admin_site.admin_view(self.decide_view), name=u'%s_%s_decide' % info),
+                )
+        return urls + super(InforequestEmailAdmin, self).get_urls()
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.fieldsets_add
+        return super(InforequestEmailAdmin, self).get_fieldsets(request, obj)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is None:
+            return InforequestEmailAdminAddForm
+        return super(InforequestEmailAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_formsets(self, request, obj=None):
+        if obj is None:
+            return []
+        return super(InforequestEmailAdmin, self).get_formsets(request, obj)
 
 
 class BranchAdminActionInline(admin.TabularInline):
@@ -652,8 +934,6 @@ class BranchAdminAddForm(forms.Form):
             )
 
     def save(self, commit=True):
-        # Django admin runs it with commit=False only
-        assert commit is False
         assert self.is_valid()
 
         branch = Branch(
@@ -671,6 +951,8 @@ class BranchAdminAddForm(forms.Form):
                     )
             action.save()
 
+        if commit:
+            branch.save()
         return branch
 
     def save_m2m(self):
@@ -817,7 +1099,11 @@ class BranchAdmin(admin.ModelAdmin):
         return admin_obj_link(action, u' %s' % action.get_type_display(), show_pk=True) if action else u'--'
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        if not obj:
+            return True
+        # Only advanced branches may be deleted. If we want to delete a main branch, we must delete
+        # its inforequest.
+        return not obj.is_main
 
     def get_fieldsets(self, request, obj=None):
         if obj is None:
@@ -914,8 +1200,6 @@ class ActionAdminAddForm(forms.Form):
         return cleaned_data
 
     def save(self, commit=True):
-        # Django admin runs it with commit=False only
-        assert commit is False
         assert self.is_valid()
 
         action = Action(
@@ -950,6 +1234,8 @@ class ActionAdminAddForm(forms.Form):
             if self.cleaned_data[u'send_email']:
                 action.send_by_email()
 
+        if commit:
+            action.save()
         return action
 
     def save_m2m(self):
@@ -1160,6 +1446,12 @@ class ActionAdmin(admin.ModelAdmin):
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     def deadline_details_field(self, action):
         return action_deadline_details(action)
+
+    def has_delete_permission(self, request, obj=None):
+        if not obj:
+            return True
+        # Branches may not be left empty.
+        return obj.branch.action_set.count() > 1
 
     def get_fieldsets(self, request, obj=None):
         if obj is None:
@@ -1409,6 +1701,13 @@ class UserAdminMixin(admin.ModelAdmin):
         queryset = queryset.annotate(Count(u'inforequest'))
         return queryset
 
+    def has_delete_permission(self, request, obj=None):
+        if obj:
+            # Only users that don't own any inforequests may be deleted.
+            if obj.inforequest_set.exists():
+                return False
+        return super(UserAdminMixin, self).has_delete_permission(request, obj)
+
 class MessageAdminMixin(admin.ModelAdmin):
     def __init__(self, *args, **kwargs):
         self.list_display = list(self.list_display) + [
@@ -1430,12 +1729,12 @@ class MessageAdminMixin(admin.ModelAdmin):
                 u'=action__pk',
                 ]
         self.fieldsets[0][1][u'fields'] = list(self.fieldsets[0][1][u'fields']) + [
-                u'assigned_to_column',
-                u'action_column',
+                u'assigned_to_field',
+                u'action_field',
                 ]
         self.readonly_fields = list(self.readonly_fields) + [
-                u'assigned_to_column',
-                u'action_column',
+                u'assigned_to_field',
+                u'action_field',
                 ]
         super(MessageAdminMixin, self).__init__(*args, **kwargs)
 
@@ -1449,11 +1748,37 @@ class MessageAdminMixin(admin.ModelAdmin):
     @decorate(admin_order_field=u'action__pk')
     @decorate(allow_tags=True)
     def action_column(self, message):
-        try:
-            action = message.action
-        except Action.DoesNotExist:
-            action = None
+        action = try_except(lambda: message.action, None, Action.DoesNotExist)
         return admin_obj_link(action) if action else u'--'
+
+    @decorate(short_description=_(u'Assigned To'))
+    @decorate(allow_tags=True)
+    def assigned_to_field(self, message):
+        inforequests = message.inforequest_set.all()
+        if inforequests:
+            res = u', '.join(admin_obj_link(ir) for ir in inforequests)
+        elif message.type == Message.TYPES.INBOUND and message.processed:
+            query = dict(email=message.pk, type=InforequestEmail.TYPES.UNDECIDED)
+            url = u'%s?%s' % (reverse(u'admin:inforequests_inforequestemail_add'), urlencode(query))
+            button = format_html(u'<li><a href="{0}">{1}</a></li>', url, _(u'Assign to Inforequest'))
+            res = format_html(u'<ul class="object-tools">{0}</ul>', button)
+        else:
+            res = u'--'
+        return res
+
+    @decorate(short_description=_(u'Action'))
+    @decorate(allow_tags=True)
+    def action_field(self, message):
+        action = try_except(lambda: message.action, None, Action.DoesNotExist)
+        return admin_obj_link(action) if action else u'--'
+
+    def has_delete_permission(self, request, obj=None):
+        if obj:
+            # Only messages that are not a part of an action may be deleted.
+            action = try_except(lambda: obj.action, None, Action.DoesNotExist)
+            if action is not None:
+                return False
+        return super(MessageAdminMixin, self).has_delete_permission(request, obj)
 
 
 admin.site.register(InforequestDraft, InforequestDraftAdmin)
@@ -1462,5 +1787,6 @@ admin.site.register(InforequestEmail, InforequestEmailAdmin)
 admin.site.register(Branch, BranchAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ActionDraft, ActionDraftAdmin)
+admin.site.disable_action('delete_selected')
 extend_model_admin(User, UserAdminMixin)
 extend_model_admin(Message, MessageAdminMixin)
