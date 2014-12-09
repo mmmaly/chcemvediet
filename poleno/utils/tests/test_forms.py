@@ -6,7 +6,8 @@ from django.template import Context, Template
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
-from poleno.utils.forms import clean_button, AutoSuppressedSelect, PrefixedForm, validate_comma_separated_emails
+from poleno.utils.forms import (clean_button, AutoSuppressedSelect, PrefixedForm,
+        validate_formatted_email, validate_comma_separated_emails)
 
 class CleanButtonTest(TestCase):
     u"""
@@ -272,6 +273,50 @@ class PrefixedFormTest(TestCase):
                   <input id="id_prefixedform-name" name="prefixedform-name" type="text" />
                 </td></tr>
                 """)
+
+class ValidateFormattedEmail(TestCase):
+    u"""
+    Tests ``validate_formatted_email()`` validator.
+    """
+
+    def test_empty_string_is_invalid(self):
+        with self.assertRaisesMessage(ValidationError, u'"" is not a valid email address'):
+            validate_formatted_email(u'')
+
+    def test_valid_values(self):
+        validate_formatted_email(u'smith@example.com')
+        validate_formatted_email(u'John Smith <smith@example.com>')
+        validate_formatted_email(u'"John \\"Agent\\" Smith" <smith@example.com>')
+        validate_formatted_email(u'"Smith, John" <smith@example.com>')
+        validate_formatted_email(u'"smith@example.com" <smith@example.com>')
+
+    def test_invalid_values(self):
+        with self.assertRaisesMessage(ValidationError, u'"invalid" is not a valid email address'):
+            validate_formatted_email(u'invalid')
+        with self.assertRaisesMessage(ValidationError, u'"invalid@example" is not a valid email address'):
+            validate_formatted_email(u'invalid@example')
+        with self.assertRaisesMessage(ValidationError, u'"John" is not a valid email address'):
+            validate_formatted_email(u'John "Smith <smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'"Smith" is not a valid email address'):
+            validate_formatted_email(u'Smith, John <smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'"" is not a valid email address'):
+            validate_formatted_email(u',smith@example.com')
+
+    def test_normalized_values(self):
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: smith@example.com'):
+            validate_formatted_email(u'<smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: invalidsmith@example.com'):
+            validate_formatted_email(u'invalid smith@example.com')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: invalid <smith@example.com>'):
+            validate_formatted_email(u'"invalid" <smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: "aaa, bbb ccc" <smith@example.com>'):
+            validate_formatted_email(u'"aaa, bbb" ccc <smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: smith@example.com'):
+            validate_formatted_email(u'smith@example.com <smith@example.com>')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: smith@example.com'):
+            validate_formatted_email(u'smith@example.com,')
+        with self.assertRaisesMessage(ValidationError, u'Parsed as: John Smith <smith@example.com>'):
+            validate_formatted_email(u'John Smith <smith@example.com>, john@example.com')
 
 class ValidateCommaSeparatedEmailsTest(TestCase):
     u"""

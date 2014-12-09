@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from itertools import chain
-from email.utils import formataddr, getaddresses
+from email.utils import formataddr, parseaddr, getaddresses
 
 from django import forms
 from django.core.validators import validate_email
@@ -71,6 +71,17 @@ class PrefixedForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PrefixedForm, self).__init__(*args, **kwargs)
         self.prefix = u'%s%s%s' % (self.prefix or u'', u'-' if self.prefix else u'', self.__class__.__name__.lower())
+
+def validate_formatted_email(value):
+    name, address = parseaddr(value)
+    try:
+        validate_email(address)
+    except ValidationError:
+        raise ValidationError(_(u'"{0}" is not a valid email address.').format(address))
+
+    formatted = formataddr((name, address))
+    if formatted != value:
+        raise ValidationError(_(u'Parsed value differs from the original. Parsed as: {0}').format(formatted))
 
 def validate_comma_separated_emails(value):
     parsed = getaddresses([value])
