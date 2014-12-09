@@ -891,6 +891,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
 class BranchAdminActionInline(admin.TabularInline):
     model = Action
     extra = 0
+    template = u'admin/inforequests/branch/action_inline.html'
 
     fields = [
             u'action_field',
@@ -1126,6 +1127,7 @@ class ActionAdminAdvancedToInline(admin.TabularInline):
     extra = 0
     verbose_name = _(u'Advanced To Branch')
     verbose_name_plural = _(u'Advanced To Branches')
+    template = u'admin/inforequests/action/branch_inline.html'
 
     fields = [
             u'branch_field',
@@ -1614,6 +1616,7 @@ class ActionDraftAdmin(admin.ModelAdmin):
 class UserAdminMixinInforequestInline(admin.TabularInline):
     model = Inforequest
     extra = 0
+    template = u'admin/auth/user/inforequest_inline.html'
 
     fields = [
             u'inforequest_field',
@@ -1650,6 +1653,7 @@ class UserAdminMixinInforequestInline(admin.TabularInline):
 class UserAdminMixinInforequestDraftInline(admin.TabularInline):
     model = InforequestDraft
     extra = 0
+    template = u'admin/auth/user/inforequestdraft_inline.html'
 
     fields = [
             u'inforequestdraft_field',
