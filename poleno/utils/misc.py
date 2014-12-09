@@ -52,6 +52,19 @@ def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprs
             res.append(sysrandom.choice(vowels))
     return u''.join(res)
 
+def try_except(func, failure, *exceptions):
+    u"""
+    Inline try-except block.
+
+    Example:
+        a = dict(moo=3, foo=4)
+        b = try_except(lambda: a.goo, 7, KeyError)
+    """
+    try:
+        return func()
+    except exceptions or Exception:
+        return failure() if callable(failure) else failure
+
 def squeeze(s):
     u"""
     Substitutes all whitespace including new lines with single spaces, striping any leading or

@@ -6,8 +6,8 @@ import random
 
 from django.test import TestCase
 
-from poleno.utils.misc import Bunch, random_string, random_readable_string, squeeze, flatten
-from poleno.utils.misc import guess_extension, filesize, collect_stdout, decorate
+from poleno.utils.misc import Bunch, random_string, random_readable_string, try_except, squeeze
+from poleno.utils.misc import flatten, guess_extension, filesize, collect_stdout, decorate
 
 class BunchTest(TestCase):
     u"""
@@ -98,6 +98,41 @@ class RandomReadableStringTest(TestCase):
         for length in range(1, 20):
             res = random_readable_string(length)
             self.assertEqual(len(res), length)
+
+class TryExceptTest(TestCase):
+    u"""
+    Tests ``try_except()`` function.
+    """
+
+    def test_catched_exception(self):
+        a = dict(moo=4)
+        b = try_except(lambda: a[u'foo'], 7, KeyError)
+        self.assertEqual(b, 7)
+
+    def test_uncatched_exception(self):
+        a = dict(moo=4)
+        with self.assertRaises(KeyError):
+            try_except(lambda: a[u'foo'], 7, ValueError)
+
+    def test_without_exception(self):
+        a = dict(moo=4)
+        b = try_except(lambda: a[u'moo'], 7, KeyError)
+        self.assertEqual(b, 4)
+
+    def test_with_multiple_exception_classes(self):
+        a = dict(moo=4)
+        b = try_except(lambda: a[u'foo'], 7, ValueError, KeyError, IndexError)
+        self.assertEqual(b, 7)
+
+    def test_with_no_exception_classes(self):
+        a = dict(moo=4)
+        b = try_except(lambda: a[u'foo'], 7)
+        self.assertEqual(b, 7)
+
+    def test_with_callable_failture(self):
+        a = dict(moo=4)
+        b = try_except(lambda: a[u'foo'], lambda: a[u'moo'])
+        self.assertEqual(b, 4)
 
 class SqueezeTest(TestCase):
     u"""
