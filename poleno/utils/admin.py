@@ -24,6 +24,8 @@ def simple_list_filter_factory(filter_title, filter_parameter_name, filters):
 
 # FIXME: doc + tests
 def admin_obj_link(obj, text=u'', show_pk=False, link=True):
+    if obj is None:
+        return u'--'
     if not text or show_pk:
         text = u'<%s: %s>%s' % (obj.__class__.__name__, obj.pk, text)
     html = escape(text)

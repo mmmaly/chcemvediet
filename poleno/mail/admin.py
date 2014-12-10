@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from functools import partial
 from email.utils import parseaddr, getaddresses
 
 from django import forms
@@ -12,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 
 from poleno.attachments.models import Attachment
+from poleno.attachments.forms import AttachmentsField
 from poleno.attachments.admin import AttachmentInline
 from poleno.utils.models import after_saved
 from poleno.utils.forms import validate_formatted_email, validate_comma_separated_emails
@@ -121,10 +123,20 @@ class MessageAdminAddForm(forms.Form):
     html = Message._meta.get_field(u'html').formfield(
             widget=admin.widgets.AdminTextareaWidget(),
             )
+    attachments = AttachmentsField(
+            required=False,
+            upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
+            download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
+            )
     headers = Message._meta.get_field(u'headers').formfield(
             widget=admin.widgets.AdminTextareaWidget(),
             )
-    # FIXME: attachments
+
+    def __init__(self, *args, **kwargs):
+        attached_to = kwargs.pop(u'attached_to')
+        super(MessageAdminAddForm, self).__init__(*args, **kwargs)
+
+        self.fields[u'attachments'].attached_to = attached_to
 
     def clean(self):
         cleaned_data = super(MessageAdminAddForm, self).clean()
@@ -155,6 +167,8 @@ class MessageAdminAddForm(forms.Form):
 
         @after_saved(message)
         def deferred():
+            message.attachment_set = self.cleaned_data[u'attachments']
+
             status = (Recipient.STATUSES.INBOUND if message.type == Message.TYPES.INBOUND else
                       Recipient.STATUSES.QUEUED if message.processed is None else
                       Recipient.STATUSES.SENT)
@@ -259,6 +273,7 @@ class MessageAdmin(admin.ModelAdmin):
                     u'received_for',
                     u'subject',
                     (u'text', u'html'),
+                    u'attachments',
                     ],
                 }),
             (_(u'Advanced'), {
@@ -307,7 +322,7 @@ class MessageAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return MessageAdminAddForm
+            return partial(MessageAdminAddForm, attached_to=request.user)
         return super(MessageAdmin, self).get_form(request, obj, **kwargs)
 
     def get_formsets(self, request, obj=None):

@@ -8,6 +8,7 @@ from django.template.defaultfilters import stringfilter
 from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
 from django.contrib.webdesign.lorem_ipsum import paragraphs
+from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 
 from poleno.utils.misc import squeeze as squeeze_func
@@ -117,6 +118,16 @@ def squeeze(text):
         {% endfilter %}
     """
     return squeeze_func(text)
+
+@register.filter
+def generic_type(value):
+    u"""
+    Returns ``ContentType`` object for given model class or model instance.
+
+    Example:
+        {{ request.user|generic_type|method:"pk" }} prints pk of user ContentType object.
+    """
+    return ContentType.objects.get_for_model(value)
 
 @register.filter
 def method(value, arg):

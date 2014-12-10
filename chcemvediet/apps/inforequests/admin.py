@@ -1,5 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from functools import partial
+
 from django import forms
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -12,10 +14,12 @@ from django.utils.http import urlencode
 from django.shortcuts import render
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin import helpers
 from aggregate_if import Count
 
 from poleno.attachments.models import Attachment
+from poleno.attachments.forms import AttachmentsField
 from poleno.attachments.admin import AttachmentInline
 from poleno.mail.models import Message
 from poleno.utils.models import after_saved
@@ -58,7 +62,17 @@ class InforequestDraftAdminAddForm(forms.Form):
     content = InforequestDraft._meta.get_field(u'content').formfield(
             widget=admin.widgets.AdminTextareaWidget(),
             )
-    # FIXME: attachments
+    attachments = AttachmentsField(
+            required=False,
+            upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
+            download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
+            )
+
+    def __init__(self, *args, **kwargs):
+        attached_to = kwargs.pop(u'attached_to')
+        super(InforequestDraftAdminAddForm, self).__init__(*args, **kwargs)
+
+        self.fields[u'attachments'].attached_to = attached_to
 
     def save(self, commit=True):
         assert self.is_valid()
@@ -69,6 +83,10 @@ class InforequestDraftAdminAddForm(forms.Form):
                 subject=self.cleaned_data[u'subject'],
                 content=self.cleaned_data[u'content'],
                 )
+
+        @after_saved(draft)
+        def deferred():
+            draft.attachment_set = self.cleaned_data[u'attachments']
 
         if commit:
             draft.save()
@@ -131,6 +149,7 @@ class InforequestDraftAdmin(admin.ModelAdmin):
                     u'obligee',
                     u'subject',
                     u'content',
+                    u'attachments',
                     ],
                 }),
             ]
@@ -165,7 +184,7 @@ class InforequestDraftAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return InforequestDraftAdminAddForm
+            return partial(InforequestDraftAdminAddForm, attached_to=request.user)
         return super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
 
     def get_formsets(self, request, obj=None):
@@ -295,6 +314,11 @@ class InforequestAdminAddForm(forms.Form):
     content = Action._meta.get_field(u'content').formfield(
             widget=admin.widgets.AdminTextareaWidget(),
             )
+    attachments = AttachmentsField(
+            required=False,
+            upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
+            download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
+            )
     send_email = forms.BooleanField(
             required=False,
             help_text=squeeze(_(u"""
@@ -303,7 +327,12 @@ class InforequestAdminAddForm(forms.Form):
                 obligee.
                 """)),
             )
-    # FIXME: attachments
+
+    def __init__(self, *args, **kwargs):
+        attached_to = kwargs.pop(u'attached_to')
+        super(InforequestAdminAddForm, self).__init__(*args, **kwargs)
+
+        self.fields[u'attachments'].attached_to = attached_to
 
     def save(self, commit=True):
         assert self.is_valid()
@@ -328,6 +357,7 @@ class InforequestAdminAddForm(forms.Form):
                     effective_date=inforequest.submission_date,
                     )
             action.save()
+            action.attachment_set = self.cleaned_data[u'attachments']
 
             if self.cleaned_data[u'send_email']:
                 action.send_by_email()
@@ -419,6 +449,7 @@ class InforequestAdmin(admin.ModelAdmin):
                     u'obligee',
                     u'subject',
                     u'content',
+                    u'attachments',
                     u'send_email',
                     ],
                 }),
@@ -470,7 +501,7 @@ class InforequestAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return InforequestAdminAddForm
+            return partial(InforequestAdminAddForm, attached_to=request.user)
         return super(InforequestAdmin, self).get_form(request, obj, **kwargs)
 
     def get_formsets(self, request, obj=None):
@@ -551,6 +582,11 @@ class InforequestEmailAdminDecideForm(forms.Form):
     content = Action._meta.get_field(u'content').formfield(
             widget=admin.widgets.AdminTextareaWidget(),
             )
+    attachments = AttachmentsField(
+            required=False,
+            upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
+            download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
+            )
     effective_date = Action._meta.get_field(u'effective_date').formfield(
             widget=admin.widgets.AdminDateWidget(),
             )
@@ -568,18 +604,20 @@ class InforequestEmailAdminDecideForm(forms.Form):
             widget=admin.widgets.ManyToManyRawIdWidget(
                 ActionDraft._meta.get_field(u'obligee_set').rel, admin.site),
             )
-    # FIXME: attachments
 
     class _meta:
         model = InforequestEmail
 
     def __init__(self, *args, **kwargs):
         self.instance = kwargs.pop(u'instance')
+        attached_to = kwargs.pop(u'attached_to')
         super(InforequestEmailAdminDecideForm, self).__init__(*args, **kwargs)
         self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.inforequest)
         self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.inforequest)
         self.fields[u'subject'].initial = self.instance.email.subject
         self.fields[u'content'].initial = self.instance.email.text
+        self.fields[u'attachments'].initial = self.instance.email.attachment_set.all()
+        self.fields[u'attachments'].attached_to = [self.instance.email, attached_to]
         self.fields[u'effective_date'].initial = local_date(self.instance.email.processed)
 
     def save(self, commit=True):
@@ -600,6 +638,14 @@ class InforequestEmailAdminDecideForm(forms.Form):
 
         @after_saved(action)
         def deferred():
+            user_type = ContentType.objects.get_for_model(User)
+            for attachment in self.cleaned_data[u'attachments']:
+                # We don't want to steal attachments owned by the email, so we clone them.
+                if attachment.generic_type != user_type:
+                    attachment = attachment.clone()
+                attachment.generic_object = action
+                attachment.save()
+
             for obligee in self.cleaned_data[u'obligee_set']:
                 sub_branch = Branch(
                         inforequest=action.branch.inforequest,
@@ -724,6 +770,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
                     u'type',
                     u'subject',
                     u'content',
+                    u'attachments',
                     u'effective_date',
                     u'deadline',
                     u'extension',
@@ -812,7 +859,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
             return HttpResponseNotFound()
 
         if request.method == u'POST':
-            form = InforequestEmailAdminDecideForm(request.POST, instance=inforequestemail)
+            form = InforequestEmailAdminDecideForm(request.POST, instance=inforequestemail, attached_to=request.user)
             if form.is_valid():
                 new_action = form.save(commit=False)
                 new_action.save()
@@ -821,7 +868,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
                 info = new_action._meta.app_label, new_action._meta.module_name
                 return HttpResponseRedirect(reverse(u'admin:%s_%s_change' % info, args=[new_action.pk]))
         else:
-            form = InforequestEmailAdminDecideForm(instance=inforequestemail)
+            form = InforequestEmailAdminDecideForm(instance=inforequestemail, attached_to=request.user)
 
         opts = self.model._meta
         template = u'admin/%s/%s/decide_form.html' % (opts.app_label, opts.model_name)
@@ -1165,6 +1212,11 @@ class ActionAdminAddForm(forms.Form):
     content = Action._meta.get_field(u'content').formfield(
             widget=admin.widgets.AdminTextareaWidget(),
             )
+    attachments = AttachmentsField(
+            required=False,
+            upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
+            download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
+            )
     effective_date = Action._meta.get_field(u'effective_date').formfield(
             widget=admin.widgets.AdminDateWidget(),
             )
@@ -1189,7 +1241,12 @@ class ActionAdminAddForm(forms.Form):
                 empty if do not want to send any e-mail. Applicable for applicant actions only.
                 """)),
             )
-    # FIXME: attachments
+
+    def __init__(self, *args, **kwargs):
+        attached_to = kwargs.pop(u'attached_to')
+        super(ActionAdminAddForm, self).__init__(*args, **kwargs)
+
+        self.fields[u'attachments'].attached_to = attached_to
 
     def clean(self):
         cleaned_data = super(ActionAdminAddForm, self).clean()
@@ -1218,6 +1275,8 @@ class ActionAdminAddForm(forms.Form):
 
         @after_saved(action)
         def deferred():
+            action.attachment_set = self.cleaned_data[u'attachments']
+
             for obligee in self.cleaned_data[u'obligee_set']:
                 sub_branch = Branch(
                         inforequest=action.branch.inforequest,
@@ -1362,6 +1421,7 @@ class ActionAdmin(admin.ModelAdmin):
                     u'type',
                     u'subject',
                     u'content',
+                    u'attachments',
                     u'effective_date',
                     u'deadline',
                     u'extension',
@@ -1462,7 +1522,7 @@ class ActionAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return ActionAdminAddForm
+            return partial(ActionAdminAddForm, attached_to=request.user)
         return super(ActionAdmin, self).get_form(request, obj, **kwargs)
 
     def get_formsets(self, request, obj=None):
