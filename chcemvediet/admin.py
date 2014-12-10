@@ -145,7 +145,6 @@ class CustomMenu(Menu):
 
 
 class CustomIndexDashboard(Dashboard):
-    title = _(u'Chcem Vedieť administration')
 
     def _create_model_group(self, title, models=None, children=None):
         assert models is None or children is None

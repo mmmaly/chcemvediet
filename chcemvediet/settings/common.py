@@ -96,6 +96,7 @@ STATICFILES_STORAGE = u'pipeline.storage.PipelineStorage'
 TEMPLATE_LOADERS = (
     (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
     (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.app_directories.Loader'),
+    (u'poleno.utils.template.TranslationLoader', u'apptemplates.Loader'),
 #     u'django.template.loaders.eggs.Loader',
 )
 
