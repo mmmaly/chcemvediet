@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from poleno.utils.misc import decorate
-from poleno.utils.admin import admin_obj_link, extend_model_admin
+from poleno.utils.admin import admin_obj_format, extend_model_admin
 
 from .models import Profile
 
@@ -32,14 +32,14 @@ class ProfileAdmin(admin.ModelAdmin):
     @decorate(short_description=_(u'Profile'))
     @decorate(admin_order_field=u'pk')
     def profile_column(self, profile):
-        return admin_obj_link(profile, link=False)
+        return admin_obj_format(profile, link=False)
 
     @decorate(short_description=_(u'User'))
     @decorate(admin_order_field=u'user__email')
     @decorate(allow_tags=True)
     def user_column(self, profile):
         user = profile.user
-        return admin_obj_link(user, u'%s <%s>' % (user.get_full_name(), user.email))
+        return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     fields = [
             u'user',
@@ -61,7 +61,7 @@ class ProfileAdmin(admin.ModelAdmin):
     @decorate(allow_tags=True)
     def user_details_field(self, profile):
         user = profile.user
-        return admin_obj_link(user, u'\n%s <%s>' % (user.get_full_name(), user.email), show_pk=True)
+        return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     def has_add_permission(self, request):
         return False
@@ -86,7 +86,7 @@ class UserAdminMixin(admin.ModelAdmin):
     @decorate(allow_tags=True)
     def profile_field(self, user):
         profile = user.profile
-        return admin_obj_link(profile)
+        return admin_obj_format(profile)
 
 admin.site.register(Profile, ProfileAdmin)
 extend_model_admin(User, UserAdminMixin)

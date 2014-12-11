@@ -7,7 +7,7 @@ from simple_history.admin import SimpleHistoryAdmin
 from aggregate_if import Count
 
 from poleno.utils.misc import decorate
-from poleno.utils.admin import simple_list_filter_factory, admin_obj_link
+from poleno.utils.admin import simple_list_filter_factory, admin_obj_format
 from chcemvediet.apps.inforequests.models import Branch
 
 from .models import Obligee, HistoricalObligee
@@ -28,13 +28,13 @@ class ObligeeAdminBranchInline(admin.TabularInline):
     @decorate(short_description=_(u'Branch'))
     @decorate(allow_tags=True)
     def branch_field(self, branch):
-        return admin_obj_link(branch)
+        return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Inforequest'))
     @decorate(allow_tags=True)
     def inforequest_field(self, branch):
         inforequest = branch.inforequest
-        return admin_obj_link(inforequest)
+        return admin_obj_format(inforequest)
 
     @decorate(short_description=_(u'Closed'))
     @decorate(boolean=True)
@@ -45,7 +45,7 @@ class ObligeeAdminBranchInline(admin.TabularInline):
     @decorate(allow_tags=True)
     def inforequest_applicant_field(self, branch):
         user = branch.inforequest.applicant
-        return admin_obj_link(user, u'%s <%s>' % (user.get_full_name(), user.email))
+        return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Main Branch'))
     @decorate(boolean=True)
@@ -82,7 +82,7 @@ class ObligeeAdmin(SimpleHistoryAdmin):
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'pk')
     def obligee_column(self, obligee):
-        return u'<%s: %s>' % (obligee.__class__.__name__, obligee.pk)
+        return admin_obj_format(obligee, link=False)
 
     @decorate(short_description=_(u'Branches'))
     @decorate(admin_order_field=u'branch__count')
@@ -139,14 +139,14 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
     @decorate(short_description=_(u'Historical Obligee'))
     @decorate(admin_order_field=u'pk')
     def historicalobligee_column(self, historical):
-        return u'<%s: %s>' % (historical.__class__.__name__, historical.pk)
+        return admin_obj_format(historical, link=False)
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'id')
     @decorate(allow_tags=True)
     def obligee_column(self, historical):
         obligee = historical.history_object
-        return admin_obj_link(obligee)
+        return admin_obj_format(obligee)
 
     fields = [
             u'obligee_field',
@@ -166,13 +166,13 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
     @decorate(allow_tags=True)
     def obligee_field(self, historical):
         obligee = historical.history_object
-        return admin_obj_link(obligee)
+        return admin_obj_format(obligee)
 
     @decorate(short_description=_(u'History user'))
     @decorate(allow_tags=True)
     def history_user_field(self, historical):
         user = historical.history_user
-        return admin_obj_link(user, u'\n%s <%s>' % (user.get_full_name(), user.email), show_pk=True) if user else u'--'
+        return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     def has_add_permission(self, request):
         return False

@@ -18,7 +18,7 @@ from poleno.attachments.admin import AttachmentInline
 from poleno.utils.models import after_saved
 from poleno.utils.forms import validate_formatted_email, validate_comma_separated_emails
 from poleno.utils.misc import decorate, squeeze
-from poleno.utils.admin import simple_list_filter_factory
+from poleno.utils.admin import simple_list_filter_factory, admin_obj_format
 
 from .models import Message, Recipient
 
@@ -223,7 +223,7 @@ class MessageAdmin(admin.ModelAdmin):
     @decorate(short_description=_(u'Message'))
     @decorate(admin_order_field=u'pk')
     def message_column(self, message):
-        return u'<%s: %s>' % (message.__class__.__name__, message.pk)
+        return admin_obj_format(message, link=False)
 
     @decorate(short_description=_(u'From'))
     @decorate(admin_order_field=u'from_mail')

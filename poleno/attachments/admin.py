@@ -9,7 +9,7 @@ from django.contrib import admin
 from django.contrib.contenttypes import generic
 
 from poleno.utils.misc import filesize, decorate
-from poleno.utils.admin import admin_obj_link
+from poleno.utils.admin import admin_obj_format
 
 from . import views as attachments_views
 from .models import Attachment
@@ -34,7 +34,7 @@ class AttachmentInline(generic.GenericTabularInline):
     @decorate(short_description=_(u'Attachment'))
     @decorate(allow_tags=True)
     def attachment_field(self, attachment):
-        return admin_obj_link(attachment)
+        return admin_obj_format(attachment)
 
     @decorate(short_description=_(u'File'))
     @decorate(allow_tags=True)
@@ -151,14 +151,14 @@ class AttachmentAdmin(admin.ModelAdmin):
     @decorate(short_description=_(u'Attachment'))
     @decorate(admin_order_field=u'pk')
     def attachment_column(self, attachment):
-        return u'<%s: %s>' % (attachment.__class__.__name__, attachment.pk)
+        return admin_obj_format(attachment, link=False)
 
     @decorate(short_description=_(u'Generic Object'))
     @decorate(admin_order_field=u'generic_type__name')
     @decorate(allow_tags=True)
     def generic_object_column(self, attachment):
         generic = attachment.generic_object
-        return admin_obj_link(generic)
+        return admin_obj_format(generic)
 
     @decorate(short_description=_(u'File'))
     @decorate(admin_order_field=u'file')

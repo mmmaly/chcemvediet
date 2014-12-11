@@ -1,11 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.utils.html import format_html
 from django.contrib import admin
 
-from django.utils.html import escape
-
-# FIXME: doc + tests
 def simple_list_filter_factory(filter_title, filter_parameter_name, filters):
     class SimpleListFilter(admin.SimpleListFilter):
         title = filter_title
@@ -22,19 +20,18 @@ def simple_list_filter_factory(filter_title, filter_parameter_name, filters):
 
     return SimpleListFilter
 
-# FIXME: doc + tests
-def admin_obj_link(obj, text=u'', show_pk=False, link=True):
+def admin_obj_format(obj, format=u'{tag}', *args, **kwargs):
+    link = kwargs.pop(u'link', True)
     if obj is None:
         return u'--'
-    if not text or show_pk:
-        text = u'<%s: %s>%s' % (obj.__class__.__name__, obj.pk, text)
-    html = escape(text)
+    tag = u'<%s: %s>' % (obj.__class__.__name__, obj.pk)
+    res = format.format(obj=obj, tag=tag, *args, **kwargs)
     if link:
-        url = reverse(u'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.module_name), args=[obj.pk])
-        html = u'<a href="%s">%s</a>' % (escape(url), html)
-    return html
+        info = obj._meta.app_label, obj._meta.module_name
+        url = reverse(u'admin:%s_%s_change' % info, args=[obj.pk])
+        res = format_html(u'<a href="{0}">{1}</a>', url, res)
+    return res
 
-# FIXME: doc + tests
 def extend_model_admin(model, mixin):
     klass = admin.site._registry[model].__class__
 
