@@ -12,7 +12,6 @@ from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 
-from poleno.attachments.models import Attachment
 from poleno.attachments.forms import AttachmentsField
 from poleno.attachments.admin import AttachmentInline
 from poleno.utils.models import after_saved

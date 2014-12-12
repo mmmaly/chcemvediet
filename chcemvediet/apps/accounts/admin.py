@@ -36,13 +36,11 @@ class ProfileAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'User'))
     @decorate(admin_order_field=u'user__email')
-    @decorate(allow_tags=True)
     def user_column(self, profile):
         user = profile.user
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     fields = [
-            u'user',
             u'user_details_field',
             u'street',
             u'city',
@@ -57,8 +55,7 @@ class ProfileAdmin(admin.ModelAdmin):
     inlines = [
             ]
 
-    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
+    @decorate(short_description=_(u'User'))
     def user_details_field(self, profile):
         user = profile.user
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
@@ -83,7 +80,6 @@ class UserAdminMixin(admin.ModelAdmin):
         super(UserAdminMixin, self).__init__(*args, **kwargs)
 
     @decorate(short_description=_(u'Profile'))
-    @decorate(allow_tags=True)
     def profile_field(self, user):
         profile = user.profile
         return admin_obj_format(profile)

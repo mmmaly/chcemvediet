@@ -9,7 +9,7 @@ from django.contrib import admin
 from django.contrib.contenttypes import generic
 
 from poleno.utils.misc import filesize, decorate
-from poleno.utils.admin import admin_obj_format
+from poleno.utils.admin import admin_obj_format, live_field, AdminLiveFieldsMixin
 
 from . import views as attachments_views
 from .models import Attachment
@@ -32,12 +32,10 @@ class AttachmentInline(generic.GenericTabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Attachment'))
-    @decorate(allow_tags=True)
     def attachment_field(self, attachment):
         return admin_obj_format(attachment)
 
     @decorate(short_description=_(u'File'))
-    @decorate(allow_tags=True)
     def file_field(self, attachment):
         info = attachment._meta.app_label, attachment._meta.module_name
         url = reverse(u'admin:%s_%s_download' % info, args=[attachment.pk])
@@ -124,7 +122,7 @@ class AttachmentAdminChangeForm(forms.ModelForm):
 
         return cleaned_data
 
-class AttachmentAdmin(admin.ModelAdmin):
+class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'attachment_column',
             u'generic_object_column',
@@ -155,14 +153,12 @@ class AttachmentAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Generic Object'))
     @decorate(admin_order_field=u'generic_type__name')
-    @decorate(allow_tags=True)
     def generic_object_column(self, attachment):
         generic = attachment.generic_object
         return admin_obj_format(generic)
 
     @decorate(short_description=_(u'File'))
     @decorate(admin_order_field=u'file')
-    @decorate(allow_tags=True)
     def file_column(self, attachment):
         info = attachment._meta.app_label, attachment._meta.module_name
         url = reverse(u'admin:%s_%s_download' % info, args=[attachment.pk])
@@ -181,7 +177,7 @@ class AttachmentAdmin(admin.ModelAdmin):
                 u'fields': [
                     u'generic_type',
                     u'generic_id',
-                    u'generic_object_column',
+                    u'generic_object_live',
                     u'file_column',
                     u'name',
                     u'content_type',
@@ -203,13 +199,21 @@ class AttachmentAdmin(admin.ModelAdmin):
                     ],
                 }),
             )
-    readonly_fields = [
-            u'generic_object_column',
+    live_fields = [
+            u'generic_object_live',
+            ]
+    readonly_fields = live_fields + [
             u'file_column',
             u'size',
             ]
     raw_id_fields = [
             ]
+
+    @decorate(short_description=_(u'Generic Object'))
+    @live_field(u'generic_type', u'generic_id')
+    def generic_object_live(self, generic_type, generic_id):
+        generic = generic_type.get_object_for_this_type(pk=generic_id)
+        return admin_obj_format(generic)
 
     def upload_view(self, request):
         info = self.model._meta.app_label, self.model._meta.model_name

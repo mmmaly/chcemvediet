@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import datetime
 from functools import partial
 
 from django import forms
@@ -9,42 +10,30 @@ from django.conf.urls import patterns, url
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
+from django.utils.formats import get_format
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.shortcuts import render
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.admin import helpers
+from django.contrib.admin.templatetags.admin_list import _boolean_icon
 from aggregate_if import Count
 
-from poleno.attachments.models import Attachment
 from poleno.attachments.forms import AttachmentsField
 from poleno.attachments.admin import AttachmentInline
 from poleno.mail.models import Message
+from poleno.workdays import workdays
 from poleno.utils.models import after_saved
-from poleno.utils.date import local_date
+from poleno.utils.date import local_date, local_today
 from poleno.utils.misc import try_except, decorate, squeeze
-from poleno.utils.admin import simple_list_filter_factory, admin_obj_format, extend_model_admin
+from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format,
+        admin_obj_format_join, extend_model_admin, live_field, AdminLiveFieldsMixin)
 
 from .models import InforequestDraft, Inforequest, InforequestEmail, Branch, Action, ActionDraft
 
 
 ADMIN_FIELD_INDENT = u'    • '
-
-def action_deadline_details(action):
-    if action.has_applicant_deadline:
-        if action.deadline_missed:
-            return _(u'Applicant deadline was missed {days} working days ago.').format(days=-action.deadline_remaining)
-        else:
-            return _(u'Applicant deadline will be missed in {days} working days.').format(days=action.deadline_remaining)
-    elif action.has_obligee_deadline:
-        if action.deadline_missed:
-            return _(u'Obligee deadline was missed {days} working days ago.').format(days=-action.deadline_remaining)
-        else:
-            return _(u'Obligee deadline will be missed in {days} working days.').format(days=action.deadline_remaining)
-    else:
-        return _(u'Action has no deadline.')
 
 
 class InforequestDraftAdminAddForm(forms.Form):
@@ -95,7 +84,7 @@ class InforequestDraftAdminAddForm(forms.Form):
     def save_m2m(self):
         pass
 
-class InforequestDraftAdmin(admin.ModelAdmin):
+class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'inforequestdraft_column',
             u'applicant_column',
@@ -118,14 +107,12 @@ class InforequestDraftAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Applicant'))
     @decorate(admin_order_field=u'applicant__email')
-    @decorate(allow_tags=True)
     def applicant_column(self, draft):
         user = draft.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'obligee')
-    @decorate(allow_tags=True)
     def obligee_column(self, draft):
         obligee = draft.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -134,9 +121,9 @@ class InforequestDraftAdmin(admin.ModelAdmin):
             (None, {
                 u'fields': [
                     u'applicant',
-                    u'applicant_details_field',
+                    u'applicant_details_live',
                     u'obligee',
-                    u'obligee_details_field',
+                    u'obligee_details_live',
                     u'subject',
                     u'content',
                     ],
@@ -153,10 +140,11 @@ class InforequestDraftAdmin(admin.ModelAdmin):
                     ],
                 }),
             ]
-    readonly_fields = [
-            u'applicant_details_field',
-            u'obligee_details_field',
+    live_fields = [
+            u'applicant_details_live',
+            u'obligee_details_live',
             ]
+    readonly_fields = live_fields
     raw_id_fields = [
             u'applicant',
             u'obligee',
@@ -166,15 +154,14 @@ class InforequestDraftAdmin(admin.ModelAdmin):
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def applicant_details_field(self, draft):
-        user = draft.applicant
+    @live_field(u'applicant')
+    def applicant_details_live(self, applicant):
+        user = applicant
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def obligee_details_field(self, draft):
-        obligee = draft.obligee
+    @live_field(u'obligee')
+    def obligee_details_live(self, obligee):
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
     def get_fieldsets(self, request, obj=None):
@@ -205,12 +192,10 @@ class InforequestAdminBranchInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Branch'))
-    @decorate(allow_tags=True)
     def branch_field(self, branch):
         return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def obligee_field(self, branch):
         obligee = branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -240,12 +225,10 @@ class InforequestAdminInforequestEmailInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Inforequest E-mail'))
-    @decorate(allow_tags=True)
     def inforequestemail_field(self, inforequestemail):
         return admin_obj_format(inforequestemail)
 
     @decorate(short_description=_(u'E-mail'))
-    @decorate(allow_tags=True)
     def email_field(self, inforequestemail):
         email = inforequestemail.email
         return admin_obj_format(email)
@@ -277,18 +260,15 @@ class InforequestAdminActionDraftInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Action Draft'))
-    @decorate(allow_tags=True)
     def actiondraft_field(self, draft):
         return admin_obj_format(draft)
 
     @decorate(short_description=_(u'Branch'))
-    @decorate(allow_tags=True)
     def branch_field(self, draft):
         branch = draft.branch
         return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def branch_obligee_field(self, draft):
         obligee = draft.branch.obligee if draft.branch else None
         return admin_obj_format(obligee, u'{obj.name}')
@@ -369,7 +349,7 @@ class InforequestAdminAddForm(forms.Form):
     def save_m2m(self):
         pass
 
-class InforequestAdmin(admin.ModelAdmin):
+class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'inforequest_column',
             u'applicant_column',
@@ -403,14 +383,12 @@ class InforequestAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Applicant'))
     @decorate(admin_order_field=u'applicant__email')
-    @decorate(allow_tags=True)
     def applicant_column(self, inforequest):
         user = inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'branch__obligee__name')
-    @decorate(allow_tags=True)
     def obligee_column(self, inforequest):
         obligee = inforequest.branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -425,7 +403,7 @@ class InforequestAdmin(admin.ModelAdmin):
                 u'classes': [u'wide'],
                 u'fields': [
                     u'applicant',
-                    u'applicant_details_field',
+                    u'applicant_details_live',
                     u'obligee_details_field',
                     u'applicant_name',
                     (u'applicant_street', u'applicant_city', u'applicant_zip'),
@@ -454,8 +432,10 @@ class InforequestAdmin(admin.ModelAdmin):
                     ],
                 }),
             ]
-    readonly_fields = [
-            u'applicant_details_field',
+    live_fields = [
+            u'applicant_details_live',
+            ]
+    readonly_fields = live_fields + [
             u'obligee_details_field',
             u'submission_date',
             u'undecided_emails_field',
@@ -470,13 +450,12 @@ class InforequestAdmin(admin.ModelAdmin):
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def applicant_details_field(self, inforequest):
-        user = inforequest.applicant
+    @live_field(u'applicant')
+    def applicant_details_live(self, applicant):
+        user = applicant
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def obligee_details_field(self, inforequest):
         obligee = inforequest.branch.obligee
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
@@ -665,7 +644,7 @@ class InforequestEmailAdminDecideForm(forms.Form):
             action.save()
         return action
 
-class InforequestEmailAdmin(admin.ModelAdmin):
+class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'inforequestemail_column',
             u'inforequest_column',
@@ -697,7 +676,6 @@ class InforequestEmailAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Inforequest'))
     @decorate(admin_order_field=u'inforequest__pk')
-    @decorate(allow_tags=True)
     def inforequest_column(self, inforequestemail):
         inforequest = inforequestemail.inforequest
         return admin_obj_format(inforequest)
@@ -710,14 +688,12 @@ class InforequestEmailAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Applicant'))
     @decorate(admin_order_field=u'inforequest__applicant__email')
-    @decorate(allow_tags=True)
     def inforequest_applicant_column(self, inforequestemail):
         user = inforequestemail.inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'E-mail'))
     @decorate(admin_order_field=u'email__pk')
-    @decorate(allow_tags=True)
     def email_column(self, inforequestemail):
         email = inforequestemail.email
         return admin_obj_format(email)
@@ -729,7 +705,6 @@ class InforequestEmailAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Action'))
     @decorate(admin_order_field=u'email__action__pk')
-    @decorate(allow_tags=True)
     def action_column(self, inforequestemail):
         action = try_except(lambda: inforequestemail.email.action, None, Action.DoesNotExist)
         return admin_obj_format(action)
@@ -739,14 +714,14 @@ class InforequestEmailAdmin(admin.ModelAdmin):
                 u'classes': [u'wide'],
                 u'fields': [
                     u'inforequest',
-                    u'inforequest_details_field',
-                    u'inforequest_applicant_field',
-                    u'inforequest_closed_field',
+                    u'inforequest_details_live',
+                    u'inforequest_applicant_live',
+                    u'inforequest_closed_live',
                     u'email',
-                    u'email_details_field',
-                    u'email_from_field',
-                    u'email_subject_field',
-                    u'email_action_field',
+                    u'email_details_live',
+                    u'email_from_live',
+                    u'email_subject_live',
+                    u'email_action_live',
                     u'type',
                     ],
                 }),
@@ -784,15 +759,16 @@ class InforequestEmailAdmin(admin.ModelAdmin):
             u'inforequest',
             u'email',
             ]
-    readonly_fields = [
-            u'inforequest_details_field',
-            u'inforequest_applicant_field',
-            u'inforequest_closed_field',
-            u'email_details_field',
-            u'email_from_field',
-            u'email_subject_field',
-            u'email_action_field',
+    live_fields = [
+            u'inforequest_details_live',
+            u'inforequest_applicant_live',
+            u'inforequest_closed_live',
+            u'email_details_live',
+            u'email_from_live',
+            u'email_subject_live',
+            u'email_action_live',
             ]
+    readonly_fields = live_fields
     readonly_fields_decide = [
             u'inforequest_decide_field',
             u'email_decide_field',
@@ -801,50 +777,48 @@ class InforequestEmailAdmin(admin.ModelAdmin):
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def inforequest_details_field(self, inforequestemail):
-        inforequest = inforequestemail.inforequest
+    @live_field(u'inforequest')
+    def inforequest_details_live(self, inforequest):
         return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
-    @decorate(allow_tags=True)
-    def inforequest_applicant_field(self, inforequestemail):
-        user = inforequestemail.inforequest.applicant
+    @live_field(u'inforequest')
+    def inforequest_applicant_live(self, inforequest):
+        user = inforequest.applicant
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
-    @decorate(boolean=True)
-    def inforequest_closed_field(self, inforequestemail):
-        return inforequestemail.inforequest.closed
+    @live_field(u'inforequest')
+    def inforequest_closed_live(self, inforequest):
+        return _boolean_icon(inforequest.closed)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def email_details_field(self, inforequestemail):
-        email = inforequestemail.email
+    @live_field(u'email')
+    def email_details_live(self, email):
         return admin_obj_format(email)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'From')))
-    def email_from_field(self, inforequestemail):
-        return inforequestemail.email.from_formatted
+    @live_field(u'email')
+    def email_from_live(self, email):
+        return email.from_formatted
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Subject')))
-    def email_subject_field(self, inforequestemail):
-        return inforequestemail.email.subject
+    @live_field(u'email')
+    def email_subject_live(self, email):
+        return email.subject
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Action')))
-    @decorate(allow_tags=True)
-    def email_action_field(self, inforequestemail):
-        action = try_except(lambda: inforequestemail.email.action, None, Action.DoesNotExist)
+    @live_field(u'email')
+    def email_action_live(self, email):
+        action = try_except(lambda: email.action, None, Action.DoesNotExist)
         return admin_obj_format(action)
 
     @decorate(short_description=_(u'Inforequest'))
-    @decorate(allow_tags=True)
     def inforequest_decide_field(self, inforequestemail):
         inforequest = inforequestemail.inforequest
         return admin_obj_format(inforequest)
 
     @decorate(short_description=_(u'E-mail'))
-    @decorate(allow_tags=True)
     def email_decide_field(self, inforequestemail):
         email = inforequestemail.email
         return admin_obj_format(email)
@@ -872,7 +846,7 @@ class InforequestEmailAdmin(admin.ModelAdmin):
 
         opts = self.model._meta
         template = u'admin/%s/%s/decide_form.html' % (opts.app_label, opts.model_name)
-        adminForm = helpers.AdminForm(form,
+        adminForm = admin.helpers.AdminForm(form,
                 fieldsets=self.fieldsets_decide,
                 prepopulated_fields={},
                 readonly_fields=self.readonly_fields_decide,
@@ -950,19 +924,28 @@ class BranchAdminActionInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Action'))
-    @decorate(allow_tags=True)
     def action_field(self, action):
         return admin_obj_format(action)
 
     @decorate(short_description=_(u'E-mail'))
-    @decorate(allow_tags=True)
     def email_field(self, action):
         email = action.email
         return admin_obj_format(email)
 
     @decorate(short_description=_(u'Deadline'))
     def deadline_details_field(self, action):
-        return action_deadline_details(action)
+        if action.has_applicant_deadline:
+            if action.deadline_missed:
+                return _(u'Applicant deadline was missed {days} working days ago.').format(days=-action.deadline_remaining)
+            else:
+                return _(u'Applicant deadline will be missed in {days} working days.').format(days=action.deadline_remaining)
+        elif action.has_obligee_deadline:
+            if action.deadline_missed:
+                return _(u'Obligee deadline was missed {days} working days ago.').format(days=-action.deadline_remaining)
+            else:
+                return _(u'Obligee deadline will be missed in {days} working days.').format(days=action.deadline_remaining)
+        else:
+            return _(u'Action has no deadline.')
 
     def has_add_permission(self, request):
         return False
@@ -1006,7 +989,7 @@ class BranchAdminAddForm(forms.Form):
     def save_m2m(self):
         pass
 
-class BranchAdmin(admin.ModelAdmin):
+class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'branch_column',
             u'inforequest_column',
@@ -1038,7 +1021,6 @@ class BranchAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Inforequest'))
     @decorate(admin_order_field=u'inforequest__pk')
-    @decorate(allow_tags=True)
     def inforequest_column(self, branch):
         inforequest = branch.inforequest
         return admin_obj_format(inforequest)
@@ -1051,14 +1033,12 @@ class BranchAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Applicant'))
     @decorate(admin_order_field=u'inforequest__applicant__email')
-    @decorate(allow_tags=True)
     def inforequest_applicant_column(self, branch):
         user = branch.inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'obligee__name')
-    @decorate(allow_tags=True)
     def obligee_column(self, branch):
         obligee = branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -1073,15 +1053,15 @@ class BranchAdmin(admin.ModelAdmin):
             (None, {
                 u'fields': [
                     u'inforequest',
-                    u'inforequest_details_field',
-                    u'inforequest_applicant_field',
-                    u'inforequest_closed_field',
+                    u'inforequest_details_live',
+                    u'inforequest_applicant_live',
+                    u'inforequest_closed_live',
                     u'obligee',
-                    u'obligee_details_field',
+                    u'obligee_details_live',
                     u'historicalobligee',
-                    u'historicalobligee_details_field',
+                    u'historicalobligee_details_live',
                     u'advanced_by',
-                    u'advanced_by_details_field',
+                    u'advanced_by_details_live',
                     ],
                 }),
             ]
@@ -1099,51 +1079,49 @@ class BranchAdmin(admin.ModelAdmin):
             u'historicalobligee',
             u'advanced_by',
             ]
-    readonly_fields = [
-            u'inforequest_details_field',
-            u'inforequest_applicant_field',
-            u'inforequest_closed_field',
-            u'obligee_details_field',
-            u'historicalobligee_details_field',
-            u'advanced_by_details_field',
+    live_fields = [
+            u'inforequest_details_live',
+            u'inforequest_applicant_live',
+            u'inforequest_closed_live',
+            u'obligee_details_live',
+            u'historicalobligee_details_live',
+            u'advanced_by_details_live',
             ]
+    readonly_fields = live_fields
     inlines = [
             BranchAdminActionInline,
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def inforequest_details_field(self, branch):
-        inforequest = branch.inforequest
+    @live_field(u'inforequest')
+    def inforequest_details_live(self, inforequest):
         return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
-    @decorate(allow_tags=True)
-    def inforequest_applicant_field(self, branch):
-        user = branch.inforequest.applicant
+    @live_field(u'inforequest')
+    def inforequest_applicant_live(self, inforequest):
+        user = inforequest.applicant
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
-    @decorate(boolean=True)
-    def inforequest_closed_field(self, branch):
-        return branch.inforequest.closed
+    @live_field(u'inforequest')
+    def inforequest_closed_live(self, inforequest):
+        return _boolean_icon(inforequest.closed)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def obligee_details_field(self, branch):
-        obligee = branch.obligee
+    @live_field(u'obligee')
+    def obligee_details_live(self, obligee):
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def historicalobligee_details_field(self, branch):
-        historical = branch.historicalobligee
-        return admin_obj_format(historical, u'{tag}\n{obj.name}')
+    @live_field(u'historicalobligee')
+    def historicalobligee_details_live(self, historicalobligee):
+        return admin_obj_format(historicalobligee, u'{tag}\n{obj.name}')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def advanced_by_details_field(self, branch):
-        action = branch.advanced_by
+    @live_field(u'advanced_by')
+    def advanced_by_details_live(self, advanced_by):
+        action = advanced_by
         return admin_obj_format(action, u'{tag} {0}', action.get_type_display()) if action else u'--'
 
     def has_delete_permission(self, request, obj=None):
@@ -1183,12 +1161,10 @@ class ActionAdminAdvancedToInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Branch'))
-    @decorate(allow_tags=True)
     def branch_field(self, branch):
         return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def obligee_field(self, branch):
         obligee = branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -1302,7 +1278,7 @@ class ActionAdminAddForm(forms.Form):
     def save_m2m(self):
         pass
 
-class ActionAdmin(admin.ModelAdmin):
+class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'action_column',
             u'branch_column',
@@ -1341,14 +1317,12 @@ class ActionAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Branch'))
     @decorate(admin_order_field=u'branch__pk')
-    @decorate(allow_tags=True)
     def branch_column(self, action):
         branch = action.branch
         return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Inforequest'))
     @decorate(admin_order_field=u'branch__inforequest__pk')
-    @decorate(allow_tags=True)
     def branch_inforequest_column(self, action):
         inforequest = action.branch.inforequest
         return admin_obj_format(inforequest)
@@ -1361,21 +1335,18 @@ class ActionAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Applicant'))
     @decorate(admin_order_field=u'branch__inforequest__applicant__email')
-    @decorate(allow_tags=True)
     def branch_applicant_column(self, action):
         user = action.branch.inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'branch__obligee__name')
-    @decorate(allow_tags=True)
     def branch_obligee_column(self, action):
         obligee = action.branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
 
     @decorate(short_description=_(u'Email'))
     @decorate(admin_order_field=u'email__pk')
-    @decorate(allow_tags=True)
     def email_column(self, action):
         email = action.email
         return admin_obj_format(email)
@@ -1385,23 +1356,23 @@ class ActionAdmin(admin.ModelAdmin):
                 u'classes': [u'wide'],
                 u'fields': [
                     u'branch',
-                    u'branch_details_field',
-                    u'branch_inforequest_field',
-                    u'branch_applicant_field',
-                    u'branch_obligee_field',
-                    u'branch_closed_field',
+                    u'branch_details_live',
+                    u'branch_inforequest_live',
+                    u'branch_applicant_live',
+                    u'branch_obligee_live',
+                    u'branch_closed_live',
                     u'email',
-                    u'email_details_field',
-                    u'email_from_field',
-                    u'email_subject_field',
+                    u'email_details_live',
+                    u'email_from_live',
+                    u'email_subject_live',
                     u'type',
-                    u'type_details_field',
+                    u'type_details_live',
                     u'subject',
                     u'content',
                     u'effective_date',
                     u'deadline',
                     u'extension',
-                    u'deadline_details_field',
+                    u'deadline_details_live',
                     u'disclosure_level',
                     u'refusal_reason',
                     ],
@@ -1436,78 +1407,109 @@ class ActionAdmin(admin.ModelAdmin):
             u'branch',
             u'email',
             ]
-    readonly_fields = [
-            u'branch_details_field',
-            u'branch_inforequest_field',
-            u'branch_applicant_field',
-            u'branch_obligee_field',
-            u'branch_closed_field',
-            u'email_details_field',
-            u'email_from_field',
-            u'email_subject_field',
-            u'type_details_field',
-            u'deadline_details_field',
+    live_fields = [
+            u'branch_details_live',
+            u'branch_inforequest_live',
+            u'branch_applicant_live',
+            u'branch_obligee_live',
+            u'branch_closed_live',
+            u'email_details_live',
+            u'email_from_live',
+            u'email_subject_live',
+            u'type_details_live',
+            u'deadline_details_live',
             ]
+    readonly_fields = live_fields
     inlines = [
             AttachmentInline,
             ActionAdminAdvancedToInline,
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def branch_details_field(self, action):
-        branch = action.branch
+    @live_field(u'branch')
+    def branch_details_live(self, branch):
         return admin_obj_format(branch)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Inforequest')))
-    @decorate(allow_tags=True)
-    def branch_inforequest_field(self, action):
-        inforequest = action.branch.inforequest
+    @live_field(u'branch')
+    def branch_inforequest_live(self, branch):
+        inforequest = branch.inforequest
         return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
-    @decorate(allow_tags=True)
-    def branch_applicant_field(self, action):
-        user = action.branch.inforequest.applicant
+    @live_field(u'branch')
+    def branch_applicant_live(self, branch):
+        user = branch.inforequest.applicant
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Obligee')))
-    @decorate(allow_tags=True)
-    def branch_obligee_field(self, action):
-        obligee = action.branch.obligee
+    @live_field(u'branch')
+    def branch_obligee_live(self, branch):
+        obligee = branch.obligee
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
-    @decorate(boolean=True)
-    def branch_closed_field(self, action):
-        return action.branch.inforequest.closed
+    @live_field(u'branch')
+    def branch_closed_live(self, branch):
+        return _boolean_icon(branch.inforequest.closed)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def email_details_field(self, action):
-        email = action.email
+    @live_field(u'email')
+    def email_details_live(self, email):
         return admin_obj_format(email)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'From')))
-    def email_from_field(self, action):
-        return action.email.from_formatted
+    @live_field(u'email')
+    def email_from_live(self, email):
+        return email.from_formatted if email else u'--'
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Subject')))
-    def email_subject_field(self, action):
-        return action.email.subject
+    @live_field(u'email')
+    def email_subject_live(self, email):
+        return email.subject if email else u'--'
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    def type_details_field(self, action):
-        if action.is_applicant_action:
+    @live_field(u'type')
+    def type_details_live(self, type):
+        try:
+            type = int(type)
+        except (ValueError, TypeError):
+            return u'--'
+
+        if type in Action.APPLICANT_ACTION_TYPES:
             return _(u'Applicant Action')
-        if action.is_obligee_action:
+        elif type in Action.OBLIGEE_ACTION_TYPES:
             return _(u'Obligee Action')
-        if action.is_implicit_action:
+        elif type in Action.IMPLICIT_ACTION_TYPES:
             return _(u'Implicit Action')
+        else:
+            return u'--'
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    def deadline_details_field(self, action):
-        return action_deadline_details(action)
+    @live_field(u'effective_date', u'deadline', u'extension')
+    def deadline_details_live(self, effective_date, deadline, extension):
+        try:
+            deadline = int(deadline)
+            extension = int(extension or '0')
+        except (ValueError, TypeError):
+            return u'--'
+
+        for format in get_format(u'DATE_INPUT_FORMATS'):
+            try:
+                effective_date = datetime.datetime.strptime(effective_date, format).date()
+                break
+            except (ValueError, TypeError):
+                continue
+            return u'--'
+
+        days_passed = workdays.between(effective_date, local_today())
+        deadline_remaining = deadline + extension - days_passed
+        deadline_missed = (deadline_remaining < 0)
+
+        if deadline_missed:
+            return _(u'Deadline was missed {days} working days ago.').format(days=-deadline_remaining)
+        else:
+            return _(u'Deadline will be missed in {days} working days.').format(days=deadline_remaining)
 
     def has_delete_permission(self, request, obj=None):
         if not obj:
@@ -1531,7 +1533,7 @@ class ActionAdmin(admin.ModelAdmin):
         return super(ActionAdmin, self).get_formsets(request, obj)
 
 
-class ActionDraftAdmin(admin.ModelAdmin):
+class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
             u'actiondraft_column',
             u'inforequest_column',
@@ -1562,7 +1564,6 @@ class ActionDraftAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Inforequest'))
     @decorate(admin_order_field=u'inforequest__pk')
-    @decorate(allow_tags=True)
     def inforequest_column(self, draft):
         inforequest = draft.inforequest
         return admin_obj_format(inforequest)
@@ -1575,21 +1576,18 @@ class ActionDraftAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Applicant'))
     @decorate(admin_order_field=u'inforequest__applicant__email')
-    @decorate(allow_tags=True)
     def inforequest_applicant_column(self, draft):
         user = draft.inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=_(u'Branch'))
     @decorate(admin_order_field=u'branch__pk')
-    @decorate(allow_tags=True)
     def branch_column(self, draft):
         branch = draft.branch
         return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'branch__obligee__name')
-    @decorate(allow_tags=True)
     def branch_obligee_column(self, draft):
         obligee = draft.branch.obligee if draft.branch else None
         return admin_obj_format(obligee, u'{obj.name}')
@@ -1599,12 +1597,12 @@ class ActionDraftAdmin(admin.ModelAdmin):
                 u'classes': [u'wide'],
                 u'fields': [
                     u'inforequest',
-                    u'inforequest_details_field',
-                    u'inforequest_applicant_field',
-                    u'inforequest_closed_field',
+                    u'inforequest_details_live',
+                    u'inforequest_applicant_live',
+                    u'inforequest_closed_live',
                     u'branch',
-                    u'branch_details_field',
-                    u'branch_obligee_field',
+                    u'branch_details_live',
+                    u'branch_obligee_live',
                     u'type',
                     u'subject',
                     u'content',
@@ -1613,7 +1611,7 @@ class ActionDraftAdmin(admin.ModelAdmin):
                     u'disclosure_level',
                     u'refusal_reason',
                     u'obligee_set',
-                    u'obligee_set_details_field',
+                    u'obligee_set_details_live',
                     ],
                 }),
             ]
@@ -1622,52 +1620,50 @@ class ActionDraftAdmin(admin.ModelAdmin):
             u'branch',
             u'obligee_set',
             ]
-    readonly_fields = [
-            u'inforequest_details_field',
-            u'inforequest_applicant_field',
-            u'inforequest_closed_field',
-            u'branch_details_field',
-            u'branch_obligee_field',
-            u'obligee_set_details_field',
+    live_fields = [
+            u'inforequest_details_live',
+            u'inforequest_applicant_live',
+            u'inforequest_closed_live',
+            u'branch_details_live',
+            u'branch_obligee_live',
+            u'obligee_set_details_live',
             ]
+    readonly_fields = live_fields
     inlines = [
             AttachmentInline,
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def inforequest_details_field(self, draft):
-        inforequest = draft.inforequest
+    @live_field(u'inforequest')
+    def inforequest_details_live(self, inforequest):
         return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
-    @decorate(allow_tags=True)
-    def inforequest_applicant_field(self, draft):
-        user = draft.inforequest.applicant
+    @live_field(u'inforequest')
+    def inforequest_applicant_live(self, inforequest):
+        user = inforequest.applicant
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
-    @decorate(boolean=True)
-    def inforequest_closed_field(self, draft):
-        return draft.inforequest.closed
+    @live_field(u'inforequest')
+    def inforequest_closed_live(self, inforequest):
+        return _boolean_icon(inforequest.closed)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def branch_details_field(self, draft):
-        branch = draft.branch
+    @live_field(u'branch')
+    def branch_details_live(self, branch):
         return admin_obj_format(branch)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Obligee')))
-    @decorate(allow_tags=True)
-    def branch_obligee_field(self, draft):
-        obligee = draft.branch.obligee if draft.branch else None
+    @live_field(u'branch')
+    def branch_obligee_live(self, branch):
+        obligee = branch.obligee if branch else None
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @decorate(allow_tags=True)
-    def obligee_set_details_field(self, draft):
-        obligees = draft.obligee_set.all()
-        return u'\n'.join(admin_obj_format(o, u'{tag} {obj.name}') for o in obligees) or u'--'
+    @live_field(u'obligee_set')
+    def obligee_set_details_live(self, obligees):
+        return admin_obj_format_join(u'\n', obligees, u'{tag} {obj.name}')
 
     def has_add_permission(self, request):
         return False
@@ -1689,12 +1685,10 @@ class UserAdminMixinInforequestInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Inforequest'))
-    @decorate(allow_tags=True)
     def inforequest_field(self, inforequest):
         return admin_obj_format(inforequest)
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def obligee_field(self, inforequest):
         obligee = inforequest.branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -1722,12 +1716,10 @@ class UserAdminMixinInforequestDraftInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Inforequest Draft'))
-    @decorate(allow_tags=True)
     def inforequestdraft_field(self, draft):
         return admin_obj_format(draft)
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def obligee_field(self, draft):
         obligee = draft.obligee
         return admin_obj_format(obligee, u'{obj.name}')
@@ -1804,34 +1796,31 @@ class MessageAdminMixin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Assigned To'))
     @decorate(admin_order_field=u'inforequest__pk')
-    @decorate(allow_tags=True)
     def assigned_to_column(self, message):
-        return u', '.join(admin_obj_format(ir) for ir in message.inforequest_set.all()) or u'--'
+        inforequests = message.inforequest_set.all()
+        return admin_obj_format_join(u', ', inforequests)
 
     @decorate(short_description=_(u'Action'))
     @decorate(admin_order_field=u'action__pk')
-    @decorate(allow_tags=True)
     def action_column(self, message):
         action = try_except(lambda: message.action, None, Action.DoesNotExist)
         return admin_obj_format(action)
 
     @decorate(short_description=_(u'Assigned To'))
-    @decorate(allow_tags=True)
     def assigned_to_field(self, message):
         inforequests = message.inforequest_set.all()
         if inforequests:
-            res = u', '.join(admin_obj_format(ir) for ir in inforequests)
+            return admin_obj_format_join(u', ', inforequests)
         elif message.type == Message.TYPES.INBOUND and message.processed:
             query = dict(email=message.pk, type=InforequestEmail.TYPES.UNDECIDED)
             url = u'%s?%s' % (reverse(u'admin:inforequests_inforequestemail_add'), urlencode(query))
-            button = format_html(u'<li><a href="{0}">{1}</a></li>', url, _(u'Assign to Inforequest'))
-            res = format_html(u'<ul class="object-tools">{0}</ul>', button)
+            btn = format_html(u'<li><a href="{0}">{1}</a></li>', url, _(u'Assign to Inforequest'))
+            res = format_html(u'<ul class="object-tools">{0}</ul>', btn)
+            return res
         else:
-            res = u'--'
-        return res
+            return u'--'
 
     @decorate(short_description=_(u'Action'))
-    @decorate(allow_tags=True)
     def action_field(self, message):
         action = try_except(lambda: message.action, None, Action.DoesNotExist)
         return admin_obj_format(action)

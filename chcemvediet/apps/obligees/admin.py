@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
@@ -26,12 +25,10 @@ class ObligeeAdminBranchInline(admin.TabularInline):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Branch'))
-    @decorate(allow_tags=True)
     def branch_field(self, branch):
         return admin_obj_format(branch)
 
     @decorate(short_description=_(u'Inforequest'))
-    @decorate(allow_tags=True)
     def inforequest_field(self, branch):
         inforequest = branch.inforequest
         return admin_obj_format(inforequest)
@@ -42,7 +39,6 @@ class ObligeeAdminBranchInline(admin.TabularInline):
         return branch.inforequest.closed
 
     @decorate(short_description=_(u'Applicant'))
-    @decorate(allow_tags=True)
     def inforequest_applicant_field(self, branch):
         user = branch.inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
@@ -143,7 +139,6 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
 
     @decorate(short_description=_(u'Obligee'))
     @decorate(admin_order_field=u'id')
-    @decorate(allow_tags=True)
     def obligee_column(self, historical):
         obligee = historical.history_object
         return admin_obj_format(obligee)
@@ -163,13 +158,11 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
     readonly_fields = fields
 
     @decorate(short_description=_(u'Obligee'))
-    @decorate(allow_tags=True)
     def obligee_field(self, historical):
         obligee = historical.history_object
         return admin_obj_format(obligee)
 
     @decorate(short_description=_(u'History user'))
-    @decorate(allow_tags=True)
     def history_user_field(self, historical):
         user = historical.history_user
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
