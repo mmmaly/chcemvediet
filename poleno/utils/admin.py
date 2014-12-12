@@ -67,20 +67,30 @@ def live_field(*fields):
     def decorator(method):
         @wraps(method, assigned=available_attrs(method))
         def wrapped_method(self, obj=None, get=None):
-          try:
             assert (obj is None) + (get is None) == 1
 
             args = []
             vals = []
             for field in fields:
-                field_obj = self.model._meta.get_field_by_name(field)[0]
                 try:
-                    if isinstance(field_obj, models.ForeignKey):
+                    field_obj = self.model._meta.get_field_by_name(field)[0]
+                except models.FieldDoesNotExist:
+                    field_obj = None
+                try:
+                    if field_obj is None:
+                        if get is None:
+                            arg = None
+                            val = u''
+                        else:
+                            arg = get[field]
+                            val = str(arg)
+                    elif isinstance(field_obj, models.ForeignKey):
                         if get is None:
                             arg = getattr(obj, field)
+                            val = str(arg.pk)
                         else:
                             arg = field_obj.rel.to._default_manager.get(pk=get[field])
-                        val = str(arg.pk)
+                            val = str(arg.pk)
                     elif isinstance(field_obj, models.ManyToManyField):
                         if get is None:
                             arg = getattr(obj, field).all()
@@ -100,9 +110,10 @@ def live_field(*fields):
                     else:
                         if get is None:
                             arg = getattr(obj, field)
+                            val = str(arg)
                         else:
                             arg = get[field]
-                        val = str(arg)
+                            val = str(arg)
                 except (ObjectDoesNotExist, KeyError, AttributeError, ValueError):
                     arg = None
                     val = u''
@@ -121,9 +132,6 @@ def live_field(*fields):
             attrs.update({u'data-value-%s' % f: v for f, v in zip(fields, vals)})
             res = format_tag(u'span', attrs, res)
             return res
-          except Exception as e:
-            print(e,)
-            print(e.line,)
         return wrapped_method
     return decorator
 

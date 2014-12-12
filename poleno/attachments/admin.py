@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
-from poleno.utils.misc import filesize, decorate
+from poleno.utils.misc import filesize, decorate, try_except
 from poleno.utils.admin import admin_obj_format, live_field, AdminLiveFieldsMixin
 
 from . import views as attachments_views
@@ -70,6 +70,13 @@ class AttachmentAdminAddForm(forms.Form):
     created = Attachment._meta.get_field(u'created').formfield(
             widget=admin.widgets.AdminSplitDateTime(),
             )
+
+    class _meta:
+        model = Attachment
+
+    def __init__(self, *args, **kwargs):
+        self.instance = self._meta.model()
+        return super(AttachmentAdminAddForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super(AttachmentAdminAddForm, self).clean()
@@ -192,6 +199,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                 u'fields': [
                     u'generic_type',
                     u'generic_id',
+                    u'generic_object_live',
                     u'file',
                     u'name',
                     u'content_type',
@@ -212,7 +220,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     @decorate(short_description=_(u'Generic Object'))
     @live_field(u'generic_type', u'generic_id')
     def generic_object_live(self, generic_type, generic_id):
-        generic = generic_type.get_object_for_this_type(pk=generic_id)
+        generic = try_except(lambda: generic_type.get_object_for_this_type(pk=generic_id), None)
         return admin_obj_format(generic)
 
     def upload_view(self, request):
