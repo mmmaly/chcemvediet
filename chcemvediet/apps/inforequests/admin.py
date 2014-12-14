@@ -5,6 +5,7 @@ from functools import partial
 
 from django import forms
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.conf.urls import patterns, url
 from django.http import HttpResponseNotFound, HttpResponseRedirect
@@ -37,32 +38,25 @@ from ..obligees.models import Obligee
 ADMIN_FIELD_INDENT = u'    • '
 
 
-class InforequestDraftAdminAddForm(forms.Form):
-    applicant = InforequestDraft._meta.get_field(u'applicant').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                InforequestDraft._meta.get_field(u'applicant').rel, admin.site),
-            )
-    obligee = InforequestDraft._meta.get_field(u'obligee').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                InforequestDraft._meta.get_field(u'obligee').rel, admin.site),
-            )
-    subject = InforequestDraft._meta.get_field(u'subject').formfield(
-            widget=admin.widgets.AdminTextInputWidget(),
-            )
-    content = InforequestDraft._meta.get_field(u'content').formfield(
-            widget=admin.widgets.AdminTextareaWidget(),
-            )
+class ForeignKeyRawIdWidgetWithUrlParams(admin.widgets.ForeignKeyRawIdWidget):
+    def __init__(self, *args, **kwargs):
+        super(ForeignKeyRawIdWidgetWithUrlParams, self).__init__(*args, **kwargs)
+        self.url_params = {}
+
+    def base_url_parameters(self):
+        params = super(ForeignKeyRawIdWidgetWithUrlParams, self).base_url_parameters()
+        params.update(self.url_params)
+        return params
+
+
+class InforequestDraftAdminAddForm(forms.ModelForm):
     attachments = AttachmentsField(
             required=False,
             upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
             download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
             )
 
-    class _meta:
-        model = InforequestDraft
-
     def __init__(self, *args, **kwargs):
-        self.instance = self._meta.model()
         attached_to = kwargs.pop(u'attached_to')
         super(InforequestDraftAdminAddForm, self).__init__(*args, **kwargs)
 
@@ -122,6 +116,8 @@ class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         obligee = draft.obligee
         return admin_obj_format(obligee, u'{obj.name}')
 
+    form_add = InforequestDraftAdminAddForm
+    form_change = forms.ModelForm
     fieldsets = [
             (None, {
                 u'fields': [
@@ -178,8 +174,13 @@ class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return partial(InforequestDraftAdminAddForm, attached_to=request.user)
-        return super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
+            form = partial(form, attached_to=request.user)
+        else:
+            self.form = self.form_change
+            form = super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:
@@ -286,11 +287,7 @@ class InforequestAdminActionDraftInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class InforequestAdminAddForm(forms.Form):
-    applicant = Inforequest._meta.get_field(u'applicant').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                Inforequest._meta.get_field(u'applicant').rel, admin.site),
-            )
+class InforequestAdminAddForm(forms.ModelForm):
     obligee = Branch._meta.get_field(u'obligee').formfield(
             widget=admin.widgets.ForeignKeyRawIdWidget(
                 Branch._meta.get_field(u'obligee').rel, admin.site),
@@ -315,11 +312,7 @@ class InforequestAdminAddForm(forms.Form):
                 """)),
             )
 
-    class _meta:
-        model = Inforequest
-
     def __init__(self, *args, **kwargs):
-        self.instance = self._meta.model()
         attached_to = kwargs.pop(u'attached_to')
         super(InforequestAdminAddForm, self).__init__(*args, **kwargs)
 
@@ -409,6 +402,8 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     def undecided_emails_column(self, inforequest):
         return inforequest.undecided__count
 
+    form_add = InforequestAdminAddForm
+    form_change = forms.ModelForm
     fieldsets = [
             (None, {
                 u'classes': [u'wide'],
@@ -500,8 +495,13 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return partial(InforequestAdminAddForm, attached_to=request.user)
-        return super(InforequestAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(InforequestAdmin, self).get_form(request, obj, **kwargs)
+            form = partial(form, attached_to=request.user)
+        else:
+            self.form = self.form_change
+            form = super(InforequestAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:
@@ -509,25 +509,7 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         return super(InforequestAdmin, self).get_formsets(request, obj)
 
 
-class InforequestEmailAdminAddForm(forms.Form):
-    inforequest = InforequestEmail._meta.get_field(u'inforequest').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                InforequestEmail._meta.get_field(u'inforequest').rel, admin.site),
-            )
-    email = InforequestEmail._meta.get_field(u'email').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                InforequestEmail._meta.get_field(u'email').rel, admin.site),
-            )
-    type = InforequestEmail._meta.get_field(u'type').formfield(
-            )
-
-    class _meta:
-        model = InforequestEmail
-
-    def __init__(self, *args, **kwargs):
-        self.instance = self._meta.model()
-        super(InforequestEmailAdminAddForm, self).__init__(*args, **kwargs)
-
+class InforequestEmailAdminAddForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(InforequestEmailAdminAddForm, self).clean()
 
@@ -564,19 +546,25 @@ class InforequestEmailAdminAddForm(forms.Form):
     def save_m2m(self):
         pass
 
-class InforequestEmailAdminDecideFormBranchWidget(admin.widgets.ForeignKeyRawIdWidget):
-    def __init__(self, *args, **kwargs):
-        super(InforequestEmailAdminDecideFormBranchWidget, self).__init__(*args, **kwargs)
-        self.url_params = {}
+class InforequestEmailAdminChangeForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(InforequestEmailAdminChangeForm, self).clean()
 
-    def base_url_parameters(self):
-        params = super(InforequestEmailAdminDecideFormBranchWidget, self).base_url_parameters()
-        params.update(self.url_params)
-        return params
+        if u'type' in cleaned_data:
+            if self.instance.email.type == Message.TYPES.INBOUND:
+                if cleaned_data[u'type'] == InforequestEmail.TYPES.APPLICANT_ACTION:
+                    self._errors[u'type'] = self.error_class([_(u"Inbound message type may not be 'Applicant Action'.")])
+                    del cleaned_data[u'type']
+            else: # Message.TYPES.OUTBOUND
+                if cleaned_data[u'type'] != InforequestEmail.TYPES.APPLICANT_ACTION:
+                    self._errors[u'type'] = self.error_class([_(u"Outbound message type must be 'Applicant Action'.")])
+                    del cleaned_data[u'type']
+
+        return cleaned_data
 
 class InforequestEmailAdminDecideForm(forms.Form):
     branch = Action._meta.get_field(u'branch').formfield(
-            widget=InforequestEmailAdminDecideFormBranchWidget(
+            widget=ForeignKeyRawIdWidgetWithUrlParams(
                 Action._meta.get_field(u'branch').rel, admin.site),
             )
     type = Action._meta.get_field(u'type').formfield(
@@ -736,25 +724,26 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         action = try_except(lambda: inforequestemail.email.action, None)
         return admin_obj_format(action)
 
+    form_add = InforequestEmailAdminAddForm
+    form_change = InforequestEmailAdminChangeForm
     fieldsets = [
             (None, {
                 u'classes': [u'wide'],
                 u'fields': [
-                    u'inforequest',
-                    u'inforequest_details_live',
-                    u'inforequest_applicant_live',
-                    u'inforequest_closed_live',
-                    u'email',
-                    u'email_details_live',
-                    u'email_from_live',
-                    u'email_subject_live',
-                    u'email_action_live',
+                    u'inforequest_field',
+                    u'inforequest_applicant_field',
+                    u'inforequest_closed_field',
+                    u'email_field',
+                    u'email_from_field',
+                    u'email_subject_field',
+                    u'email_action_field',
                     u'type',
                     ],
                 }),
             ]
     fieldsets_add = [
             (None, {
+                u'classes': [u'wide'],
                 u'fields': [
                     u'inforequest',
                     u'inforequest_details_live',
@@ -773,16 +762,16 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             (None, {
                 u'classes': [u'wide'],
                 u'fields': [
-                    u'inforequest_decide_field',
-                    u'inforequest_applicant_decide_field',
-                    u'inforequest_closed_decide_field',
-                    u'email_decide_field',
-                    u'email_from_decide_field',
-                    u'email_subject_decide_field',
+                    u'inforequest_field',
+                    u'inforequest_applicant_field',
+                    u'inforequest_closed_field',
+                    u'email_field',
+                    u'email_from_field',
+                    u'email_subject_field',
                     u'branch',
-                    u'branch_details_decide_live',
-                    u'branch_inforequest_decide_live',
-                    u'branch_obligee_decide_live',
+                    u'branch_details_live',
+                    u'branch_inforequest_live',
+                    u'branch_obligee_live',
                     u'type',
                     u'subject',
                     u'content',
@@ -790,11 +779,11 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                     u'effective_date',
                     u'deadline',
                     u'extension',
-                    u'deadline_details_decide_live',
+                    u'deadline_details_live',
                     u'disclosure_level',
                     u'refusal_reason',
                     u'obligee_set',
-                    u'obligee_set_details_decide_live',
+                    u'obligee_set_details_live',
                     ],
                 }),
             ]
@@ -810,27 +799,39 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'email_from_live',
             u'email_subject_live',
             u'email_action_live',
-            u'branch_details_decide_live',
-            u'branch_inforequest_decide_live',
-            u'branch_obligee_decide_live',
-            u'deadline_details_decide_live',
-            u'obligee_set_details_decide_live',
+            u'branch_details_live',
+            u'branch_inforequest_live',
+            u'branch_obligee_live',
+            u'deadline_details_live',
+            u'obligee_set_details_live',
             ]
     readonly_fields = live_fields + [
-            u'inforequest_decide_field',
-            u'inforequest_applicant_decide_field',
-            u'inforequest_closed_decide_field',
-            u'email_decide_field',
-            u'email_from_decide_field',
-            u'email_subject_decide_field',
+            u'inforequest_field',
+            u'inforequest_applicant_field',
+            u'inforequest_closed_field',
+            u'email_field',
+            u'email_from_field',
+            u'email_subject_field',
+            u'email_action_field',
             ]
     inlines = [
             ]
+
+    @decorate(short_description=_(u'Inforequest'))
+    def inforequest_field(self, inforequestemail):
+        inforequest = inforequestemail.inforequest if inforequestemail else None
+        return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'inforequest')
     def inforequest_details_live(self, inforequest):
         return admin_obj_format(inforequest)
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
+    def inforequest_applicant_field(self, inforequestemail):
+        inforequest = inforequestemail.inforequest if inforequestemail else None
+        user = inforequest.applicant if inforequest else None
+        return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
     @live_field(u'inforequest')
@@ -839,9 +840,20 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
+    @decorate(boolean=True)
+    def inforequest_closed_field(self, inforequestemail):
+        inforequest = inforequestemail.inforequest if inforequestemail else None
+        return inforequest.closed if inforequest else u'--'
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
     @live_field(u'inforequest')
     def inforequest_closed_live(self, inforequest):
         return _boolean_icon(inforequest.closed) if inforequest else u'--'
+
+    @decorate(short_description=_(u'E-mail'))
+    def email_field(self, inforequestemail):
+        email = inforequestemail.email if inforequestemail else None
+        return admin_obj_format(email)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'email')
@@ -849,9 +861,19 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         return admin_obj_format(email)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'From')))
+    def email_from_field(self, inforequestemail):
+        email = inforequestemail.email if inforequestemail else None
+        return email.from_formatted if email else u'--'
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'From')))
     @live_field(u'email')
     def email_from_live(self, email):
         return email.from_formatted if email else u'--'
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Subject')))
+    def email_subject_field(self, inforequestemail):
+        email = inforequestemail.email if inforequestemail else None
+        return email.subject if email else u'--'
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Subject')))
     @live_field(u'email')
@@ -859,67 +881,45 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         return email.subject if email else u'--'
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Action')))
+    def email_action_field(self, inforequestemail):
+        email = inforequestemail.email if inforequestemail else None
+        action = try_except(lambda: email.action, None)
+        return admin_obj_format(action)
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Action')))
     @live_field(u'email')
     def email_action_live(self, email):
         action = try_except(lambda: email.action, None)
         return admin_obj_format(action)
 
-    @decorate(short_description=_(u'Inforequest'))
-    def inforequest_decide_field(self, inforequestemail):
-        inforequest = inforequestemail.inforequest
-        return admin_obj_format(inforequest)
-
-    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
-    def inforequest_applicant_decide_field(self, inforequestemail):
-        user = inforequestemail.inforequest.applicant
-        return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
-
-    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
-    @decorate(boolean=True)
-    def inforequest_closed_decide_field(self, inforequestemail):
-        return inforequestemail.inforequest.closed
-
-    @decorate(short_description=_(u'E-mail'))
-    def email_decide_field(self, inforequestemail):
-        email = inforequestemail.email
-        return admin_obj_format(email)
-
-    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'From')))
-    def email_from_decide_field(self, inforequestemail):
-        return inforequestemail.email.from_formatted
-
-    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Subject')))
-    def email_subject_decide_field(self, inforequestemail):
-        return inforequestemail.email.subject
-
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'branch')
-    def branch_details_decide_live(self, branch_pk):
+    def branch_details_live(self, branch_pk):
         branch = try_except(lambda: Branch.objects.get(pk=branch_pk), None)
         return admin_obj_format(branch)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Inforequest')))
     @live_field(u'branch')
-    def branch_inforequest_decide_live(self, branch_pk):
+    def branch_inforequest_live(self, branch_pk):
         branch = try_except(lambda: Branch.objects.get(pk=branch_pk), None)
         inforequest = branch.inforequest if branch else None
         return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Obligee')))
     @live_field(u'branch')
-    def branch_obligee_decide_live(self, branch_pk):
+    def branch_obligee_live(self, branch_pk):
         branch = try_except(lambda: Branch.objects.get(pk=branch_pk), None)
         obligee = branch.obligee if branch else None
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'effective_date', u'deadline', u'extension')
-    def deadline_details_decide_live(self, effective_date, deadline, extension):
+    def deadline_details_live(self, effective_date, deadline, extension):
         return ActionAdmin.deadline_details_live_aux(effective_date, deadline, extension)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'obligee_set')
-    def obligee_set_details_decide_live(self, obligee_pks):
+    def obligee_set_details_live(self, obligee_pks):
         obligee_pks = obligee_pks.split(u',') if obligee_pks else []
         obligees = [try_except(lambda: Obligee.objects.get(pk=pk), None) for pk in obligee_pks]
         return admin_obj_format_join(u'\n', obligees, u'{tag} {obj.name}')
@@ -1001,8 +1001,12 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return InforequestEmailAdminAddForm
-        return super(InforequestEmailAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(InforequestEmailAdmin, self).get_form(request, obj, **kwargs)
+        else:
+            self.form = self.form_change
+            form = super(InforequestEmailAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:
@@ -1054,23 +1058,10 @@ class BranchAdminActionInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class BranchAdminAddForm(forms.Form):
-    obligee = Branch._meta.get_field(u'obligee').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                Branch._meta.get_field(u'obligee').rel, admin.site),
-            )
-    advanced_by = Branch._meta.get_field(u'advanced_by').formfield(
-            required=True,
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                Branch._meta.get_field(u'advanced_by').rel, admin.site),
-            )
-
-    class _meta:
-        model = Branch
-
+class BranchAdminAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.instance = self._meta.model()
         super(BranchAdminAddForm, self).__init__(*args, **kwargs)
+        self.fields[u'advanced_by'].required = True
 
     def save(self, commit=True):
         assert self.is_valid()
@@ -1096,6 +1087,39 @@ class BranchAdminAddForm(forms.Form):
 
     def save_m2m(self):
         pass
+
+class BranchAdminChangeForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(BranchAdminChangeForm, self).clean()
+
+        if u'advanced_by' in cleaned_data:
+            advanced_by = cleaned_data[u'advanced_by']
+            try:
+                if self.instance.advanced_by is None and advanced_by is not None:
+                    raise ValidationError(_(u'This field must be empty for main branches.'))
+                if self.instance.advanced_by is not None and advanced_by is None:
+                    raise ValidationError(_(u'This field is required for advanced branches.'))
+
+                if u'inforequest' in cleaned_data:
+                    inforequest = cleaned_data[u'inforequest']
+                    if advanced_by is not None and inforequest != advanced_by.branch.inforequest:
+                        raise ValidationError(_(u'Advanced branch must belong to the same inforequest as the parent branch.'))
+
+                node = advanced_by
+                count = 0
+                while node is not None:
+                    if node.branch == self.instance:
+                        raise ValidationError(_(u'The branch may not be a sub-branch of itself.'))
+                    if count > 10:
+                        raise ValidationError(_(u'Too deep branch inheritance.'))
+                    node = node.branch.advanced_by
+                    count += 1
+
+            except ValidationError as e:
+                self._errors[u'advanced_by'] = self.error_class(e.messages)
+                del cleaned_data[u'advanced_by']
+
+        return cleaned_data
 
 class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
@@ -1157,6 +1181,8 @@ class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     def main_branch_column(self, branch):
         return branch.is_main
 
+    form_add = BranchAdminAddForm
+    form_change = BranchAdminChangeForm
     fieldsets = [
             (None, {
                 u'classes': [u'wide'],
@@ -1263,8 +1289,12 @@ class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return BranchAdminAddForm
-        return super(BranchAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(BranchAdmin, self).get_form(request, obj, **kwargs)
+        else:
+            self.form = self.form_change
+            form = super(BranchAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:
@@ -1300,36 +1330,11 @@ class ActionAdminAdvancedToInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class ActionAdminAddForm(forms.Form):
-    branch = Action._meta.get_field(u'branch').formfield(
-            widget=admin.widgets.ForeignKeyRawIdWidget(
-                Action._meta.get_field(u'branch').rel, admin.site),
-            )
-    type = Action._meta.get_field(u'type').formfield(
-            )
-    subject = Action._meta.get_field(u'subject').formfield(
-            widget=admin.widgets.AdminTextInputWidget(),
-            )
-    content = Action._meta.get_field(u'content').formfield(
-            widget=admin.widgets.AdminTextareaWidget(),
-            )
+class ActionAdminAddForm(forms.ModelForm):
     attachments = AttachmentsField(
             required=False,
             upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
             download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
-            )
-    effective_date = Action._meta.get_field(u'effective_date').formfield(
-            widget=admin.widgets.AdminDateWidget(),
-            )
-    deadline = Action._meta.get_field(u'deadline').formfield(
-            widget=admin.widgets.AdminIntegerFieldWidget(),
-            )
-    extension = Action._meta.get_field(u'extension').formfield(
-            widget=admin.widgets.AdminIntegerFieldWidget(),
-            )
-    disclosure_level = Action._meta.get_field(u'disclosure_level').formfield(
-            )
-    refusal_reason = Action._meta.get_field(u'refusal_reason').formfield(
             )
     obligee_set = ActionDraft._meta.get_field(u'obligee_set').formfield(
             widget=admin.widgets.ManyToManyRawIdWidget(
@@ -1343,11 +1348,7 @@ class ActionAdminAddForm(forms.Form):
                 """)),
             )
 
-    class _meta:
-        model = Action
-
     def __init__(self, *args, **kwargs):
-        self.instance = self._meta.model()
         attached_to = kwargs.pop(u'attached_to')
         super(ActionAdminAddForm, self).__init__(*args, **kwargs)
 
@@ -1406,6 +1407,34 @@ class ActionAdminAddForm(forms.Form):
 
     def save_m2m(self):
         pass
+
+class ActionAdminChangeForm(forms.ModelForm):
+    branch = Action._meta.get_field(u'branch').formfield(
+            widget=ForeignKeyRawIdWidgetWithUrlParams(
+                Action._meta.get_field(u'branch').rel, admin.site),
+            )
+    email = Action._meta.get_field(u'email').formfield(
+            widget=ForeignKeyRawIdWidgetWithUrlParams(
+                Action._meta.get_field(u'email').rel, admin.site),
+            )
+
+    def __init__(self, *args, **kwargs):
+        super(ActionAdminChangeForm, self).__init__(*args, **kwargs)
+        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.branch.inforequest)
+        self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.branch.inforequest)
+        self.fields[u'email'].queryset = Message.objects.filter(inforequest=self.instance.branch.inforequest)
+        self.fields[u'email'].widget.url_params = dict(inforequest=self.instance.branch.inforequest)
+
+    def clean(self):
+        cleaned_data = super(ActionAdminChangeForm, self).clean()
+
+        if u'email' in cleaned_data:
+            action = try_except(lambda: cleaned_data[u'email'].action, None, Action.DoesNotExist)
+            if action is not None and action != self.instance:
+                self._errors[u'email'] = self.error_class([_(u'This e-mail is already used with another action.')])
+                del cleaned_data[u'email']
+
+        return cleaned_data
 
 class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
@@ -1480,10 +1509,13 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         email = action.email
         return admin_obj_format(email)
 
+    form_add = ActionAdminAddForm
+    form_change = ActionAdminChangeForm
     fieldsets = [
             (None, {
                 u'classes': [u'wide'],
                 u'fields': [
+                    u'inforequest_field',
                     u'branch',
                     u'branch_details_live',
                     u'branch_inforequest_live',
@@ -1492,6 +1524,7 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                     u'branch_closed_live',
                     u'email',
                     u'email_details_live',
+                    u'email_assigned_to_live',
                     u'email_from_live',
                     u'email_subject_live',
                     u'type',
@@ -1551,17 +1584,25 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'branch_obligee_live',
             u'branch_closed_live',
             u'email_details_live',
+            u'email_assigned_to_live',
             u'email_from_live',
             u'email_subject_live',
             u'type_details_live',
             u'deadline_details_live',
             u'obligee_set_details_live',
             ]
-    readonly_fields = live_fields
+    readonly_fields = live_fields + [
+            u'inforequest_field',
+            ]
     inlines = [
             AttachmentInline,
             ActionAdminAdvancedToInline,
             ]
+
+    @decorate(short_description=_(u'Inforequest'))
+    def inforequest_field(self, action):
+        inforequest = action.branch.inforequest if action else None
+        return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'branch')
@@ -1595,6 +1636,12 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     @live_field(u'email')
     def email_details_live(self, email):
         return admin_obj_format(email)
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Assigned To')))
+    @live_field(u'email')
+    def email_assigned_to_live(self, email):
+        inforequests = email.inforequest_set.all() if email else []
+        return admin_obj_format_join(u', ', inforequests)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'From')))
     @live_field(u'email')
@@ -1677,14 +1724,30 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return partial(ActionAdminAddForm, attached_to=request.user)
-        return super(ActionAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(ActionAdmin, self).get_form(request, obj, **kwargs)
+            form = partial(form, attached_to=request.user)
+        else:
+            self.form = self.form_change
+            form = super(ActionAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:
             return []
         return super(ActionAdmin, self).get_formsets(request, obj)
 
+
+class ActionDraftAdminChangeForm(forms.ModelForm):
+    branch = ActionDraft._meta.get_field(u'branch').formfield(
+            widget=ForeignKeyRawIdWidgetWithUrlParams(
+                Action._meta.get_field(u'branch').rel, admin.site),
+            )
+
+    def __init__(self, *args, **kwargs):
+        super(ActionDraftAdminChangeForm, self).__init__(*args, **kwargs)
+        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.branch.inforequest)
+        self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.branch.inforequest)
 
 class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_display = [
@@ -1745,16 +1808,17 @@ class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         obligee = draft.branch.obligee if draft.branch else None
         return admin_obj_format(obligee, u'{obj.name}')
 
+    form = ActionDraftAdminChangeForm
     fieldsets = [
             (None, {
                 u'classes': [u'wide'],
                 u'fields': [
-                    u'inforequest',
-                    u'inforequest_details_live',
-                    u'inforequest_applicant_live',
-                    u'inforequest_closed_live',
+                    u'inforequest_field',
+                    u'inforequest_applicant_field',
+                    u'inforequest_closed_field',
                     u'branch',
                     u'branch_details_live',
+                    u'branch_inforequest_live',
                     u'branch_obligee_live',
                     u'type',
                     u'type_details_live',
@@ -1771,45 +1835,53 @@ class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                 }),
             ]
     raw_id_fields = [
-            u'inforequest',
             u'branch',
             u'obligee_set',
             ]
     live_fields = [
-            u'inforequest_details_live',
-            u'inforequest_applicant_live',
-            u'inforequest_closed_live',
             u'type_details_live',
             u'branch_details_live',
+            u'branch_inforequest_live',
             u'branch_obligee_live',
             u'deadline_details_live',
             u'obligee_set_details_live',
             ]
-    readonly_fields = live_fields
+    readonly_fields = live_fields + [
+            u'inforequest_field',
+            u'inforequest_applicant_field',
+            u'inforequest_closed_field',
+            ]
     inlines = [
             AttachmentInline,
             ]
 
-    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
-    @live_field(u'inforequest')
-    def inforequest_details_live(self, inforequest):
+    @decorate(short_description=_(u'Inforequest'))
+    def inforequest_field(self, draft):
+        inforequest = draft.inforequest if draft else None
         return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Applicant')))
-    @live_field(u'inforequest')
-    def inforequest_applicant_live(self, inforequest):
+    def inforequest_applicant_field(self, draft):
+        inforequest = draft.inforequest if draft else None
         user = inforequest.applicant if inforequest else None
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Closed')))
-    @live_field(u'inforequest')
-    def inforequest_closed_live(self, inforequest):
-        return _boolean_icon(inforequest.closed) if inforequest else u'--'
+    @decorate(boolean=True)
+    def inforequest_closed_field(self, draft):
+        inforequest = draft.inforequest if draft else None
+        return inforequest.closed if inforequest else u'--'
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Details')))
     @live_field(u'branch')
     def branch_details_live(self, branch):
         return admin_obj_format(branch)
+
+    @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Inforequest')))
+    @live_field(u'branch')
+    def branch_inforequest_live(self, branch):
+        inforequest = branch.inforequest if branch else None
+        return admin_obj_format(inforequest)
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, _(u'Obligee')))
     @live_field(u'branch')

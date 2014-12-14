@@ -66,12 +66,7 @@ class RecipientInline(admin.TabularInline):
             u'remote_id',
             ]
 
-class MessageAdminAddForm(forms.Form):
-    type = Message._meta.get_field(u'type').formfield(
-            )
-    processed = Message._meta.get_field(u'processed').formfield(
-            widget=admin.widgets.AdminSplitDateTime(),
-            )
+class MessageAdminAddForm(forms.ModelForm):
     from_formatted = forms.CharField(
             label=_(u'From'),
             help_text=escape(squeeze(_(u"""
@@ -110,25 +105,10 @@ class MessageAdminAddForm(forms.Form):
             validators=[validate_comma_separated_emails],
             widget=admin.widgets.AdminTextInputWidget(),
             )
-    received_for = Message._meta.get_field(u'received_for').formfield(
-            widget=admin.widgets.AdminTextInputWidget(),
-            )
-    subject = Message._meta.get_field(u'subject').formfield(
-            widget=admin.widgets.AdminTextInputWidget(),
-            )
-    text = Message._meta.get_field(u'text').formfield(
-            widget=admin.widgets.AdminTextareaWidget(),
-            )
-    html = Message._meta.get_field(u'html').formfield(
-            widget=admin.widgets.AdminTextareaWidget(),
-            )
     attachments = AttachmentsField(
             required=False,
             upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
             download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
-            )
-    headers = Message._meta.get_field(u'headers').formfield(
-            widget=admin.widgets.AdminTextareaWidget(),
             )
 
     def __init__(self, *args, **kwargs):
@@ -241,6 +221,8 @@ class MessageAdmin(admin.ModelAdmin):
                 res.append(u'%s: %s' % (label, formatted))
         return u'; '.join(res)
 
+    form_add = MessageAdminAddForm
+    form_change = forms.ModelForm
     fieldsets = (
             (None, {
                 u'fields': [
@@ -321,8 +303,13 @@ class MessageAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return partial(MessageAdminAddForm, attached_to=request.user)
-        return super(MessageAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(MessageAdmin, self).get_form(request, obj, **kwargs)
+            form = partial(form, attached_to=request.user)
+        else:
+            self.form = self.form_change
+            form = super(MessageAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:

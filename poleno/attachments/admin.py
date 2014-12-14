@@ -52,31 +52,7 @@ class AttachmentInline(generic.GenericTabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class AttachmentAdminAddForm(forms.Form):
-    generic_type = Attachment._meta.get_field(u'generic_type').formfield(
-            )
-    generic_id = Attachment._meta.get_field(u'generic_id').formfield(
-            widget=admin.widgets.AdminIntegerFieldWidget(),
-            )
-    file = Attachment._meta.get_field(u'file').formfield(
-            widget=admin.widgets.AdminFileWidget(),
-            )
-    name = Attachment._meta.get_field(u'name').formfield(
-            widget=admin.widgets.AdminTextInputWidget(),
-            )
-    content_type = Attachment._meta.get_field(u'content_type').formfield(
-            widget=admin.widgets.AdminTextInputWidget(),
-            )
-    created = Attachment._meta.get_field(u'created').formfield(
-            widget=admin.widgets.AdminSplitDateTime(),
-            )
-
-    class _meta:
-        model = Attachment
-
-    def __init__(self, *args, **kwargs):
-        self.instance = self._meta.model()
-        return super(AttachmentAdminAddForm, self).__init__(*args, **kwargs)
+class AttachmentAdminAddForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(AttachmentAdminAddForm, self).clean()
@@ -177,7 +153,8 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     def size_column(self, attachment):
         return filesize(attachment.size)
 
-    form = AttachmentAdminChangeForm
+    form_add = AttachmentAdminAddForm
+    form_change = AttachmentAdminChangeForm
     fieldsets = (
             (None, {
                 u'classes': [u'wide'],
@@ -247,8 +224,12 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
-            return AttachmentAdminAddForm
-        return super(AttachmentAdmin, self).get_form(request, obj, **kwargs)
+            self.form = self.form_add
+            form = super(AttachmentAdmin, self).get_form(request, obj, **kwargs)
+        else:
+            self.form = self.form_change
+            form = super(AttachmentAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_formsets(self, request, obj=None):
         if obj is None:
