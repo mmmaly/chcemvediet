@@ -27,7 +27,7 @@ To prepare your local development environment, run the following commands:
 	$ git clone https://github.com/martinmacko47/chcemvediet.git
 	$ cd chcemvediet
 	$ virtualenv env
-	$ env/bin/pip install -r requirements.txt
+	$ env/bin/pip install -r requirements-dev.txt
 	$ env/bin/python configure.py
 	$ env/bin/python manage.py syncdb --all --noinput
 	$ env/bin/python manage.py migrate --fake
@@ -56,7 +56,7 @@ To migrate to an updated version of the site, run the following commands:
 
 	$ cd chcemvediet
 	$ git pull
-	$ env/bin/pip install -r requirements.txt
+	$ env/bin/pip install -r requirements-dev.txt
 	$ env/bin/python configure.py
 	$ env/bin/python manage.py syncdb --noinput
 	$ env/bin/python manage.py migrate
