@@ -27,24 +27,6 @@ python-openid==2.2.5
 requests-oauthlib==0.4.1
 six==1.7.3
 
-# Requirements for unittests
-mock==1.0.1
-coverage==4.0a1
-instrumental==0.5.3
-testfixtures==4.1.0
-
-# Dependencies for requirements for unittests
-Mako==1.0.0
-MarkupSafe==0.23
-astkit==0.5.4
-
-# Requirements for local testing
-localmail==0.3
-
-# Dependencies for requirements for localmail testing
-Twisted==14.0.0
-zope.interface==4.1.1
-
 # Installed by 'virtualenv env' directly
 # argparse==1.2.1
 # distribute==0.6.24
