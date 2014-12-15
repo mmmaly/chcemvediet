@@ -1,147 +1,25 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 
-import os
-_ = lambda s: s
-
-# Django settings for chcemvediet project.
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-ADMINS = []
+SITE_ID = 1
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+ADMINS = [] # Admins and managers lists are populated in 'configured.py'
 MANAGERS = ADMINS
 
-DATABASES = {
-    u'default': {
-        u'ENGINE': u'django.db.backends.sqlite3', # Add u'postgresql_psycopg2', u'mysql', u'sqlite3' or u'oracle'.
-        u'NAME': os.path.join(PROJECT_PATH, u'test.db'), # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        u'USER': u'',
-        u'PASSWORD': u'',
-        u'HOST': u'',                      # Empty for localhost through domain sockets or u'127.0.0.1' for localhost through TCP.
-        u'PORT': u'',                      # Set to empty string for default.
-    }
-}
-
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = [u'127.0.0.1']
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
-TIME_ZONE = u'Europe/Bratislava'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = u'en'
-
-SITE_ID = 1
-
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
-USE_L10N = True
-
-# If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
-MEDIA_ROOT = os.path.join(PROJECT_PATH, u'media')
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = u'/media/'
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_PATH, u'static')
-
-# URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = u'/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_PATH, u'chcemvediet/static'),
-)
-
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    #u'django.contrib.staticfiles.finders.FileSystemFinder',
-    #u'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #u'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    u'pipeline.finders.FileSystemFinder',
-    u'pipeline.finders.AppDirectoriesFinder',
-    u'pipeline.finders.PipelineFinder',
-    #u'pipeline.finders.CachedFileFinder',
-)
-
-STATICFILES_STORAGE = u'pipeline.storage.PipelineStorage'
-#STATICFILES_STORAGE = u'pipeline.storage.PipelineCachedStorage'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
-    (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.app_directories.Loader'),
-    (u'poleno.utils.template.TranslationLoader', u'apptemplates.Loader'),
-#     u'django.template.loaders.eggs.Loader',
-)
-
-MIDDLEWARE_CLASSES = (
-    u'django.middleware.common.CommonMiddleware',
-    u'django.contrib.sessions.middleware.SessionMiddleware',
-    u'django.middleware.csrf.CsrfViewMiddleware',
-    u'django.contrib.auth.middleware.AuthenticationMiddleware',
-    u'django.contrib.messages.middleware.MessageMiddleware',
-    u'django.middleware.locale.LocaleMiddleware',
-    u'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    u'simple_history.middleware.HistoryRequestMiddleware',
-    #u'pipeline.middleware.MinifyHTMLMiddleware',
-)
-
-AUTHENTICATION_BACKENDS = (
-    u'django.contrib.auth.backends.ModelBackend',
-    u'allauth.account.auth_backends.AuthenticationBackend',
-)
-
 ROOT_URLCONF = u'chcemvediet.urls'
-
-# Python dotted path to the WSGI application used by Django's runserver.
+FORMAT_MODULE_PATH = u'chcemvediet.locale'
+HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
+EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'
 WSGI_APPLICATION = u'chcemvediet.wsgi.application'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    u'django.contrib.auth.context_processors.auth',
-    u'django.core.context_processors.debug',
-    u'django.core.context_processors.i18n',
-    u'django.core.context_processors.media',
-    u'django.core.context_processors.static',
-    u'django.core.context_processors.request',
-    u'django.core.context_processors.tz',
-    u'django.contrib.messages.context_processors.messages',
-    u'sekizai.context_processors.sekizai',
-    u'allauth.account.context_processors.account',
-    u'allauth.socialaccount.context_processors.socialaccount',
-)
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_PATH, u'chcemvediet/templates'),
-)
+TIME_ZONE = u'Europe/Bratislava'
+LANGUAGE_CODE = u'en'
+LANGUAGES = (
+    (u'sk', u'Slovensky'),
+    (u'en', u'English'),
+    )
 
 INSTALLED_APPS = (
     # For django-admin-tools; must be before "django.contrib.auth":
@@ -187,16 +65,98 @@ INSTALLED_APPS = (
     u'chcemvediet.apps.inforequests',
 )
 
-if DEBUG:
-    INSTALLED_APPS += (
-        u'poleno.timewarp',
-        )
+MIDDLEWARE_CLASSES = (
+    u'django.middleware.common.CommonMiddleware',
+    u'django.contrib.sessions.middleware.SessionMiddleware',
+    u'django.middleware.csrf.CsrfViewMiddleware',
+    u'django.contrib.auth.middleware.AuthenticationMiddleware',
+    u'django.contrib.messages.middleware.MessageMiddleware',
+    u'django.middleware.locale.LocaleMiddleware',
+    u'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    u'simple_history.middleware.HistoryRequestMiddleware',
+    #u'pipeline.middleware.MinifyHTMLMiddleware',
+    )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+AUTHENTICATION_BACKENDS = (
+    u'django.contrib.auth.backends.ModelBackend',
+    u'allauth.account.auth_backends.AuthenticationBackend',
+    )
+
+TEMPLATE_LOADERS = (
+    (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
+    (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.app_directories.Loader'),
+    (u'poleno.utils.template.TranslationLoader', u'apptemplates.Loader'),
+    )
+
+TEMPLATE_DIRS = (
+    os.path.join(PROJECT_PATH, u'chcemvediet/templates'),
+    )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    u'django.contrib.auth.context_processors.auth',
+    u'django.core.context_processors.debug',
+    u'django.core.context_processors.i18n',
+    u'django.core.context_processors.media',
+    u'django.core.context_processors.static',
+    u'django.core.context_processors.request',
+    u'django.core.context_processors.tz',
+    u'django.contrib.messages.context_processors.messages',
+    u'sekizai.context_processors.sekizai',
+    u'allauth.account.context_processors.account',
+    u'allauth.socialaccount.context_processors.socialaccount',
+    )
+
+CRON_CLASSES = (
+    u'poleno.mail.cron.mail',
+    u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
+    u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
+    u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
+    u'chcemvediet.apps.inforequests.cron.close_inforequests',
+    )
+
+LOCALE_PATHS = (
+    os.path.join(PROJECT_PATH, u'chcemvediet/locale'),
+    os.path.join(PROJECT_PATH, u'chcemvediet/locale/3part/allauth'),
+    )
+
+MEDIA_ROOT = os.path.join(PROJECT_PATH, u'media')
+MEDIA_URL = u'/media/'
+STATIC_ROOT = os.path.join(PROJECT_PATH, u'static')
+STATIC_URL = u'/static/'
+
+# FIXME: Cached in production?
+STATICFILES_STORAGE = u'pipeline.storage.PipelineStorage'
+#STATICFILES_STORAGE = u'pipeline.storage.PipelineCachedStorage'
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_PATH, u'chcemvediet/static'),
+    )
+
+STATICFILES_FINDERS = (
+    #u'django.contrib.staticfiles.finders.FileSystemFinder',
+    #u'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    #u'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    u'pipeline.finders.FileSystemFinder',
+    u'pipeline.finders.AppDirectoriesFinder',
+    u'pipeline.finders.PipelineFinder',
+    #u'pipeline.finders.CachedFileFinder',
+    )
+
+
+# FIXME: local vs. production
+DATABASES = {
+    u'default': {
+        u'ENGINE': u'django.db.backends.sqlite3', # Add u'postgresql_psycopg2', u'mysql', u'sqlite3' or u'oracle'.
+        u'NAME': os.path.join(PROJECT_PATH, u'test.db'), # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3:
+        u'USER': u'',
+        u'PASSWORD': u'',
+        u'HOST': u'',                      # Empty for localhost through domain sockets or u'127.0.0.1' for localhost through TCP.
+        u'PORT': u'',                      # Set to empty string for default.
+    }
+}
+
+# FIXME: Logging local vs production
 LOGGING = {
     u'version': 1,
     u'disable_existing_loggers': False,
@@ -229,12 +189,8 @@ CACHES = {
     },
 }
 
-# Where to search for initial data
-FIXTURE_DIRS = (
-    u'./fixtures',
-)
 
-# Django-allauth configuration
+# Django-allauth settings
 ACCOUNT_AUTHENTICATION_METHOD = u'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = u'mandatory'
@@ -243,37 +199,8 @@ ACCOUNT_SIGNUP_FORM_CLASS = u'chcemvediet.apps.accounts.forms.SignupForm'
 SOCIALACCOUNT_EMAIL_VERIFICATION = u'none'
 SOCIALACCOUNT_AUTO_SIGNUP = False
 
-# List of available languages
-LANGUAGES = (
-    (u'sk', u'Slovensky'),
-    (u'en', u'English'),
-)
-
-# Where to search for translations
-LOCALE_PATHS = (
-    os.path.join(PROJECT_PATH, u'chcemvediet/locale'),
-    os.path.join(PROJECT_PATH, u'chcemvediet/locale/3part/allauth'),
-)
-
-# Where to search for formats localization
-FORMAT_MODULE_PATH = u'chcemvediet.locale'
-
-# Where to look for holidays definition
-HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
-
-# Cron jobs
-CRON_CLASSES = (
-    u'poleno.mail.cron.mail',
-    u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
-    u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
-    u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
-    u'chcemvediet.apps.inforequests.cron.close_inforequests',
-)
-
-# Mail settings
-EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'
-
-# JS and CSS assets
+# JS and CSS assets settings
+# FIXME: enable pipeline and compressor in production?
 ASSETS = (
     # JQuery
     u'//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
@@ -298,7 +225,7 @@ ASSETS = (
     u'obligees/js/*.js',
     u'inforequests/js/*.js',
     u'main/css/*.css',
-)
+    )
 
 #PIPELINE_ENABLED = True
 PIPELINE_JS_COMPRESSOR = None

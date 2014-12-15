@@ -169,17 +169,31 @@ if __name__ == u'__main__':
         settings.setting(u'INFOREQUEST_UNIQUE_EMAIL', inforequest_unique_email)
         settings.setting(u'ADMINS[len(ADMINS):]', [(u'Admin', admin_email)])
 
-        # Dummymail or Mandrill testing mode
+        # Server mode
+        server_mode = configure.input_choice(u'server_mode', u'Server mode', choices=(
+                (u'local', u'Local development mode.'),
+                (u'dev', u'Online development mode.'),
+                (u'prod', u'Production mode.'),
+                ))
+        if server_mode == u'local':
+            settings.include(u'server_local.py')
+        elif server_mode == u'dev':
+            settings.include(u'server_dev.py')
+        else:
+            assert server_mode == u'prod'
+            settings.include(u'server_prod.py')
+
+        # Mail mode
         print(dedent(u"""
-                Local testing has three modes:
+                Server email may be configured in three modes:
 
                  -- Madrill:
                         Madrill is a transactional mail service we use to send emails. If you want
-                        to use Mandrill for testing, you will need to supply Mandrill API key and
-                        other details. If using Mandrill while testing, make sure you don't send
-                        any unsolicited emails to real addresses. You should configure your
-                        Mandrill API key to be in testing mode, or make sure you only send emails
-                        to addresses you control.
+                        to use Mandrill, you will need to supply Mandrill API key and other
+                        details. If using Mandrill while testing, make sure you don't send any
+                        unsolicited emails to real addresses. You should configure your Mandrill
+                        API key to be in testing mode, or make sure you only send emails to
+                        addresses you control.
 
                  -- Dummymail:
                         Dummymail does not send any real emails, it just mocks local SMPT/IMAP
@@ -191,20 +205,21 @@ if __name__ == u'__main__':
                         The last mode does not send any emails at all, it just stores them in the
                         database. You can use admin interface to emails sent from the application,
                         or to manually mock replies to them."""))
-        testing_mode = configure.input_choice(u'testing_mode', u'Testing mode', choices=(
+        mail_mode = configure.input_choice(u'mail_mode', u'Mail mode', choices=(
                 (u'mandrill', u'Using Madrill transactional mail service.'),
                 (u'dummymail', u'Dummymail with local mocked SMPT/IMAP servers.'),
                 (u'no-mail', u'No mail infrastructure at all.'),
                 ))
-        if testing_mode == u'mandrill':
+        if mail_mode == u'mandrill':
             settings.include(u'mail_mandrill.py')
-        elif testing_mode == u'dummymail':
+        elif mail_mode == u'dummymail':
             settings.include(u'mail_dummymail.py')
-        else: # testing_mode == u'no-mail'
+        else:
+            assert mail_mode == u'no-mail'
             settings.include(u'mail_nomail.py')
 
         # Mandrill API key and Webhook configuration
-        if testing_mode == u'mandrill':
+        if mail_mode == u'mandrill':
             mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
             settings.setting(u'MANDRILL_API_KEY', mandrill_api_key)
 
