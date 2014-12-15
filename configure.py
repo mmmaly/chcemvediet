@@ -197,11 +197,11 @@ if __name__ == u'__main__':
                 (u'no-mail', u'No mail infrastructure at all.'),
                 ))
         if testing_mode == u'mandrill':
-            settings.include(u'mandrill.py')
+            settings.include(u'mail_mandrill.py')
         elif testing_mode == u'dummymail':
-            settings.include(u'dummymail.py')
+            settings.include(u'mail_dummymail.py')
         else: # testing_mode == u'no-mail'
-            settings.include(u'nomail.py')
+            settings.include(u'mail_nomail.py')
 
         # Mandrill API key and Webhook configuration
         if testing_mode == u'mandrill':
