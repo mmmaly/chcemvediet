@@ -6,7 +6,7 @@ from poleno.utils.misc import collect_stdout
 from poleno.utils.test import override_signals, created_instances
 
 from . import MailTestCaseMixin
-from ..models import Message
+from ..models import Message, Recipient
 from ..cron import mail as mail_cron_job
 from ..signals import message_sent, message_received
 
@@ -42,3 +42,16 @@ class DummyTransportTest(MailTestCaseMixin, TestCase):
         self._run_mail_cron_job()
         msg = Message.objects.get(pk=msg.pk)
         self.assertIsNotNone(msg.processed)
+
+    def test_outbout_transport_changes_recepients_status_to_sent(self):
+        msg = self._create_message(type=Message.TYPES.OUTBOUND, processed=None)
+        to = self._create_recipient(message=msg, type=Recipient.TYPES.TO)
+        cc = self._create_recipient(message=msg, type=Recipient.TYPES.CC)
+        bcc = self._create_recipient(message=msg, type=Recipient.TYPES.BCC)
+        self._run_mail_cron_job()
+        to = Recipient.objects.get(pk=to.pk)
+        cc = Recipient.objects.get(pk=cc.pk)
+        bcc = Recipient.objects.get(pk=bcc.pk)
+        self.assertEqual(to.status, Recipient.STATUSES.SENT)
+        self.assertEqual(cc.status, Recipient.STATUSES.SENT)
+        self.assertEqual(bcc.status, Recipient.STATUSES.SENT)
