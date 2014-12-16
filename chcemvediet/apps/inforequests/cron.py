@@ -26,6 +26,7 @@ def undecided_email_reminder():
             if days < 5:
                 continue
 
+            # FIXME: Add datetime to cron log
             print(u'Sending undecided email reminder: %s' % repr(inforequest))
             inforequest.send_undecided_email_reminder()
 
@@ -48,6 +49,7 @@ def obligee_deadline_reminder():
                 if last and branch.last_action.deadline_missed_at(last_date):
                     continue
 
+                # FIXME: Add datetime to cron log
                 print(u'Sending obligee deadline reminder: %s' % repr(branch.last_action))
                 inforequest.send_obligee_deadline_reminder(branch.last_action)
 
@@ -68,6 +70,7 @@ def applicant_deadline_reminder():
                 if branch.last_action.last_deadline_reminder:
                     continue
 
+                # FIXME: Add datetime to cron log
                 print(u'Sending applicant deadline reminder: %s' % repr(branch.last_action))
                 inforequest.send_applicant_deadline_reminder(branch.last_action)
 
@@ -82,6 +85,7 @@ def close_inforequests():
             for branch in inforequest.branch_set.all():
                 branch.add_expiration_if_expired()
 
+            # FIXME: Add datetime to cron log
             print(u'Closing inforequest: %s' % repr(inforequest))
             inforequest.closed = True
             inforequest.save()
