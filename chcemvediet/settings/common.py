@@ -5,7 +5,7 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-ADMINS = [] # Admins and managers lists are populated in 'configured.py'
+ADMINS = [] # Filled in 'configured.py'
 MANAGERS = ADMINS
 
 ROOT_URLCONF = u'chcemvediet.urls'
@@ -119,12 +119,12 @@ LOCALE_PATHS = (
     os.path.join(PROJECT_PATH, u'chcemvediet/locale/3part/allauth'),
     )
 
+# FIXME: Static and media files in production?
 MEDIA_ROOT = os.path.join(PROJECT_PATH, u'media')
 MEDIA_URL = u'/media/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, u'static')
 STATIC_URL = u'/static/'
 
-# FIXME: Cached in production?
 STATICFILES_STORAGE = u'pipeline.storage.PipelineStorage'
 #STATICFILES_STORAGE = u'pipeline.storage.PipelineCachedStorage'
 
@@ -142,19 +142,6 @@ STATICFILES_FINDERS = (
     #u'pipeline.finders.CachedFileFinder',
     )
 
-
-# FIXME: local vs. production
-DATABASES = {
-    u'default': {
-        u'ENGINE': u'django.db.backends.sqlite3', # Add u'postgresql_psycopg2', u'mysql', u'sqlite3' or u'oracle'.
-        u'NAME': os.path.join(PROJECT_PATH, u'test.db'), # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        u'USER': u'',
-        u'PASSWORD': u'',
-        u'HOST': u'',                      # Empty for localhost through domain sockets or u'127.0.0.1' for localhost through TCP.
-        u'PORT': u'',                      # Set to empty string for default.
-    }
-}
 
 # FIXME: Logging local vs production
 LOGGING = {

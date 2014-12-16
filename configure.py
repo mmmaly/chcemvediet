@@ -54,7 +54,7 @@ class Configure(object):
         self.data[key] = inputed
         return inputed
 
-    def input_password(self, key, prompt, hasher, required=False):
+    def input_password(self, key, prompt, hasher=None, required=False):
         configured = self.data.get(key, u'')
         while True:
             inputed = getpass(u'\n%s [%s]: ' % (prompt, u'*****' if configured else u''))
@@ -62,6 +62,8 @@ class Configure(object):
                 print(u'\nError: The value is required.')
                 continue
             break
+        if not hasher:
+            hasher = lambda s: s
         hashed = hasher(inputed) if inputed else configured
         self.data[key] = hashed
         return hashed
@@ -182,6 +184,17 @@ if __name__ == u'__main__':
         else:
             assert server_mode == u'prod'
             settings.include(u'server_prod.py')
+
+        # Database configuration
+        if server_mode in [u'dev', u'prod']:
+            print(dedent(u"""
+                    Set MySQL database name, user and password."""))
+            db_name = configure.input(u'db_name', u'Database name', required=True)
+            db_user = configure.input(u'db_user', u'Database user name', required=True)
+            db_password = configure.input_password(u'db_password', u'Database user password', required=True)
+            settings.setting(u'DATABASES[u"default"][u"NAME"]', db_name)
+            settings.setting(u'DATABASES[u"default"][u"USER"]', db_user)
+            settings.setting(u'DATABASES[u"default"][u"PASSWORD"]', db_password)
 
         # Mail mode
         print(dedent(u"""
