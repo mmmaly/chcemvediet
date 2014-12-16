@@ -154,9 +154,11 @@ and `{group}` are unix user and group names the server will run under.
       * Application type: Web application
       * Authorized JavaScript origins: `http://{domain}/`
       * Authorized redirect URI:
+
         	http://{domain}/accounts/google/login/callback/
         	http://{domain}/sk/accounts/google/login/callback/
         	http://{domain}/en/accounts/google/login/callback/
+
     Where `{domain}` is your production domain or `127.0.0.1:8000` if in local development mode.
 
  3. Run the configuration script `configure.py` and enter given 'Client ID for web application' and
