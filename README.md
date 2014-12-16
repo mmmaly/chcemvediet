@@ -35,12 +35,12 @@ To prepare your local development environment, run the following commands:
 
 Configuration script `configure.py` will ask you to input several options. Please follow the script
 instructions. Among other things it will ask for your OAuth Client IDs and Secrets for social
-account providers. See [Social accounts application keys](#2-social-accounts-application-keys)
+account providers. See [Social accounts application keys](#3-social-accounts-application-keys)
 section bellow for details how to get social accounts application keys. The script will ask you
 whether you wish to configure just local dummy e-mail infrastructure, or you wish to end real
 e-mails via Mandrill. For details on the dummy e-mail infrastructure see [Dummy e-mail
-infrastructure](#4-dummy-e-mail-infrastructure) section, and for instructions how to setup Mandrill
-see [Mandrill transactional e-mail servis](#3-mandrill-transactional-e-mail-servis) section below.
+infrastructure](#5-dummy-e-mail-infrastructure) section, and for instructions how to setup Mandrill
+see [Mandrill transactional e-mail servis](#4-mandrill-transactional-e-mail-servis) section below.
 
 
 ### 1.3. Updates
@@ -159,8 +159,8 @@ and `{group}` are unix user and group names the server will run under.
         	http://127.0.0.1:8000/sk/accounts/google/login/callback/
         	http://127.0.0.1:8000/en/accounts/google/login/callback/
 
- 3. Use given 'Client ID for web application' and 'Client secret' to configure 'Google OAuth' entry
-    in http://127.0.0.1:8000/admin/socialaccount/socialapp/
+ 3. Run the configuration script `configure.py` and enter given 'Client ID for web application' and
+    'Client secret'.
 
 
 ## 4. Mandrill transactional e-mail servis
