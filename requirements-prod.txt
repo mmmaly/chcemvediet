@@ -18,7 +18,7 @@ django-aggregate-if==0.5
 django-admin-tools==0.5.2
 django-apptemplates==0.0.1
 
-# Dependencies for base requests
+# Dependencies for base requirements
 django-classy-tags==0.5.1
 django-common-helpers==0.6.2
 futures==2.2.0
@@ -26,6 +26,9 @@ oauthlib==0.6.3
 python-openid==2.2.5
 requests-oauthlib==0.4.1
 six==1.7.3
+
+# Requirements for online server
+MySQL-python==1.2.5
 
 # Installed by 'virtualenv env' directly
 # argparse==1.2.1
