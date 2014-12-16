@@ -152,12 +152,12 @@ and `{group}` are unix user and group names the server will run under.
  2. Select the project, click on 'APIs & auth' / 'Credentials' and 'Create new Client ID' with the
     following options:
       * Application type: Web application
-      * Authorized JavaScript origins: `http://127.0.0.1:8000/`
+      * Authorized JavaScript origins: `http://{domain}/`
       * Authorized redirect URI:
-
-        	http://127.0.0.1:8000/accounts/google/login/callback/
-        	http://127.0.0.1:8000/sk/accounts/google/login/callback/
-        	http://127.0.0.1:8000/en/accounts/google/login/callback/
+        	http://{domain}/accounts/google/login/callback/
+        	http://{domain}/sk/accounts/google/login/callback/
+        	http://{domain}/en/accounts/google/login/callback/
+    Where `{domain}` is your production domain or `127.0.0.1:8000` if in local development mode.
 
  3. Run the configuration script `configure.py` and enter given 'Client ID for web application' and
     'Client secret'.
