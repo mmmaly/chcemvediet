@@ -90,8 +90,6 @@ def active(request, view_prefix):
     function returns ``True`` for 'namespace' and 'namespace:name', but not for 'name' or
     'namespace:other'.
     """
-    # FIXME: Should probably be {% ifactive arg %}...{% endif %} tag. Filter doesn't make much
-    # sense here.
     try:
         resolved = resolve(request.path)
     except Exception: # pragma: no cover
