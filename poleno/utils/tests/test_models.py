@@ -177,6 +177,15 @@ class FieldChoicesTest(TestCase):
         with self.assertRaises(AttributeError):
             res.FIRST
 
+    def test_duplicate_keys_raise_error(self):
+        with self.assertRaisesMessage(ValueError, u'Duplicate choice key: 2'):
+            FieldChoices((u'FIRST', 1, u'First'), (u'SECOND', 2, u'Second'), (u'THIRD', 2, u'Third'))
+        with self.assertRaisesMessage(ValueError, u'Duplicate choice key: 1'):
+            FieldChoices((u'FIRST', 1, u'First'), (u'GROUP', 1, ((u'AAA', 3, u'Aaa'), (u'BBB', 4, u'Bbb'))))
+        with self.assertRaisesMessage(ValueError, u'Duplicate choice key: 3'):
+            FieldChoices((u'FIRST', 1, u'First'), (u'GROUP', 3, ((u'AAA', 3, u'Aaa'), (u'BBB', 4, u'Bbb'))))
+
+
 class QuerySetTest(TestCase):
     u"""
     Tests ``FieldChoices`` and custom ``QuerySet` on testing ``TestModelsModel``.

@@ -64,24 +64,26 @@ class FieldChoices(object):
         mail.status = mail.STATUSES.DELIVERED
         mail.STATUSES._inverse[2] == 'DELIVERED'
     """
-    # FIXME: Should check that there are no conflicting keys
     def __init__(self, *args):
         choices = []
         inverse = {}
         for choice_name, choice_key, choice_value in args:
+            if choice_key in inverse:
+                raise ValueError(u'Duplicate choice key: %r' % choice_key)
+            inverse[choice_key] = choice_name
             if isinstance(choice_value, (list, tuple)): # It's a choice group
                 group = []
                 bunch = Bunch()
                 for group_name, group_key, group_value in choice_value:
-                    group.append((group_key, group_value))
+                    if group_key in inverse:
+                        raise ValueError(u'Duplicate choice key: %r' % choice_key)
                     inverse[group_key] = u'%s.%s' % (choice_name, group_name)
+                    group.append((group_key, group_value))
                     setattr(bunch, group_name, group_key)
                 choices.append((choice_key, group))
-                inverse[choice_key] = choice_name
                 setattr(self, choice_name, bunch)
             else:
                 choices.append((choice_key, choice_value))
-                inverse[choice_key] = choice_name
                 setattr(self, choice_name, choice_key)
         self._choices = choices
         self._inverse = inverse
