@@ -1,5 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import datetime
+
 from django_cron import CronJobBase, Schedule
 
 def cron_job(**kwargs):
@@ -33,4 +35,5 @@ def cron_job(**kwargs):
         return CronJob
     return decorator
 
-
+def cron_log(msg):
+    print(u'[%s] %s', datetime.datetime.now().strftime(u'%c'), msg)

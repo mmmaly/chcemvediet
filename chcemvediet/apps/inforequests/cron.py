@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 
-from poleno.cron import cron_job
+from poleno.cron import cron_job, cron_log
 from poleno.workdays import workdays
 from poleno.utils.translation import translation
 from poleno.utils.date import local_date, local_today
@@ -26,9 +26,8 @@ def undecided_email_reminder():
             if days < 5:
                 continue
 
-            # FIXME: Add datetime to cron log
-            print(u'Sending undecided email reminder: %s' % repr(inforequest))
             inforequest.send_undecided_email_reminder()
+            cron_log(u'Sent undecided email reminder: %s' % repr(inforequest))
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def obligee_deadline_reminder():
@@ -49,9 +48,8 @@ def obligee_deadline_reminder():
                 if last and branch.last_action.deadline_missed_at(last_date):
                     continue
 
-                # FIXME: Add datetime to cron log
-                print(u'Sending obligee deadline reminder: %s' % repr(branch.last_action))
                 inforequest.send_obligee_deadline_reminder(branch.last_action)
+                cron_log(u'Sent obligee deadline reminder: %s' % repr(branch.last_action))
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def applicant_deadline_reminder():
@@ -70,9 +68,8 @@ def applicant_deadline_reminder():
                 if branch.last_action.last_deadline_reminder:
                     continue
 
-                # FIXME: Add datetime to cron log
-                print(u'Sending applicant deadline reminder: %s' % repr(branch.last_action))
                 inforequest.send_applicant_deadline_reminder(branch.last_action)
+                cron_log(u'Sent applicant deadline reminder: %s' % repr(branch.last_action))
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def close_inforequests():
@@ -85,7 +82,6 @@ def close_inforequests():
             for branch in inforequest.branch_set.all():
                 branch.add_expiration_if_expired()
 
-            # FIXME: Add datetime to cron log
-            print(u'Closing inforequest: %s' % repr(inforequest))
             inforequest.closed = True
             inforequest.save()
+            cron_log(u'Closed inforequest: %s' % repr(inforequest))

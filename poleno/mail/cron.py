@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.utils.module_loading import import_by_path
 
-from poleno.cron import cron_job
+from poleno.cron import cron_job, cron_log
 from poleno.utils.date import utc_now
 
 from .models import Message
@@ -17,18 +17,15 @@ def mail():
         klass = import_by_path(path)
         with klass() as transport:
             for message in transport.get_messages():
-                # FIXME: Add datetime to cron log
-                print(u'Received email: %s' % repr(message))
+                cron_log(u'Received email: %s' % repr(message))
 
     # Process inbound mail
     messages = Message.objects.inbound().not_processed()[:10] # At most 10 messages in one batch
     for message in messages:
-        # FIXME: Add datetime to cron log; Done on the same line
-        print(u'Processing received email: %s...' % repr(message))
         message.processed = utc_now()
         message.save()
         message_received.send(sender=None, message=message)
-        print(u'Done.')
+        cron_log(u'Processed received email: %s' % repr(message))
 
     # Send outbound mail
     path = getattr(settings, u'EMAIL_OUTBOUND_TRANSPORT', None)
@@ -38,10 +35,8 @@ def mail():
             klass = import_by_path(path)
             with klass() as transport:
                 for message in messages:
-                    # FIXME: Add datetime to cron log; Done on the same line
-                    print(u'Sending email: %s...' % repr(message))
                     transport.send_message(message)
                     message.processed = utc_now()
                     message.save()
                     message_sent.send(sender=None, message=message)
-                    print(u'Done.')
+                    cron_log(u'Sent email: %s' % repr(message))
