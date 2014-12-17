@@ -1,6 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import gc
+
 from django.db import models
+from django.db.models.signals import post_save
 from django.http import Http404
 from django.test import TestCase
 
@@ -54,7 +57,7 @@ class AfterSavedTest(TestCase):
         counter = [0]
 
         @after_saved(obj)
-        def deffered():
+        def deffered(obj):
             counter[0] += 1
 
         self.assertEqual(counter, [0])
@@ -73,7 +76,7 @@ class AfterSavedTest(TestCase):
         counter = [0]
 
         @after_saved(obj)
-        def deffered():
+        def deffered(obj):
             counter[0] += 1
 
         self.assertEqual(counter, [0])
@@ -93,11 +96,11 @@ class AfterSavedTest(TestCase):
         counter = [0, 0]
 
         @after_saved(obj)
-        def deffered_a():
+        def deffered_a(obj):
             counter[0] += 1
 
         @after_saved(obj)
-        def deffered_b():
+        def deffered_b(obj):
             counter[1] += 1
 
         self.assertEqual(counter, [0, 0])
@@ -114,7 +117,7 @@ class AfterSavedTest(TestCase):
         counter = [0]
 
         @after_saved(obj1)
-        def deffered():
+        def deffered(obj1):
             counter[0] += 1
 
         self.assertEqual(counter, [0])
@@ -125,9 +128,9 @@ class AfterSavedTest(TestCase):
         obj1.save()
         self.assertEqual(counter, [1])
 
-    def test_instance_saved_in_deffered_function(self):
+    def test_deffered_saves_instance_recursively(self):
         u"""
-        Checks that the deffered function is called only once event if the instance is saved again
+        Checks that the deffered function is called only once even if the instance is saved again
         while executing the deffered function. That is the deffered function is not called
         recursively.
         """
@@ -136,13 +139,69 @@ class AfterSavedTest(TestCase):
         counter = [0]
 
         @after_saved(obj)
-        def deffered():
+        def deffered(obj):
             counter[0] += 1
             obj.save()
 
         self.assertEqual(counter, [0])
         obj.save()
         self.assertEqual(counter, [1])
+
+    def test_multiple_deffered_save_instance_recursively(self):
+        u"""
+        Checks that every deffered function is called only once even if the instance is saved again
+        while executing the deffered functions.
+        """
+        obj = TestModelsModel(name=u'first')
+        counter = [0, 0, 0]
+
+        @after_saved(obj)
+        def deffered_a(obj):
+            counter[0] += 1
+            obj.save()
+
+        @after_saved(obj)
+        def deffered_b(obj):
+            counter[1] += 1
+            obj.save()
+
+        @after_saved(obj)
+        def deffered_c(obj):
+            counter[2] += 1
+            obj.save()
+
+        self.assertEqual(counter, [0, 0, 0])
+        obj.save()
+        self.assertEqual(counter, [1, 1, 1])
+
+    def test_deffered_is_disconnected_after_instance_is_garbage_collected(self):
+        obj = TestModelsModel(name=u'first')
+        counter = [0]
+        receivers = len(post_save.receivers)
+
+        @after_saved(obj)
+        def deffered(obj):
+            counter[0] += 1
+
+        self.assertEqual(len(post_save.receivers), receivers+1)
+        obj = None
+        gc.collect()
+        self.assertEqual(counter, [0])
+        self.assertEqual(len(post_save.receivers), receivers)
+
+    def test_deffered_is_disconnected_after_instance_is_saved(self):
+        obj = TestModelsModel(name=u'first')
+        counter = [0]
+        receivers = len(post_save.receivers)
+
+        @after_saved(obj)
+        def deffered(obj):
+            counter[0] += 1
+
+        self.assertEqual(len(post_save.receivers), receivers+1)
+        obj.save()
+        self.assertEqual(counter, [1])
+        self.assertEqual(len(post_save.receivers), receivers)
 
 class FieldChoicesTest(TestCase):
     u"""

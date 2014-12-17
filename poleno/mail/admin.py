@@ -145,7 +145,7 @@ class MessageAdminAddForm(forms.ModelForm):
                 )
 
         @after_saved(message)
-        def deferred():
+        def deferred(message):
             message.attachment_set = self.cleaned_data[u'attachments']
 
             status = (Recipient.STATUSES.INBOUND if message.type == Message.TYPES.INBOUND else

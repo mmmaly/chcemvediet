@@ -71,7 +71,7 @@ class InforequestForm(PrefixedForm):
         assert self.is_valid()
 
         @after_saved(inforequest)
-        def deferred():
+        def deferred(inforequest):
             branch = Branch(
                     obligee=self.cleaned_data[u'obligee'],
                     inforequest=inforequest,
@@ -97,7 +97,7 @@ class InforequestForm(PrefixedForm):
         draft.content = self.cleaned_data[u'content']
 
         @after_saved(draft)
-        def deferred():
+        def deferred(draft):
             draft.attachment_set = self.cleaned_data[u'attachments']
 
     def load_from_draft(self, draft):
@@ -264,14 +264,14 @@ class AttachmentsMixin(ActionAbstractForm):
         super(AttachmentsMixin, self).save(action)
 
         @after_saved(action)
-        def deferred():
+        def deferred(action):
             action.attachment_set = self.cleaned_data[u'attachments']
 
     def save_to_draft(self, draft):
         super(AttachmentsMixin, self).save_to_draft(draft)
 
         @after_saved(draft)
-        def deferred():
+        def deferred(draft):
             draft.attachment_set = self.cleaned_data[u'attachments']
 
     def load_from_draft(self, draft):
@@ -379,7 +379,7 @@ class AdvancedToMixin(ActionAbstractForm):
         super(AdvancedToMixin, self).save(action)
 
         @after_saved(action)
-        def deferred():
+        def deferred(action):
             for field in self.ADVANCED_TO_FIELDS:
                 obligee = self.cleaned_data[field]
                 if obligee:
@@ -401,7 +401,7 @@ class AdvancedToMixin(ActionAbstractForm):
         super(AdvancedToMixin, self).save_to_draft(draft)
 
         @after_saved(draft)
-        def deferred():
+        def deferred(draft):
             draft.obligee_set = [self.cleaned_data[f]
                     for f in self.ADVANCED_TO_FIELDS
                     if self.cleaned_data[f]]

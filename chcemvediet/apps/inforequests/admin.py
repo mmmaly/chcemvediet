@@ -73,7 +73,7 @@ class InforequestDraftAdminAddForm(forms.ModelForm):
                 )
 
         @after_saved(draft)
-        def deferred():
+        def deferred(draft):
             draft.attachment_set = self.cleaned_data[u'attachments']
 
         if commit:
@@ -326,7 +326,7 @@ class InforequestAdminAddForm(forms.ModelForm):
                 )
 
         @after_saved(inforequest)
-        def deferred():
+        def deferred(inforequest):
             branch = Branch(
                     inforequest=inforequest,
                     obligee=self.cleaned_data[u'obligee'],
@@ -631,7 +631,7 @@ class InforequestEmailAdminDecideForm(forms.Form):
                 )
 
         @after_saved(action)
-        def deferred():
+        def deferred(action):
             user_type = ContentType.objects.get_for_model(User)
             for attachment in self.cleaned_data[u'attachments']:
                 # We don't want to steal attachments owned by the email, so we clone them.
@@ -1073,7 +1073,7 @@ class BranchAdminAddForm(forms.ModelForm):
                 )
 
         @after_saved(branch)
-        def deferred():
+        def deferred(branch):
             action = Action(
                     branch=branch,
                     effective_date=self.cleaned_data[u'advanced_by'].effective_date,
@@ -1380,7 +1380,7 @@ class ActionAdminAddForm(forms.ModelForm):
                 )
 
         @after_saved(action)
-        def deferred():
+        def deferred(action):
             action.attachment_set = self.cleaned_data[u'attachments']
 
             for obligee in self.cleaned_data[u'obligee_set']:
