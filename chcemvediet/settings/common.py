@@ -143,31 +143,6 @@ STATICFILES_FINDERS = (
     )
 
 
-# FIXME: Logging local vs production
-LOGGING = {
-    u'version': 1,
-    u'disable_existing_loggers': False,
-    u'filters': {
-        u'require_debug_false': {
-            u'()': u'django.utils.log.RequireDebugFalse'
-        }
-    },
-    u'handlers': {
-        u'mail_admins': {
-            u'level': u'ERROR',
-            u'filters': [u'require_debug_false'],
-            u'class': u'django.utils.log.AdminEmailHandler'
-        }
-    },
-    u'loggers': {
-        u'django.request': {
-            u'handlers': [u'mail_admins'],
-            u'level': u'ERROR',
-            u'propagate': True,
-        },
-    }
-}
-
 # FIXME: We should probably use memcache on production environment
 CACHES = {
     u'default': {

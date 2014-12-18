@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.utils.module_loading import import_by_path
 
-from poleno.cron import cron_job, cron_log
+from poleno.cron import cron_job, cron_logger
 from poleno.utils.date import utc_now
 
 from .models import Message
@@ -17,7 +17,7 @@ def mail():
         klass = import_by_path(path)
         with klass() as transport:
             for message in transport.get_messages():
-                cron_log(u'Received email: %s' % repr(message))
+                cron_logger.info(u'Received email: %s' % repr(message))
 
     # Process inbound mail
     messages = Message.objects.inbound().not_processed()[:10] # At most 10 messages in one batch
@@ -25,7 +25,7 @@ def mail():
         message.processed = utc_now()
         message.save()
         message_received.send(sender=None, message=message)
-        cron_log(u'Processed received email: %s' % repr(message))
+        cron_logger.info(u'Processed received email: %s' % repr(message))
 
     # Send outbound mail
     path = getattr(settings, u'EMAIL_OUTBOUND_TRANSPORT', None)
@@ -39,4 +39,4 @@ def mail():
                     message.processed = utc_now()
                     message.save()
                     message_sent.send(sender=None, message=message)
-                    cron_log(u'Sent email: %s' % repr(message))
+                    cron_logger.info(u'Sent email: %s' % repr(message))

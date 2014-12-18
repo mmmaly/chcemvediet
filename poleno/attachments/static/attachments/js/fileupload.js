@@ -7,8 +7,6 @@
  *         contain a hidden child with class ``fileupload-template`` which content will be
  *         used as a template for the list of uploaded files.
  *
- * FIXME: Instead ``fileupload-template`` child use Django-pipilene JS templates.
- *
  * Requires:
  *  -- JQuery
  *  -- JQuery File Upload

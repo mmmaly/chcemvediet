@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 
-from poleno.cron import cron_job, cron_log
+from poleno.cron import cron_job, cron_logger
 from poleno.workdays import workdays
 from poleno.utils.translation import translation
 from poleno.utils.date import local_date, local_today
@@ -27,7 +27,7 @@ def undecided_email_reminder():
                 continue
 
             inforequest.send_undecided_email_reminder()
-            cron_log(u'Sent undecided email reminder: %s' % repr(inforequest))
+            cron_logger.info(u'Sent undecided email reminder: %s' % repr(inforequest))
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def obligee_deadline_reminder():
@@ -49,7 +49,7 @@ def obligee_deadline_reminder():
                     continue
 
                 inforequest.send_obligee_deadline_reminder(branch.last_action)
-                cron_log(u'Sent obligee deadline reminder: %s' % repr(branch.last_action))
+                cron_logger.info(u'Sent obligee deadline reminder: %s' % repr(branch.last_action))
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def applicant_deadline_reminder():
@@ -69,7 +69,7 @@ def applicant_deadline_reminder():
                     continue
 
                 inforequest.send_applicant_deadline_reminder(branch.last_action)
-                cron_log(u'Sent applicant deadline reminder: %s' % repr(branch.last_action))
+                cron_logger.info(u'Sent applicant deadline reminder: %s' % repr(branch.last_action))
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def close_inforequests():
@@ -84,4 +84,4 @@ def close_inforequests():
 
             inforequest.closed = True
             inforequest.save()
-            cron_log(u'Closed inforequest: %s' % repr(inforequest))
+            cron_logger.info(u'Closed inforequest: %s' % repr(inforequest))

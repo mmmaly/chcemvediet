@@ -1,8 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 
 from django_cron import CronJobBase, Schedule
+
+cron_logger = logging.getLogger(u'poleno.cron')
 
 def cron_job(**kwargs):
     u"""
@@ -34,6 +37,3 @@ def cron_job(**kwargs):
         CronJob.__name__ = function.__name__
         return CronJob
     return decorator
-
-def cron_log(msg):
-    print(u'[%s] %s', datetime.datetime.now().strftime(u'%c'), msg)

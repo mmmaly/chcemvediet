@@ -20,3 +20,37 @@ DATABASES = {
 INSTALLED_APPS += (
     u'poleno.timewarp',
     )
+
+LOGGING = {
+    u'version': 1,
+    u'disable_existing_loggers': True,
+    u'formatters': {
+        u'verbose': {
+            u'format': u'[%(asctime)s] %(name)s %(levelname)s %(message)s',
+            },
+        },
+    u'handlers': {
+        u'console': {
+            u'level': u'INFO',
+            u'class': u'logging.StreamHandler',
+            u'formatter': u'verbose',
+            },
+        },
+    u'loggers': {
+        u'py.warnings': {
+            u'handlers': [u'console'],
+            u'level': u'INFO',
+            u'propagate': False,
+            },
+        u'django': {
+            u'handlers': [u'console'],
+            u'level': u'INFO',
+            u'propagate': False,
+            },
+        u'poleno': {
+            u'handlers': [u'console'],
+            u'level': u'INFO',
+            u'propagate': False,
+            },
+        },
+    }
