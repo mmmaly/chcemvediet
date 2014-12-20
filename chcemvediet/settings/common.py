@@ -119,6 +119,14 @@ LOCALE_PATHS = (
     os.path.join(PROJECT_PATH, u'chcemvediet/locale/3part/allauth'),
     )
 
+# FIXME: We should probably not use filebased cache on production environment
+CACHES = {
+    u'default': {
+        u'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        u'LOCATION': os.path.join(PROJECT_PATH, u'cache'),
+    },
+}
+
 # FIXME: Static and media files in production?
 MEDIA_ROOT = os.path.join(PROJECT_PATH, u'media')
 MEDIA_URL = u'/media/'
@@ -141,25 +149,6 @@ STATICFILES_FINDERS = (
     u'pipeline.finders.PipelineFinder',
     #u'pipeline.finders.CachedFileFinder',
     )
-
-
-# FIXME: We should probably use memcache on production environment
-CACHES = {
-    u'default': {
-        u'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        u'LOCATION': os.path.join(PROJECT_PATH, u'cache'),
-    },
-}
-
-
-# Django-allauth settings
-ACCOUNT_AUTHENTICATION_METHOD = u'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = u'mandatory'
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_SIGNUP_FORM_CLASS = u'chcemvediet.apps.accounts.forms.SignupForm'
-SOCIALACCOUNT_EMAIL_VERIFICATION = u'none'
-SOCIALACCOUNT_AUTO_SIGNUP = False
 
 # JS and CSS assets settings
 # FIXME: enable pipeline and compressor in production?
@@ -206,6 +195,15 @@ PIPELINE_CSS = {
 }
 EXTERNAL_JS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.js')]
 EXTERNAL_CSS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.css')]
+
+# Django-allauth settings
+ACCOUNT_AUTHENTICATION_METHOD = u'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = u'mandatory'
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SIGNUP_FORM_CLASS = u'chcemvediet.apps.accounts.forms.SignupForm'
+SOCIALACCOUNT_EMAIL_VERIFICATION = u'none'
+SOCIALACCOUNT_AUTO_SIGNUP = False
 
 # Django-admin-tools settings
 ADMIN_TOOLS_MENU = u'chcemvediet.admin.CustomMenu'
