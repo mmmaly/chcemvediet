@@ -12,15 +12,16 @@
 {% endcomment %}
 
 {% autoescape off %}
+
 {% filter squeeze %}
-{% lorem 41 %} {{ user.get_full_name }}, {{ current_site.name }}.
+Užívateľ {{ user.get_full_name }} zadal na našej stránke {{ current_site.name }} túto emailovú adresu. 
 {% endfilter %}
 
 {% filter squeeze %}
-{% lorem 42 %}
+Pre potvrdenie, prosím, kliknite na odkaz: {{ activate_url }}
+
+Ak došlo k omylu a neželáte sa registrovať, nemusíte robiť nič.
 {% endfilter %}
 
-{% filter squeeze %}
-{% lorem 41 %} {{ activate_url }}
-{% endfilter %}
+
 {% endautoescape %}

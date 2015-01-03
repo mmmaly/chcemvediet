@@ -9,6 +9,6 @@
  %
 {% endcomment %}
 
-<p>{% lorem 41 %} {{ email_address.user.get_full_name }},
-<a href="mailto:{{ email_address.email }}">{{ email_address.email }}</a></p>
-<p>{% lorem 42 %}</p>
+<p>Potvrdili ste, že email <a href="mailto:{{ email_address.email }}">{{ email_address.email }}</a>
+patrí užívateľovi {{ email_address.user.get_full_name }}.</p>
+
