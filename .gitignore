@@ -6,6 +6,7 @@ configure.json
 env/
 cache/
 logs/*.log
+logs/*.log.*
 media/attachments
 fixtures/*.configured.json
 chcemvediet/settings/configured.py
