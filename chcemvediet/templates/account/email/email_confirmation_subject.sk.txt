@@ -11,5 +11,5 @@
 {% endcomment %}
 
 {% autoescape off %}
-Chcemvediet.sk - Potvrdenie e-mailovej adresy 
+Potvrdenie e-mailovej adresy
 {% endautoescape %}

@@ -18,7 +18,9 @@ User {{ user.get_full_name }} at {{ current_site.name }} has given this as an em
 
 {% filter squeeze %}
 To confirm this is correct, go to {{ activate_url }}
+{% endfilter %}
 
+{% filter squeeze %}
 If this is a mistake, you do not need to perfom any action.
 {% endfilter %}
 {% endautoescape %}
