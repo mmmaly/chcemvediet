@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+Enter the number of days by which they extended the deadline.

@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Zvoľte, či vám inštitúcia poskytla všetky informácie, alebo len časť požadovaných informácií, alebo neposkytla nič.

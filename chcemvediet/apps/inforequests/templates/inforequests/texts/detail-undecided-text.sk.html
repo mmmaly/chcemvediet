@@ -8,6 +8,5 @@
  %
 {% endcomment %}
 
-<h4>Dalsie e-maily</h4>
-<p>{{ inforequest.undecided_set.count|subtract:1 }} dalsich emailov. {% lorem 41 %}</p>
-<p>{% lorem %}</p>
+<h4>Ďalšie e-maily</h4>
+<p>K tejto žiadosti prišlo ešte {{ inforequest.undecided_set.count|subtract:1 }} ďalších ich emailov. Prosím, rozhodnite najprv, čo je obsahom vrchného emailu. Ďalšie emaily Vám budú zobrazované jeden po druhom v poradí, ako prišli. </p>
