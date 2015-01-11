@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Je to len potvrdenie, že inštitúcia žiadosť dostala.

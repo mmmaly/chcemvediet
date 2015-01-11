@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Email súvisí s mojou žiadosťou, ale neviem rozhodnúť, ktorá z možností je správna. Prosím o pomoc.

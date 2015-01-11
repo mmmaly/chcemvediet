@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Inštitúcia žiada, aby som moju žiadosť doplnil alebo objasnil.

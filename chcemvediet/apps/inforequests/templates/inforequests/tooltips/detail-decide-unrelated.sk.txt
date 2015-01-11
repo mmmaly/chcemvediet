@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Tento email ani pri najlepšej predstavivosti nesúvisí s mojou žiadosťou a jedná sa o omyl alebo spam.

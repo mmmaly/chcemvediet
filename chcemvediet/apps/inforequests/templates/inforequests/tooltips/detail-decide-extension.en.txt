@@ -8,4 +8,5 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+The institution has decided to extend the deadline for my request. They usually do it when the search of the documents is complicated or when a large amount of information was requested. 
+

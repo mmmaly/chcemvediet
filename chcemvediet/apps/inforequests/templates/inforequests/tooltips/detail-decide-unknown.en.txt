@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Email is related to my request but I am not able to decide which option is correct. Please help me.

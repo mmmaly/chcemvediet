@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+They have refused my request and did not provide me the information I wanted.
