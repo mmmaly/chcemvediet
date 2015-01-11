@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+Enter part of the institution name. The search is case insensitive, and diacritics-insensitive.

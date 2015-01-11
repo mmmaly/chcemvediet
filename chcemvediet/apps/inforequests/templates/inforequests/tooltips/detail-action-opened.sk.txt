@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Email bol doručený a zobrazený na strane prijímateľa, čiže bol aspoň otvorený.

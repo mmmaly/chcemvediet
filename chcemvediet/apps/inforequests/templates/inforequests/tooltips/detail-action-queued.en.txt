@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+The email with the request is queued in our system. It will be sent in a short time. 

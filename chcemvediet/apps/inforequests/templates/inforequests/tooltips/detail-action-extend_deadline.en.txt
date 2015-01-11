@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Lehota vypršala. Môžete poskytnuúť inštitúcii ešte pár dní na odpoveď, skôr, než vykonáte ďalšiu akciu.

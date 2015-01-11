@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+The email was returned as invalid, what means, that the email address of the receiver/institution was not correct. 

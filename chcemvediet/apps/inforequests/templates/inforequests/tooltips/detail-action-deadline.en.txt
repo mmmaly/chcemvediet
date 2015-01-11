@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{{ action.deadline_remaining }} WD remains. {% lorem 41 %}
+{{ action.deadline_remaining }} working days remain. This means the institution has {{ action.deadline_remaining }} to answer. After this period, you will be given an option to act upon.

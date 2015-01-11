@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+This is a unique email adress, which was generated for this request. Why is it necessary? The institutions often do not reply to email directly, but write a new email instead. Sometimes they answer from a different address, for example if the request was forwarded to another person to act upon. The unique address enables us to track the conrete request, because all emails, which arrive to this address, are related to this request.
