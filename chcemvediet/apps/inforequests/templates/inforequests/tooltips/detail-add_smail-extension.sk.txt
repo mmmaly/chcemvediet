@@ -8,4 +8,6 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Dostla som list, v ktorom mi inštitúcia oznamuje, že predlžuje lehotu na vybavenie mojej infožiadosti. 
+
+

@@ -8,5 +8,5 @@
  %
 {% endcomment %}
 
-Ostáva {{ action.deadline_remaining }} pracovných dní. To znamená, že inštitúcia má ešte {{ action.deadline_remaining }} na zaslanie odpovede. Keď táto doba uplynie, ponúkneme vám možnosti, ako ďalej postupovať.
+Ostáva {{ action.deadline_remaining }} pracovných dní. To znamená, že inštitúcia má ešte {{ action.deadline_remaining }} dní na zaslanie odpovede. Keď táto doba uplynie, ponúkneme vám možnosti, ako ďalej postupovať.
 

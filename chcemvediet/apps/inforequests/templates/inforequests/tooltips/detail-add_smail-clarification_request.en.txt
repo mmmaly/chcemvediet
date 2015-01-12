@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+I have received a regular mail asking for a clarification of my request.

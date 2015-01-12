@@ -8,4 +8,5 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Prišiel mi list - potvrdenie o tom, že inštitúcia žiadosť dostala.
+

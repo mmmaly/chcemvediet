@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Have you received a regular mail confirming that the institution has received your request?

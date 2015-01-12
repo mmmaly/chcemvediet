@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Prišlo mi poštou rozhodnutie, v ktorom mi zamietajú sprístupnenie informácie.
