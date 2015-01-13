@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+I have received a regular mail -- a resolution which affirms the previous resolution and denies my appeal.
