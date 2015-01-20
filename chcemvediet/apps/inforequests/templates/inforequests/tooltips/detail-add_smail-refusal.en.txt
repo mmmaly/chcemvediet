@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+I have received a regular mail, a resolution where they denied to provide me the information.

@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+I have received a letter where they provide at least some of the requested information.

@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Zadajte časť názvu inštitúcie. Vyhľadáva sa bez ohľadu na diakritiku a veľké a malé písmená. 

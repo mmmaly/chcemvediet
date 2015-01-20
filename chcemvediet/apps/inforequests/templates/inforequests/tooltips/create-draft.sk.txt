@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Uloží rozpracovanú žiadosť. K rozpracovanej žiadosti sa môžete neskôr vrátiť, dokonca aj po odhlásení.

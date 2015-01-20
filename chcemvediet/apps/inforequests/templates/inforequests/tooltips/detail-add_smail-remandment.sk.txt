@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Prišlo mi poštou rozhodnutie, ktorým uznávajú moje odvolanie a vracajú vec inštitúcii na vybavenie.

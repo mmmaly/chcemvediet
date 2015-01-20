@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Email was delivered and shown on the reciever's screen, i.e. it was at least opened.

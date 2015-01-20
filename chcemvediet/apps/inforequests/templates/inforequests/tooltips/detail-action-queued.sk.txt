@@ -8,4 +8,5 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Email so žiadosťou je zaradený v našom systéme. Bude odoslaný za okamih.
+

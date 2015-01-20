@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+Select the reason why you were not provided the information. The reason should be stated in the decision. There will be probably also a reference to law.

@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Prišla mi poštou odpoveď, v ktorej mi sprístupňujú aspoň časť informácií.

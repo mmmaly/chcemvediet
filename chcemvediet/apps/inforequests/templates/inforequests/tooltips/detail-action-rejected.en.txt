@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+The email was rejected by the receiving system. This means the email address of the obligee is not valid, or the mailbox of the receiver is full, or another technical error occured. 

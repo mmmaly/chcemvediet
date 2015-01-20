@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+Select whether you were provided all requested information, or only part of the information, or nothing.

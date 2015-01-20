@@ -8,4 +8,6 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+I have received a regular mail stating that the institution has decided to forward my request to another institution.
+
+

@@ -8,4 +8,5 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Dostal som list o tom, že inštitúcia sa rozhodla moju žiadosť postúpiť inému úradu, lebo požadovanú informáciu nemá.
+

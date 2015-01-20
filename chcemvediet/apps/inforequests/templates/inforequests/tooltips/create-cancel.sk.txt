@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Zruší vytváranie žiadosti. Vaše zmeny budú navždy stratené.

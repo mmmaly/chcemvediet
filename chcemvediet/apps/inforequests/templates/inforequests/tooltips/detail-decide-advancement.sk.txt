@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Inštitúcia sa rozhodla moju žiadosť postúpiť inému úradu, lebo požadovanú informáciu nemá.

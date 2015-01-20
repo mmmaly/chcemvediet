@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+V emaili inštitúcia oznamuje, že predlžuje lehotu na vybavenie mojej infožiadosti. 

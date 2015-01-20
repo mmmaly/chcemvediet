@@ -8,4 +8,5 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Napíšte počet dní, o ktoré inštitúcia odložila vybavenie žiadosti.
+

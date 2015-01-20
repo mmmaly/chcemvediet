@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Zaslali mi informácie, o ktoré som žiadal.

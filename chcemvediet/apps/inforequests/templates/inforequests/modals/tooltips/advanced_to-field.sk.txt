@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Vyplňte názov inštitúcie, ktorej bola žiadosť postúpená.

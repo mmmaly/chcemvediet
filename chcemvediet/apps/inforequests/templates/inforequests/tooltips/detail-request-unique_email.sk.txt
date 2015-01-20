@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Toto je unikátna emailová adresa, ktorá bola vygenerovaná pre túto infožiadosť. Prečo je to potrebné? Úrady často neodpovedajú na email priamo, ale napíšu nový. Niekedy odpovedia aj z inej adresy, napríklad, ak bola žiadosť preposlaná inému pracovníkovi na vybavenie. Unikátna adresa nám umožňuje sledovať konkrétnu infožiadosť, lebo všetky emaily, ktoré prídu na túto adresu, sa týkajú len tejto jednej žiadosti.  

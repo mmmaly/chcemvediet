@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Prišlo mi poštou rozhodnutie o odvolaní, ktorým sa potvrdzuje predchádzajúce rozhodnutie a zamieta moje odvolanie. 
