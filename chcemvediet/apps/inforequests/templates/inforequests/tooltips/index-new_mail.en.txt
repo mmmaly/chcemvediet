@@ -8,5 +8,6 @@
  %
 {% endcomment %}
 
-<p>Here you can add another email address, in case you wish to be notified on more addresses. Or alternatively, if you wish to remove the primary address, it is recommended that you add a different email first.</p>
+***FIXME: tento tooltip informuje, ze inforequest ma cakajuci email***
+Here you can add another email address, in case you wish to be notified on more addresses. Or alternatively, if you wish to remove the primary address, it is recommended that you add a different email first.
 

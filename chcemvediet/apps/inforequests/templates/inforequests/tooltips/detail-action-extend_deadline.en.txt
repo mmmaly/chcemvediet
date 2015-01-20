@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Lehota vypršala. Môžete poskytnuúť inštitúcii ešte pár dní na odpoveď, skôr, než vykonáte ďalšiu akciu.
+The deadline expired. You can provide a few more days to institution to reply, before you take another action.

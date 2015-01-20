@@ -8,5 +8,9 @@
  %
 {% endcomment %}
 
+***FIXME: Treba rozlisit akcie, ktore maju deadline pre urad a deadline pre ziadatela
+   (action.has_deadline, action.has_applicant_deadline a action.has_obligee_deadline mozu byt
+   uzitocne). Tiez treba rozlisit, ci deadline nie je uz vyprsany (action.deadline_missed). Teraz
+   to vypise, ze zostava minus x dni.***
 Ostáva {{ action.deadline_remaining }} pracovných dní. To znamená, že inštitúcia má ešte {{ action.deadline_remaining }} dní na zaslanie odpovede. Keď táto doba uplynie, ponúkneme vám možnosti, ako ďalej postupovať.
 

@@ -8,4 +8,8 @@
  %
 {% endcomment %}
 
+***FIXME: Treba rozlisit akcie, ktore maju deadline pre urad a deadline pre ziadatela
+   (action.has_deadline, action.has_applicant_deadline a action.has_obligee_deadline mozu byt
+   uzitocne). Tiez treba rozlisit, ci deadline nie je uz vyprsany (action.deadline_missed). Teraz
+   to vypise, ze zostava minus x dni.***
 {{ action.deadline_remaining }} working days remain. This means the institution has {{ action.deadline_remaining }} days to answer. After this period, you will be given an option to act upon.
