@@ -104,61 +104,42 @@ class FieldChoices(object):
 
 class QuerySet(models.query.QuerySet):
     u"""
-    Wrapper to simplify adding custom query methods for defined models. For every model you can
-    inherit this ``QuerySet`` and add your query methods. This class defines several handy shortcut
-    methods as well. The new methods work for models, as well as for forward and backward
-    relations.
-
-    Example:
-
-        class ArticleQuerySet(QuerySet):
-            def published(self):
-                return self.filter(published=True)
-            def popular(self):
-                return self.filter(popular=True)
-
-        class Author(Model):
-            name = models.CharField(...)
-
-        class Article(Model):
-            author = models.ForeignKey(Author, ...)
-            published = BooleanField(...)
-            popular = BooleanField(...)
-
-            objects = ArticleQuerySet.as_manager()
-
-        Article.objects.published().popular()
-        Author.objects.get(...).article_set.published()
-
-    Source:
-        http://adam.gomaa.us/blog/2009/feb/16/subclassing-django-querysets/index.html
-        http://stackoverflow.com/questions/4576622/in-django-can-you-add-a-method-to-querysets#answer-7961021
-
-    In contrast to the sources, we create new ``QuerySetManager`` class dynamically for every
-    model. Otherwise Django wouldn't be able to inherit from it properly and dynamically create
-    ``RelatedManager`` for forward and backward realtions.
+    ``QuerySet`` with common custom methods.
     """
 
-    @classmethod
-    def as_manager(cls):
+    if not hasattr(models.query.QuerySet, 'as_manager'):
+        @classmethod
+        def as_manager(cls):
+            u"""
+            Creating ``Manager`` with ``QuerySet`` methods for Django 1.6. Fixed in Django 1.7.
+            See: https://docs.djangoproject.com/en/1.7/topics/db/managers/#create-manager-with-queryset-methods
 
-        class QuerySetManager(models.Manager):
-            use_for_related_fields = True
+            Source:
+                http://adam.gomaa.us/blog/2009/feb/16/subclassing-django-querysets/index.html
+                http://stackoverflow.com/questions/4576622/in-django-can-you-add-a-method-to-querysets#answer-7961021
 
-            def get_query_set(self):
-                return cls(self.model)
+            In contrast to the sources, we create new ``QuerySetManager`` class dynamically for
+            every model. Otherwise Django wouldn't be able to inherit from it properly and
+            dynamically create ``RelatedManager`` for forward and backward realtions.
+            """
 
-            def __getattr__(self, name, *args):
-                if name.startswith(u'_'):
-                    # We don't let the object manager access private methods/attributes of the
-                    # queryset. For instance, according to:
-                    #     https://djangosnippets.org/snippets/734/#c903
-                    # Pickle library goes crazy if QuerySet ``__getstate__`` or ``__setstate__``
-                    # can be accessed from the object manager.
-                    raise AttributeError
-                return getattr(self.get_query_set(), name, *args)
+            class QuerySetManager(models.Manager):
+                use_for_related_fields = True
 
-        return QuerySetManager()
+                def get_query_set(self):
+                    return cls(self.model)
+
+                def __getattr__(self, name, *args):
+                    if name.startswith(u'_'):
+                        # We don't let the object manager access private methods/attributes of the
+                        # queryset. For instance, according to:
+                        #     https://djangosnippets.org/snippets/734/#c903
+                        # Pickle library goes crazy if QuerySet ``__getstate__`` or ``__setstate__``
+                        # can be accessed from the object manager.
+                        raise AttributeError
+                    return getattr(self.get_query_set(), name, *args)
+
+            return QuerySetManager()
 
     def get_or_404(self, *args, **kwargs):
         u"""
