@@ -1,1 +1,2 @@
 django-adminplus
+python-dateutil
