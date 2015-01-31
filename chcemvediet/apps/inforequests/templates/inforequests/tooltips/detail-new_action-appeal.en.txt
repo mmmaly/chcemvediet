@@ -8,4 +8,6 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+If you think the refusal to provide the information was not right, you can appeal. Similarly, you can appeal if the deadline for the institution passed without them providing the information nor the resolution, although the insititution is obliged to do so. 
+
+

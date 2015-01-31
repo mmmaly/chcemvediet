@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-{% lorem 41 %}
+Ak si myslíte, že zamietnutie sprístupnenia informácii nebolo správne, môžete podať odvolanie. Rovnako môžete podať odvolanie v prípade, ak inštitúcii vypršal termín na poskytnutie informácie, a ani inštitúcia nevydala príslušné rozhodnutie, hoci tak mala urobiť.  
