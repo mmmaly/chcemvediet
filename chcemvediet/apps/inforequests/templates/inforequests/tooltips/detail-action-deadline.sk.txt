@@ -8,9 +8,19 @@
  %
 {% endcomment %}
 
-***FIXME: Treba rozlisit akcie, ktore maju deadline pre urad a deadline pre ziadatela
-   (action.has_deadline, action.has_applicant_deadline a action.has_obligee_deadline mozu byt
-   uzitocne). Tiez treba rozlisit, ci deadline nie je uz vyprsany (action.deadline_missed). Teraz
-   to vypise, ze zostava minus x dni.***
-Ostáva {{ action.deadline_remaining }} pracovných dní. To znamená, že inštitúcia má ešte {{ action.deadline_remaining }} dní na zaslanie odpovede. Keď táto doba uplynie, ponúkneme vám možnosti, ako ďalej postupovať.
+{% if not action.deadline_missed %}
+Lehota ešte neuplynula. {% if action.has_applicant_deadline %} Čaká sa na Vás. Musíte poslať {{ action.get_type_display }} do {{ action.deadline_remaining }} pracovných dní. Ak neodpoviete, alebo odpoviete neskôr, hrozí riziko, že Vaša požiadavka nebude akceptovaná.{% endif %}.
+{% if action.has_obligee_deadline %} Čaká sa na inštitúciu. Musia odpovedať do {{ action.deadline_remaining }} pracovných dní. Keď táto doba uplynie, ponúkneme vám možnosti, ako ďalej postupovať. {% endif %}
+{%endif %}
+
+{% if action.deadline_missed %}
+{% if action.has_applicant_deadline %} Čakalo sa na Vás, ale prekročili ste lehotu o {{ action.deadline_remaining|cut:"-" }} pracovných dní. Môžete skúsiť ešte {{ action.get_type_display }} poslať, ale hrozí riziko, že Vaša požiadavka nebude akceptovaná.{% endif %}
+{% if action.has_obligee_deadline %} Inštitúcia prekročila lehotu o {{ action.deadline_remaining|cut:"-"  }} pracovných dní. Môžete byť benevolentní a ešte pár dní počkať, alebo postupovať ďalej a vec začať riešiť. {% endif %}
+
+{% endif %}
+
+
+
+
+
 
