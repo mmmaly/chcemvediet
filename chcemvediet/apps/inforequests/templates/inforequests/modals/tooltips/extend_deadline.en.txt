@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+Please enter number of days to extend the period. (It is not possible to enter an amount which would mean that the period already passed anyway.) 
