@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Please select which institution has sent you the document.
+Please select which institution has sent you the document, or which institution you are going to send it to.

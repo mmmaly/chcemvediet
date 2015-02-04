@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Zvoľte prosím, od ktorej inštitúcie Vám dokument prišiel.
+Zvoľte prosím, od ktorej inštitúcie Vám dokument prišiel, resp. ktorej inštitúcií ho idete poslať.
