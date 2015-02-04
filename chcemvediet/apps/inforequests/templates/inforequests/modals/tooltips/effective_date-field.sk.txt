@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Dátum, od ktorého sa počítajú lehoty. Môže byť odlišný od dátumu odoslania, pretože adresát si list vyzdvihol na pošte neskôr.

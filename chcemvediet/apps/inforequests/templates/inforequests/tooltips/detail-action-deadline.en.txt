@@ -8,8 +8,15 @@
  %
 {% endcomment %}
 
-***FIXME: Treba rozlisit akcie, ktore maju deadline pre urad a deadline pre ziadatela
-   (action.has_deadline, action.has_applicant_deadline a action.has_obligee_deadline mozu byt
-   uzitocne). Tiez treba rozlisit, ci deadline nie je uz vyprsany (action.deadline_missed). Teraz
-   to vypise, ze zostava minus x dni.***
-{{ action.deadline_remaining }} working days remain. This means the institution has {{ action.deadline_remaining }} days to answer. After this period, you will be given an option to act upon.
+{% if not action.deadline_missed %}
+The deadline has not yet passed. {% if action.has_applicant_deadline %} The institution is waiting for your answer. You must send {{ action.get_type_display }} in {{ action.deadline_remaining }} working days. If you do not anser or answer after the deadline, there is a risk that your answer will be not accepted.  {% endif %}
+{% if action.has_obligee_deadline %} We are waiting for the institution. They must answer in {{ action.deadline_remaining }} working days. After this period will pass we will notify you and offer a further action. {% endif %}
+{%endif %}
+
+{% if action.deadline_missed %}
+{% if action.has_applicant_deadline %} The institution was waiting for your answer, but you missed the deadline by {{ action.deadline_remaining|cut:"-" }} working days. You can try to send {{ action.get_type_display }} but there is a riskt that your answer will be not accepted. {% endif %}
+{% if action.has_obligee_deadline %} The institution missed the deadline by {{ action.deadline_remaining|cut:"-"  }} working days. You can benevolently wait a little more, or proceed with a further action. {% endif %}
+
+{% endif %}
+
+

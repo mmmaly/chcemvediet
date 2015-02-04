@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+The date the period is counted from. Might be different from the date of sending because the recipient of the letter oficially picked it up later. 

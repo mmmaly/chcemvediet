@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Zvoľte prosím, od ktorej inštitúcie Vám dokument prišiel, resp. ktorej inštitúcií ho idete poslať.

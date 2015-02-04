@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-SK {% lorem 41 %}
+Uveďte počet dní, o ktoré ešte chcete lehotu predĺžiť. Nie je možné uviesť príliš taký malý počet dní, ktorý by znamenal, že lehota už aj tak uplynula. 

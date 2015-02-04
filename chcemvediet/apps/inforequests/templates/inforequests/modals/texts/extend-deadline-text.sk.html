@@ -10,5 +10,12 @@
  %
 {% endcomment %}
 
-<p>{% lorem 6 %}</p>
-<p>{% lorem 7 %}</p>
+<p>
+Môžete predĺžiť lehotu, kedy vás portál znova upozorní. Niekedy to je vhodné, ak viete, že inštitúcia je pomalá, alebo dúfate, že ešte Vám stále môže prísť informácia. Alebo sa niečo zatúlalo na pošte.
+</p>
+<p>
+Predĺžiť lehotu pre {{ action.get_type_display }} ohľadom Vašej infožiadosti pre {{ inforequest.branch.historicalobligee.name }}{% if inforequest.branch != branch %} postúpenej inštitúcii: {{ branch.historicalobligee.name }}{% endif %}.</p>
+<p>Pôvodná lehota bola {{ action.deadline }} pracovných dní od {{ action.effective_date }}{% if action.extension %} plus navyše {{ action.extension }} pracovných dní predĺžených Vami. {% endif %}. Do dnes uplynulo {{ action.days_passed }} pracovných dní.</p>
+
+
+

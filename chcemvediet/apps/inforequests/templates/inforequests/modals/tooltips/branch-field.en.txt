@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-EN {% lorem 41 %}
+Please select which institution has sent you the document, or which institution you are going to send it to.

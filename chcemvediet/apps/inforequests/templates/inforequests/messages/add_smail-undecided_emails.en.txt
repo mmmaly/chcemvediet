@@ -13,5 +13,4 @@ There are received e-mails waiting for your decision regarding this inforequest.
 them while you were editing this regular mail. You must decide them foremost. Please, save this
 regular mail as a draft, refresh the page and decide waiting e-mails. Then you may return back if
 still appropriate.
-{% lorem %}
 {% endautoescape %}

@@ -8,5 +8,5 @@
  %
 {% endcomment %}
 
-***FIXME: tento tooltip informuje, ze inforequest ma cakajuci email***
-Tu si môžete pridať novú emailovú adresu, ak chcete byť notifikovaný na viacerých adresách. Tiež, ak si chcete odobrať doterajšiu primárnu adresu, odporúčame, aby ste si najskôr pridali a nechali overiť iný email.
+K Vašej žiadosti sme zaregistrovali email, ktorý čaká na Vaše rozhodnutie.
+
