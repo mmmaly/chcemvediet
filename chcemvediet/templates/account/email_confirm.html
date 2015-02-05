@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,16 +9,16 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Confirm E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'account:email_confirm:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Confirm E-mail Address{% endblocktrans %}</h1>
+  <h1>{% trans 'account:email_confirm:heading' %}</h1>
   {% if confirmation %}
     {% include "account/texts/email_confirm-text.html" with confirmation=confirmation %}
     <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
       {% csrf_token %}
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">{% blocktrans %}Confirm{% endblocktrans %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'account:email_confirm:submit' %}</button>
       </div>
     </form>
   {% else %}

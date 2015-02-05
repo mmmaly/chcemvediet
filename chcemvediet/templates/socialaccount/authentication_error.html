@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,9 +9,9 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Social Network Login Failure{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'socialaccount:authentication_error:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Social Network Login Failure{% endblocktrans %}</h1>
+  <h1>{% trans 'socialaccount:authentication_error:heading' %}</h1>
   {% include "socialaccount/texts/authentication_error-text.html" %}
 {% endblock %}

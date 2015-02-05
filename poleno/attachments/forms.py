@@ -87,7 +87,7 @@ class AttachmentsField(forms.Field):
         try:
             attachments = query_set.filter(pk__in=keys)
         except ValueError:
-            raise ValidationError(_(u'Invalid attachments.'))
+            raise ValidationError(_(u'attachments:AttachmentsField:invalid_error'))
         if len(attachments) != len(keys):
-            raise ValidationError(_(u'Invalid attachments.'))
+            raise ValidationError(_(u'attachments:AttachmentsField:invalid_error'))
         return attachments

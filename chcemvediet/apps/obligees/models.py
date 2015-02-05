@@ -20,37 +20,37 @@ class ObligeeQuerySet(QuerySet):
 @register_history
 class Obligee(models.Model):
     # Should NOT be empty
-    name = models.CharField(max_length=255, verbose_name=_(u'Name'))
-    street = models.CharField(max_length=255, verbose_name=_(u'Street'))
-    city = models.CharField(max_length=255, verbose_name=_(u'City'))
-    zip = models.CharField(max_length=10, verbose_name=_(u'Zip'))
+    name = models.CharField(max_length=255)
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    zip = models.CharField(max_length=10)
 
     # Should NOT be empty
-    emails = models.CharField(max_length=1024, verbose_name=_(u'E-mails'),
+    emails = models.CharField(max_length=1024,
             validators=[validate_comma_separated_emails],
-            help_text=escape(squeeze(_(u"""
+            help_text=escape(squeeze(u"""
                 Comma separated list of e-mails. E.g. 'John <john@example.com>,
                 another@example.com, "Smith, Jane" <jane.smith@example.com>'
-                """))))
+                """)))
 
     # Should NOT be empty; Read-only; Automaticly computed in save() whenever creating a new object
     # or changing its name. Any user defined value is replaced.
-    slug = models.SlugField(max_length=255, verbose_name=_(u'Slug'),
-            help_text=squeeze(_(u"""
+    slug = models.SlugField(max_length=255,
+            help_text=squeeze(u"""
                 Slug for full-text search. Automaticly computed whenever creating a new object or
                 changing its name. Any user defined value is replaced.
-                """)))
+                """))
 
     # May NOT be NULL
     STATUSES = FieldChoices(
-            (u'PENDING', 1, _(u'Pending')),
-            (u'DISSOLVED', 2, _(u'Dissolved')),
+            (u'PENDING', 1, _(u'obligees:Obligee:status:PENDING')),
+            (u'DISSOLVED', 2, _(u'obligees:Obligee:status:DISSOLVED')),
             )
-    status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'),
-            help_text=squeeze(_(u"""
+    status = models.SmallIntegerField(choices=STATUSES._choices,
+            help_text=squeeze(u"""
                 "Pending" for obligees that exist and accept inforequests; "Dissolved" for obligees
                 that do not exist any more and no further inforequests may be submitted to them.
-                """)))
+                """))
 
     # Added by ``@register_history``:
     #  -- history: simple_history.manager.HistoryManager

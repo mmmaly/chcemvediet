@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load provider_login_url from socialaccount %}
 {% load static from staticfiles %}
 
@@ -10,7 +10,7 @@
  %
 {% endcomment %}
 
-<a href="{% provider_login_url "facebook" process=process %}"><img src="{% static 'main/images/social/facebook.png' %}" title="{% blocktrans %}Login With Facebook{% endblocktrans %}"></a>
-<a href="{% provider_login_url "google" process=process %}"><img src="{% static 'main/images/social/googleplus.png' %}" title="{% blocktrans %}Login With Google{% endblocktrans %}"></a>
-<a href="{% provider_login_url "twitter" process=process %}"><img src="{% static 'main/images/social/twitter.png' %}" title="{% blocktrans %}Login With Twitter{% endblocktrans %}"></a>
-<a href="{% provider_login_url "linkedin" process=process %}"><img src="{% static 'main/images/social/linkedin.png' %}" title="{% blocktrans %}Login With LinkedIn{% endblocktrans %}"></a>
+<a href="{% provider_login_url "facebook" process=process %}"><img src="{% static 'main/images/social/facebook.png' %}" title="{% trans 'account:social_buttons:facebook' %}"></a>
+<a href="{% provider_login_url "google" process=process %}"><img src="{% static 'main/images/social/googleplus.png' %}" title="{% trans 'account:social_buttons:google' %}"></a>
+<a href="{% provider_login_url "twitter" process=process %}"><img src="{% static 'main/images/social/twitter.png' %}" title="{% trans 'account:social_buttons:twitter' %}"></a>
+<a href="{% provider_login_url "linkedin" process=process %}"><img src="{% static 'main/images/social/linkedin.png' %}" title="{% trans 'account:social_buttons:linkedin' %}"></a>

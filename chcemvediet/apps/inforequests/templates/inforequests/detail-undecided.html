@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -11,7 +11,7 @@
 {% if inforequest.undecided_set.count >= 2 %}
   <div class="alert alert-info alert-block clearfix">
     {% include "inforequests/texts/detail-undecided-text.html" with inforequest=inforequest %}
-    <p><button class="btn" data-toggle="collapse" data-target="#undecided-collapse">{% blocktrans %}Show them{% endblocktrans %}</button></p>
+    <p><button class="btn" data-toggle="collapse" data-target="#undecided-collapse">{% trans 'inforequests:detail:undecided:show' %}</button></p>
   </div>
   <div id="undecided-collapse" class="collapse">
     {% for email in inforequest.undecided_set.all %}

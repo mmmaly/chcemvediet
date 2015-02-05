@@ -1,5 +1,4 @@
 {# vim: set filetype=django :#}
-{% load blocktrans from i18n %}
 
 {% comment %}
  %
@@ -8,4 +7,4 @@
  %
 {% endcomment %}
 
-{% blocktrans %}Password successfully set.{% endblocktrans %}
+Prepojenie s účtom sociálnej siete bolo vytvorené.

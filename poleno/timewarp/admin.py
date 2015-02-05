@@ -5,14 +5,13 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.forms import clean_button
 
 from . import forms
 from .timewarp import timewarp
 
-@admin.site.register_view(u'timewarp/', name=_(u'Timewarp'), urlname=u'timewarp', visible=False)
+@admin.site.register_view(u'timewarp/', name=u'Timewarp', urlname=u'timewarp', visible=False)
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 def index(request):
     if request.method == u'POST':
@@ -39,5 +38,5 @@ def index(request):
     return render(request, u'timewarp/timewarp.html', {
             u'timewarp': timewarp,
             u'form': form,
-            u'title': _(u'Timewarp'),
+            u'title': u'Timewarp',
             })

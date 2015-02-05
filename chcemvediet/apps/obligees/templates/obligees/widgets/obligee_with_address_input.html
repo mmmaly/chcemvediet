@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -18,6 +18,6 @@
   <div class="obligee_with_address_input_details {% if not obligee %}obligee_with_address_input_hide{% endif %}">
     <span class="obligee_with_address_input_street">{{ obligee.street|default:'' }}</span><br>
     <span class="obligee_with_address_input_zip">{{ obligee.zip|default:'' }}</span> <span class="obligee_with_address_input_city">{{ obligee.city|default:'' }}</span><br>
-    {% blocktrans %}E-mail{% endblocktrans %}: <span class="obligee_with_address_input_email">{{ obligee.emails|default:'' }}</span>
+    {% trans 'obligees:obligee_with_address_input:email' %}: <span class="obligee_with_address_input_email">{{ obligee.emails|default:'' }}</span>
   </div>
 </div>

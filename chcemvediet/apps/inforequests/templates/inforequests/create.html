@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load lorem from poleno.utils %}
 
 {% comment %}
@@ -10,15 +10,15 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}New Inforequest{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'inforequests:create:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}New Inforequest{% endblocktrans %}</h1>
+  <h1>{% trans 'inforequests:create:heding' %}</h1>
   {% include "inforequests/texts/create-text.html" %}
   <form class="form-horizontal" method="post" action=".">
     {% csrf_token %}
     <div class="control-group">
-      <label class="control-label">{% blocktrans %}Applicant{% endblocktrans %}:</label>
+      <label class="control-label">{% trans 'inforequests:create:applicant_label' %}:</label>
       <div class="controls" style="padding: 5px 0px 0px 5px;">
         {{ user.get_full_name }}<br>
         {{ user.profile.street }}<br>
@@ -27,9 +27,18 @@
     </div>
     {% include "main/snippets/form_horizontal.html" with form=form %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary with-tooltip" name="button" value="submit" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-submit.txt" %}{% endspaceless %}"><i class="icon-envelope icon-white"></i> {% blocktrans %}Submit Request{% endblocktrans %}</button>
-      <button type="submit" class="btn with-tooltip" name="button" value="draft" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-draft.txt" %}{% endspaceless %}"><i class="icon-file"></i> {% blocktrans %}Save as Draft{% endblocktrans %}</button>
-      <a class="btn pull-right with-tooltip" href="{% url 'inforequests:index' %}" data-toggle="tooltip" title="{% spaceless %}{% include "inforequests/tooltips/create-cancel.txt" %}{% endspaceless %}"><i class="icon-remove"></i> {% blocktrans %}Cancel{% endblocktrans %}</a>
+      <button type="submit" class="btn btn-primary with-tooltip" name="button" value="submit" data-toggle="tooltip"
+              title="{% spaceless %}{% include "inforequests/tooltips/create-submit.txt" %}{% endspaceless %}">
+        <i class="icon-envelope icon-white"></i> {% trans 'inforequests:create:submit' %}
+      </button>
+      <button type="submit" class="btn with-tooltip" name="button" value="draft" data-toggle="tooltip"
+              title="{% spaceless %}{% include "inforequests/tooltips/create-draft.txt" %}{% endspaceless %}">
+        <i class="icon-file"></i> {% trans 'inforequests:create:draft' %}
+      </button>
+      <a class="btn pull-right with-tooltip" href="{% url 'inforequests:index' %}" data-toggle="tooltip"
+         title="{% spaceless %}{% include "inforequests/tooltips/create-cancel.txt" %}{% endspaceless %}">
+        <i class="icon-remove"></i> {% trans 'inforequests:create:cancel' %}
+      </a>
     </div>
   </form>
 {% endblock %}

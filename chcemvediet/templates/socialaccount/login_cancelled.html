@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,9 +9,9 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Login Cancelled{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'socialaccount:login_cancelled:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Login Cancelled{% endblocktrans %}</h1>
+  <h1>{% trans 'socialaccount:login_cancelled:heading' %}</h1>
   {% include "socialaccount/texts/login_cancelled-text.html" %}
 {% endblock %}

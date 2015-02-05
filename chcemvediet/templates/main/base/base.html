@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load addtoblock render_block from sekizai_tags %}
 {% load external_css external_js from poleno.utils %}
 {% load compressed_css compressed_js from compressed %}
@@ -24,7 +24,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% blocktrans %}Chcem Vedieť{% endblocktrans %}{% endblock %}</title>
+    <title>{% block title %}{% trans 'main:base:title' %}{% endblock %}</title>
     {% render_block "css" %}
   </head>
   <body>

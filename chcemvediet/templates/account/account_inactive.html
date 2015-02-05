@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,9 +9,9 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Account Inactive{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'account:inactive:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Account Inactive{% endblocktrans %}</h1>
-  <p>{% blocktrans %}This account is inactive.{% endblocktrans %}</p>
+  <h1>{% trans 'account:inactive:heading' %}</h1>
+  <p>{% trans 'account:inactive:text' %}</p>
 {% endblock %}

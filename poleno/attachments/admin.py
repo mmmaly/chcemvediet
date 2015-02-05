@@ -4,7 +4,6 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
@@ -31,18 +30,18 @@ class AttachmentInline(generic.GenericTabularInline):
             ]
     readonly_fields = fields
 
-    @decorate(short_description=_(u'Attachment'))
+    @decorate(short_description=u'Attachment')
     def attachment_field(self, attachment):
         return admin_obj_format(attachment)
 
-    @decorate(short_description=_(u'File'))
+    @decorate(short_description=u'File')
     def file_field(self, attachment):
         info = attachment._meta.app_label, attachment._meta.module_name
         url = reverse(u'admin:%s_%s_download' % info, args=[attachment.pk])
         res = format_html(u'<a href="{0}">{1}</a>', url, attachment.file.name)
         return res
 
-    @decorate(short_description=_(u'Size'))
+    @decorate(short_description=u'Size')
     def size_field(self, attachment):
         return filesize(attachment.size)
 
@@ -63,7 +62,7 @@ class AttachmentAdminAddForm(forms.ModelForm):
             try:
                 generic_object = generic_type.get_object_for_this_type(pk=generic_id)
             except generic_type.model_class().DoesNotExist:
-                self._errors[u'generic_id'] = self.error_class([_(u'This object does not exist.')])
+                self._errors[u'generic_id'] = self.error_class([u'This object does not exist.'])
                 del cleaned_data[u'generic_id']
             else:
                 self.cleaned_data[u'generic_object'] = generic_object
@@ -98,7 +97,7 @@ class AttachmentAdminChangeForm(forms.ModelForm):
             try:
                 generic_object = generic_type.get_object_for_this_type(pk=generic_id)
             except generic_type.model_class().DoesNotExist:
-                self._errors[u'generic_id'] = self.error_class([_(u'This object does not exist.')])
+                self._errors[u'generic_id'] = self.error_class([u'This object does not exist.'])
                 del cleaned_data[u'generic_id']
             else:
                 self.cleaned_data[u'generic_object'] = generic_object
@@ -129,18 +128,18 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'content_type',
             ]
 
-    @decorate(short_description=_(u'Attachment'))
+    @decorate(short_description=u'Attachment')
     @decorate(admin_order_field=u'pk')
     def attachment_column(self, attachment):
         return admin_obj_format(attachment, link=False)
 
-    @decorate(short_description=_(u'Generic Object'))
+    @decorate(short_description=u'Generic Object')
     @decorate(admin_order_field=u'generic_type__name')
     def generic_object_column(self, attachment):
         generic = attachment.generic_object
         return admin_obj_format(generic)
 
-    @decorate(short_description=_(u'File'))
+    @decorate(short_description=u'File')
     @decorate(admin_order_field=u'file')
     def file_column(self, attachment):
         info = attachment._meta.app_label, attachment._meta.module_name
@@ -148,7 +147,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         res = format_html(u'<a href="{0}">{1}</a>', url, attachment.file.name)
         return res
 
-    @decorate(short_description=_(u'Size'))
+    @decorate(short_description=u'Size')
     @decorate(admin_order_field=u'size')
     def size_column(self, attachment):
         return filesize(attachment.size)
@@ -194,7 +193,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     raw_id_fields = [
             ]
 
-    @decorate(short_description=_(u'Generic Object'))
+    @decorate(short_description=u'Generic Object')
     @live_field(u'generic_type', u'generic_id')
     def generic_object_live(self, generic_type, generic_id):
         generic = try_except(lambda: generic_type.get_object_for_this_type(pk=generic_id), None)
@@ -212,8 +211,8 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     def get_urls(self):
         info = self.model._meta.app_label, self.model._meta.model_name
         urls = patterns('',
-                url(_(r'^upload/$'), self.admin_site.admin_view(self.upload_view), name=u'%s_%s_upload' % info),
-                url(_(r'^(.+)/download/$'), self.admin_site.admin_view(self.download_view), name=u'%s_%s_download' % info),
+                url(r'^upload/$', self.admin_site.admin_view(self.upload_view), name=u'%s_%s_upload' % info),
+                url(r'^(.+)/download/$', self.admin_site.admin_view(self.download_view), name=u'%s_%s_download' % info),
                 )
         return urls + super(AttachmentAdmin, self).get_urls()
 

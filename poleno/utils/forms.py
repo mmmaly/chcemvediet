@@ -77,11 +77,11 @@ def validate_formatted_email(value):
     try:
         validate_email(address)
     except ValidationError:
-        raise ValidationError(_(u'"{0}" is not a valid email address.').format(address))
+        raise ValidationError(_(u'utils:validate_formatted_email:invalid_error {0}').format(address))
 
     formatted = formataddr((name, address))
     if formatted != value:
-        raise ValidationError(_(u'Parsed value differs from the original. Parsed as: {0}').format(formatted))
+        raise ValidationError(_(u'utils:validate_formatted_email:parse_error {0}').format(formatted))
 
 def validate_comma_separated_emails(value):
     parsed = getaddresses([value])
@@ -89,8 +89,8 @@ def validate_comma_separated_emails(value):
         try:
             validate_email(address)
         except ValidationError:
-            raise ValidationError(_(u'"{0}" is not a valid email address.').format(address))
+            raise ValidationError(_(u'utils:validate_comma_separated_emails:invalid_error {0}').format(address))
 
     formatted = u', '.join(formataddr((n, a)) for n, a in parsed)
     if formatted != value:
-        raise ValidationError(_(u'Parsed value differs from the original. Parsed as: {0}').format(formatted))
+        raise ValidationError(_(u'utils:validate_comma_separated_emails:parse_error {0}').format(formatted))

@@ -1,0 +1,10 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
+Účet sociálnej siete je už prepojený s iným užívateľom.

@@ -25,63 +25,63 @@ class MessageQuerySet(QuerySet):
 class Message(models.Model):
     # May NOT be NULL
     TYPES = FieldChoices(
-            (u'INBOUND', 1, _(u'Inbound')),
-            (u'OUTBOUND', 2, _(u'Outbound')),
+            (u'INBOUND',  1, _(u'mail:Message:type:INBOUND')),
+            (u'OUTBOUND', 2, _(u'mail:Message:type:OUTBOUND')),
             )
-    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'))
+    type = models.SmallIntegerField(choices=TYPES._choices)
 
     # NOT NULL for processed messages; NULL for queued messages
-    processed = models.DateTimeField(blank=True, null=True, verbose_name=_(u'Processed'),
-            help_text=squeeze(_(u"""
+    processed = models.DateTimeField(blank=True, null=True,
+            help_text=squeeze(u"""
                 Date and time the message was sent or received and processed. Leave blank if you
                 want the application to process it.
-                """)))
+                """))
 
     # May be empty
-    from_name = models.CharField(blank=True, max_length=255, verbose_name=_(u'From Name'),
-            help_text=escape(squeeze(_(u"""
+    from_name = models.CharField(blank=True, max_length=255,
+            help_text=escape(squeeze(u"""
                 Sender full name. For instance setting name to "John Smith" and e-mail to
                 "smith@example.com" will set the sender address to "John Smith <smith@example.com>".
-                """))))
-
-    # Should NOT be empty
-    from_mail = models.EmailField(max_length=255, verbose_name=_(u'From E-mail'),
-            help_text=squeeze(_(u"""
-                Sender e-mail address, e.g. "smith@example.com".
                 """)))
 
+    # Should NOT be empty
+    from_mail = models.EmailField(max_length=255,
+            help_text=squeeze(u"""
+                Sender e-mail address, e.g. "smith@example.com".
+                """))
+
     # May be empty for inbound messages; Empty for outbound messages
-    received_for = models.EmailField(blank=True, max_length=255, verbose_name=_(u'Received for'),
-            help_text=squeeze(_(u"""
+    received_for = models.EmailField(blank=True, max_length=255,
+            help_text=squeeze(u"""
                 The address we received the massage for. It may, but does not have to be among the
                 message recipients, as the address may have heen bcc-ed to. The address is empty
                 for all outbound messages. It may also be empty for inbound messages if we don't
                 know it, or the used mail transport does not support it.
-                """)))
+                """))
 
     # May be empty
-    subject = models.CharField(blank=True, max_length=255, verbose_name=_(u'Subject'))
+    subject = models.CharField(blank=True, max_length=255)
 
     # May be empty
-    text = models.TextField(blank=True, verbose_name=_(u'Text Content'),
-            help_text=squeeze(_(u"""
+    text = models.TextField(blank=True,
+            help_text=squeeze(u"""
                 "text/plain" message body alternative.
-                """)))
-    html = models.TextField(blank=True, verbose_name=_(u'HTML Content'),
-            help_text=squeeze(_(u"""
+                """))
+    html = models.TextField(blank=True,
+            help_text=squeeze(u"""
                 "text/html" message body alternative.
-                """)))
+                """))
 
     # Dict: String->(String|[String]); May be empty
-    headers = JSONField(blank=True, default={}, verbose_name=_(u'Headers'),
-            help_text=squeeze(_(u"""
+    headers = JSONField(blank=True, default={},
+            help_text=squeeze(u"""
                 Dictionary mapping header names to their values, or lists of their values. For
                 outbound messages it contains only extra headers added by the sender. For inbound
                 messages it contains all message headers.
-                """)))
+                """))
 
     # May be empty; Backward generic relation
-    attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id', verbose_name=_(u'Attachment Set'))
+    attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id')
 
     # Backward relations:
     #
@@ -127,40 +127,40 @@ class RecipientQuerySet(QuerySet):
 
 class Recipient(models.Model):
     # May NOT be NULL
-    message = models.ForeignKey(u'Message', verbose_name=_(u'Message'))
+    message = models.ForeignKey(u'Message')
 
     # May be empty
-    name = models.CharField(blank=True, max_length=255, verbose_name=_(u'Name'),
-            help_text=escape(squeeze(_(u"""
+    name = models.CharField(blank=True, max_length=255,
+            help_text=escape(squeeze(u"""
                 Recipient full name. For instance setting name to "John Smith" and e-mail to
                 "smith@example.com" will send the message to "John Smith <smith@example.com>".
-                """))))
+                """)))
 
     # Should NOT be empty
-    mail = models.EmailField(max_length=255, verbose_name=_(u'E-mail'),
-            help_text=_(u'Recipient e-mail address, e.g. "smith@example.com".'))
+    mail = models.EmailField(max_length=255,
+            help_text=u'Recipient e-mail address, e.g. "smith@example.com".')
 
     # May NOT be NULL
     TYPES = FieldChoices(
-            (u'TO', 1, _(u'To')),
-            (u'CC', 2, _(u'Cc')),
-            (u'BCC', 3, _(u'Bcc')),
+            (u'TO',  1, _(u'mail:Recipient:type:TO')),
+            (u'CC',  2, _(u'mail:Recipient:type:CC')),
+            (u'BCC', 3, _(u'mail:Recipient:type:BCC')),
             )
-    type = models.SmallIntegerField(choices=TYPES._choices, verbose_name=_(u'Type'),
-            help_text=_(u'Recipient type: To, Cc, or Bcc.'))
+    type = models.SmallIntegerField(choices=TYPES._choices,
+            help_text=u'Recipient type: To, Cc, or Bcc.')
 
     # May NOT be NULL
     STATUSES = FieldChoices(
             # For inbound messages
-            (u'INBOUND', 8, _(u'Inbound')),
+            (u'INBOUND',   8, _(u'mail:Recipient:status:INBOUND')),
             # For outbound messages
-            (u'UNDEFINED', 1, _(u'Undefined')),
-            (u'QUEUED', 2, _(u'Queued')),
-            (u'REJECTED', 3, _(u'Rejected')),
-            (u'INVALID', 4, _(u'Invalid')),
-            (u'SENT', 5, _(u'Sent')),
-            (u'DELIVERED', 6, _(u'Delivered')),
-            (u'OPENED', 7, _(u'Opened')),
+            (u'UNDEFINED', 1, _(u'mail:Recipient:status:UNDEFINED')),
+            (u'QUEUED',    2, _(u'mail:Recipient:status:QUEUED')),
+            (u'REJECTED',  3, _(u'mail:Recipient:status:REJECTED')),
+            (u'INVALID',   4, _(u'mail:Recipient:status:INVALID')),
+            (u'SENT',      5, _(u'mail:Recipient:status:SENT')),
+            (u'DELIVERED', 6, _(u'mail:Recipient:status:DELIVERED')),
+            (u'OPENED',    7, _(u'mail:Recipient:status:OPENED')),
             )
     INBOUND_STATUSES = (
             STATUSES.INBOUND,
@@ -174,24 +174,24 @@ class Recipient(models.Model):
             STATUSES.DELIVERED,
             STATUSES.OPENED,
             )
-    status = models.SmallIntegerField(choices=STATUSES._choices, verbose_name=_(u'Status'),
-            help_text=squeeze(_(u"""
+    status = models.SmallIntegerField(choices=STATUSES._choices,
+            help_text=squeeze(u"""
                 Delivery status for the message recipient. It must be "Inbound" for inbound mesages
                 or one of the remaining statuses for outbound messages.
-                """)))
+                """))
 
     # May be empty
-    status_details = models.CharField(blank=True, max_length=255, verbose_name=_(u'Status Details'),
-            help_text=squeeze(_(u"""
+    status_details = models.CharField(blank=True, max_length=255,
+            help_text=squeeze(u"""
                 Unspecific delivery status details set by e-mail transport. Leave blank if not
                 sure.
-                """)))
+                """))
 
     # May be empty
-    remote_id = models.CharField(blank=True, max_length=255, verbose_name=_(u'Remote ID'),
-            help_text=squeeze(_(u"""
+    remote_id = models.CharField(blank=True, max_length=255,
+            help_text=squeeze(u"""
                 Recipient reference ID set by e-mail transport. Leave blank if not sure.
-                """)))
+                """))
 
     # Backward relations added to other models:
     #

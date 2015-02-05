@@ -1,6 +1,5 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "admin/base_site.html" %}
-{% load blocktrans from i18n %}
 {% load admin_urlname admin_urlquote from admin_urls %}
 {% load static from admin_static %}
 
@@ -15,11 +14,11 @@
 
 {% block breadcrumbs %}
   <div class="breadcrumbs">
-    <a href="{% url 'admin:index' %}">{% blocktrans %}Home{% endblocktrans %}</a>
+    <a href="{% url 'admin:index' %}">Home</a>
     &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_label|capfirst }}</a>
     &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst|escape }}</a>
     &rsaquo; <a href="{% url opts|admin_urlname:'change' object.pk|admin_urlquote %}">{{ object|truncatewords:"18" }}</a>
-    &rsaquo; {% blocktrans %}Decide{% endblocktrans %}
+    &rsaquo; Decide
   </div>
 {% endblock %}
 
@@ -29,7 +28,7 @@
       {% csrf_token %}
       <div>
         {% if adminform.form.errors %}
-          <p class="errornote">{% blocktrans %}Please correct the errors below.{% endblocktrans %}</p>
+          <p class="errornote">Please correct the errors below.</p>
           {{ adminform.form.non_field_errors }}
         {% endif %}
         {% for fieldset in adminform %}
@@ -37,7 +36,7 @@
         {% endfor %}
       </div>
       <div class="submit-row">
-        <input type="submit" value="{% blocktrans %}Save{% endblocktrans %}" class="default" name="_save" />
+        <input type="submit" value="Save" class="default" name="_save" />
       </div>
     </form>
   </div>

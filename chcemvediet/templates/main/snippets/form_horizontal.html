@@ -20,7 +20,7 @@
   {% else %}
     <div class="control-group {% if field.errors %}error{% endif %}">
       {% block before_field %}{% endblock %}
-      {% if field.label %}
+      {% if field.label.strip %}
         <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}:</label>
       {% endif %}
       <div class="controls">

@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,9 +9,9 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Sign Up Closed{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'account:signup_closed:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Sign Up Closed{% endblocktrans %}</h1>
-  <p>{% blocktrans %}We are sorry, but the sign up is currently closed.{% endblocktrans %}</p>
+  <h1>{% trans 'account:signup_closed:heading' %}</h1>
+  <p>{% trans 'account:signup_closed:text' %}</p>
 {% endblock %}

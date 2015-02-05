@@ -1,0 +1,10 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- email: string
+ %
+{% endcomment %}
+
+Overovací e-mail bol odoslaný na {{ email }}.

@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load lorem from poleno.utils %}
 
 {% comment %}
@@ -14,7 +14,7 @@
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>{% blocktrans %}Inforequest Advancement{% endblocktrans %}</h3>
+    <h3>{% trans 'inforequests:modals:advancement:heading' %}</h3>
   </div>
   <div class="modal-body">
     {% include "inforequests/modals/texts/advancement-smail-text.html" %}
@@ -23,8 +23,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="add"><i class="icon-plus icon-white"></i> {% blocktrans %}Add an Advancement{% endblocktrans %}</button>
-    <button type="submit" class="btn" name="button" value="draft"><i class="icon-file"></i> {% blocktrans %}Save as Draft{% endblocktrans %}</button>
-    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% blocktrans %}Close{% endblocktrans %}</button>
+    <button type="submit" class="btn btn-primary" name="button" value="add"><i class="icon-plus icon-white"></i> {% trans 'inforequests:modals:advancement:add_smail' %}</button>
+    <button type="submit" class="btn" name="button" value="draft"><i class="icon-file"></i> {% trans 'inforequests:modals:draft' %}</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% trans 'inforequests:modals:close' %}</button>
   </div>
 </form>

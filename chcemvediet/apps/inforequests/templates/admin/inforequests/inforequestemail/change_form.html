@@ -1,10 +1,9 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "admin/change_form.html" %}
-{% load blocktrans from i18n %}
 
 {% block object-tools-items %}
   {% if decide_url %}
-    <li><a href="{{ decide_url }}">{% blocktrans %}Decide E-mail{% endblocktrans %}</a></li>
+    <li><a href="{{ decide_url }}">Decide E-mail</a></li>
   {% endif %}
   {{ block.super }}
 {% endblock %}

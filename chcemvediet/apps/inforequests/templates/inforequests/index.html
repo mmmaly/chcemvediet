@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -11,18 +11,18 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Submitted Inforequests{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'inforequests:index:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Submitted Inforequests{% endblocktrans %}</h1>
+  <h1>{% trans 'inforequests:index:heading' %}</h1>
   {% if inforequest_list %}
     {% include "inforequests/texts/index-submitted-list.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="span7">{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th class="span7">{% trans 'inforequests:index:obligee' %}</th>
           <th class="span2"></th>
-          <th class="span3">{% blocktrans %}Submission Date{% endblocktrans %}</th>
+          <th class="span3">{% trans 'inforequests:index:submission_date' %}</th>
         </tr>
       </thead>
       <tbody>
@@ -31,7 +31,9 @@
             <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.branch.historicalobligee.name }}</a></td>
             <td>
               {% if inforequest.has_undecided_email %}
-                <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/index-new_mail.txt" %}{% endspaceless %}"><i class="icon-envelope"></i> {% blocktrans %}New E-mail{% endblocktrans %}</span>
+                <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/index-new_mail.txt" %}{% endspaceless %}">
+                  <i class="icon-envelope"></i> {% trans 'inforequests:index:new_mail' %}
+                </span>
               {% endif %}
             </td>
             <td>{{ inforequest.submission_date }}</td>
@@ -43,25 +45,30 @@
     {% include "inforequests/texts/index-submitted-empty.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
   {% endif %}
   <div class="clearfix">
-    <a class="btn btn-primary btn-large pull-right" href="{% url 'inforequests:create' %}"><i class="icon-plus icon-white"></i> {% blocktrans %}New Inforequest{% endblocktrans %}</a>
+    <a class="btn btn-primary btn-large pull-right" href="{% url 'inforequests:create' %}"><i class="icon-plus icon-white"></i> {% trans 'inforequests:index:create' %}</a>
   </div>
   {% if draft_list %}
-    <h2>{% blocktrans %}Inforequest Drafts{% endblocktrans %}</h1>
+    <h2>{% trans 'inforequests:index:drafts:heading' %}</h1>
     {% include "inforequests/texts/index-drafts.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>{% blocktrans %}Obligee{% endblocktrans %}</th>
+          <th>{% trans 'inforequests:index:drafts:obligee' %}</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         {% for draft in draft_list %}
           <tr>
-            <td><a href="{% url 'inforequests:create_from_draft' draft.pk %}">{% if draft.obligee %}{{ draft.obligee.name }}{% else %}{% blocktrans %}(no obligee selected){% endblocktrans %}{% endif %}</a></td>
+            {% if draft.obligee %}
+              <td><a href="{% url 'inforequests:create_from_draft' draft.pk %}">{{ draft.obligee.name }}</a></td>
+            {% else %}
+              <td><a href="{% url 'inforequests:create_from_draft' draft.pk %}">{% trans 'inforequests:index:drafts:empty_obligee' %}</a></td>
+            {% endif %}
             <td class="text-right">
-              <a class="btn" href="{% url 'inforequests:create_from_draft' draft.pk %}"><i class="icon-edit"></i> {% blocktrans %}Edit and Submit{% endblocktrans %}</a>
-              <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.pk %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}" data-confirm="{% blocktrans %}Are you sure you want to delete this draft?{% endblocktrans %}"><i class="icon-trash"></i> {% blocktrans %}Delete{% endblocktrans %}</a>
+              <a class="btn" href="{% url 'inforequests:create_from_draft' draft.pk %}"><i class="icon-edit"></i> {% trans 'inforequests:index:drafts:create_from_draft' %}</a>
+              <a class="btn post confirm" href="{% url 'inforequests:delete_draft' draft.pk %}" data-post-csrfmiddlewaretoken="{{ csrf_token }}"
+                 data-confirm="{% trans 'inforequests:index:draft:delete:confirm' %}"><i class="icon-trash"></i> {% trans 'inforequests:index:draft:delete' %}</a>
             </td>
           </tr>
         {% endfor %}
@@ -69,13 +76,13 @@
     </table>
   {% endif %}
   {% if closed_list %}
-    <h2>{% blocktrans %}Closed Inforequests{% endblocktrans %}</h1>
+    <h2>{% trans 'inforequests:index:closed:heading' %}</h1>
     {% include "inforequests/texts/index-closed.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="span9">{% blocktrans %}Obligee{% endblocktrans %}</th>
-          <th class="span3">{% blocktrans %}Submission Date{% endblocktrans %}</th>
+          <th class="span9">{% trans 'inforequests:index:closed:obligee' %}</th>
+          <th class="span3">{% trans 'inforequests:index:closed:submission_date' %}</th>
         </tr>
       </thead>
       <tbody>

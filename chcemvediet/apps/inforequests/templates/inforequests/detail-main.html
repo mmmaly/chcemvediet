@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -8,7 +8,7 @@
  %
 {% endcomment %}
 
-<h1>{% blocktrans %}Inforequest Detail{% endblocktrans %}</h1>
+<h1>{% trans 'inforequests:detail:heading' %}</h1>
 <div id="request">
   {% include "inforequests/detail-request.html" with inforequest=inforequest %}
 </div>

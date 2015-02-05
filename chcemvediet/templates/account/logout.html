@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -10,10 +10,10 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Sign Out{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'account:logout:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Sign Out{% endblocktrans %}</h1>
+  <h1>{% trans 'account:logout:heading' %}</h1>
   {% include "account/texts/logout-text.html" %}
   <form method="post" action="{% url 'account_logout' %}">
     {% csrf_token %}
@@ -21,7 +21,7 @@
       <input type="hidden" name="{{redirect_field_name}}" value="{{redirect_field_value}}">
     {% endif %}
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">{% blocktrans %}Sign Out{% endblocktrans %}</button>
+      <button type="submit" class="btn btn-primary">{% trans 'account:logout:submit' %}</button>
     </div>
   </form>
 {% endblock %}

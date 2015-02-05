@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,10 +9,10 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Account Connections{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'socialaccount:connections:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Account Connections{% endblocktrans %}</h1>
+  <h1>{% trans 'socialaccount:connections:heading' %}</h1>
   {% if form.accounts %}
     {% include "socialaccount/texts/connections-list.html" %}
     <form class="form-horizontal" method="post" action=".">
@@ -35,17 +35,17 @@
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">{% blocktrans %}Remove Connection{% endblocktrans %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'socialaccount:connections:remove' %}</button>
       </div>
     </form>
   {% else %}
     {% include "socialaccount/texts/connections-empty.html" %}
   {% endif %}
 
-  <h3>{% blocktrans %}Add a 3rd Party Account{% endblocktrans %}</h3>
+  <h3>{% trans 'socialaccount:connections:add:heading' %}</h3>
   {% include "socialaccount/texts/connections-add.html" %}
   <div class="row">
-    <p class="span2 text-right" style="padding-top: 5px;">{% blocktrans %}Connect With{% endblocktrans %}:</p>
+    <p class="span2 text-right" style="padding-top: 5px;">{% trans 'socialaccount:connections:add:social_buttons' %}:</p>
     <p class="span10">
       {% include "account/snippets/social_login_buttons.html" with process="connect" %}
     </p>

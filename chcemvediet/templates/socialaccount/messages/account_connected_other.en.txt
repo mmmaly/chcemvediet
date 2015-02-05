@@ -1,0 +1,10 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
+The social account is already connected to a different account.

@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load lorem subtract from poleno.utils %}
 
 {% comment %}
@@ -16,7 +16,7 @@
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>{% blocktrans %}Deadline Extension{% endblocktrans %}</h3>
+    <h3>{% trans 'inforequests:modals:extend-deadline:heading' %}</h3>
   </div>
   <div class="modal-body">
     {% include "inforequests/modals/texts/extend-deadline-text.html" with inforequest=inforequest branch=branch action=action %}
@@ -25,7 +25,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" name="button" value="extend">{% blocktrans %}Extend Deadline{% endblocktrans %}</button>
-    <button type="button" class="btn" data-dismiss="modal">{% blocktrans %}Close{% endblocktrans %}</button>
+    <button type="submit" class="btn btn-primary" name="button" value="extend">{% trans 'inforequests:modals:extend-deadline:extend' %}</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% trans 'inforequests:modals:close' %}</button>
   </div>
 </form>

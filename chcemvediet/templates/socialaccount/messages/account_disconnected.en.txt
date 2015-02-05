@@ -1,0 +1,10 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- None
+ %
+{% endcomment %}
+
+The social account has been disconnected.

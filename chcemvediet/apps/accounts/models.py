@@ -4,13 +4,12 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, verbose_name=_(u'User'))
-    street = models.CharField(max_length=255, verbose_name=_(u'Street'))
-    city = models.CharField(max_length=255, verbose_name=_(u'City'))
-    zip = models.CharField(max_length=10, verbose_name=_(u'Zip'))
+    user = models.OneToOneField(User)
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    zip = models.CharField(max_length=10)
 
     def __unicode__(self):
         return u'%s' % self.pk

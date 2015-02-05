@@ -3,7 +3,6 @@
 from copy import deepcopy
 
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from poleno.utils.misc import decorate
@@ -29,12 +28,12 @@ class ProfileAdmin(admin.ModelAdmin):
             u'city',
             ]
 
-    @decorate(short_description=_(u'Profile'))
+    @decorate(short_description=u'Profile')
     @decorate(admin_order_field=u'pk')
     def profile_column(self, profile):
         return admin_obj_format(profile, link=False)
 
-    @decorate(short_description=_(u'User'))
+    @decorate(short_description=u'User')
     @decorate(admin_order_field=u'user__email')
     def user_column(self, profile):
         user = profile.user
@@ -55,7 +54,7 @@ class ProfileAdmin(admin.ModelAdmin):
     inlines = [
             ]
 
-    @decorate(short_description=_(u'User'))
+    @decorate(short_description=u'User')
     def user_details_field(self, profile):
         user = profile.user
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
@@ -79,7 +78,7 @@ class UserAdminMixin(admin.ModelAdmin):
                 ]
         super(UserAdminMixin, self).__init__(*args, **kwargs)
 
-    @decorate(short_description=_(u'Profile'))
+    @decorate(short_description=u'Profile')
     def profile_field(self, user):
         profile = user.profile
         return admin_obj_format(profile)

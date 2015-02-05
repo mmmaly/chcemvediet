@@ -1,14 +1,13 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "menu:admin/base_site.html" %}
-{% load blocktrans from i18n %}
 {% load external_css external_js from poleno.utils %}
 {% load compressed_css compressed_js from compressed %}
 
-{% block title %}{{ title }} | {% blocktrans %}Chcemvedieť Administration{% endblocktrans %}{% endblock %}
+{% block title %}{{ title }} | Chcemvedieť Administration{% endblock %}
 
 {% block branding %}{{ block.super }}
   <div style="position: absolute; top: 0; left: 120px; height: 41px; line-height: 41px; color: white; font-size: 20px;">
-    {% blocktrans %}Chcemvedieť Administration{% endblocktrans %}
+    Chcemvedieť Administration
   </div>
 {% endblock %}
 

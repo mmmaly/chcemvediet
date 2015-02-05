@@ -9,7 +9,6 @@ from django.core.exceptions import ValidationError
 from django.utils import formats
 from django.utils.http import urlencode
 from django.utils.html import escape
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 
 from poleno.attachments.forms import AttachmentsField
@@ -30,10 +29,10 @@ class RecipientInlineForm(forms.ModelForm):
         status = cleaned_data.get(u'status', None)
         if status and message:
             if message.type == Message.TYPES.INBOUND and status not in Recipient.INBOUND_STATUSES:
-                self._errors[u'status'] = self.error_class([_(u'Must be an inbound status.')])
+                self._errors[u'status'] = self.error_class([u'Must be an inbound status.'])
                 del cleaned_data[u'status']
             elif message.type == Message.TYPES.OUTBOUND and status not in Recipient.OUTBOUND_STATUSES:
-                self._errors[u'status'] = self.error_class([_(u'Must be an outbound status.')])
+                self._errors[u'status'] = self.error_class([u'Must be an outbound status.'])
                 del cleaned_data[u'status']
 
         return cleaned_data
@@ -49,7 +48,7 @@ class RecipientInlineFormSet(forms.models.BaseInlineFormSet):
             if form.cleaned_data and not form.cleaned_data.get(u'DELETE'):
                 break # There is a valid recipint
         else:
-            raise ValidationError(_(u'Recipients are required.'))
+            raise ValidationError(u'Recipients are required.')
 
 class RecipientInline(admin.TabularInline):
     model = Recipient
@@ -68,39 +67,39 @@ class RecipientInline(admin.TabularInline):
 
 class MessageAdminAddForm(forms.ModelForm):
     from_formatted = forms.CharField(
-            label=_(u'From'),
-            help_text=escape(squeeze(_(u"""
+            label=u'From',
+            help_text=escape(squeeze(u"""
                 Sender e-mail address, e.g. "John Smith <smith@example.com>".
-                """))),
+                """)),
             validators=[validate_formatted_email],
             widget=admin.widgets.AdminTextInputWidget(),
             )
     to_formatted = forms.CharField(
-            label=_(u'To'),
-            help_text=escape(squeeze(_(u"""
+            label=u'To',
+            help_text=escape(squeeze(u"""
                 Comma separated list of 'To' recipients, e.g. "John Smith <smith@example.com>,
                 agency@example.com".
-                """))),
+                """)),
             required=False,
             validators=[validate_comma_separated_emails],
             widget=admin.widgets.AdminTextInputWidget(),
             )
     cc_formatted = forms.CharField(
-            label=_(u'Cc'),
-            help_text=escape(squeeze(_(u"""
+            label=u'Cc',
+            help_text=escape(squeeze(u"""
                 Comma separated list of 'Cc' recipients, e.g. "John Smith <smith@example.com>,
                 agency@example.com".
-                """))),
+                """)),
             required=False,
             validators=[validate_comma_separated_emails],
             widget=admin.widgets.AdminTextInputWidget(),
             )
     bcc_formatted = forms.CharField(
-            label=_(u'Bcc'),
-            help_text=escape(squeeze(_(u"""
+            label=u'Bcc',
+            help_text=escape(squeeze(u"""
                 Comma separated list of 'Bcc' recipients, e.g. "John Smith <smith@example.com>,
                 agency@example.com".
-                """))),
+                """)),
             required=False,
             validators=[validate_comma_separated_emails],
             widget=admin.widgets.AdminTextInputWidget(),
@@ -122,7 +121,7 @@ class MessageAdminAddForm(forms.ModelForm):
 
         if u'to_formatted' in cleaned_data and u'cc_formatted' in cleaned_data and u'bcc_formatted' in cleaned_data:
             if not cleaned_data[u'to_formatted'] and not cleaned_data[u'cc_formatted'] and not cleaned_data[u'bcc_formatted']:
-                self._errors[u'to_formatted'] = self.error_class([_(u"At least one of 'To', 'Cc' or 'Bcc' is required.")])
+                self._errors[u'to_formatted'] = self.error_class([u"At least one of 'To', 'Cc' or 'Bcc' is required."])
                 del cleaned_data[u'to_formatted']
 
         return cleaned_data
@@ -184,9 +183,9 @@ class MessageAdmin(admin.ModelAdmin):
             ]
     list_filter = [
             u'type',
-            simple_list_filter_factory(_(u'Processed'), u'processed', [
-                (u'1', _(u'Yes'), lambda qs: qs.processed()),
-                (u'0', _(u'No'),  lambda qs: qs.not_processed()),
+            simple_list_filter_factory(u'Processed', u'processed', [
+                (u'1', u'Yes', lambda qs: qs.processed()),
+                (u'0', u'No',  lambda qs: qs.not_processed()),
                 ]),
             u'processed',
             ]
@@ -199,17 +198,17 @@ class MessageAdmin(admin.ModelAdmin):
             u'received_for',
             ]
 
-    @decorate(short_description=_(u'Message'))
+    @decorate(short_description=u'Message')
     @decorate(admin_order_field=u'pk')
     def message_column(self, message):
         return admin_obj_format(message, link=False)
 
-    @decorate(short_description=_(u'From'))
+    @decorate(short_description=u'From')
     @decorate(admin_order_field=u'from_mail')
     def from_formatted_column(self, message):
         return message.from_formatted
 
-    @decorate(short_description=_(u'Recipients'))
+    @decorate(short_description=u'Recipients')
     def recipients_formatted_column(self, message):
         res = []
         for label, formatted in [
@@ -235,7 +234,7 @@ class MessageAdmin(admin.ModelAdmin):
                     (u'text', u'html'),
                     ],
                 }),
-            (_(u'Advanced'), {
+            (u'Advanced', {
                 u'classes': [u'collapse'],
                 u'fields': [
                     u'headers',
@@ -257,7 +256,7 @@ class MessageAdmin(admin.ModelAdmin):
                     u'attachments',
                     ],
                 }),
-            (_(u'Advanced'), {
+            (u'Advanced', {
                 u'classes': [u'collapse'],
                 u'fields': [
                     u'headers',
@@ -288,7 +287,7 @@ class MessageAdmin(admin.ModelAdmin):
 
             date = formats.date_format(message.processed, u'DATETIME_FORMAT')
             name = message.from_name or message.from_mail
-            quote = _(u'On {date}, {name} wrote:').format(date=date, name=name)
+            quote = u'On {date}, {name} wrote:'.format(date=date, name=name)
             query[u'text'] = u'\n\n%s\n%s\n' % (quote, u'\n'.join(u'> %s' % l for l in message.text.split(u'\n')))
             query[u'html'] = u'\n\n%s\n%s\n' % (quote, u'\n'.join(u'> %s' % l for l in message.html.split(u'\n')))
 

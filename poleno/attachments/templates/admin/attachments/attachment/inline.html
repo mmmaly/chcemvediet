@@ -1,10 +1,9 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
 {% load generic_type method from poleno.utils %}
 
 {% include "admin/edit_inline/tabular.html" %}
 
 <ul class="object-tools" style="margin: 0 0 1em 0;">
-  <li><a class="addlink" href="{% url "admin:attachments_attachment_add" %}?generic_type={{ original|generic_type|method:"pk" }}&generic_id={{ original.pk }}">{% blocktrans %}Add Attachment{% endblocktrans %}</a></li>
+  <li><a class="addlink" href="{% url "admin:attachments_attachment_add" %}?generic_type={{ original|generic_type|method:"pk" }}&generic_id={{ original.pk }}">Add Attachment</a></li>
 </ul>
 <div style="clear: both;"></div>

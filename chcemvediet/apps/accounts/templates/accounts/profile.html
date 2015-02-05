@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,30 +9,30 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}User Profile{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'accounts:profile:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}User Profile{% endblocktrans %} <small>{{ user.get_full_name }}</small></h1>
+  <h1>{% trans 'accounts:profile:heading' %} <small>{{ user.get_full_name }}</small></h1>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}E-mail{% endblocktrans %}:</p>
+    <p class="span2 text-right">{% trans 'accounts:profile:email' %}:</p>
     <p class="span10">{{ user.email }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Street{% endblocktrans %}:</p>
+    <p class="span2 text-right">{% trans 'accounts:profile:street' %}:</p>
     <p class="span10">{{ user.profile.street }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}City{% endblocktrans %}:</p>
+    <p class="span2 text-right">{% trans 'accounts:profile:city' %}:</p>
     <p class="span10">{{ user.profile.city }}</p>
   </div>
   <div class="row">
-    <p class="span2 text-right">{% blocktrans %}Zip{% endblocktrans %}:</p>
+    <p class="span2 text-right">{% trans 'accounts:profile:zip' %}:</p>
     <p class="span10">{{ user.profile.zip }}</p>
   </div>
   <p>
-    <a class="btn" href="{% url 'account_change_password' %}">{% blocktrans %}Change Password{% endblocktrans %}</a>
-    <a class="btn" href="{% url 'account_email' %}">{% blocktrans %}Manage E-mails{% endblocktrans %}</a>
-    <a class="btn" href="{% url 'socialaccount_connections' %}">{% blocktrans %}Manage Connections{% endblocktrans %}</a>
+    <a class="btn" href="{% url 'account_change_password' %}">{% trans 'accounts:profile:change_password' %}</a>
+    <a class="btn" href="{% url 'account_email' %}">{% trans 'accounts:profile:manage_emails' %}</a>
+    <a class="btn" href="{% url 'socialaccount_connections' %}">{% trans 'accounts:profile:manage_connections' %}</a>
   </p>
 {% endblock %}
 

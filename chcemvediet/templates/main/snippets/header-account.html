@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load active from poleno.utils %}
 
 {% comment %}
@@ -13,15 +13,15 @@
   <li class="dropdown {% if request|active:'accounts' %}active{% endif %}">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.email }} <b class="caret"></b></a>
     <ul class="dropdown-menu">
-      <li><a href="{% url 'accounts:profile' %}">{% blocktrans %}User Profile{% endblocktrans %}</a></li>
-      <li><a href="{% url 'account_change_password' %}">{% blocktrans %}Change Password{% endblocktrans %}</a></li>
-      <li><a href="{% url 'account_email' %}">{% blocktrans %}Manage E-mails{% endblocktrans %}</a></li>
-      <li><a href="{% url 'socialaccount_connections' %}">{% blocktrans %}Manage Connections{% endblocktrans %}</a></li>
+      <li><a href="{% url 'accounts:profile' %}">{% trans 'main:menu:account:profile' %}</a></li>
+      <li><a href="{% url 'account_change_password' %}">{% trans 'main:menu:account:password' %}</a></li>
+      <li><a href="{% url 'account_email' %}">{% trans 'main:menu:account:email' %}</a></li>
+      <li><a href="{% url 'socialaccount_connections' %}">{% trans 'main:menu:account:connections' %}</a></li>
       <li class="divider"></li>
-      <li><a href="{% url 'account_logout' %}" class="post" data-post-csrfmiddlewaretoken="{{ csrf_token }}">{% blocktrans %}Log Out{% endblocktrans %}</a></li>
+      <li><a href="{% url 'account_logout' %}" class="post" data-post-csrfmiddlewaretoken="{{ csrf_token }}">{% trans 'main:menu:account:logout' %}</a></li>
     </ul>
   </li>
 {% else %}
-  <li {% if request|active:'account_login' %}class="active"{% endif %}><a href="{% url 'account_login' %}">{% blocktrans %}Sign In{% endblocktrans %}</a></li>
-  <li {% if request|active:'account_signup' %}class="active"{% endif %}><a href="{% url 'account_signup' %}">{% blocktrans %}Sign Up{% endblocktrans %}</a></li>
+  <li {% if request|active:'account_login' %}class="active"{% endif %}><a href="{% url 'account_login' %}">{% trans 'main:menu:account:login' %}</a></li>
+  <li {% if request|active:'account_signup' %}class="active"{% endif %}><a href="{% url 'account_signup' %}">{% trans 'main:menu:account:signup' %}</a></li>
 {% endif %}

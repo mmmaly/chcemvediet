@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,9 +9,9 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Verify Your E-mail Address{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'account:verification_sent:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Verify Your E-mail Address{% endblocktrans %}</h1>
+  <h1>{% trans 'account:verification_sent:heading' %}</h1>
   {% include "account/texts/verification_sent-text.html" %}
 {% endblock %}

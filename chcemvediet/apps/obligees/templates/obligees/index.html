@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 {% load range from poleno.utils %}
 
 {% comment %}
@@ -10,17 +10,17 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Obligees List{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'obligees:index:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Obligees List{% endblocktrans %}</h1>
+  <h1>{% trans 'obligees:index:heading' %}</h1>
   {% include "obligees/texts/index-text.html" with obligee_page=obligee_page %}
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>{% blocktrans %}Organization{% endblocktrans %}</th>
-        <th>{% blocktrans %}Address{% endblocktrans %}</th>
-        <th>{% blocktrans %}E-mail{% endblocktrans %}</th>
+        <th>{% trans 'obligees:index:table:name' %}</th>
+        <th>{% trans 'obligees:index:table:address' %}</th>
+        <th>{% trans 'obligees:index:table:emails' %}</th>
       </tr>
     </thead>
     <tbody>

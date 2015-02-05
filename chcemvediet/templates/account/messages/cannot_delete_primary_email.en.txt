@@ -1,5 +1,4 @@
 {# vim: set filetype=django :#}
-{% load blocktrans from i18n %}
 
 {% comment %}
  %
@@ -8,4 +7,4 @@
  %
 {% endcomment %}
 
-{% blocktrans %}Removed e-mail address {{ email }}.{% endblocktrans %}
+You cannot remove your primary e-mail address ({{ email }}).

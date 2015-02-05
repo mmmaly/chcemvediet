@@ -1,9 +1,8 @@
 {# vim: set filetype=htmldjango :#}
-{% load blocktrans from i18n %}
 
 {% include "admin/edit_inline/tabular.html" %}
 
 <ul class="object-tools" style="margin: 0 0 1em 0;">
-  <li><a class="addlink" href="{% url "admin:inforequests_inforequestdraft_add" %}?applicant={{ original.pk }}">{% blocktrans %}Add Inforequest Draft{% endblocktrans %}</a></li>
+  <li><a class="addlink" href="{% url "admin:inforequests_inforequestdraft_add" %}?applicant={{ original.pk }}">Add Inforequest Draft</a></li>
 </ul>
 <div style="clear: both;"></div>

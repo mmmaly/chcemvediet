@@ -6,28 +6,28 @@ from django.utils.translation import ugettext_lazy as _
 class SignupForm(forms.Form):
     first_name = forms.CharField(
             max_length=30,
-            label=_(u'First name'),
-            widget=forms.TextInput(attrs={u'placeholder': _(u'First name')}),
+            label=_(u'accounts:SignupForm:first_name:label'),
+            widget=forms.TextInput(attrs={u'placeholder': _(u'accounts:SignupForm:first_name:placeholder')}),
             )
     last_name = forms.CharField(
             max_length=30,
-            label=_(u'Last name'),
-            widget=forms.TextInput(attrs={u'placeholder': _(u'Last name')}),
+            label=_(u'accounts:SignupForm:last_name:label'),
+            widget=forms.TextInput(attrs={u'placeholder': _(u'accounts:SignupForm:last_name:placeholder')}),
             )
     street = forms.CharField(
             max_length=100,
-            label=_(u'Street'),
-            widget=forms.TextInput(attrs={u'placeholder': _(u'Street')}),
+            label=_(u'accounts:SignupForm:street:label'),
+            widget=forms.TextInput(attrs={u'placeholder': _(u'accounts:SignupForm:street:placeholder')}),
             )
     city = forms.CharField(
             max_length=30,
-            label=_(u'City'),
-            widget=forms.TextInput(attrs={u'placeholder': _(u'City')}),
+            label=_(u'accounts:SignupForm:city:label'),
+            widget=forms.TextInput(attrs={u'placeholder': _(u'accounts:SignupForm:city:placeholder')}),
             )
     zip = forms.RegexField(
             max_length=5,
-            label=_(u'Zip'),
-            widget=forms.TextInput(attrs={u'placeholder': _(u'Zip')}),
+            label=_(u'accounts:SignupForm:zip:label'),
+            widget=forms.TextInput(attrs={u'placeholder': _(u'accounts:SignupForm:zip:placeholder')}),
             regex=r'^\d{5}$',
             )
 

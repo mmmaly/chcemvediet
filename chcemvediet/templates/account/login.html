@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
-{% load blocktrans from i18n %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -12,10 +12,10 @@
  %
 {% endcomment %}
 
-{% block title %}{% blocktrans %}Sign In{% endblocktrans %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'account:login:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}Sign In{% endblocktrans %}</h1>
+  <h1>{% trans 'account:login:heading' %}</h1>
   <form class="form-horizontal" method="post" action="{% url 'account_login' %}">
     {% csrf_token %}
     <div class="row">
@@ -30,7 +30,7 @@
           <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
         {% endif %}
         <div class="control-group">
-          <label class="control-label">{% blocktrans %}Sign In With{% endblocktrans %}:</label>
+          <label class="control-label">{% trans 'account:login:social_buttons' %}:</label>
           <div class="controls">
             {% include "account/snippets/social_login_buttons.html" with process="login" %}
           </div>
@@ -41,8 +41,8 @@
       </div>
     </div>
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">{% blocktrans %}Sign In{% endblocktrans %} &raquo;</button>
-      <a href="{% url 'account_reset_password' %}">{% blocktrans %}Forgot Password?{% endblocktrans %}</a>
+      <button type="submit" class="btn btn-primary">{% trans 'account:login:submit' %} &raquo;</button>
+      <a href="{% url 'account_reset_password' %}">{% trans 'account:login:reset_password' %}</a>
     </div>
   </form>
 {% endblock %}

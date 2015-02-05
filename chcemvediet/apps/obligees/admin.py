@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from aggregate_if import Count
@@ -24,26 +23,26 @@ class ObligeeAdminBranchInline(admin.TabularInline):
             ]
     readonly_fields = fields
 
-    @decorate(short_description=_(u'Branch'))
+    @decorate(short_description=u'Branch')
     def branch_field(self, branch):
         return admin_obj_format(branch)
 
-    @decorate(short_description=_(u'Inforequest'))
+    @decorate(short_description=u'Inforequest')
     def inforequest_field(self, branch):
         inforequest = branch.inforequest
         return admin_obj_format(inforequest)
 
-    @decorate(short_description=_(u'Closed'))
+    @decorate(short_description=u'Closed')
     @decorate(boolean=True)
     def inforequest_closed_field(self, branch):
         return branch.inforequest.closed
 
-    @decorate(short_description=_(u'Applicant'))
+    @decorate(short_description=u'Applicant')
     def inforequest_applicant_field(self, branch):
         user = branch.inforequest.applicant
         return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
 
-    @decorate(short_description=_(u'Main Branch'))
+    @decorate(short_description=u'Main Branch')
     @decorate(boolean=True)
     def main_branch_field(self, branch):
         return branch.is_main
@@ -63,9 +62,9 @@ class ObligeeAdmin(SimpleHistoryAdmin):
             u'branch_count_column',
             ]
     list_filter = [
-            simple_list_filter_factory(_(u'Branches'), u'branches', [
-                (u'1', _(u'With'), lambda qs: qs.filter(branch__count__gt=0)),
-                (u'0', _(u'Without'), lambda qs: qs.filter(branch__count=0)),
+            simple_list_filter_factory(u'Branches', u'branches', [
+                (u'1', u'With', lambda qs: qs.filter(branch__count__gt=0)),
+                (u'0', u'Without', lambda qs: qs.filter(branch__count=0)),
                 ]),
             u'status',
             ]
@@ -75,12 +74,12 @@ class ObligeeAdmin(SimpleHistoryAdmin):
             u'emails',
             ]
 
-    @decorate(short_description=_(u'Obligee'))
+    @decorate(short_description=u'Obligee')
     @decorate(admin_order_field=u'pk')
     def obligee_column(self, obligee):
         return admin_obj_format(obligee, link=False)
 
-    @decorate(short_description=_(u'Branches'))
+    @decorate(short_description=u'Branches')
     @decorate(admin_order_field=u'branch__count')
     def branch_count_column(self, obligee):
         return obligee.branch__count
@@ -132,12 +131,12 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
             u'name',
             ]
 
-    @decorate(short_description=_(u'Historical Obligee'))
+    @decorate(short_description=u'Historical Obligee')
     @decorate(admin_order_field=u'pk')
     def historicalobligee_column(self, historical):
         return admin_obj_format(historical, link=False)
 
-    @decorate(short_description=_(u'Obligee'))
+    @decorate(short_description=u'Obligee')
     @decorate(admin_order_field=u'id')
     def obligee_column(self, historical):
         obligee = historical.history_object
@@ -157,12 +156,12 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
             ]
     readonly_fields = fields
 
-    @decorate(short_description=_(u'Obligee'))
+    @decorate(short_description=u'Obligee')
     def obligee_field(self, historical):
         obligee = historical.history_object
         return admin_obj_format(obligee)
 
-    @decorate(short_description=_(u'History user'))
+    @decorate(short_description=u'History user')
     def history_user_field(self, historical):
         user = historical.history_user
         return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')

@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.models import QuerySet
 from poleno.utils.date import utc_now
@@ -42,32 +41,32 @@ class Attachment(models.Model):
     generic_object = generic.GenericForeignKey(u'generic_type', u'generic_id')
 
     # May NOT be NULL; Random local filename is generated in save() when creating a new object.
-    file = models.FileField(upload_to=u'attachments', max_length=255, verbose_name=_(u'File'))
+    file = models.FileField(upload_to=u'attachments', max_length=255)
 
     # May be empty; May NOT be trusted, set by client.
-    name = models.CharField(max_length=255, verbose_name=_(u'Name'),
-            help_text=squeeze(_(u"""
+    name = models.CharField(max_length=255,
+            help_text=squeeze(u"""
                 Attachment file name, e.g. "document.pdf". The value does not have to be a valid
                 filename. It may be set by the user.
-                """)))
-    content_type = models.CharField(max_length=255, verbose_name=_(u'Content Type'),
-            help_text=squeeze(_(u"""
+                """))
+    content_type = models.CharField(max_length=255,
+            help_text=squeeze(u"""
                 Attachment content type, e.g. "application/pdf". The value does not have to be
                 a valid content type. It may be set by the user.
-                """)))
+                """))
 
     # May NOT be NULL; Automaticly computed in save() when creating a new object if undefined.
-    created = models.DateTimeField(blank=True, verbose_name=_(u'Created'),
-            help_text=squeeze(_(u"""
+    created = models.DateTimeField(blank=True,
+            help_text=squeeze(u"""
                 Date and time the attachment was uploaded or received by an email. Leave blank for
                 current time.
-                """)))
+                """))
 
     # May NOT by NULL; Automatically computed in save() when creating a new object.
-    size = models.IntegerField(blank=True, verbose_name=_(u'Size'),
-            help_text=squeeze(_(u"""
+    size = models.IntegerField(blank=True,
+            help_text=squeeze(u"""
                 Attachment file size in bytes. Automatically computed when creating a new object.
-                """)))
+                """))
 
     objects = AttachmentQuerySet.as_manager()
 

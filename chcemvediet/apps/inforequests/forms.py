@@ -6,7 +6,7 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_text
 from django.utils.functional import lazy
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
@@ -23,9 +23,9 @@ from .models import Branch, Action
 
 class InforequestForm(PrefixedForm):
     obligee = ObligeeAutocompleteField(
-            label=_(u'Obligee'),
+            label=_(u'inforequests:InforequestForm:obligee:label'),
             widget=ObligeeWithAddressInput(attrs={
-                u'placeholder': _(u'Search Obligee'),
+                u'placeholder': _(u'inforequests:InforequestForm:obligee:placeholder'),
                 u'class': u'with-tooltip span5',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -34,22 +34,22 @@ class InforequestForm(PrefixedForm):
                 }),
             )
     subject = forms.CharField(
-            label=_(u'Subject'),
+            label=_(u'inforequests:InforequestForm:subject:label'),
             max_length=255,
             widget=forms.TextInput(attrs={
-                u'placeholder': _(u'Subject'),
+                u'placeholder': _(u'inforequests:InforequestForm:subject:placeholder'),
                 u'class': u'span5',
                 }),
             )
     content = forms.CharField(
-            label=_(u'Request'),
+            label=_(u'inforequests:InforequestForm:content:label'),
             widget=forms.Textarea(attrs={
-                u'placeholder': _(u'Request'),
+                u'placeholder': _(u'inforequests:InforequestForm:content:placeholder'),
                 u'class': u'input-block-level',
                 }),
             )
     attachments = AttachmentsField(
-            label=_(u'Attachments'),
+            label=_(u'inforequests:InforequestForm:attachments:label'),
             required=False,
             upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
             download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,))),
@@ -109,7 +109,7 @@ class InforequestForm(PrefixedForm):
 
 class ActionAbstractForm(PrefixedForm):
     branch = forms.TypedChoiceField(
-            label=_(u'Obligee'),
+            label=_(u'inforequests:ActionAbstractForm:branch:label'),
             empty_value=None,
             widget=AutoSuppressedSelect(
                 attrs={
@@ -160,10 +160,10 @@ class ActionAbstractForm(PrefixedForm):
 
 class EffectiveDateMixin(ActionAbstractForm):
     effective_date = forms.DateField(
-            label=_(u'Effective Date'),
+            label=_(u'inforequests:EffectiveDateMixin:effective_date:label'),
             localize=True,
             widget=forms.DateInput(attrs={
-                u'placeholder': pgettext_lazy(u'Form Date Placeholder', u'mm/dd/yyyy'),
+                u'placeholder': _('inforequests:EffectiveDateMixin:effective_date:placeholder'),
                 u'class': u'datepicker with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -185,11 +185,11 @@ class EffectiveDateMixin(ActionAbstractForm):
             if effective_date:
                 try:
                     if branch and effective_date < branch.last_action.effective_date:
-                        raise ValidationError(_(u'May not be older than previous action.'))
+                        raise ValidationError(_(u'inforequests:EffectiveDateMixin:older_than_previous_error'))
                     if effective_date > local_today():
-                        raise ValidationError(_(u'May not be from future.'))
+                        raise ValidationError(_(u'inforequests:EffectiveDateMixin:from_future_error'))
                     if effective_date < local_today() - relativedelta(months=1):
-                        raise ValidationError(_(u'May not be older than one month.'))
+                        raise ValidationError(_(u'inforequests:EffectiveDateMixin:older_than_month_error'))
                 except ValidationError as e:
                     self._errors[u'effective_date'] = self.error_class(e.messages)
                     del cleaned_data[u'effective_date']
@@ -210,17 +210,17 @@ class EffectiveDateMixin(ActionAbstractForm):
 
 class SubjectContentMixin(ActionAbstractForm):
     subject = forms.CharField(
-            label=_(u'Subject'),
+            label=_(u'inforequests:SubjectContentMixin:subject:label'),
             max_length=255,
             widget=forms.TextInput(attrs={
-                u'placeholder': _(u'Subject'),
+                u'placeholder': _(u'inforequests:SubjectContentMixin:subject:placeholder'),
                 u'class': u'span5',
                 }),
             )
     content = forms.CharField(
-            label=_(u'Content'),
+            label=_(u'inforequests:SubjectContentMixin:content:label'),
             widget=forms.Textarea(attrs={
-                u'placeholder': _(u'Content'),
+                u'placeholder': _(u'inforequests:SubjectContentMixin:content:placeholder'),
                 u'class': u'input-block-level',
                 }),
             )
@@ -248,7 +248,7 @@ class SubjectContentMixin(ActionAbstractForm):
 
 class AttachmentsMixin(ActionAbstractForm):
     attachments = AttachmentsField(
-            label=_(u'Attachments'),
+            label=_(u'inforequests:AttachmentsMixin:attachments:label'),
             required=False,
             upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
             download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,))),
@@ -280,12 +280,12 @@ class AttachmentsMixin(ActionAbstractForm):
 
 class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
-            label=_(u'New Deadline'),
+            label=_(u'inforequests:DeadlineMixin:deadline:label'),
             initial=Action.DEFAULT_DEADLINES.EXTENSION,
             min_value=2,
             max_value=100,
             widget=forms.NumberInput(attrs={
-                u'placeholder': _(u'Deadline'),
+                u'placeholder': _(u'inforequests:DeadlineMixin:deadline:placeholder'),
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -312,9 +312,9 @@ class DeadlineMixin(ActionAbstractForm):
 
 class AdvancedToMixin(ActionAbstractForm):
     advanced_to_1 = ObligeeAutocompleteField(
-            label=_(u'Advanced To'),
+            label=_(u'inforequests:AdvancedToMixin:advanced_to_1:label'),
             widget=ObligeeWithAddressInput(attrs={
-                u'placeholder': _(u'Obligee'),
+                u'placeholder': _(u'inforequests:AdvancedToMixin:advanced_to_1:placeholder'),
                 u'class': u'with-tooltip span5',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -323,10 +323,10 @@ class AdvancedToMixin(ActionAbstractForm):
                 }),
             )
     advanced_to_2 = ObligeeAutocompleteField(
-            label=u'',
+            label=_(u'inforequests:AdvancedToMixin:advanced_to_2:label'),
             required=False,
             widget=ObligeeWithAddressInput(attrs={
-                u'placeholder': _(u'Obligee'),
+                u'placeholder': _(u'inforequests:AdvancedToMixin:advanced_to_2:placeholder'),
                 u'class': u'with-tooltip span5',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -335,10 +335,10 @@ class AdvancedToMixin(ActionAbstractForm):
                 }),
             )
     advanced_to_3 = ObligeeAutocompleteField(
-            label=u'',
+            label=_(u'inforequests:AdvancedToMixin:advanced_to_3:label'),
             required=False,
             widget=ObligeeWithAddressInput(attrs={
-                u'placeholder': _(u'Obligee'),
+                u'placeholder': _(u'inforequests:AdvancedToMixin:advanced_to_3:placeholder'),
                 u'class': u'with-tooltip span5',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
@@ -364,11 +364,11 @@ class AdvancedToMixin(ActionAbstractForm):
                 if advanced_to:
                     try:
                         if branch and advanced_to == branch.obligee:
-                            raise ValidationError(_(u'May not advance to the same obligee.'))
+                            raise ValidationError(_(u'inforequests:AdvancedToMixin:same_obligee_error'))
                         for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
                             advanced_to_2 = cleaned_data.get(field_2, None)
                             if advanced_to_2 == advanced_to:
-                                raise ValidationError(_(u'May not advance twice to the same obligee.'))
+                                raise ValidationError(_(u'inforequests:AdvancedToMixin:duplicate_obligee_error'))
                     except ValidationError as e:
                         self._errors[field] = self.error_class(e.messages)
                         del cleaned_data[field]
@@ -413,7 +413,7 @@ class AdvancedToMixin(ActionAbstractForm):
 
 class DisclosureLevelMixin(ActionAbstractForm):
     disclosure_level = forms.TypedChoiceField(
-            label=_(u'Disclosure Level'),
+            label=_(u'inforequests:DisclosureLevelMixin:disclosure_level:label'),
             choices=[(u'', u'')] + Action.DISCLOSURE_LEVELS._choices,
             coerce=int,
             empty_value=None,
@@ -444,7 +444,7 @@ class DisclosureLevelMixin(ActionAbstractForm):
 
 class RefusalReasonMixin(ActionAbstractForm):
     refusal_reason = forms.TypedChoiceField(
-            label=_(u'Refusal Reason'),
+            label=_(u'inforequests:RefusalReasonMixin:refusal_reason:label'),
             choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
             coerce=int,
             empty_value=None,
@@ -559,12 +559,12 @@ class AppealForm(NewActionCommonForm):
 
 class ExtendDeadlineForm(PrefixedForm):
     extension = forms.IntegerField(
-            label=_(u'Deadline Extension'),
+            label=_(u'inforequests:ExtendDeadlineForm:extension:label'),
             initial=5,
             min_value=2,
             max_value=100,
             widget=forms.NumberInput(attrs={
-                u'placeholder': _(u'Working Days'),
+                u'placeholder': _(u'inforequests:ExtendDeadlineForm:extension:placeholder'),
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/extend_deadline.txt'),

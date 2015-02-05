@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
 from django.utils.http import urlencode
 from django.utils.html import format_html
 
@@ -14,25 +13,25 @@ from chcemvediet.apps.inforequests.models import InforequestEmail
 
 ADMIN_LINKS = [
         dict(
-            title=_(u'List of unassigned received e-mails.'),
+            title=u'List of unassigned received e-mails.',
             viewname=u'admin:mail_message_changelist',
             urlargs=dict(type__exact=Message.TYPES.INBOUND, assigned=0),
             queryset=Message.objects.inbound().filter(inforequest__isnull=True),
             ),
         dict(
-            title=_(u'List of undecided e-mails assigned to closed inforequests.'),
+            title=u'List of undecided e-mails assigned to closed inforequests.',
             viewname=u'admin:inforequests_inforequestemail_changelist',
             urlargs=dict(type__exact=InforequestEmail.TYPES.UNDECIDED, inforequest__closed__exact=1),
             queryset=InforequestEmail.objects.filter(type=InforequestEmail.TYPES.UNDECIDED, inforequest__closed=True),
             ),
         dict(
-            title=_(u'List of e-mails marked as unrelated.'),
+            title=u'List of e-mails marked as unrelated.',
             viewname=u'admin:inforequests_inforequestemail_changelist',
             urlargs=dict(type__exact=InforequestEmail.TYPES.UNRELATED),
             queryset=InforequestEmail.objects.filter(type=InforequestEmail.TYPES.UNRELATED),
             ),
         dict(
-            title=_(u"List of e-mails the user didn't know how to decide."),
+            title=u"List of e-mails the user didn't know how to decide.",
             viewname=u'admin:inforequests_inforequestemail_changelist',
             urlargs=dict(type__exact=InforequestEmail.TYPES.UNKNOWN),
             queryset=InforequestEmail.objects.filter(type=InforequestEmail.TYPES.UNKNOWN),
@@ -42,7 +41,7 @@ ADMIN_LINKS = [
 if settings.DEBUG:
     ADMIN_LINKS += [
             dict(
-                title=_(u'Timewarp'),
+                title=u'Timewarp',
                 viewname=u'admin:timewarp',
                 ),
             ]
@@ -50,7 +49,7 @@ if settings.DEBUG:
 ADMIN_MODEL_GROUPS = [
         # Obligee models
         dict(
-            title=_(u'Obligees'),
+            title=u'Obligees',
             models=[
                 u'chcemvediet.apps.obligees.models.Obligee',
                 u'chcemvediet.apps.obligees.models.HistoricalObligee',
@@ -58,7 +57,7 @@ ADMIN_MODEL_GROUPS = [
             ),
         # Inforequest models
         dict(
-            title=_(u'Inforequests'),
+            title=u'Inforequests',
             models=[
                 u'chcemvediet.apps.inforequests.models.InforequestDraft',
                 u'chcemvediet.apps.inforequests.models.Inforequest',
@@ -70,7 +69,7 @@ ADMIN_MODEL_GROUPS = [
             ),
         # E-mail and attachment models
         dict(
-            title=_(u'E-mails'),
+            title=u'E-mails',
             models=[
                 u'poleno.mail.*',
                 u'poleno.attachments.*',
@@ -78,23 +77,23 @@ ADMIN_MODEL_GROUPS = [
             ),
         # User, account and social account models
         dict(
-            title=_(u'Accounts'),
+            title=u'Accounts',
             children=[
                 dict(
-                    title=_(u'Users'),
+                    title=u'Users',
                     models=[
                         u'django.contrib.auth.*',
                         u'chcemvediet.apps.accounts.*',
                         ],
                     ),
                 dict(
-                    title=_(u'E-mail Addresses'),
+                    title=u'E-mail Addresses',
                     models=[
                         u'allauth.account.*',
                         ],
                     ),
                 dict(
-                    title=_(u'Social Accounts'),
+                    title=u'Social Accounts',
                     models=[
                         u'allauth.socialaccount.*',
                         ],
@@ -133,15 +132,15 @@ class CustomMenu(Menu):
 
     def init_with_context(self, context):
         # Link to home and bookmarks
-        self.children.append(items.MenuItem(_(u'Dashboard'), reverse(u'admin:index')))
+        self.children.append(items.MenuItem(u'Dashboard', reverse(u'admin:index')))
         self.children.append(items.Bookmarks())
 
         # Links submenu
-        self.children.append(items.MenuItem(_(u'Administration'), children=[self._create_link(**l) for l in ADMIN_LINKS]))
+        self.children.append(items.MenuItem(u'Administration', children=[self._create_link(**l) for l in ADMIN_LINKS]))
 
         # Models submenu
-        self.children.append(items.MenuItem(_(u'Models'), children=[self._create_model_group(**g) for g in ADMIN_MODEL_GROUPS]))
-        self.children[-1].children.append(items.AppList(_(u'Other Models'), exclude=self._used_models()))
+        self.children.append(items.MenuItem(u'Models', children=[self._create_model_group(**g) for g in ADMIN_MODEL_GROUPS]))
+        self.children[-1].children.append(items.AppList(u'Other Models', exclude=self._used_models()))
 
 
 class CustomIndexDashboard(Dashboard):
@@ -162,13 +161,13 @@ class CustomIndexDashboard(Dashboard):
 
     def init_with_context(self, context):
         # Links module
-        self.children.append(modules.LinkList(_(u'Administration'), children=[self._create_link(**l) for l in ADMIN_LINKS]))
+        self.children.append(modules.LinkList(u'Administration', children=[self._create_link(**l) for l in ADMIN_LINKS]))
 
         # Models module
-        self.children.append(modules.Group(_(u'Models'), display=u'accordion', children=[self._create_model_group(**g) for g in ADMIN_MODEL_GROUPS]))
+        self.children.append(modules.Group(u'Models', display=u'accordion', children=[self._create_model_group(**g) for g in ADMIN_MODEL_GROUPS]))
 
         # Recent actions module
-        self.children.append(modules.RecentActions(_('Recent Actions'), limit=5))
+        self.children.append(modules.RecentActions('Recent Actions', limit=5))
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     title = ''
@@ -178,5 +177,5 @@ class CustomAppIndexDashboard(AppIndexDashboard):
         self.children.append(modules.ModelList(self.app_title, self.models))
 
         # Recent actions module
-        self.children.append(modules.RecentActions(_('Recent Actions'), limit=5,
+        self.children.append(modules.RecentActions('Recent Actions', limit=5,
             include_list=self.get_app_content_types()))

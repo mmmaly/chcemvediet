@@ -8,7 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import patterns, url
 from django.db import models
 from django.http import HttpResponse, HttpResponseNotFound
-from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html, format_html_join, conditional_escape
 from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
@@ -146,6 +145,6 @@ class AdminLiveFieldsMixin(admin.ModelAdmin):
     def get_urls(self):
         info = self.model._meta.app_label, self.model._meta.model_name
         urls = patterns('',
-                url(_(r'^live/(.+)/$'), self.admin_site.admin_view(self.live_view), name=u'%s_%s_live' % info),
+                url(r'^live/(.+)/$', self.admin_site.admin_view(self.live_view), name=u'%s_%s_live' % info),
                 )
         return urls + super(AdminLiveFieldsMixin, self).get_urls()
