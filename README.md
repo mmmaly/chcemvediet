@@ -261,20 +261,11 @@ translated in place is exported into the localization `*.po` file stored in `loc
 a rule, templates with lots of text but no structrure are translated in place and templates with
 lots of structure but short on text are translated via the localization file.
 
-Templates with their own translated versions can be edited directly. Editing templates with no
-in place translation is a bit more complicated. To change the Slovak translation of such template,
-open localization file `locale/sk/LC_MESSAGES/django.po`, find the translations, edit them and
+Templates with their own translated versions can be edited directly. Editing templates with no in
+place translation is a bit more complicated. To change the translation of such template, open
+localization file `locale/{sk,en}/LC_MESSAGES/django.po`, find the translations, edit them and
 compile them:
 
 	$ cd chcemvediet/chcemvediet
 	$ ../env/bin/python ../manage.py compilemessages
-
-To change the English translation of such template, foremost, change the English text directly in
-the template and regenerate the localization file:
-
-	$ cd chcemvediet/chcemvediet
-	$ ../env/bin/python ../manage.py makemessages -l sk
-
-Then update respective Slovak translations in the localization file and compile them. Don't forget
-to commit and push your changes to the repository.
 
