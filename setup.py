@@ -244,7 +244,7 @@ def configure_devbar(configure, settings):
     devbar_message = {
             u'local_with_no_mail':          u'',
             u'local_with_local_mail':       u'',
-            u'dev_with_no_mail':            u'<strong>Warning:</strong> This is a development server. No emails are sent anywhere. To view what would be sent, use <a href="/admin/mail/message/">Admin Interface</a>.',
+            u'dev_with_no_mail':            u'<strong>Warning:</strong> This is a development server. No emails are sent anywhere. To view what would be sent, use <a href="/admin/mail/message/">admin interface</a>.',
             u'dev_with_dummy_obligee_mail': u'<strong>Warning:</strong> This is a development server. All obligee email addresses are replaced with dummies: %s.' % obligee_dummy_mail,
             u'production':                  u'',
             }[server_mode]
