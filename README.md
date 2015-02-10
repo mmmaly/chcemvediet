@@ -29,8 +29,8 @@ To prepare your local development environment, run the following commands:
 	$ cd chcemvediet
 	$ python setup.py
 
-The configuration script will ask you to input several options. Among other things it will ask you
-to choose server mode. There are 5 server modes. Local development mode with no email
+The configuration script will ask you to input some options. Among other things it will ask you to
+choose server mode. There are several server modes. Local development mode with no email
 infrastructure and online development mode with no email infrastructure do not send any emails at
 all. They just store them in the database. You can use admin interface to see emails sent from the
 application and to manually mock replies to them. Local development mode with dummy email
@@ -41,7 +41,8 @@ addresses sends real emails using Mandrill service, however, obligee email addre
 with dummies, so you won't send any unsolicited emails to them. For details on the dummy e-mail
 infrastructure see [Dummy e-mail infrastructure](#5-dummy-e-mail-infrastructure) section, and for
 instructions how to setup Mandrill see [Mandrill transactional e-mail
-servis](#4-mandrill-transactional-e-mail-servis) section below.
+servis](#4-mandrill-transactional-e-mail-servis) section below. For local development use one of
+the local development modes.
 
 The script will ask you for your OAuth Client IDs and Secrets for social account providers. See
 [Social accounts application keys](#3-social-accounts-application-keys) section bellow for details
@@ -60,7 +61,7 @@ a rather old environment.
 To migrate to an updated version of the site, run the following commands:
 
 	$ git pull
-	$ env/bin/python chcemvediet/setup.py
+	$ env/bin/python setup.py
 
 If some migrations fail, try to run then once or twice again. Sometimes it helps.
 
@@ -92,6 +93,7 @@ We run production server on Apache using `mod_wsgi` and MySQL database.
 ### 2.1. Dependencies
 
 You need the following packages installed
+
  * apache2 (ver. 2.2.x)
  * mysql-server (ver. 5.5.5+)
  * python (ver. 2.7.x)
@@ -109,10 +111,10 @@ To prepare your server environment, run the following commands:
 	$ cd chcemvediet
 	$ python setup.py
 
-In configuration script `configure.py` select one of the online development server modes or the
-production server mode. Online development server modes have enabled some debug options that can be
-usefull during pre-alpha testing. In addition to questions asked in local development mode, the
-script will ask you to enter your database credentails.
+In the configuration script select one of the online development server modes or the production
+server mode. Online development server modes have enabled some debug options that can be usefull
+during pre-alpha testing. In addition to questions asked in local development mode, the script will
+ask you to enter your database credentails.
 
 
 ### 2.3. Apache Configuration
@@ -147,6 +149,7 @@ and `{group}` are unix user and group names the server will run under.
 
  2. Select the project, click on 'APIs & auth' / 'Credentials' and 'Create new Client ID' with the
     following options:
+
       * Application type: Web application
       * Authorized JavaScript origins: `http://{domain}/`
       * Authorized redirect URI:
