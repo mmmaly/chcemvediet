@@ -85,7 +85,7 @@ If some migrations fail, try to run then once or twice again. Sometimes it helps
  4. Now, you can navigate your browser to: http://127.0.0.1:8000/ and start using it.
 
 
-## 2. Production Server
+## 2. Online Development and Production Servers
 
 We run production server on Apache using `mod_wsgi` and MySQL database.
 
