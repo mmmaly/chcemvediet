@@ -265,19 +265,19 @@ def configure_database(configure, settings):
 def configure_mandrill(configure, settings):
     server_mode = configure.get(u'server_mode')
     if server_mode in [u'dev_with_dummy_obligee_mail', u'production']:
-        print(dedent(u"""
+        print(INFO + textwrap.dedent(u"""
                 Madrill is a transactional mail service we use to send emails. To setup it, you
                 need to have a webhook URL Mandrill server can access. If you are running your
                 server behing a firewall or NAT, you need to setup a tunelling reverse proxy to
                 your localhost. See https://ngrok.com/ for instance. Please enter your webhook
                 URL prefix. If using ngrok, your prefix should look like
                 "https://<yoursubdomain>.ngrok.com/". If using a public server, the prefix
-                should be "https://<yourdomain>/"."""))
+                should be "https://<yourdomain>/".""") + RESET)
         mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix', required=True)
         mandrill_webhook_secret = configure.auto(u'mandrill_webhook_secret', generate_secret_key(32, string.digits + string.letters))
         mandrill_webhook_url = u'%s/mandrill/webhook/?secret=%s' % (mandrill_webhook_prefix.rstrip(u'/'), mandrill_webhook_secret)
         mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
-        print(dedent(u"""
+        print(INFO + textwrap.dedent(u"""
                 After you finish this configuration and run your server, you can open Mandrill
                 webhook settings and create a webhook with the following URL:
 
@@ -288,7 +288,7 @@ def configure_mandrill(configure, settings):
                 configuration once again and enter all their keys as given by Mandrill. If you
                 are entering multiple webhook keys, separate them with space. Leave the key
                 empty if you have not created the webhook yet."""
-                % mandrill_webhook_url))
+                % mandrill_webhook_url) + RESET)
         mandrill_webhook_keys = configure.input(u'mandrill_webhook_keys', u'Mandrill webhook keys')
         settings.setting(u'MANDRILL_WEBHOOK_SECRET', mandrill_webhook_secret)
         settings.setting(u'MANDRILL_WEBHOOK_URL', mandrill_webhook_url)
