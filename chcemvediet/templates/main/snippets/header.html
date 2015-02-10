@@ -9,24 +9,33 @@
  %
 {% endcomment %}
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="brand {% if request|active:'index' %}active{% endif %}" href="{% url 'index' %}">{% trans 'main:menu:brand' %}</a>
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          {% include "main/snippets/header-menu.html" %}
-        </ul>
-        <ul class="nav pull-right">
-          {% include "main/snippets/header-account.html" %}
-          {% include "main/snippets/header-language.html" %}
-        </ul>
+<div class="fixed">
+  {% if DEVBAR_MESSAGE %}
+    <div class="devbar">
+      <div class="container">
+        <p>{{ DEVBAR_MESSAGE|safe }}</p>
+      </div>
+    </div>
+  {% endif %}
+  <div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand {% if request|active:'index' %}active{% endif %}" href="{% url 'index' %}">{% trans 'main:menu:brand' %}</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            {% include "main/snippets/header-menu.html" %}
+          </ul>
+          <ul class="nav pull-right">
+            {% include "main/snippets/header-account.html" %}
+            {% include "main/snippets/header-language.html" %}
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
+<div>

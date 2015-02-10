@@ -104,6 +104,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     u'sekizai.context_processors.sekizai',
     u'allauth.account.context_processors.account',
     u'allauth.socialaccount.context_processors.socialaccount',
+    u'chcemvediet.context_processors.devbar',
     )
 
 CRON_CLASSES = (
@@ -176,6 +177,7 @@ ASSETS = (
     u'obligees/js/*.js',
     u'inforequests/js/*.js',
     u'main/css/*.css',
+    u'main/js/*.js',
     )
 
 #PIPELINE_ENABLED = True

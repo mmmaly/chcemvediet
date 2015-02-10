@@ -2,7 +2,7 @@
 *.pyc
 .coverage
 .instrumental.cov
-configure.json
+setup.json
 env/
 cache/
 logs/*.log

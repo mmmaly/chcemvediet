@@ -1,0 +1,5 @@
+# Requirements for online server
+MySQL-python==1.2.5
+
+# Dependencies for requirements for online server
+# (nothing yet)

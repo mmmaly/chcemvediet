@@ -1,7 +1,7 @@
 /** Various fixes and tweaks for Bootstrap **/
 
-/* Make sure fixed menu won't overlap page top. */
-@media (min-width: 980px) { body { padding-top: 60px; } }
+/* Header margin */
+header { margin-bottom: 20px; }
 
 /* Large Bootstrap modals */
 @media (min-width: 768px) { .modal.modal-large { width: 660px; margin-left: -330px; } }
@@ -45,3 +45,13 @@
 
 /* Fix .text-right for table cells */
 .table th.text-right, .table td.text-right { text-align: right; }
+
+/* Development bar above navbar */
+.devbar { padding-top: 10px; background-color: yellow; color: black; }
+@media (max-width: 979px) { .devbar .container { width: auto; padding: 10px 20px 0 20px; } }
+@media (max-width: 767px) { .devbar { margin: 0 -20px; } }
+
+/* Fixed bars */
+.fixed { position: fixed; width: 100%; }
+.fixed.phantom { position: static; visibility: hidden; }
+@media (max-width: 979px) { .fixed { position: static;} .fixed.phantom { display: none; } }
