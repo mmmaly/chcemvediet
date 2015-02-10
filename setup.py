@@ -331,12 +331,12 @@ def help_run_server(configure):
 
                 In another shell, run testing cronserver:
                     $ env/bin/python manage.py cronserver
-                """))
+                """) + RESET)
         if server_mode in [u'local_with_local_mail']:
             print(INFO + textwrap.dedent(u"""
                     In yet another shell, run dummy email infrastructure:
                         $ env/bin/python manage.py dummymail
-                    """))
+                    """) + RESET)
     else:
         assert server_mode in [u'dev_with_no_mail', u'dev_with_dummy_obligee_mail', u'production']
         print(INFO + textwrap.dedent(u"""
@@ -363,7 +363,7 @@ def help_run_server(configure):
 
                 Finally add a cron job running the following command every minute:
                     cd {path} && env/bin/python manage.py runcrons
-                """))
+                """) + RESET)
 
 def main():
     # Make sure we are in the project root directory
@@ -392,8 +392,16 @@ def main():
             configure_database(configure, settings)
             configure_mandrill(configure, settings)
 
-        # Create/synchronize DB
-        if not os.path.isfile(u'test.db'):
+        # Settings module is configured, so we may use Django now.
+        os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')
+        from django.db.transaction import atomic
+        from django.db.utils import DatabaseError
+        from django.contrib.auth.models import User
+
+        # Create/synchronize DB. We assume that DB is already created iff it contains User model.
+        try:
+            User.objects.count()
+        except DatabaseError:
             call(u'Create DB:', [u'env/bin/python', u'manage.py', u'syncdb', u'--all', u'--noinput'])
             call(u'Skip DB migrations:', [u'env/bin/python', u'manage.py', u'migrate', u'--fake'])
             call(u'Load DB fixtures:', [u'env/bin/python', u'manage.py', u'loaddata'] + glob.glob(u'fixtures/*.json'))
@@ -401,9 +409,7 @@ def main():
             call(u'Synchronize DB:', [u'env/bin/python', u'manage.py', u'syncdb', u'--noinput'])
             call(u'Migrate DB:', [u'env/bin/python', u'manage.py', u'migrate'])
 
-        # Settings module is configured and DB is synced, so we may use Django now.
-        os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')
-        from django.db.transaction import atomic
+        # Configure database content
         with atomic():
             configure_admin_password(configure)
             configure_social_accounts(configure)
