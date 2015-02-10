@@ -1,5 +1,8 @@
 /** Various fixes and tweaks for Bootstrap **/
 
+/* Header margin */
+header { margin-bottom: 20px; }
+
 /* Large Bootstrap modals */
 @media (min-width: 768px) { .modal.modal-large { width: 660px; margin-left: -330px; } }
 @media (min-width: 980px) { .modal.modal-large { width: 870px; margin-left: -435px; } }
