@@ -27,9 +27,6 @@ python-openid==2.2.5
 requests-oauthlib==0.4.1
 six==1.7.3
 
-# Requirements for online server
-MySQL-python==1.2.5
-
 # Installed by 'virtualenv env' directly
 # argparse==1.2.1
 # distribute==0.6.24
