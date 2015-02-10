@@ -15,7 +15,7 @@ from poleno.utils.views import secure_required
 
 from .signals import webhook_event
 
-@require_http_methods([u'HEAD', u'POST'])
+@require_http_methods([u'HEAD', u'GET', u'POST'])
 @csrf_exempt
 @secure_required(raise_exception=True)
 def webhook(request):
