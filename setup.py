@@ -230,6 +230,26 @@ def configure_email_addresses(configure, settings):
     default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@chcemvediet.sk', required=True)
     settings.setting(u'DEFAULT_FROM_EMAIL', default_from_email)
 
+    # FIXME: Should skip this for production server mode.
+    print(INFO + textwrap.dedent(u"""
+            To prevent unsolicited emails to obligees while testing we replace their
+            addresses with dummies. Use '{name}' as a placeholder to distinguish individual
+            obligees. For instance 'mail@{name}.example.com' may be expanded to
+            'mail@martika-hnusta.example.com'."""))
+    configure.input(u'obligee_dummy_mail', u'Obligee dummy e-mail', required=True)
+
+def configure_devbar(configure, settings):
+    server_mode = configure.get(u'server_mode')
+    obligee_dummy_mail = configure.get(u'obligee_dummy_mail')
+    devbar_message = {
+            u'local_with_no_mail':          u'',
+            u'local_with_local_mail':       u'',
+            u'dev_with_no_mail':            u'<strong>Warning:</strong> This is a development server. No emails are sent anywhere. To view what would be sent, use <a href="/admin/mail/message/">Admin Interface</a>.',
+            u'dev_with_dummy_obligee_mail': u'<strong>Warning:</strong> This is a development server. All obligee email addresses are replaced with dummies: %s.' % obligee_dummy_mail,
+            u'production':                  u'',
+            }[server_mode]
+    settings.setting(u'DEVBAR_MESSAGE', devbar_message)
+
 def configure_database(configure, settings):
     server_mode = configure.get(u'server_mode')
     if server_mode in [u'dev_with_no_mail', u'dev_with_dummy_obligee_mail', u'production']:
@@ -308,12 +328,7 @@ def configure_dummy_obligee_emails(configure):
     from chcemvediet.apps.obligees.models import Obligee, HistoricalObligee
 
     # FIXME: Production server mode should have real obligee emails.
-    print(INFO + textwrap.dedent(u"""
-            To prevent unsolicited emails to obligees while testing we replace their
-            addresses with dummies. Use '{name}' as a placeholder to distinguish individual
-            obligees. For instance 'mail@{name}.example.com' may be expanded to
-            'mail@martika-hnusta.example.com'."""))
-    mail_tpl = configure.input(u'obligee_dummy_mail', u'Obligee dummy e-mail', required=True)
+    mail_tpl = configure.get(u'obligee_dummy_mail')
     for model in [Obligee, HistoricalObligee]:
         for obligee in model.objects.all():
             slug = obligee.slug[0:30].strip(u'-')
@@ -389,6 +404,7 @@ def main():
             install_requirements(configure)
             configure_secret_key(configure, settings)
             configure_email_addresses(configure, settings)
+            configure_devbar(configure, settings)
             configure_database(configure, settings)
             configure_mandrill(configure, settings)
 
