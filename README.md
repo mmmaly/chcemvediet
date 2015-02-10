@@ -63,7 +63,7 @@ To migrate to an updated version of the site, run the following commands:
 	$ git pull
 	$ env/bin/python setup.py
 
-If some migrations fail, try to run then once or twice again. Sometimes it helps.
+If some migrations fail, try to run them once or twice again. Sometimes it helps.
 
 
 ### 1.4. Viewing the site
