@@ -9,7 +9,6 @@ import random
 import json
 import getpass
 import textwrap
-import glob
 
 INFO = u'\033[93m'
 SHELL = u'\033[92m'
@@ -209,10 +208,12 @@ def configure_secret_key(configure, settings):
     settings.setting(u'SECRET_KEY', secret_key)
 
 def configure_email_addresses(configure, settings):
+    server_domain = configure.input(u'server_domain', u'Server domain', default=u'chcemvediet.sk', required=True)
+
     print(INFO + textwrap.dedent(u"""
             Set admin e-mail. It will be used for lowlevel error reporting and
             administration e-mails.""") + RESET)
-    admin_email = configure.input(u'admin_email', u'Admin e-mail', default=u'admin@chcemvediet.sk', required=True)
+    admin_email = configure.input(u'admin_email', u'Admin e-mail', default=u'admin@%s' % server_domain, required=True)
     settings.setting(u'SERVER_EMAIL', admin_email)
     settings.setting(u'ADMINS[len(ADMINS):]', [(u'Admin', admin_email)])
 
@@ -221,22 +222,24 @@ def configure_email_addresses(configure, settings):
             e-mail addresses used by inforequests. The unique e-mail template must contain
             '{token}' as a placeholder to distinguish individual inforequests. For instance
             '{token}@mail.example.com' may be expanded to 'lama@mail.example.com'.""") + RESET)
-    inforequest_unique_email = configure.input(u'inforequest_unique_email', u'Inforequest unique e-mail', default=u'{token}@mail.chcemvediet.sk', required=True)
+    inforequest_unique_email = configure.input(u'inforequest_unique_email', u'Inforequest unique e-mail', default=u'{token}@mail.%s' % server_domain, required=True)
     settings.setting(u'INFOREQUEST_UNIQUE_EMAIL', inforequest_unique_email)
 
     print(INFO + textwrap.dedent(u"""
             Set default from address. It will be used as the from e-mail addresses for all
             other e-mails.""") + RESET)
-    default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@chcemvediet.sk', required=True)
+    default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@%s' % server_domain, required=True)
     settings.setting(u'DEFAULT_FROM_EMAIL', default_from_email)
 
-    # FIXME: Should skip this for production server mode.
-    print(INFO + textwrap.dedent(u"""
-            To prevent unsolicited emails to obligees while testing we replace their
-            addresses with dummies. Use '{name}' as a placeholder to distinguish individual
-            obligees. For instance 'mail@{name}.example.com' may be expanded to
-            'mail@martika-hnusta.example.com'."""))
-    configure.input(u'obligee_dummy_mail', u'Obligee dummy e-mail', required=True)
+    # Production mode uses real obligee emails.
+    server_mode = configure.get(u'server_mode')
+    if server_mode != u'production':
+        print(INFO + textwrap.dedent(u"""
+                To prevent unsolicited emails to obligees while testing we replace their
+                addresses with dummies. Use '{name}' as a placeholder to distinguish individual
+                obligees. For instance 'mail@{name}.example.com' may be expanded to
+                'mail@martika-hnusta.example.com'."""))
+        configure.input(u'obligee_dummy_mail', u'Obligee dummy e-mail', required=True)
 
 def configure_devbar(configure, settings):
     server_mode = configure.get(u'server_mode')
@@ -264,6 +267,7 @@ def configure_database(configure, settings):
 
 def configure_mandrill(configure, settings):
     server_mode = configure.get(u'server_mode')
+    server_domain = configure.get(u'server_domain')
     if server_mode in [u'dev_with_dummy_obligee_mail', u'production']:
         print(INFO + textwrap.dedent(u"""
                 Madrill is a transactional mail service we use to send emails. To setup it, you
@@ -273,7 +277,8 @@ def configure_mandrill(configure, settings):
                 URL prefix. If using ngrok, your prefix should look like
                 "https://<yoursubdomain>.ngrok.com/". If using a public server, the prefix
                 should be "https://<yourdomain>/".""") + RESET)
-        mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix', required=True)
+        mandrill_webhook_https = configure.input_yes_no(u'mandrill_webhook_https', u'Use "https" for Mandrill Webhooks?', default=u'Y')
+        mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix', default=u'%s://%s/' % (u'https' if mandrill_webhook_https == u'Y' else u'http', server_domain), required=True)
         mandrill_webhook_secret = configure.auto(u'mandrill_webhook_secret', generate_secret_key(32, string.digits + string.letters))
         mandrill_webhook_url = u'%s/mandrill/webhook/?secret=%s' % (mandrill_webhook_prefix.rstrip(u'/'), mandrill_webhook_secret)
         mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)
@@ -294,6 +299,28 @@ def configure_mandrill(configure, settings):
         settings.setting(u'MANDRILL_WEBHOOK_URL', mandrill_webhook_url)
         settings.setting(u'MANDRILL_API_KEY', mandrill_api_key)
         settings.setting(u'MANDRILL_WEBHOOK_KEYS', mandrill_webhook_keys.split())
+
+def load_fixtures(configure):
+    res = []
+    res.append(u'fixtures/sites_site.json')
+    res.append(u'fixtures/auth_user.json')
+    res.append(u'fixtures/socialaccount_socialapp.json')
+
+    # Production mode uses real obligee data configured manually.
+    server_mode = configure.get(u'server_mode')
+    if server_mode != u'production':
+        res.append(u'fixtures/obligees_obligee.json')
+
+    return res
+
+def configure_site_domain(configure):
+    from django.contrib.sites.models import Site
+
+    server_domain = configure.get(u'server_domain')
+    site = Site.objects.get(name=u'chcemvediet')
+    if server_domain != site.domain:
+        site.domain = server_domain
+        site.save()
 
 def configure_admin_password(configure):
     from django.contrib.auth.models import User
@@ -327,7 +354,11 @@ def configure_social_accounts(configure):
 def configure_dummy_obligee_emails(configure):
     from chcemvediet.apps.obligees.models import Obligee, HistoricalObligee
 
-    # FIXME: Production server mode should have real obligee emails.
+    # Production mode uses real obligee emails.
+    server_mode = configure.get(u'server_mode')
+    if server_mode == u'production':
+        return
+
     mail_tpl = configure.get(u'obligee_dummy_mail')
     for model in [Obligee, HistoricalObligee]:
         for obligee in model.objects.all():
@@ -420,13 +451,14 @@ def main():
         except DatabaseError:
             call(u'Create DB:', [u'env/bin/python', u'manage.py', u'syncdb', u'--all', u'--noinput'])
             call(u'Skip DB migrations:', [u'env/bin/python', u'manage.py', u'migrate', u'--fake'])
-            call(u'Load DB fixtures:', [u'env/bin/python', u'manage.py', u'loaddata'] + glob.glob(u'fixtures/*.json'))
+            call(u'Load DB fixtures:', [u'env/bin/python', u'manage.py', u'loaddata'] + load_fixtures(configure))
         else:
             call(u'Synchronize DB:', [u'env/bin/python', u'manage.py', u'syncdb', u'--noinput'])
             call(u'Migrate DB:', [u'env/bin/python', u'manage.py', u'migrate'])
 
         # Configure database content
         with atomic():
+            configure_site_domain(configure)
             configure_admin_password(configure)
             configure_social_accounts(configure)
             configure_dummy_obligee_emails(configure)
