@@ -9,6 +9,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
+from django.contrib.sites.models import Site
 
 from poleno.workdays import workdays
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
@@ -282,7 +283,8 @@ class Inforequest(models.Model):
         super(Inforequest, self).save(*args, **kwargs)
 
     def _send_notification(self, template, anchor, dictionary):
-        url = u'http://127.0.0.1:8000%s#%s' % (reverse(u'inforequests:detail', args=(self.pk,)), anchor)
+        site = Site.objects.get_current()
+        url = u'http://www.{0}{1}#{2}'.format(site.domain, reverse(u'inforequests:detail', args=(self.pk,)), anchor)
         dictionary.update({
                 u'inforequest': self,
                 u'url': url,
