@@ -103,3 +103,6 @@ class Attachment(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+# Let Django register signals as soon as possible
+from . import signals
