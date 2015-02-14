@@ -12,6 +12,7 @@ ROOT_URLCONF = u'chcemvediet.urls'
 FORMAT_MODULE_PATH = u'chcemvediet.locale'
 HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'
+TEST_RUNNER = u'chcemvediet.tests.CustomTestRunner'
 WSGI_APPLICATION = u'chcemvediet.wsgi.application'
 
 TIME_ZONE = u'Europe/Bratislava'
