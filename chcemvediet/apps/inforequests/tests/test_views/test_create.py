@@ -116,14 +116,14 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_post_with_draft_button_and_valid_data_creates_new_draft_instance(self):
+        self._login_user(self.user1)
         obligee = self._create_obligee(name=u'Obligee')
-        attachment1 = self._create_attachment(generic_object=self.user1)
-        attachment2 = self._create_attachment(generic_object=self.user1)
+        attachment1 = self._create_attachment(generic_object=self._get_session())
+        attachment2 = self._create_attachment(generic_object=self._get_session())
         data = self._create_post_data(button=u'draft', obligee=u'Obligee',
                 subject=u'Subject', content=u'Content',
                 attachments=u'%s,%s' % (attachment1.pk, attachment2.pk))
 
-        self._login_user(self.user1)
         with created_instances(InforequestDraft.objects) as inforequestdraft_set:
             response = self.client.post(reverse(u'inforequests:create'), data)
         draft = inforequestdraft_set.get()
@@ -135,16 +135,16 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertItemsEqual(draft.attachment_set.all(), [attachment1, attachment2])
 
     def test_post_with_draft_button_and_valid_data_updates_existing_draft_instance(self):
+        self._login_user(self.user1)
         obligee = self._create_obligee(name=u'New Obligee')
-        attachment1 = self._create_attachment(generic_object=self.user1)
-        attachment2 = self._create_attachment(generic_object=self.user1)
+        attachment1 = self._create_attachment(generic_object=self._get_session())
+        attachment2 = self._create_attachment(generic_object=self._get_session())
         draft = self._create_inforequest_draft(applicant=self.user1, obligee=self.obligee1, subject=u'Old Subject', content=u'Old Content')
         attachment3 = self._create_attachment(generic_object=draft)
         data = self._create_post_data(button=u'draft', obligee=u'New Obligee',
                 subject=u'New Subject', content=u'New Content',
                 attachments=u'%s,%s' % (attachment1.pk, attachment3.pk))
 
-        self._login_user(self.user1)
         with created_instances(InforequestDraft.objects) as inforequestdraft_set:
             response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft.pk,)), data)
         self.assertFalse(inforequestdraft_set.exists())
@@ -187,14 +187,14 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertTemplateUsed(response, u'inforequests/create.html')
 
     def test_post_with_submit_button_and_valid_data_creates_inforequest(self):
+        self._login_user(self.user1)
         obligee = self._create_obligee(name=u'Obligee')
-        attachment1 = self._create_attachment(generic_object=self.user1)
-        attachment2 = self._create_attachment(generic_object=self.user1)
+        attachment1 = self._create_attachment(generic_object=self._get_session())
+        attachment2 = self._create_attachment(generic_object=self._get_session())
         data = self._create_post_data(button=u'submit', obligee=u'Obligee',
                 subject=u'Subject', content=u'Content',
                 attachments=u'%s,%s' % (attachment1.pk, attachment2.pk))
 
-        self._login_user(self.user1)
         with created_instances(Inforequest.objects) as inforequest_set:
             response = self.client.post(reverse(u'inforequests:create'), data)
 
@@ -344,8 +344,11 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.post(reverse(u'inforequests:create'), data)
         self.assertFormError(response, u'form', u'attachments', 'Invalid attachments.')
 
-    def test_attachments_field_with_attachment_owned_by_another_user_is_invalid(self):
-        attachment = self._create_attachment(generic_object=self.user2)
+    def test_attachments_field_with_attachment_owned_by_another_session_is_invalid(self):
+        self._login_user(self.user1)
+        attachment = self._create_attachment(generic_object=self._get_session())
+        self._logout_user()
+
         data = self._create_post_data(button=u'draft', attachments=u',%s,' % attachment.pk)
         self._login_user(self.user1)
         response = self.client.post(reverse(u'inforequests:create'), data)
@@ -360,10 +363,10 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft1.pk,)), data)
         self.assertFormError(response, u'form', u'attachments', 'Invalid attachments.')
 
-    def test_attachments_field_with_attachment_owned_by_user_is_valid(self):
+    def test_attachments_field_with_attachment_owned_by_session_is_valid(self):
+        self._login_user()
         attachment = self._create_attachment()
         data = self._create_post_data(button=u'draft', attachments=u',%s,' % attachment.pk)
-        self._login_user()
         response = self.client.post(reverse(u'inforequests:create'), data)
         self.assertIsNone(response.context)
 

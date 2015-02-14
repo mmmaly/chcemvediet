@@ -3,7 +3,7 @@
 import json
 from functools import wraps
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import patterns, url
 from django.db import models
@@ -47,9 +47,12 @@ def admin_obj_format(obj, format=u'{tag}', *args, **kwargs):
     tag = u'<%s: %s>' % (obj.__class__.__name__, obj.pk)
     res = format.format(obj=obj, tag=tag, *args, **kwargs)
     if link:
-        info = obj._meta.app_label, obj._meta.module_name
-        url = reverse(u'admin:%s_%s_change' % info, args=[obj.pk])
-        res = format_html(u'<a href="{0}">{1}</a>', url, res)
+        try:
+            info = obj._meta.app_label, obj._meta.module_name
+            url = reverse(u'admin:%s_%s_change' % info, args=[obj.pk])
+            res = format_html(u'<a href="{0}">{1}</a>', url, res)
+        except NoReverseMatch:
+            pass
     return res
 
 def admin_obj_format_join(sep, objs, format=u'{tag}', args_generator=None, kwargs_generator=None):

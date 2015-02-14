@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
 from django.utils.html import format_html
 from django.contrib import admin
+from django.contrib.sessions.models import Session
 from django.contrib.contenttypes import generic
 
 from poleno.utils.misc import filesize, decorate, try_except
@@ -206,9 +207,10 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         return admin_obj_format(generic)
 
     def upload_view(self, request):
+        session = Session.objects.get(session_key=request.session.session_key)
         info = self.model._meta.app_label, self.model._meta.model_name
         download_url_func = (lambda a: reverse(u'admin:%s_%s_download' % info, args=(a.pk,)))
-        return attachments_views.upload(request, request.user, download_url_func)
+        return attachments_views.upload(request, session, download_url_func)
 
     def download_view(self, request, attachment_pk):
         attachment = Attachment.objects.get_or_404(pk=attachment_pk)

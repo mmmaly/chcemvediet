@@ -5,6 +5,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.contrib.sessions.models import Session
 from django.shortcuts import render
 from allauth.account.decorators import verified_email_required
 
@@ -37,7 +38,8 @@ def index(request):
 @verified_email_required
 def create(request, draft_pk=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk) if draft_pk else None
-    attached_to = (request.user, draft) if draft else (request.user,)
+    session = Session.objects.get(session_key=request.session.session_key)
+    attached_to = (session, draft) if draft else (session,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'submit', u'draft'])
@@ -241,14 +243,15 @@ def _add_smail(request, inforequest_pk, action_type, form_class, template):
 
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
-    if request.method != u'POST': # The user cas save a draft even if he may not submit.
+    if request.method != u'POST': # The user can save a draft even if he may not submit.
         if inforequest.has_undecided_email:
             return HttpResponseNotFound()
         if not inforequest.can_add_action(action_type):
             return HttpResponseNotFound()
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
-    attached_to = (request.user, draft) if draft else (request.user,)
+    session = Session.objects.get(session_key=request.session.session_key)
+    attached_to = (session, draft) if draft else (session,)
 
     if request.method == u'POST':
         button = clean_button(request.POST, [u'add', u'draft'])
@@ -346,14 +349,15 @@ def _new_action(request, inforequest_pk, action_type, form_class, template):
 
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
-    if request.method != u'POST': # The user cas save a draft even if he may not submit.
+    if request.method != u'POST': # The user can save a draft even if he may not submit.
         if inforequest.has_undecided_email:
             return HttpResponseNotFound()
         if not inforequest.can_add_action(action_type):
             return HttpResponseNotFound()
 
     draft = inforequest.actiondraft_set.filter(type=action_type).first()
-    attached_to = (request.user, draft) if draft else (request.user,)
+    session = Session.objects.get(session_key=request.session.session_key)
+    attached_to = (session, draft) if draft else (session,)
 
     if request.method == u'POST':
         if action_type in Action.APPLICANT_EMAIL_ACTION_TYPES:
@@ -485,14 +489,15 @@ def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
 @require_ajax
 @login_required(raise_exception=True)
 def upload_attachment(request):
+    session = Session.objects.get(session_key=request.session.session_key)
     download_url_func = (lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,)))
-    return attachments_views.upload(request, request.user, download_url_func)
+    return attachments_views.upload(request, session, download_url_func)
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required(raise_exception=True)
 def download_attachment(request, attachment_pk):
     attached_to = (
-            request.user,
+            Session.objects.get(session_key=request.session.session_key),
             EmailMessage.objects.filter(inforequest__applicant=request.user),
             InforequestDraft.objects.filter(applicant=request.user),
             Action.objects.filter(branch__inforequest__applicant=request.user),

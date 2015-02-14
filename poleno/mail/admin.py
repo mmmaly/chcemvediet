@@ -10,6 +10,7 @@ from django.utils import formats
 from django.utils.http import urlencode
 from django.utils.html import escape
 from django.contrib import admin
+from django.contrib.sessions.models import Session
 
 from poleno.attachments.forms import AttachmentsField
 from poleno.attachments.admin import AttachmentInline
@@ -304,7 +305,8 @@ class MessageAdmin(admin.ModelAdmin):
         if obj is None:
             self.form = self.form_add
             form = super(MessageAdmin, self).get_form(request, obj, **kwargs)
-            form = partial(form, attached_to=request.user)
+            session = Session.objects.get(session_key=request.session.session_key)
+            form = partial(form, attached_to=session)
         else:
             self.form = self.form_change
             form = super(MessageAdmin, self).get_form(request, obj, **kwargs)

@@ -47,10 +47,10 @@ class DecideEmailUnknownViewTest(
 
 
     def test_get_renders_form(self):
+        self._login_user()
         scenario = self._create_scenario()
         url = self._create_url(scenario)
 
-        self._login_user()
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
         self.assertTemplateUsed(response, u'inforequests/modals/unknown-email.html')
@@ -59,22 +59,22 @@ class DecideEmailUnknownViewTest(
         self.assertNotIn(u'form', response.context)
 
     def test_post_marks_email_as_unknown(self):
+        self._login_user()
         scenario = self._create_scenario()
         data = self._create_post_data()
         url = self._create_url(scenario)
 
-        self._login_user()
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
         scenario.rel = InforequestEmail.objects.get(pk=scenario.rel.pk)
         self.assertEqual(scenario.rel.type, InforequestEmail.TYPES.UNKNOWN)
 
     def test_post_returns_json_with_success_and_inforequests_detail(self):
+        self._login_user()
         scenario = self._create_scenario()
         data = self._create_post_data()
         url = self._create_url(scenario)
 
-        self._login_user()
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
         self.assertEqual(response.status_code, 200)

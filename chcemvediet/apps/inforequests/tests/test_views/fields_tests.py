@@ -276,13 +276,13 @@ class SubjectContentAttachmentsFieldsTests(FieldsTests):
         self.assertIsNone(response.context[u'form'][u'attachments'].value())
 
     def test_subject_content_and_attachments_fields_are_saved(self):
+        self._login_user()
         scenario = self._create_scenario()
-        attachment1 = self._create_attachment(generic_object=self.user1, name=u'filename.txt', content=u'content', content_type=u'text/plain')
-        attachment2 = self._create_attachment(generic_object=self.user1, name=u'filename.html', content=u'<p>content</p>', content_type=u'text/html')
+        attachment1 = self._create_attachment(generic_object=self._get_session(), name=u'filename.txt', content=u'content', content_type=u'text/plain')
+        attachment2 = self._create_attachment(generic_object=self._get_session(), name=u'filename.html', content=u'<p>content</p>', content_type=u'text/html')
         data = self._create_post_data(branch=scenario.branch, subject=u'Subject', content=u'Content', attachments=u'%s,%s' % (attachment1.pk, attachment2.pk))
         url = self._create_url(scenario)
 
-        self._login_user()
         with created_instances(scenario.branch.action_set) as action_set:
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         action = action_set.get()
@@ -354,11 +354,13 @@ class SubjectContentAttachmentsFieldsTests(FieldsTests):
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'invalid')
 
-    def test_attachments_field_with_attachment_owned_by_another_user_is_invalid(self):
+    def test_attachments_field_with_attachment_owned_by_another_session_is_invalid(self):
+        self._login_user(self.user1)
         scenario = self._create_scenario()
-        attachment = self._create_attachment(generic_object=self.user2)
+        attachment = self._create_attachment(generic_object=self._get_session())
         data = self._create_post_data(branch=scenario.branch, attachments=u',%s,' % attachment.pk)
         url = self._create_url(scenario)
+        self._logout_user()
 
         self._login_user(self.user1)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
@@ -367,23 +369,23 @@ class SubjectContentAttachmentsFieldsTests(FieldsTests):
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'invalid')
 
-    def test_attachments_field_with_attachment_owned_by_user_is_valid(self):
+    def test_attachments_field_with_attachment_owned_by_session_is_valid(self):
+        self._login_user()
         scenario = self._create_scenario()
         attachment = self._create_attachment()
         data = self._create_post_data(branch=scenario.branch, attachments=u',%s,' % attachment.pk)
         url = self._create_url(scenario)
 
-        self._login_user()
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'success')
 
     def test_attachments_field_upload_url_func(self):
+        self._login_user()
         scenario = self._create_scenario()
         attachment = self._create_attachment()
         url = self._create_url(scenario)
 
-        self._login_user()
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
@@ -812,6 +814,7 @@ class DraftSubjectContentAttachmentsFieldsTests(SubjectContentAttachmentsFieldsT
         self.assertItemsEqual(response.context[u'form'][u'attachments'].value(), [attachment1, attachment2])
 
     def test_draft_subject_content_and_attachments_fields_are_saved_to_draft(self):
+        self._login_user()
         scenario = self._create_scenario(draft_args=dict(subject=u'Old Subject', content=u'Old Content'))
         attachment1 = self._create_attachment(generic_object=scenario.draft)
         attachment2 = self._create_attachment(generic_object=scenario.draft)
@@ -820,7 +823,6 @@ class DraftSubjectContentAttachmentsFieldsTests(SubjectContentAttachmentsFieldsT
                 attachments=u'%s,%s' % (attachment2.pk, attachment3.pk))
         url = self._create_url(scenario)
 
-        self._login_user()
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
         draft = ActionDraft.objects.get(pk=scenario.draft.pk)

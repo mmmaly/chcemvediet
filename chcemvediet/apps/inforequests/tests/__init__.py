@@ -5,6 +5,7 @@ from testfixtures import TempDirectory
 from django.core.files.base import ContentFile
 from django.template import Context, Template
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -79,6 +80,14 @@ class InforequestsTestCaseMixin(TestCase):
             user = self.user1
         self.client.login(username=user.username, password=password)
 
+    def _logout_user(self):
+        self.client.logout()
+
+    def _get_session(self):
+        if hasattr(self.client.session, u'session_key'):
+            return Session.objects.get(session_key=self.client.session.session_key)
+        return None
+
     def _create_obligee(self, **kwargs):
         return self._call_with_defaults(Obligee.objects.create, kwargs, {
                 u'name': u'Default Testing Name',
@@ -92,7 +101,7 @@ class InforequestsTestCaseMixin(TestCase):
     def _create_attachment(self, **kwargs):
         content = kwargs.pop(u'content', u'Default Testing Content')
         return self._call_with_defaults(Attachment.objects.create, kwargs, {
-                u'generic_object': self.user1,
+                u'generic_object': self._get_session(),
                 u'file': ContentFile(content, name=u'filename.txt'),
                 u'name': u'filename.txt',
                 u'content_type': u'text/plain',

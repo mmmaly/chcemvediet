@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.templatetags.admin_list import _boolean_icon
+from django.contrib.sessions.models import Session
 from aggregate_if import Count
 
 from poleno.attachments.forms import AttachmentsField
@@ -175,7 +176,8 @@ class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         if obj is None:
             self.form = self.form_add
             form = super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
-            form = partial(form, attached_to=request.user)
+            session = Session.objects.get(session_key=request.session.session_key)
+            form = partial(form, attached_to=session)
         else:
             self.form = self.form_change
             form = super(InforequestDraftAdmin, self).get_form(request, obj, **kwargs)
@@ -496,7 +498,8 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         if obj is None:
             self.form = self.form_add
             form = super(InforequestAdmin, self).get_form(request, obj, **kwargs)
-            form = partial(form, attached_to=request.user)
+            session = Session.objects.get(session_key=request.session.session_key)
+            form = partial(form, attached_to=session)
         else:
             self.form = self.form_change
             form = super(InforequestAdmin, self).get_form(request, obj, **kwargs)
@@ -631,10 +634,10 @@ class InforequestEmailAdminDecideForm(forms.Form):
 
         @after_saved(action)
         def deferred(action):
-            user_type = ContentType.objects.get_for_model(User)
+            session_type = ContentType.objects.get_for_model(Session)
             for attachment in self.cleaned_data[u'attachments']:
                 # We don't want to steal attachments owned by the email, so we clone them.
-                if attachment.generic_type != user_type:
+                if attachment.generic_type != session_type:
                     attachment = attachment.clone()
                 attachment.generic_object = action
                 attachment.save()
@@ -932,8 +935,9 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                 message.type != Message.TYPES.INBOUND or not message.processed or action is not None):
             return HttpResponseNotFound()
 
+        session = Session.objects.get(session_key=request.session.session_key)
         if request.method == u'POST':
-            form = InforequestEmailAdminDecideForm(request.POST, instance=inforequestemail, attached_to=request.user)
+            form = InforequestEmailAdminDecideForm(request.POST, instance=inforequestemail, attached_to=session)
             if form.is_valid():
                 new_action = form.save(commit=False)
                 new_action.save()
@@ -942,7 +946,7 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                 info = new_action._meta.app_label, new_action._meta.module_name
                 return HttpResponseRedirect(reverse(u'admin:%s_%s_change' % info, args=[new_action.pk]))
         else:
-            form = InforequestEmailAdminDecideForm(instance=inforequestemail, attached_to=request.user)
+            form = InforequestEmailAdminDecideForm(instance=inforequestemail, attached_to=session)
 
         opts = self.model._meta
         template = u'admin/%s/%s/decide_form.html' % (opts.app_label, opts.model_name)
@@ -1725,7 +1729,8 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         if obj is None:
             self.form = self.form_add
             form = super(ActionAdmin, self).get_form(request, obj, **kwargs)
-            form = partial(form, attached_to=request.user)
+            session = Session.objects.get(session_key=request.session.session_key)
+            form = partial(form, attached_to=session)
         else:
             self.form = self.form_change
             form = super(ActionAdmin, self).get_form(request, obj, **kwargs)
