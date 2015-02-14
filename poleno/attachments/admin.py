@@ -64,6 +64,9 @@ class AttachmentAdminAddForm(forms.ModelForm):
             except generic_type.model_class().DoesNotExist:
                 self._errors[u'generic_id'] = self.error_class([u'This object does not exist.'])
                 del cleaned_data[u'generic_id']
+            except ValueError:
+                self._errors[u'generic_id'] = self.error_class([u'Invalid generic id.'])
+                del cleaned_data[u'generic_id']
             else:
                 self.cleaned_data[u'generic_object'] = generic_object
 
@@ -98,6 +101,9 @@ class AttachmentAdminChangeForm(forms.ModelForm):
                 generic_object = generic_type.get_object_for_this_type(pk=generic_id)
             except generic_type.model_class().DoesNotExist:
                 self._errors[u'generic_id'] = self.error_class([u'This object does not exist.'])
+                del cleaned_data[u'generic_id']
+            except ValueError:
+                self._errors[u'generic_id'] = self.error_class([u'Invalid generic id.'])
                 del cleaned_data[u'generic_id']
             else:
                 self.cleaned_data[u'generic_object'] = generic_object

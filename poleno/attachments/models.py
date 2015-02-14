@@ -37,7 +37,7 @@ class AttachmentQuerySet(QuerySet):
 class Attachment(models.Model):
     # May NOT be NULL; Generic relation
     generic_type = models.ForeignKey(ContentType)
-    generic_id = models.PositiveIntegerField()
+    generic_id = models.CharField(max_length=255)
     generic_object = generic.GenericForeignKey(u'generic_type', u'generic_id')
 
     # May NOT be NULL; Random local filename is generated in save() when creating a new object.
