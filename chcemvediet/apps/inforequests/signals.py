@@ -4,7 +4,7 @@ import operator
 
 from django.dispatch import receiver
 from django.db.models import Q
-from django.db.models.signals import pre_delete
+from django.db.models.signals import post_delete
 from django.conf import settings
 from django.contrib.sessions.models import Session
 
@@ -40,8 +40,8 @@ def assign_email_on_message_received(sender, message, **kwargs):
         with translation(settings.LANGUAGE_CODE):
             inforequest.send_received_email_notification(message)
 
-@receiver(pre_delete, sender=Session)
-def delete_attachments_on_session_pre_delete(sender, instance, **kwargs):
+@receiver(post_delete, sender=Session)
+def delete_attachments_on_session_post_delete(sender, instance, **kwargs):
     u"""
     Djago ``Session`` model does not define a reverse generic relation to ``Attachment``. Therefore
     session attachments are not deleted with the session automatically. We need to delete them
