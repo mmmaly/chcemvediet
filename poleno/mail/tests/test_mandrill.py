@@ -326,7 +326,7 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
 
 
     def test_allowed_http_methods(self):
-        allowed = [u'HEAD', u'POST']
+        allowed = [u'HEAD', u'GET', u'POST']
         self.assert_allowed_http_methods(allowed, self._webhook_url())
 
     def test_post_method_needs_signature(self):
