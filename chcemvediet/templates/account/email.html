@@ -13,37 +13,39 @@
 
 {% block content %}
   <h1>{% trans 'account:email:heading' %}</h1>
-  {% if user.emailaddress_set.all %}
-    {% include "account/texts/email-list.html" %}
-    <form class="form-horizontal" method="post" action="{% url 'account_email' %}">
-      {% csrf_token %}
-      <div class="control-group">
-        <div class="controls">
-          {% for emailaddress in user.emailaddress_set.all %}
-            <label class="{% if not emailaddress.verified %}muted{%endif%} radio">
-              <input type="radio" name="email" {% if emailaddress.primary %}checked="checked"{%endif %} value="{{emailaddress.email}}">
-              {{ emailaddress.email }}
-              {% if emailaddress.verified %}
-                <span class="text-success">{% trans 'account:email:verified' %}</span>
-              {% else %}
-                <span class="text-error">{% trans 'account:email:unverified' %}</span>
-              {% endif %}
-              {% if emailaddress.primary %}
-                <span class="text-info">{% trans 'account:email:primary' %}</span>
-              {% endif %}
-            </label>
-          {% endfor %}
+  {% with user.emailaddress_set.all as emailaddress_set %}
+    {% if emailaddress_set %}
+      {% include "account/texts/email-list.html" %}
+      <form class="form-horizontal" method="post" action="{% url 'account_email' %}">
+        {% csrf_token %}
+        <div class="control-group">
+          <div class="controls">
+            {% for emailaddress in emailaddress_set %}
+              <label class="{% if not emailaddress.verified %}muted{%endif%} radio">
+                <input type="radio" name="email" {% if emailaddress.primary %}checked="checked"{% endif %} value="{{ emailaddress.email }}">
+                {{ emailaddress.email }}
+                {% if emailaddress.verified %}
+                  <span class="text-success">{% trans 'account:email:verified' %}</span>
+                {% else %}
+                  <span class="text-error">{% trans 'account:email:unverified' %}</span>
+                {% endif %}
+                {% if emailaddress.primary %}
+                  <span class="text-info">{% trans 'account:email:primary' %}</span>
+                {% endif %}
+              </label>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" name="action_primary">{% trans 'account:email:action_primary' %}</button>
-        <button type="submit" class="btn" name="action_send">{% trans 'account:email:action_send' %}</button>
-        <button type="submit" class="btn confirm" name="action_remove" data-confirm="{% trans 'account:email:action_remove:confirm' %}">{% trans 'account:email:action_remove' %}</button>
-      </div>
-    </form>
-  {% else %}
-    {% include "account/texts/email-empty.html" %}
-  {% endif %}
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" name="action_primary">{% trans 'account:email:action_primary' %}</button>
+          <button type="submit" class="btn" name="action_send">{% trans 'account:email:action_send' %}</button>
+          <button type="submit" class="btn confirm" name="action_remove" data-confirm="{% trans 'account:email:action_remove:confirm' %}">{% trans 'account:email:action_remove' %}</button>
+        </div>
+      </form>
+    {% else %}
+      {% include "account/texts/email-empty.html" %}
+    {% endif %}
+  {% endwith %}
 
   <h3>{% trans 'account:email:add:heading' %}</h3>
   {% include "account/texts/email-add.html" %}
