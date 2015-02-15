@@ -59,7 +59,7 @@ LOGGING = {
             u'when': u'w0', # Monday
             u'formatter': u'verbose',
             },
-    },
+        },
     u'loggers': {
         u'django.request': {
             u'handlers': [u'mail_admins', u'file_request'],

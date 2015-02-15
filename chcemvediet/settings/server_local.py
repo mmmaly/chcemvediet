@@ -35,6 +35,12 @@ LOGGING = {
             u'class': u'logging.StreamHandler',
             u'formatter': u'verbose',
             },
+        u'file_db': {
+            u'level': u'DEBUG',
+            u'class': u'logging.handlers.WatchedFileHandler',
+            u'filename': os.path.join(PROJECT_PATH, u'logs/db.log'),
+            u'formatter': u'verbose',
+            },
         },
     u'loggers': {
         u'py.warnings': {
@@ -45,6 +51,11 @@ LOGGING = {
         u'django': {
             u'handlers': [u'console'],
             u'level': u'INFO',
+            u'propagate': False,
+            },
+        u'django.db': {
+            u'handlers': [u'file_db'],
+            u'level': u'DEBUG',
             u'propagate': False,
             },
         u'poleno': {
