@@ -649,7 +649,7 @@ class Action(models.Model):
     branch = models.ForeignKey(u'Branch')
 
     # NOT NULL for actions sent or received by email; NULL otherwise
-    email = models.OneToOneField(u'mail.Message', blank=True, null=True)
+    email = models.OneToOneField(u'mail.Message', blank=True, null=True, on_delete=models.SET_NULL)
 
     # May NOT be NULL
     TYPES = FieldChoices(
