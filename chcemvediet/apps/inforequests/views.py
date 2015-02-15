@@ -24,7 +24,7 @@ from .models import InforequestDraft, Inforequest, InforequestEmail, Action, Act
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def index(request):
-    inforequest_list = Inforequest.objects.not_closed().owned_by(request.user)
+    inforequest_list = Inforequest.objects.not_closed().owned_by(request.user).prefetch_has_undecided_email()
     draft_list = InforequestDraft.objects.owned_by(request.user)
     closed_list = Inforequest.objects.closed().owned_by(request.user)
 

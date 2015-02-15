@@ -5,11 +5,13 @@ from email.utils import formataddr
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models, IntegrityError, transaction
+from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
+from aggregate_if import Count
 
 from poleno.workdays import workdays
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
@@ -68,6 +70,8 @@ class InforequestQuerySet(QuerySet):
         return self.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED).distinct()
     def without_undecided_email(self):
         return self.exclude(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
+    def prefetch_has_undecided_email(self):
+        return self.annotate(_has_undecided_email=Count(u'inforequestemail', only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
 
 class Inforequest(models.Model):
     # May NOT be NULL
@@ -141,6 +145,9 @@ class Inforequest(models.Model):
     # May NOT be NULL; Read-only
     @property
     def branch(self):
+        # FIXME: Django 1.6 can't prefetch filtered relations with ``prefetch_related`` queryset
+        # method. Perhaps we should upgrade to Django 1.7 and use ``Prefetch`` class.
+        # See: https://docs.djangoproject.com/en/1.7/ref/models/queries/#django.db.models.Prefetch
         return self.branch_set.main().get()
 
     # May be empty; Read-only
@@ -151,7 +158,9 @@ class Inforequest(models.Model):
     # May NOT be NULL; Read-only
     @property
     def has_undecided_email(self):
-        return self.undecided_set.exists()
+        if not hasattr(self, u'_has_undecided_email'):
+            self._has_undecided_email = self.undecided_set.exists()
+        return self._has_undecided_email
 
     # May be NULL; Read-only
     @property
