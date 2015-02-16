@@ -11,7 +11,7 @@ from django.test import TestCase
 
 from poleno.utils.views import login_required
 
-from ..test import override_signals, created_instances, SecureClient, ViewTestCaseMixin
+from ..test import override_signals, created_instances, ViewTestCaseMixin
 
 class OverrideSignalsTest(TestCase):
     u"""
@@ -101,31 +101,6 @@ class CreatedInstancesTest(TestCase):
         with created_instances(User.objects) as query_set:
             user = User.objects.create_user(u'john')
         self.assertItemsEqual(query_set.all(), [user])
-
-class SecureClientTest(TestCase):
-    u"""
-    Tests ``SecureClient`` test client class.
-    """
-    def mock_view(request):
-        return HttpResponse(u'is_secure=%s, port=%s, scheme=%s'
-                % (request.is_secure(), request.META[u'SERVER_PORT'], request.META[u'wsgi.url_scheme']))
-
-    client_class = SecureClient
-    urls = tuple(patterns(u'',
-        url(r'^$', mock_view),
-    ))
-
-    def test_secure_request(self):
-        response = self.client.get(u'/', secure=True)
-        self.assertEqual(response.content, u'is_secure=True, port=443, scheme=https')
-
-    def test_non_secure_request(self):
-        response = self.client.get(u'/', secure=False)
-        self.assertEqual(response.content, u'is_secure=False, port=80, scheme=http')
-
-    def test_request_is_non_secure_by_default(self):
-        response = self.client.get(u'/')
-        self.assertEqual(response.content, u'is_secure=False, port=80, scheme=http')
 
 class ViewTestCaseMixinAssertAllowedHttpMethodsTest(ViewTestCaseMixin, TestCase):
     u"""

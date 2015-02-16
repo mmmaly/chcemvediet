@@ -7,7 +7,6 @@ from django.test import TestCase
 from django.test.utils import override_settings
 
 from poleno.utils.views import require_ajax, login_required, secure_required
-from poleno.utils.test import SecureClient
 
 class RequireAjaxTest(TestCase):
     u"""
@@ -119,7 +118,6 @@ class SecureRequiredTest(TestCase):
     def secure_required_with_exception_view(request):
         return HttpResponse()
 
-    client_class = SecureClient
     urls = tuple(patterns(u'',
         url(r'^secure-required-with-redirect/$', secure_required_with_redirect_view),
         url(r'^secure-required-with-exception/$', secure_required_with_exception_view),
