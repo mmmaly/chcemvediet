@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Attachment
 
 class AttachmentsWidget(forms.TextInput):
-    input_type = 'hidden'
 
     def __init__(self, *args, **kwargs):
         super(AttachmentsWidget, self).__init__(*args, **kwargs)
@@ -19,7 +18,8 @@ class AttachmentsWidget(forms.TextInput):
 
     def render(self, name, value, attrs=None):
         textinput_value = u',%s,' % u','.join(u'%s' % a.pk for a in value or [])
-        textinput = super(AttachmentsWidget, self).render(name, textinput_value, attrs)
+        textinput_attrs = dict(attrs, type=u'hidden')
+        textinput = super(AttachmentsWidget, self).render(name, textinput_value, textinput_attrs)
         return render_to_string(u'attachments/attachments_widget.html', {
                 u'name': name,
                 u'textinput': textinput,

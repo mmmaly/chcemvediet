@@ -1,264 +1,160 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import django.db.models.deletion
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'InforequestDraft'
-        db.create_table(u'inforequests_inforequestdraft', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('applicant', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('obligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.Obligee'], null=True, blank=True)),
-            ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal(u'inforequests', ['InforequestDraft'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('obligees', '0001_initial'),
+        ('mail', '0001_initial'),
+    ]
 
-        # Adding model 'Inforequest'
-        db.create_table(u'inforequests_inforequest', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('applicant', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('applicant_name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('applicant_street', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('applicant_city', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('applicant_zip', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('unique_email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=255)),
-            ('submission_date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
-            ('closed', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('last_undecided_email_reminder', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'inforequests', ['Inforequest'])
-
-        # Adding model 'InforequestEmail'
-        db.create_table(u'inforequests_inforequestemail', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('inforequest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Inforequest'])),
-            ('email', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mail.Message'])),
-            ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
-        ))
-        db.send_create_signal(u'inforequests', ['InforequestEmail'])
-
-        # Adding model 'Branch'
-        db.create_table(u'inforequests_branch', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('inforequest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Inforequest'])),
-            ('obligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.Obligee'])),
-            ('historicalobligee', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['obligees.HistoricalObligee'])),
-            ('advanced_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name=u'advanced_to_set', null=True, to=orm['inforequests.Action'])),
-        ))
-        db.send_create_signal(u'inforequests', ['Branch'])
-
-        # Adding model 'Action'
-        db.create_table(u'inforequests_action', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('branch', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Branch'])),
-            ('email', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['mail.Message'], unique=True, null=True, blank=True)),
-            ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('effective_date', self.gf('django.db.models.fields.DateField')()),
-            ('deadline', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('extension', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('disclosure_level', self.gf('django.db.models.fields.SmallIntegerField')(null=True, blank=True)),
-            ('refusal_reason', self.gf('django.db.models.fields.SmallIntegerField')(null=True, blank=True)),
-            ('last_deadline_reminder', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'inforequests', ['Action'])
-
-        # Adding model 'ActionDraft'
-        db.create_table(u'inforequests_actiondraft', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('inforequest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Inforequest'])),
-            ('branch', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inforequests.Branch'], null=True, blank=True)),
-            ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('effective_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('deadline', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('disclosure_level', self.gf('django.db.models.fields.SmallIntegerField')(null=True, blank=True)),
-            ('refusal_reason', self.gf('django.db.models.fields.SmallIntegerField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'inforequests', ['ActionDraft'])
-
-        # Adding M2M table for field obligee_set on 'ActionDraft'
-        m2m_table_name = db.shorten_name(u'inforequests_actiondraft_obligee_set')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('actiondraft', models.ForeignKey(orm[u'inforequests.actiondraft'], null=False)),
-            ('obligee', models.ForeignKey(orm[u'obligees.obligee'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['actiondraft_id', 'obligee_id'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'InforequestDraft'
-        db.delete_table(u'inforequests_inforequestdraft')
-
-        # Deleting model 'Inforequest'
-        db.delete_table(u'inforequests_inforequest')
-
-        # Deleting model 'InforequestEmail'
-        db.delete_table(u'inforequests_inforequestemail')
-
-        # Deleting model 'Branch'
-        db.delete_table(u'inforequests_branch')
-
-        # Deleting model 'Action'
-        db.delete_table(u'inforequests_action')
-
-        # Deleting model 'ActionDraft'
-        db.delete_table(u'inforequests_actiondraft')
-
-        # Removing M2M table for field obligee_set on 'ActionDraft'
-        db.delete_table(db.shorten_name(u'inforequests_actiondraft_obligee_set'))
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'inforequests.action': {
-            'Meta': {'ordering': "[u'effective_date', u'pk']", 'object_name': 'Action'},
-            'branch': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Branch']"}),
-            'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'deadline': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'disclosure_level': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'effective_date': ('django.db.models.fields.DateField', [], {}),
-            'email': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['mail.Message']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'extension': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_deadline_reminder': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'refusal_reason': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'type': ('django.db.models.fields.SmallIntegerField', [], {})
-        },
-        u'inforequests.actiondraft': {
-            'Meta': {'ordering': "[u'pk']", 'object_name': 'ActionDraft'},
-            'branch': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Branch']", 'null': 'True', 'blank': 'True'}),
-            'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'deadline': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'disclosure_level': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'effective_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
-            'obligee_set': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['obligees.Obligee']", 'symmetrical': 'False'}),
-            'refusal_reason': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'type': ('django.db.models.fields.SmallIntegerField', [], {})
-        },
-        u'inforequests.branch': {
-            'Meta': {'ordering': "[u'historicalobligee__name', u'pk']", 'object_name': 'Branch'},
-            'advanced_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'advanced_to_set'", 'null': 'True', 'to': u"orm['inforequests.Action']"}),
-            'historicalobligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.HistoricalObligee']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
-            'obligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.Obligee']"})
-        },
-        u'inforequests.inforequest': {
-            'Meta': {'ordering': "[u'submission_date', u'pk']", 'object_name': 'Inforequest'},
-            'applicant': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'applicant_city': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'applicant_name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'applicant_street': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'applicant_zip': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'closed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'email_set': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['mail.Message']", 'through': u"orm['inforequests.InforequestEmail']", 'symmetrical': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_undecided_email_reminder': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'submission_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'unique_email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '255'})
-        },
-        u'inforequests.inforequestdraft': {
-            'Meta': {'ordering': "[u'pk']", 'object_name': 'InforequestDraft'},
-            'applicant': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'obligee': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['obligees.Obligee']", 'null': 'True', 'blank': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'})
-        },
-        u'inforequests.inforequestemail': {
-            'Meta': {'object_name': 'InforequestEmail'},
-            'email': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mail.Message']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inforequest': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inforequests.Inforequest']"}),
-            'type': ('django.db.models.fields.SmallIntegerField', [], {})
-        },
-        u'mail.message': {
-            'Meta': {'ordering': "[u'processed', u'pk']", 'object_name': 'Message'},
-            'from_mail': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'from_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'headers': ('jsonfield.fields.JSONField', [], {'default': '{}'}),
-            'html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'processed': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'received_for': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'type': ('django.db.models.fields.SmallIntegerField', [], {})
-        },
-        u'obligees.historicalobligee': {
-            'Meta': {'ordering': "(u'-history_date', u'-history_id')", 'object_name': 'HistoricalObligee'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'emails': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
-            u'history_date': ('django.db.models.fields.DateTimeField', [], {}),
-            u'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            u'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            u'history_user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True'}),
-            u'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'}),
-            'status': ('django.db.models.fields.SmallIntegerField', [], {}),
-            'street': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'zip': ('django.db.models.fields.CharField', [], {'max_length': '10'})
-        },
-        u'obligees.obligee': {
-            'Meta': {'ordering': "[u'name', u'pk']", 'object_name': 'Obligee'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'emails': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'}),
-            'status': ('django.db.models.fields.SmallIntegerField', [], {}),
-            'street': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'zip': ('django.db.models.fields.CharField', [], {'max_length': '10'})
-        }
-    }
-
-    complete_apps = ['inforequests']
+    operations = [
+        migrations.CreateModel(
+            name='Action',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.SmallIntegerField(choices=[(1, 'Request'), (12, 'Clarification Response'), (13, 'Appeal'), (2, 'Confirmation'), (3, 'Extension'), (4, 'Advancement'), (5, 'Clarification Request'), (6, 'Disclosure'), (7, 'Refusal'), (8, 'Affirmation'), (9, 'Reversion'), (10, 'Remandment'), (11, 'Advanced Request'), (14, 'Expiration'), (15, 'Appeal Expiration')])),
+                ('subject', models.CharField(max_length=255, blank=True)),
+                ('content', models.TextField(blank=True)),
+                ('effective_date', models.DateField(help_text="The date at which the action was sent or received. If the action was sent/received by e\u2011mail it's set automatically. If it was sent/received by s\u2011mail it's filled by the applicant.")),
+                ('deadline', models.IntegerField(help_text='The deadline that apply after the action, if the action sets a deadline, NULL otherwise. The deadline is expressed in a number of working days (WD) counting since the effective date. It may apply to the applicant or to the obligee, depending on the action type.', null=True, blank=True)),
+                ('extension', models.IntegerField(help_text='Applicant extension to the deadline, if the action sets an obligee deadline. The applicant may extend the deadline after it is missed in order to be patient and wait a little longer. He may extend it multiple times. Applicant deadlines may not be extended.', null=True, blank=True)),
+                ('disclosure_level', models.SmallIntegerField(blank=True, help_text='Mandatory choice for advancement, disclosure, reversion and remandment actions, NULL otherwise. Specifies if the obligee disclosed any requested information by this action.', null=True, choices=[(1, 'No Disclosure at All'), (2, 'Partial Disclosure'), (3, 'Full Disclosure')])),
+                ('refusal_reason', models.SmallIntegerField(blank=True, help_text='Mandatory choice for refusal and affirmation actions, NULL otherwise. Specifies the reason why the obligee refused to disclose the information.', null=True, choices=[(3, 'Does not Have Information'), (4, 'Does not Provide Information'), (5, 'Does not Create Information'), (6, 'Copyright Restriction'), (7, 'Business Secret'), (8, 'Personal Information'), (9, 'Confidential Information'), (-1, 'No Reason Specified'), (-2, 'Other Reason')])),
+                ('last_deadline_reminder', models.DateTimeField(null=True, blank=True)),
+            ],
+            options={
+                'ordering': ['effective_date', 'pk'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ActionDraft',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.SmallIntegerField(choices=[(1, 'Request'), (12, 'Clarification Response'), (13, 'Appeal'), (2, 'Confirmation'), (3, 'Extension'), (4, 'Advancement'), (5, 'Clarification Request'), (6, 'Disclosure'), (7, 'Refusal'), (8, 'Affirmation'), (9, 'Reversion'), (10, 'Remandment'), (11, 'Advanced Request'), (14, 'Expiration'), (15, 'Appeal Expiration')])),
+                ('subject', models.CharField(max_length=255, blank=True)),
+                ('content', models.TextField(blank=True)),
+                ('effective_date', models.DateField(null=True, blank=True)),
+                ('deadline', models.IntegerField(help_text='Optional for extension actions. Must be NULL for all other actions.', null=True, blank=True)),
+                ('disclosure_level', models.SmallIntegerField(blank=True, help_text='Optional for advancement, disclosure, reversion and remandment actions. Must be NULL for all other actions.', null=True, choices=[(1, 'No Disclosure at All'), (2, 'Partial Disclosure'), (3, 'Full Disclosure')])),
+                ('refusal_reason', models.SmallIntegerField(blank=True, help_text='Optional for refusal and affirmation actions. Must be NULL for all other actions.', null=True, choices=[(3, 'Does not Have Information'), (4, 'Does not Provide Information'), (5, 'Does not Create Information'), (6, 'Copyright Restriction'), (7, 'Business Secret'), (8, 'Personal Information'), (9, 'Confidential Information'), (-1, 'No Reason Specified'), (-2, 'Other Reason')])),
+            ],
+            options={
+                'ordering': ['pk'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Branch',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('advanced_by', models.ForeignKey(related_name='advanced_to_set', blank=True, to='inforequests.Action', help_text='NULL for main branches. The advancement action the inforequest was advanced by for advanced branches. Every Inforequest must contain exactly one main branch.', null=True)),
+                ('historicalobligee', models.ForeignKey(help_text='Frozen Obligee at the time the Inforequest was submitted or advanced to it.', to='obligees.HistoricalObligee')),
+            ],
+            options={
+                'ordering': ['historicalobligee__name', 'pk'],
+                'verbose_name_plural': 'Branches',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Inforequest',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('applicant_name', models.CharField(help_text='Frozen applicant contact information for the case he changes it in the future. The information is frozen to its state at the moment the inforequest was submitted.', max_length=255)),
+                ('applicant_street', models.CharField(max_length=255)),
+                ('applicant_city', models.CharField(max_length=255)),
+                ('applicant_zip', models.CharField(max_length=10)),
+                ('unique_email', models.EmailField(help_text='Unique email address used to identify which obligee email belongs to which inforequest. If the inforequest was advanced to other obligees, the same email address is used for communication with all such obligees, as there is no way to tell them to send their response to a different email address.', unique=True, max_length=255)),
+                ('submission_date', models.DateField(auto_now_add=True)),
+                ('closed', models.BooleanField(default=False, help_text='True if the inforequest is closed and the applicant may not act on it any more.')),
+                ('last_undecided_email_reminder', models.DateTimeField(null=True, blank=True)),
+                ('applicant', models.ForeignKey(help_text='The inforequest owner, the user who submitted it.', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ['submission_date', 'pk'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='InforequestDraft',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('subject', models.CharField(max_length=255, blank=True)),
+                ('content', models.TextField(blank=True)),
+                ('applicant', models.ForeignKey(help_text='The draft owner, the future inforequest applicant.', to=settings.AUTH_USER_MODEL)),
+                ('obligee', models.ForeignKey(blank=True, to='obligees.Obligee', help_text='The obligee the inforequest will be sent to, if the user has already set it.', null=True)),
+            ],
+            options={
+                'ordering': ['pk'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='InforequestEmail',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.SmallIntegerField(help_text='"Applicant Action": the email represents an applicant action; "Obligee Action": the email represents an obligee action; "Undecided": The email is waiting for applicant decision; "Unrelated": Marked as an unrelated email; "Unknown": Marked as an email the applicant didn\'t know how to decide. It must be "Applicant Action" for outbound mesages or one of the remaining values for inbound messages.', choices=[(1, 'Applicant Action'), (2, 'Obligee Action'), (3, 'Undecided'), (4, 'Unrelated'), (5, 'Unknown')])),
+                ('email', models.ForeignKey(to='mail.Message')),
+                ('inforequest', models.ForeignKey(to='inforequests.Inforequest')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='inforequest',
+            name='email_set',
+            field=models.ManyToManyField(to='mail.Message', through='inforequests.InforequestEmail'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='branch',
+            name='inforequest',
+            field=models.ForeignKey(to='inforequests.Inforequest'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='branch',
+            name='obligee',
+            field=models.ForeignKey(help_text='The obligee the inforequest was sent or advanced to.', to='obligees.Obligee'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='actiondraft',
+            name='branch',
+            field=models.ForeignKey(blank=True, to='inforequests.Branch', help_text='Must be owned by inforequest if set', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='actiondraft',
+            name='inforequest',
+            field=models.ForeignKey(to='inforequests.Inforequest'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='actiondraft',
+            name='obligee_set',
+            field=models.ManyToManyField(help_text='May be empty for advancement actions. Must be empty for all other actions.', to='obligees.Obligee', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='action',
+            name='branch',
+            field=models.ForeignKey(to='inforequests.Branch'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='action',
+            name='email',
+            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='mail.Message'),
+            preserve_default=True,
+        ),
+    ]

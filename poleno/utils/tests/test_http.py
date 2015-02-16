@@ -6,7 +6,7 @@ import json
 from testfixtures import TempDirectory
 
 from django.conf.urls import patterns, url
-from django.http import HttpResponseNotModified, CompatibleStreamingHttpResponse
+from django.http import HttpResponseNotModified, FileResponse
 from django.utils.http import urlquote, urlencode, http_date
 from django.test import TestCase
 
@@ -140,7 +140,7 @@ class SendFileResponseTest(TestCase):
     def test_regular_file(self):
         path = self._create_file()
         response = self._request_file(path)
-        self._check_response(response, CompatibleStreamingHttpResponse, 200)
+        self._check_response(response, FileResponse, 200)
         self._check_content(response, path)
 
     def test_directory_raises_exception(self):
@@ -155,7 +155,7 @@ class SendFileResponseTest(TestCase):
         content = random_string(random.randrange(1000, 2000))
         path = self._create_file(content=content)
         response = self._request_file(path)
-        self._check_response(response, CompatibleStreamingHttpResponse, 200)
+        self._check_response(response, FileResponse, 200)
         self._check_content(response, path)
 
     def test_if_modified_since_with_modified_file(self):
@@ -182,7 +182,7 @@ class SendFileResponseTest(TestCase):
         path = self._create_file()
         os.utime(path, (modified_timestamp, modified_timestamp))
         response = self._request_file(path, HTTP_IF_MODIFIED_SINCE=http_date(if_modified_since_timestamp))
-        self._check_response(response, CompatibleStreamingHttpResponse, 200)
+        self._check_response(response, FileResponse, 200)
         self._check_content(response, path)
 
     def test_last_modified_response_header(self):

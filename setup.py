@@ -441,19 +441,19 @@ def main():
 
         # Settings module is configured, so we may use Django now.
         os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')
+        import django
         from django.db.transaction import atomic
         from django.db.utils import DatabaseError
         from django.contrib.auth.models import User
+        django.setup()
 
         # Create/synchronize DB. We assume that DB is already created iff it contains User model.
         try:
             User.objects.count()
         except DatabaseError:
-            call(u'Create DB:', [u'env/bin/python', u'manage.py', u'syncdb', u'--all', u'--noinput'])
-            call(u'Skip DB migrations:', [u'env/bin/python', u'manage.py', u'migrate', u'--fake'])
+            call(u'Create DB:', [u'env/bin/python', u'manage.py', u'migrate'])
             call(u'Load DB fixtures:', [u'env/bin/python', u'manage.py', u'loaddata'] + load_fixtures(configure))
         else:
-            call(u'Synchronize DB:', [u'env/bin/python', u'manage.py', u'syncdb', u'--noinput'])
             call(u'Migrate DB:', [u'env/bin/python', u'manage.py', u'migrate'])
 
         # Configure database content

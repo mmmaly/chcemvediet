@@ -4,7 +4,7 @@ import os
 import json
 import stat
 
-from django.http import HttpResponse, HttpResponseNotModified, CompatibleStreamingHttpResponse
+from django.http import HttpResponse, HttpResponseNotModified, FileResponse
 from django.views.static import was_modified_since
 from django.template import  RequestContext
 from django.utils.http import http_date, urlquote
@@ -23,7 +23,8 @@ def send_file_response(request, path, name, content_type):
     # Based on: django.views.static.serve
 
     # FIXME: If running on real Apache server, we should use "X-SENDFILE" header to let Apache
-    # server the file. It's much faster.
+    # serve the file. It's much faster. Possibly will be fixed in Django 1.8.
+    # See: http://django.readthedocs.org/en/latest/ref/request-response.html#django.http.FileResponse
 
     # FIXME: "Content-Disposition" filename is very fragile if contains non-ASCII characters.
     # Current implementation works on Firefox, but probably fails on other browsers. We should test
@@ -33,7 +34,7 @@ def send_file_response(request, path, name, content_type):
         raise OSError(u'Not a regular file: %s' % path)
     if not was_modified_since(request.META.get(u'HTTP_IF_MODIFIED_SINCE'), statobj.st_mtime, statobj.st_size):
         return HttpResponseNotModified()
-    response = CompatibleStreamingHttpResponse(open(path, u'rb'), content_type=content_type)
+    response = FileResponse(open(path, u'rb'), content_type=content_type)
     response[u'Last-Modified'] = http_date(statobj.st_mtime)
     response[u'Content-Disposition'] = "attachment; filename*=UTF-8''%s" % urlquote(name)
     response[u'Content-Length'] = statobj.st_size
