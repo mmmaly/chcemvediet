@@ -9,16 +9,6 @@ from django.test import TestCase
 
 from poleno.utils.models import after_saved, FieldChoices, QuerySet
 
-class TestModelsModelQuerySet(QuerySet):
-    def black(self):
-        return self.filter(type=TestModelsModel.TYPES.BLACK)
-    def red(self):
-        return self.filter(type=TestModelsModel.TYPES.RGB.RED)
-    def rgb(self):
-        return self.filter(type__in=[TestModelsModel.TYPES.RGB.RED, TestModelsModel.TYPES.RGB.GREEN, TestModelsModel.TYPES.RGB.BLUE])
-    def _private(self):
-        pass
-
 class TestModelsModel(models.Model):
     name = models.CharField(blank=True, max_length=255)
 
@@ -33,7 +23,7 @@ class TestModelsModel(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices, default=TYPES.BLACK)
 
-    objects = TestModelsModelQuerySet.as_manager()
+    objects = QuerySet.as_manager()
 
     class Meta:
         app_label = u'utils'
@@ -244,7 +234,6 @@ class FieldChoicesTest(TestCase):
         with self.assertRaisesMessage(ValueError, u'Duplicate choice key: 3'):
             FieldChoices((u'FIRST', 1, u'First'), (u'GROUP', 3, ((u'AAA', 3, u'Aaa'), (u'BBB', 4, u'Bbb'))))
 
-
 class QuerySetTest(TestCase):
     u"""
     Tests ``FieldChoices`` and custom ``QuerySet` on testing ``TestModelsModel``.
@@ -257,33 +246,6 @@ class QuerySetTest(TestCase):
         self.red = TestModelsModel.objects.create(name=u'red', type=TestModelsModel.TYPES.RGB.RED)
         self.blue = TestModelsModel.objects.create(name=u'blue', type=TestModelsModel.TYPES.RGB.BLUE)
 
-    def test_single_queryset_method(self):
-        res = TestModelsModel.objects.black()
-        self.assertItemsEqual(res, [self.black1, self.black2])
-
-    def test_chained_queryset_methods(self):
-        res = TestModelsModel.objects.all().rgb().all()
-        self.assertItemsEqual(res, [self.red, self.blue])
-
-    def test_queryset_with_single_result(self):
-        res = TestModelsModel.objects.rgb().red()
-        self.assertItemsEqual(res, [self.red])
-
-    def test_queryset_with_no_results(self):
-        res = TestModelsModel.objects.rgb().black()
-        self.assertItemsEqual(res, [])
-
-    def test_object_manager_private_attributes(self):
-        u"""
-        Checks that private methods/attributes of the QuerySet may not be accessed from their
-        object managers.
-        """
-        # Private methods on the object managers are not accessible.
-        with self.assertRaises(AttributeError):
-            TestModelsModel.objects._private()
-        # But the same method on the QuerySet is accessible.
-        TestModelsModel.objects.all()._private()
-
     def test_get_or_404_with_single_result(self):
         res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.WHITE)
         self.assertEqual(res, self.white)
@@ -295,7 +257,3 @@ class QuerySetTest(TestCase):
     def test_get_or_404_with_multiple_results(self):
         with self.assertRaises(TestModelsModel.MultipleObjectsReturned):
             res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.BLACK)
-
-    def test_get_display_of_field_with_choices(self):
-        res = TestModelsModel.objects.get(pk=self.white.pk)
-        self.assertEqual(res.get_type_display(), u'White')
