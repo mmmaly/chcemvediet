@@ -7,14 +7,13 @@ from testfixtures import TempDirectory
 
 from django.core.files.base import ContentFile
 from django.conf.urls import patterns, url
-from django.http import HttpResponseNotModified, FileResponse
+from django.http import HttpResponseNotModified, FileResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.utils.http import http_date
 from django.test import TestCase
 from django.test.utils import override_settings
 
 from poleno.utils.date import utc_now
-from poleno.utils.http import JsonResponse
 
 from ..models import Attachment
 from ..views import upload, download

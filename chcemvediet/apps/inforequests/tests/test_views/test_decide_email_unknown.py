@@ -3,8 +3,8 @@
 import json
 
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 
-from poleno.utils.http import JsonResponse
 from poleno.utils.misc import Bunch
 
 from ...models import InforequestEmail

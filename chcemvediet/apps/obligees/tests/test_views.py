@@ -4,9 +4,9 @@ import random
 import json
 
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 from django.test import TestCase
 
-from poleno.utils.http import JsonResponse
 from poleno.utils.test import ViewTestCaseMixin
 
 from . import ObligeesTestCaseMixin

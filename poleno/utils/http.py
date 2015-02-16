@@ -1,23 +1,11 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import os
-import json
 import stat
 
-from django.http import HttpResponse, HttpResponseNotModified, FileResponse
+from django.http import HttpResponseNotModified, FileResponse
 from django.views.static import was_modified_since
-from django.template import  RequestContext
 from django.utils.http import http_date, urlquote
-
-class JsonResponse(HttpResponse):
-    u"""
-    An HTTP response class that consumes data to be serialized to JSON.
-    Borrowed from Django 1.7
-    """
-    def __init__(self, data, **kwargs):
-        kwargs.setdefault(u'content_type', u'application/json')
-        data = json.dumps(data)
-        super(JsonResponse, self).__init__(content=data, **kwargs)
 
 def send_file_response(request, path, name, content_type):
     # Based on: django.views.static.serve

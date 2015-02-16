@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 import json
 
-from poleno.utils.http import JsonResponse
+from django.http import JsonResponse
+
 from poleno.utils.test import created_instances
 
 from ...models import InforequestEmail, Action, ActionDraft
