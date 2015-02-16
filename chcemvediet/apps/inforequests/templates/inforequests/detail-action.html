@@ -101,10 +101,7 @@
             {{ sub_branch.historicalobligee.zip }} {{ sub_branch.historicalobligee.city }}</p>
         </div>
       </div>
-      {# Workaround for Django bug causing infinite recursion #}
-      {% with template_name="inforequests/detail-branch.html" %}
-        {% include template_name with inforequest=inforequest branch=sub_branch %}
-      {% endwith %}
+      {% include "inforequests/detail-branch.html" with inforequest=inforequest branch=sub_branch %}
     </div>
   {% endfor %}
 </div>
