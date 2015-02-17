@@ -107,6 +107,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 CRON_CLASSES = (
     u'poleno.mail.cron.mail',
+    u'poleno.cron.cron.clear_old_cronlogs',
     u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
     u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
