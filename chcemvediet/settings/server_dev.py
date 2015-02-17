@@ -38,6 +38,13 @@ LOGGING = {
             u'level': u'ERROR',
             u'class': u'django.utils.log.AdminEmailHandler',
             },
+        u'file_warnings': {
+            u'level': u'WARNING',
+            u'class': u'logging.handlers.TimedRotatingFileHandler',
+            u'filename': os.path.join(PROJECT_PATH, u'logs/warnings.log'),
+            u'when': u'w0', # Monday
+            u'formatter': u'verbose',
+            },
         u'file_request': {
             u'level': u'WARNING',
             u'class': u'logging.handlers.TimedRotatingFileHandler',
@@ -61,6 +68,11 @@ LOGGING = {
             },
         },
     u'loggers': {
+        u'py.warnings': {
+            u'handlers': [u'file_warnings'],
+            u'level': u'WARNING',
+            u'propagate': False,
+            },
         u'django.request': {
             u'handlers': [u'mail_admins', u'file_request'],
             u'level': u'WARNING',
