@@ -195,6 +195,7 @@ class MessageAdmin(admin.ModelAdmin):
             u'recipient__mail',
             u'received_for',
             ]
+    ordering = [u'-processed', u'-pk']
 
     @decorate(short_description=u'Message')
     @decorate(admin_order_field=u'pk')

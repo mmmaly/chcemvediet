@@ -27,6 +27,7 @@ class ProfileAdmin(admin.ModelAdmin):
             u'user__email',
             u'city',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Profile')
     @decorate(admin_order_field=u'pk')

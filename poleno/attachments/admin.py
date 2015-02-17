@@ -130,6 +130,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'name',
             u'content_type',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Attachment')
     @decorate(admin_order_field=u'pk')

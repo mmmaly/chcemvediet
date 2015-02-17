@@ -98,6 +98,7 @@ class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'applicant__email',
             u'obligee__name',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Inforequest Draft')
     @decorate(admin_order_field=u'pk')
@@ -380,6 +381,7 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'branch__obligee__name',
             u'unique_email',
             ]
+    ordering = [u'-submission_date', u'-pk']
 
     @decorate(short_description=u'Inforequest')
     @decorate(admin_order_field=u'pk')
@@ -680,6 +682,7 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'=email__pk',
             u'email__from_mail',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Inforequest E-mail')
     @decorate(admin_order_field=u'pk')
@@ -1142,6 +1145,7 @@ class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'inforequest__applicant__email',
             u'obligee__name',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Branch')
     @decorate(admin_order_field=u'pk')
@@ -1462,6 +1466,7 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'branch__obligee__name',
             u'=email__pk',
             ]
+    ordering = [u'-effective_date', u'-pk']
 
     @decorate(short_description=u'Action')
     @decorate(admin_order_field=u'pk')
@@ -1768,6 +1773,7 @@ class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'=branch__pk',
             u'branch__obligee__name',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Action Draft')
     @decorate(admin_order_field=u'pk')

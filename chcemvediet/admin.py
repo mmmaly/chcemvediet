@@ -52,7 +52,10 @@ ADMIN_MODEL_GROUPS = [
             title=u'Obligees',
             models=[
                 u'chcemvediet.apps.obligees.models.Obligee',
-                u'chcemvediet.apps.obligees.models.HistoricalObligee',
+                # Django-admin-tools 0.5.2 on Django 1.7 seem to find ``HistoricalObligee`` model
+                # directly in the application and not in its models module. In Django 1.6 the model
+                # was found in the models module as expected.
+                u'chcemvediet.apps.obligees.HistoricalObligee',
                 ],
             ),
         # Inforequest models
@@ -141,7 +144,6 @@ class CustomMenu(Menu):
         # Models submenu
         self.children.append(items.MenuItem(u'Models', children=[self._create_model_group(**g) for g in ADMIN_MODEL_GROUPS]))
         self.children[-1].children.append(items.AppList(u'Other Models', exclude=self._used_models()))
-
 
 class CustomIndexDashboard(Dashboard):
 
