@@ -4,9 +4,9 @@ import json
 import mock
 
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 
 from poleno.timewarp import timewarp
-from poleno.utils.http import JsonResponse
 from poleno.utils.date import local_datetime_from_local
 from poleno.utils.misc import Bunch
 

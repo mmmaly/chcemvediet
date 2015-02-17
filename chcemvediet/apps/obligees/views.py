@@ -8,8 +8,7 @@ from django.shortcuts import render
 from django.forms.models import model_to_dict
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
-
-from poleno.utils.http import JsonResponse
+from django.http import JsonResponse
 
 from .models import Obligee
 
@@ -44,5 +43,7 @@ def autocomplete(request):
         u'obligee': model_to_dict(obligee),
     } for obligee in obligee_list]
 
-    return JsonResponse(data)
-
+    # Note: Jquery-ui autocomplete expects JSON with Array, despite possible problems with
+    # poisoning the JavaScript Array constructor.
+    # See: https://docs.djangoproject.com/en/1.8/ref/request-response/#serializing-non-dictionary-objects
+    return JsonResponse(data, safe=False)

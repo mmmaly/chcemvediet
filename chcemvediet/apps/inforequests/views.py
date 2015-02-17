@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest, JsonResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib.sessions.models import Session
@@ -12,7 +12,6 @@ from allauth.account.decorators import verified_email_required
 from poleno.attachments import views as attachments_views
 from poleno.attachments.models import Attachment
 from poleno.mail.models import Message as EmailMessage
-from poleno.utils.http import JsonResponse
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.misc import Bunch
 from poleno.utils.forms import clean_button

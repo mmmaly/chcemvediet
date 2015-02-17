@@ -7,14 +7,13 @@ from testfixtures import TempDirectory
 
 from django.core.files.base import ContentFile
 from django.conf.urls import patterns, url
-from django.http import HttpResponseNotModified, CompatibleStreamingHttpResponse
+from django.http import HttpResponseNotModified, FileResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.utils.http import http_date
 from django.test import TestCase
 from django.test.utils import override_settings
 
 from poleno.utils.date import utc_now
-from poleno.utils.http import JsonResponse
 
 from ..models import Attachment
 from ..views import upload, download
@@ -62,7 +61,7 @@ class AttachmentViewsTest(TestCase):
                 content_type=u'text/plain',
                 )
         response = self.client.get(u'/download/')
-        self.assertIs(type(response), CompatibleStreamingHttpResponse)
+        self.assertIs(type(response), FileResponse)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(u''.join(response.streaming_content), u'content')
 
@@ -86,7 +85,7 @@ class AttachmentViewsTest(TestCase):
                 content_type=u'text/plain',
                 )
         response = self.client.get(u'/download/', HTTP_IF_MODIFIED_SINCE=http_date(time.time()-10))
-        self.assertIs(type(response), CompatibleStreamingHttpResponse)
+        self.assertIs(type(response), FileResponse)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(u''.join(response.streaming_content), u'content')
 

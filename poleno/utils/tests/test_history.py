@@ -11,6 +11,7 @@ class RegisterHistoryTestModel(models.Model):
 
     class Meta:
         app_label = u'utils'
+        verbose_name = u'test'
 
 @register_history(manager_name=u'hist')
 class RegisterHistoryWithArgumentsTestModel(models.Model):
@@ -18,6 +19,7 @@ class RegisterHistoryWithArgumentsTestModel(models.Model):
 
     class Meta:
         app_label = u'utils'
+        verbose_name = u'test'
 
 
 class RegisterHistoryTest(TestCase):

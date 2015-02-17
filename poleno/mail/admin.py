@@ -30,11 +30,9 @@ class RecipientInlineForm(forms.ModelForm):
         status = cleaned_data.get(u'status', None)
         if status and message:
             if message.type == Message.TYPES.INBOUND and status not in Recipient.INBOUND_STATUSES:
-                self._errors[u'status'] = self.error_class([u'Must be an inbound status.'])
-                del cleaned_data[u'status']
+                self.add_error(u'status', u'Must be an inbound status.')
             elif message.type == Message.TYPES.OUTBOUND and status not in Recipient.OUTBOUND_STATUSES:
-                self._errors[u'status'] = self.error_class([u'Must be an outbound status.'])
-                del cleaned_data[u'status']
+                self.add_error(u'status', u'Must be an outbound status.')
 
         return cleaned_data
 
@@ -122,8 +120,7 @@ class MessageAdminAddForm(forms.ModelForm):
 
         if u'to_formatted' in cleaned_data and u'cc_formatted' in cleaned_data and u'bcc_formatted' in cleaned_data:
             if not cleaned_data[u'to_formatted'] and not cleaned_data[u'cc_formatted'] and not cleaned_data[u'bcc_formatted']:
-                self._errors[u'to_formatted'] = self.error_class([u"At least one of 'To', 'Cc' or 'Bcc' is required."])
-                del cleaned_data[u'to_formatted']
+                self.add_error(u'to_formatted', u"At least one of 'To', 'Cc' or 'Bcc' is required.")
 
         return cleaned_data
 
@@ -198,6 +195,7 @@ class MessageAdmin(admin.ModelAdmin):
             u'recipient__mail',
             u'received_for',
             ]
+    ordering = [u'-processed', u'-pk']
 
     @decorate(short_description=u'Message')
     @decorate(admin_order_field=u'pk')

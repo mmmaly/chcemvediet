@@ -3,9 +3,9 @@
 import json
 
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 
 from poleno.utils.date import utc_datetime_from_local, naive_date
-from poleno.utils.http import JsonResponse
 from poleno.utils.misc import Bunch
 from poleno.utils.test import created_instances
 

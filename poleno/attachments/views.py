@@ -3,8 +3,9 @@
 import os
 
 from django.conf import settings
+from django.http import JsonResponse
 
-from poleno.utils.http import JsonResponse, send_file_response
+from poleno.utils.http import send_file_response
 
 from .models import Attachment
 

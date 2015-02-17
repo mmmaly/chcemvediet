@@ -2,9 +2,9 @@
 mock==1.0.1
 coverage==4.0a1
 instrumental==0.5.3
-testfixtures==4.1.0
+testfixtures==4.1.2
 
 # Dependencies for requirements for unittests
-Mako==1.0.0
+Mako==1.0.1
 MarkupSafe==0.23
 astkit==0.5.4

@@ -13,7 +13,7 @@ from django.test import TestCase
 
 from poleno.utils.date import utc_now
 from poleno.utils.misc import Bunch, collect_stdout
-from poleno.utils.test import override_signals, created_instances, SecureClient, ViewTestCaseMixin
+from poleno.utils.test import override_signals, created_instances, ViewTestCaseMixin
 
 from . import MailTestCaseMixin
 from ..models import Message, Recipient
@@ -296,7 +296,6 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
     Tests ``webhook()`` view.
     """
 
-    client_class = SecureClient
     urls = u'poleno.mail.transports.mandrill.urls'
 
     @contextlib.contextmanager

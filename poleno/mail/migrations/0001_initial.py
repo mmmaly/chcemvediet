@@ -1,75 +1,50 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import jsonfield.fields
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Message'
-        db.create_table(u'mail_message', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('processed', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('from_name', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('from_mail', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('received_for', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('text', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('html', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('headers', self.gf('jsonfield.fields.JSONField')(default={})),
-        ))
-        db.send_create_signal(u'mail', ['Message'])
+    dependencies = [
+    ]
 
-        # Adding model 'Recipient'
-        db.create_table(u'mail_recipient', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mail.Message'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('mail', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('type', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('status', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('status_details', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('remote_id', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-        ))
-        db.send_create_signal(u'mail', ['Recipient'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Message'
-        db.delete_table(u'mail_message')
-
-        # Deleting model 'Recipient'
-        db.delete_table(u'mail_recipient')
-
-
-    models = {
-        u'mail.message': {
-            'Meta': {'ordering': "[u'processed', u'pk']", 'object_name': 'Message'},
-            'from_mail': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'from_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'headers': ('jsonfield.fields.JSONField', [], {'default': '{}'}),
-            'html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'processed': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'received_for': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'type': ('django.db.models.fields.SmallIntegerField', [], {})
-        },
-        u'mail.recipient': {
-            'Meta': {'ordering': "[u'pk']", 'object_name': 'Recipient'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mail': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mail.Message']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'remote_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'status': ('django.db.models.fields.SmallIntegerField', [], {}),
-            'status_details': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'type': ('django.db.models.fields.SmallIntegerField', [], {})
-        }
-    }
-
-    complete_apps = ['mail']
+    operations = [
+        migrations.CreateModel(
+            name='Message',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.SmallIntegerField(choices=[(1, 'Inbound'), (2, 'Outbound')])),
+                ('processed', models.DateTimeField(help_text='Date and time the message was sent or received and processed. Leave blank if you want the application to process it.', null=True, blank=True)),
+                ('from_name', models.CharField(help_text='Sender full name. For instance setting name to &quot;John Smith&quot; and e-mail to &quot;smith@example.com&quot; will set the sender address to &quot;John Smith &lt;smith@example.com&gt;&quot;.', max_length=255, blank=True)),
+                ('from_mail', models.EmailField(help_text='Sender e-mail address, e.g. "smith@example.com".', max_length=255)),
+                ('received_for', models.EmailField(help_text="The address we received the massage for. It may, but does not have to be among the message recipients, as the address may have heen bcc-ed to. The address is empty for all outbound messages. It may also be empty for inbound messages if we don't know it, or the used mail transport does not support it.", max_length=255, blank=True)),
+                ('subject', models.CharField(max_length=255, blank=True)),
+                ('text', models.TextField(help_text='"text/plain" message body alternative.', blank=True)),
+                ('html', models.TextField(help_text='"text/html" message body alternative.', blank=True)),
+                ('headers', jsonfield.fields.JSONField(default={}, help_text='Dictionary mapping header names to their values, or lists of their values. For outbound messages it contains only extra headers added by the sender. For inbound messages it contains all message headers.', blank=True)),
+            ],
+            options={
+                'ordering': ['processed', 'pk'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Recipient',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(help_text='Recipient full name. For instance setting name to &quot;John Smith&quot; and e-mail to &quot;smith@example.com&quot; will send the message to &quot;John Smith &lt;smith@example.com&gt;&quot;.', max_length=255, blank=True)),
+                ('mail', models.EmailField(help_text='Recipient e-mail address, e.g. "smith@example.com".', max_length=255)),
+                ('type', models.SmallIntegerField(help_text='Recipient type: To, Cc, or Bcc.', choices=[(1, 'To'), (2, 'Cc'), (3, 'Bcc')])),
+                ('status', models.SmallIntegerField(help_text='Delivery status for the message recipient. It must be "Inbound" for inbound mesages or one of the remaining statuses for outbound messages.', choices=[(8, 'Inbound'), (1, 'Undefined'), (2, 'Queued'), (3, 'Rejected'), (4, 'Invalid'), (5, 'Sent'), (6, 'Delivered'), (7, 'Opened')])),
+                ('status_details', models.CharField(help_text='Unspecific delivery status details set by e-mail transport. Leave blank if not sure.', max_length=255, blank=True)),
+                ('remote_id', models.CharField(help_text='Recipient reference ID set by e-mail transport. Leave blank if not sure.', max_length=255, blank=True)),
+                ('message', models.ForeignKey(to='mail.Message')),
+            ],
+            options={
+                'ordering': ['pk'],
+            },
+            bases=(models.Model,),
+        ),
+    ]

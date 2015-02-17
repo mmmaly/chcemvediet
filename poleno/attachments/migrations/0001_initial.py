@@ -1,51 +1,31 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Attachment'
-        db.create_table(u'attachments_attachment', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('generic_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
-            ('generic_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=255)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('content_type', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')()),
-            ('size', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal(u'attachments', ['Attachment'])
+    dependencies = [
+        ('contenttypes', '0001_initial'),
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'Attachment'
-        db.delete_table(u'attachments_attachment')
-
-
-    models = {
-        u'attachments.attachment': {
-            'Meta': {'ordering': "[u'pk']", 'object_name': 'Attachment'},
-            'content_type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {}),
-            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '255'}),
-            'generic_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'generic_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'size': ('django.db.models.fields.IntegerField', [], {})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        }
-    }
-
-    complete_apps = ['attachments']
+    operations = [
+        migrations.CreateModel(
+            name='Attachment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('generic_id', models.CharField(max_length=255)),
+                ('file', models.FileField(max_length=255, upload_to='attachments')),
+                ('name', models.CharField(help_text='Attachment file name, e.g. "document.pdf". The value does not have to be a valid filename. It may be set by the user.', max_length=255)),
+                ('content_type', models.CharField(help_text='Attachment content type, e.g. "application/pdf". The value does not have to be a valid content type. It may be set by the user.', max_length=255)),
+                ('created', models.DateTimeField(help_text='Date and time the attachment was uploaded or received by an email. Leave blank for current time.', blank=True)),
+                ('size', models.IntegerField(help_text='Attachment file size in bytes. Automatically computed when creating a new object.', blank=True)),
+                ('generic_type', models.ForeignKey(to='contenttypes.ContentType')),
+            ],
+            options={
+                'ordering': ['pk'],
+            },
+            bases=(models.Model,),
+        ),
+    ]

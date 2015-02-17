@@ -35,7 +35,7 @@ INSTALLED_APPS = (
     u'django.contrib.sites',
     u'django.contrib.messages',
     u'django.contrib.staticfiles',
-    u'django.contrib.admin',
+    u'django.contrib.admin.apps.SimpleAdminConfig', # See "django-adminplus" docs for Django 1.7
     u'django.contrib.sitemaps',
     # For django-allauth:
     u'allauth',
@@ -46,9 +46,6 @@ INSTALLED_APPS = (
     u'allauth.socialaccount.providers.linkedin',
     u'allauth.socialaccount.providers.twitter',
     # Other 3part apps
-    u'south',
-    u'widget_tweaks',
-    u'hvad',
     u'sekizai',
     u'adminplus',
     u'django_cron',
@@ -144,11 +141,8 @@ STATICFILES_DIRS = (
     )
 
 STATICFILES_FINDERS = (
-    #u'django.contrib.staticfiles.finders.FileSystemFinder',
-    #u'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #u'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    u'pipeline.finders.FileSystemFinder',
-    u'pipeline.finders.AppDirectoriesFinder',
+    u'django.contrib.staticfiles.finders.FileSystemFinder',
+    u'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     u'pipeline.finders.PipelineFinder',
     #u'pipeline.finders.CachedFileFinder',
     )

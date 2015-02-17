@@ -191,8 +191,7 @@ class EffectiveDateMixin(ActionAbstractForm):
                     if effective_date < local_today() - relativedelta(months=1):
                         raise ValidationError(_(u'inforequests:EffectiveDateMixin:older_than_month_error'))
                 except ValidationError as e:
-                    self._errors[u'effective_date'] = self.error_class(e.messages)
-                    del cleaned_data[u'effective_date']
+                    self.add_error(u'effective_date', e)
 
         return cleaned_data
 
@@ -370,8 +369,7 @@ class AdvancedToMixin(ActionAbstractForm):
                             if advanced_to_2 == advanced_to:
                                 raise ValidationError(_(u'inforequests:AdvancedToMixin:duplicate_obligee_error'))
                     except ValidationError as e:
-                        self._errors[field] = self.error_class(e.messages)
-                        del cleaned_data[field]
+                        self.add_error(field, e)
 
         return cleaned_data
 

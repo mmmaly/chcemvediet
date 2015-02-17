@@ -135,6 +135,7 @@ class Timewarp(object):
             copy_reg.pickle(datetime_orig.datetime, lambda d: d.__reduce__())
 
     def _remap_modules(self, remap):
+        types = [type(a) for a in remap]
         for name, module in sys.modules.items():
             if module is None:
                 continue
@@ -145,7 +146,7 @@ class Timewarp(object):
                 continue
             for var, value in module.__dict__.items():
                 try:
-                    if value in remap:
+                    if type(value) in types and value in remap:
                         setattr(module, var, remap[value])
                 except TypeError:
                     pass

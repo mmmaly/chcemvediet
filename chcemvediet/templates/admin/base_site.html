@@ -1,7 +1,7 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "menu:admin/base_site.html" %}
-{% load external_css external_js from poleno.utils %}
-{% load compressed_css compressed_js from compressed %}
+{% load external_js from poleno.utils %}
+{% load javascript from pipeline %}
 
 {% block title %}{{ title }} | Chcemvedieť Administration{% endblock %}
 
@@ -13,5 +13,5 @@
 
 {% block extrahead %}{{ block.super }}
   {% external_js %}
-  {% compressed_js 'main' %}
+  {% javascript 'main' %}
 {% endblock %}

@@ -44,7 +44,7 @@ class AttachmentInline(generic.GenericTabularInline):
 
     @decorate(short_description=u'Size')
     def size_field(self, attachment):
-        return filesize(attachment.size)
+        return filesize(attachment.size) if attachment.size is not None else u'--'
 
     def has_add_permission(self, request):
         return False
@@ -63,11 +63,9 @@ class AttachmentAdminAddForm(forms.ModelForm):
             try:
                 generic_object = generic_type.get_object_for_this_type(pk=generic_id)
             except generic_type.model_class().DoesNotExist:
-                self._errors[u'generic_id'] = self.error_class([u'This object does not exist.'])
-                del cleaned_data[u'generic_id']
+                self.add_error(u'generic_id', u'This object does not exist.')
             except ValueError:
-                self._errors[u'generic_id'] = self.error_class([u'Invalid generic id.'])
-                del cleaned_data[u'generic_id']
+                self.add_error(u'generic_id', u'Invalid generic id.')
             else:
                 self.cleaned_data[u'generic_object'] = generic_object
 
@@ -101,11 +99,9 @@ class AttachmentAdminChangeForm(forms.ModelForm):
             try:
                 generic_object = generic_type.get_object_for_this_type(pk=generic_id)
             except generic_type.model_class().DoesNotExist:
-                self._errors[u'generic_id'] = self.error_class([u'This object does not exist.'])
-                del cleaned_data[u'generic_id']
+                self.add_error(u'generic_id', u'This object does not exist.')
             except ValueError:
-                self._errors[u'generic_id'] = self.error_class([u'Invalid generic id.'])
-                del cleaned_data[u'generic_id']
+                self.add_error(u'generic_id', u'Invalid generic id.')
             else:
                 self.cleaned_data[u'generic_object'] = generic_object
 
@@ -134,6 +130,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'name',
             u'content_type',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Attachment')
     @decorate(admin_order_field=u'pk')

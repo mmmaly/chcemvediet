@@ -6,92 +6,12 @@ import json
 from testfixtures import TempDirectory
 
 from django.conf.urls import patterns, url
-from django.http import HttpResponseNotModified, CompatibleStreamingHttpResponse
+from django.http import HttpResponseNotModified, FileResponse
 from django.utils.http import urlquote, urlencode, http_date
 from django.test import TestCase
 
-from poleno.utils.http import JsonResponse, send_file_response
+from poleno.utils.http import send_file_response
 from poleno.utils.misc import random_string
-
-class JsonResponseTest(TestCase):
-    u"""
-    Tests ``JsonResponse`` class. Checks that the response has correctly content type and various
-    value types are correctly encoded. Also checks that any additional keyword arguments are passed
-    directly to ``HttpResponse``.
-    """
-
-    def json_view(request):
-        return JsonResponse({u'data': [47, u'string', [], {}, True, False, None]})
-
-    def json_view_with_status(request):
-        return JsonResponse([1, 2, 3], status=201)
-
-    def json_view_with_empty_dict(request):
-        return JsonResponse({})
-
-    def json_view_with_empty_list(request):
-        return JsonResponse([])
-
-    def json_view_with_string(request):
-        return JsonResponse(u'Text')
-
-    def json_view_with_number(request):
-        return JsonResponse(47)
-
-    def json_view_with_float(request):
-        return JsonResponse(3.13)
-
-    def json_view_with_true(request):
-        return JsonResponse(True)
-
-    urls = tuple(patterns(u'',
-        url(r'^json_view/$', json_view),
-        url(r'^json_view_with_status/$', json_view_with_status),
-        url(r'^json_view_with_empty_dict/$', json_view_with_empty_dict),
-        url(r'^json_view_with_empty_list/$', json_view_with_empty_list),
-        url(r'^json_view_with_string/$', json_view_with_string),
-        url(r'^json_view_with_number/$', json_view_with_number),
-        url(r'^json_view_with_float/$', json_view_with_float),
-        url(r'^json_view_with_true/$', json_view_with_true),
-        ))
-
-    def _check_response(self, response, klass, status_code, content):
-        self.assertIs(type(response), klass)
-        self.assertEqual(response.status_code, status_code)
-        self.assertEqual(response[u'Content-Type'], u'application/json')
-        self.assertEqual(json.loads(response.content), content)
-
-    def test_json_view(self):
-        response = self.client.get(u'/json_view/')
-        self._check_response(response, JsonResponse, 200, {u'data': [47, u'string', [], {}, True, False, None]})
-
-    def test_json_view_with_status(self):
-        response = self.client.get(u'/json_view_with_status/')
-        self._check_response(response, JsonResponse, 201, [1, 2, 3])
-
-    def test_json_view_with_empty_dict(self):
-        response = self.client.get(u'/json_view_with_empty_dict/')
-        self._check_response(response, JsonResponse, 200, {})
-
-    def test_json_view_with_empty_list(self):
-        response = self.client.get(u'/json_view_with_empty_list/')
-        self._check_response(response, JsonResponse, 200, [])
-
-    def test_json_view_with_string(self):
-        response = self.client.get(u'/json_view_with_string/')
-        self._check_response(response, JsonResponse, 200, u'Text')
-
-    def test_json_view_with_number(self):
-        response = self.client.get(u'/json_view_with_number/')
-        self._check_response(response, JsonResponse, 200, 47)
-
-    def test_json_view_with_float(self):
-        response = self.client.get(u'/json_view_with_float/')
-        self._check_response(response, JsonResponse, 200, 3.13)
-
-    def test_json_view_with_true(self):
-        response = self.client.get(u'/json_view_with_true/')
-        self._check_response(response, JsonResponse, 200, True)
 
 class SendFileResponseTest(TestCase):
     u"""
@@ -140,7 +60,7 @@ class SendFileResponseTest(TestCase):
     def test_regular_file(self):
         path = self._create_file()
         response = self._request_file(path)
-        self._check_response(response, CompatibleStreamingHttpResponse, 200)
+        self._check_response(response, FileResponse, 200)
         self._check_content(response, path)
 
     def test_directory_raises_exception(self):
@@ -155,7 +75,7 @@ class SendFileResponseTest(TestCase):
         content = random_string(random.randrange(1000, 2000))
         path = self._create_file(content=content)
         response = self._request_file(path)
-        self._check_response(response, CompatibleStreamingHttpResponse, 200)
+        self._check_response(response, FileResponse, 200)
         self._check_content(response, path)
 
     def test_if_modified_since_with_modified_file(self):
@@ -182,7 +102,7 @@ class SendFileResponseTest(TestCase):
         path = self._create_file()
         os.utime(path, (modified_timestamp, modified_timestamp))
         response = self._request_file(path, HTTP_IF_MODIFIED_SINCE=http_date(if_modified_since_timestamp))
-        self._check_response(response, CompatibleStreamingHttpResponse, 200)
+        self._check_response(response, FileResponse, 200)
         self._check_content(response, path)
 
     def test_last_modified_response_header(self):

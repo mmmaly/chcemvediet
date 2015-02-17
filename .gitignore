@@ -5,6 +5,7 @@
 setup.json
 env/
 cache/
+static/
 logs/*.log
 logs/*.log.*
 media/attachments

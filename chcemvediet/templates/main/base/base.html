@@ -2,7 +2,7 @@
 {% load trans from i18n %}
 {% load addtoblock render_block from sekizai_tags %}
 {% load external_css external_js from poleno.utils %}
-{% load compressed_css compressed_js from compressed %}
+{% load stylesheet javascript from pipeline %}
 
 {% comment %}
  %
@@ -16,8 +16,8 @@
 {% addtoblock "js" %}{% external_js %}{% endaddtoblock %}
 
 {# Local assets #}
-{% addtoblock "css" %}{% compressed_css 'main' %}{% endaddtoblock %}
-{% addtoblock "js" %}{% compressed_js 'main' %}{% endaddtoblock %}
+{% addtoblock "css" %}{% stylesheet 'main' %}{% endaddtoblock %}
+{% addtoblock "js" %}{% javascript 'main' %}{% endaddtoblock %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en" }}">

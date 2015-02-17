@@ -98,6 +98,7 @@ class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'applicant__email',
             u'obligee__name',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Inforequest Draft')
     @decorate(admin_order_field=u'pk')
@@ -380,6 +381,7 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'branch__obligee__name',
             u'unique_email',
             ]
+    ordering = [u'-submission_date', u'-pk']
 
     @decorate(short_description=u'Inforequest')
     @decorate(admin_order_field=u'pk')
@@ -517,18 +519,15 @@ class InforequestEmailAdminAddForm(forms.ModelForm):
 
         if u'email' in cleaned_data:
             if cleaned_data[u'email'].inforequestemail_set.exists():
-                self._errors[u'email'] = self.error_class([u'This e-mail is already assigned to an inforequest.'])
-                del cleaned_data[u'email']
+                self.add_error(u'email', u'This e-mail is already assigned to an inforequest.')
 
         if u'email' in cleaned_data and u'type' in cleaned_data:
             if cleaned_data[u'email'].type == Message.TYPES.INBOUND:
                 if cleaned_data[u'type'] == InforequestEmail.TYPES.APPLICANT_ACTION:
-                    self._errors[u'type'] = self.error_class([u"Inbound message type may not be 'Applicant Action'."])
-                    del cleaned_data[u'type']
+                    self.add_error(u'type', u"Inbound message type may not be 'Applicant Action'.")
             else: # Message.TYPES.OUTBOUND
                 if cleaned_data[u'type'] != InforequestEmail.TYPES.APPLICANT_ACTION:
-                    self._errors[u'type'] = self.error_class([u"Outbound message type must be 'Applicant Action'."])
-                    del cleaned_data[u'type']
+                    self.add_error(u'type', u"Outbound message type must be 'Applicant Action'.")
 
         return cleaned_data
 
@@ -555,12 +554,10 @@ class InforequestEmailAdminChangeForm(forms.ModelForm):
         if u'type' in cleaned_data:
             if self.instance.email.type == Message.TYPES.INBOUND:
                 if cleaned_data[u'type'] == InforequestEmail.TYPES.APPLICANT_ACTION:
-                    self._errors[u'type'] = self.error_class([u"Inbound message type may not be 'Applicant Action'."])
-                    del cleaned_data[u'type']
+                    self.add_error(u'type', u"Inbound message type may not be 'Applicant Action'.")
             else: # Message.TYPES.OUTBOUND
                 if cleaned_data[u'type'] != InforequestEmail.TYPES.APPLICANT_ACTION:
-                    self._errors[u'type'] = self.error_class([u"Outbound message type must be 'Applicant Action'."])
-                    del cleaned_data[u'type']
+                    self.add_error(u'type', u"Outbound message type must be 'Applicant Action'.")
 
         return cleaned_data
 
@@ -685,6 +682,7 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'=email__pk',
             u'email__from_mail',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Inforequest E-mail')
     @decorate(admin_order_field=u'pk')
@@ -1119,8 +1117,7 @@ class BranchAdminChangeForm(forms.ModelForm):
                     count += 1
 
             except ValidationError as e:
-                self._errors[u'advanced_by'] = self.error_class(e.messages)
-                del cleaned_data[u'advanced_by']
+                self.add_error(u'advanced_by', e)
 
         return cleaned_data
 
@@ -1148,6 +1145,7 @@ class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'inforequest__applicant__email',
             u'obligee__name',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Branch')
     @decorate(admin_order_field=u'pk')
@@ -1362,8 +1360,7 @@ class ActionAdminAddForm(forms.ModelForm):
 
         if u'send_email' in cleaned_data and u'type' in cleaned_data:
             if cleaned_data[u'send_email'] and cleaned_data[u'type'] not in Action.APPLICANT_ACTION_TYPES:
-                self._errors[u'send_email'] = self.error_class([u'Ony applicant actions may be send by e-mail.'])
-                del cleaned_data[u'send_email']
+                self.add_error(u'send_email', u'Ony applicant actions may be send by e-mail.')
 
         return cleaned_data
 
@@ -1434,8 +1431,7 @@ class ActionAdminChangeForm(forms.ModelForm):
         if u'email' in cleaned_data:
             action = try_except(lambda: cleaned_data[u'email'].action, None, Action.DoesNotExist)
             if action is not None and action != self.instance:
-                self._errors[u'email'] = self.error_class([u'This e-mail is already used with another action.'])
-                del cleaned_data[u'email']
+                self.add_error(u'email', u'This e-mail is already used with another action.')
 
         return cleaned_data
 
@@ -1470,6 +1466,7 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'branch__obligee__name',
             u'=email__pk',
             ]
+    ordering = [u'-effective_date', u'-pk']
 
     @decorate(short_description=u'Action')
     @decorate(admin_order_field=u'pk')
@@ -1776,6 +1773,7 @@ class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             u'=branch__pk',
             u'branch__obligee__name',
             ]
+    ordering = [u'-pk']
 
     @decorate(short_description=u'Action Draft')
     @decorate(admin_order_field=u'pk')
