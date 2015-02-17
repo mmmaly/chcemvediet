@@ -6,7 +6,8 @@ from django.test import TestCase
 from django.test.utils import override_settings
 
 from . import AccountsTestCaseMixin
-from ..models import Profile, create_profile_on_user_post_save
+from ..models import Profile
+from ..signals import create_profile_on_user_post_save
 
 class ProfileModelTest(AccountsTestCaseMixin, TestCase):
     u"""
