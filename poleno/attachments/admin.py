@@ -44,7 +44,7 @@ class AttachmentInline(generic.GenericTabularInline):
 
     @decorate(short_description=u'Size')
     def size_field(self, attachment):
-        return filesize(attachment.size)
+        return filesize(attachment.size) if attachment.size is not None else u'--'
 
     def has_add_permission(self, request):
         return False
