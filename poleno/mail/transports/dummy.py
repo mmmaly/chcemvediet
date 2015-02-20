@@ -7,7 +7,7 @@ class DummyTransport(BaseTransport):
         assert message.type == message.TYPES.OUTBOUND
         assert message.processed is None
 
-        for recipient in message.recipient_set.all():
+        for recipient in message.recipients:
             recipient.status = recipient.STATUSES.SENT
             recipient.save()
 

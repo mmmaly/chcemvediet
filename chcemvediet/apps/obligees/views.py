@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import re
+import operator
 from unidecode import unidecode
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -14,8 +15,8 @@ from .models import Obligee
 
 @require_http_methods([u'HEAD', u'GET'])
 def index(request):
-    obligee_list = Obligee.objects.pending()
-    paginator = Paginator(obligee_list, 25)
+    obligees = Obligee.objects.pending()
+    paginator = Paginator(obligees, 25)
 
     page = request.GET.get(u'page')
     try:
@@ -35,13 +36,13 @@ def autocomplete(request):
     term = unidecode(term).lower() # transliterate unicode to ascii
     words = (w for w in re.split(r'[^a-z0-9]+', term) if w)
 
-    query = reduce(lambda p, q: p & q, (Q(slug__contains=u'-'+w) for w in words), Q())
-    obligee_list = Obligee.objects.pending().filter(query)[:10]
+    query = reduce(operator.and_, (Q(slug__contains=u'-'+w) for w in words), Q())
+    obligees = Obligee.objects.pending().filter(query)[:10]
 
     data = [{
         u'label': obligee.name,
         u'obligee': model_to_dict(obligee),
-    } for obligee in obligee_list]
+    } for obligee in obligees]
 
     # Note: Jquery-ui autocomplete expects JSON with Array, despite possible problems with
     # poisoning the JavaScript Array constructor.

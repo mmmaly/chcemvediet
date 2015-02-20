@@ -212,7 +212,7 @@ class CanAddActionTests(AbstractTests):
             else:
                 self.assertEqual(response.status_code, 404, u'Can add "%s" after "%s"' % (action_name, test_name))
 
-            for branch in scenario.inforequest.branch_set.all():
+            for branch in scenario.inforequest.branches:
                 tested_action_types.add(branch.last_action.type)
 
         # Make sure we tested all defined action types

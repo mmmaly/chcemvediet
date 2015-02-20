@@ -199,10 +199,10 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
             response = self.client.post(reverse(u'inforequests:create'), data)
 
         inforequest = inforequest_set.get()
-        branch = inforequest.branch
+        branch = inforequest.main_branch
         action = branch.last_action
         self.assertEqual(inforequest.applicant, self.user1)
-        self.assertItemsEqual(inforequest.branch_set.all(), [branch])
+        self.assertItemsEqual(inforequest.branches, [branch])
         self.assertEqual(branch.obligee, obligee)
         self.assertItemsEqual(branch.action_set.all(), [action])
         self.assertEqual(action.type, Action.TYPES.REQUEST)
@@ -227,7 +227,7 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
 
         inforequest = inforequest_set.get()
         self.assertItemsEqual(inforequest.email_set.all(), [email])
-        self.assertEqual(inforequest.branch.last_action.email, email)
+        self.assertEqual(inforequest.main_branch.last_action.email, email)
 
     def test_post_with_submit_button_and_valid_data_deletes_draft(self):
         draft = self._create_inforequest_draft(applicant=self.user1)

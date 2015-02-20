@@ -3,6 +3,7 @@
 import json
 import base64
 import requests
+from collections import defaultdict
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
@@ -38,7 +39,8 @@ class MandrillTransport(BaseTransport):
             msg[u'headers'] = message.headers
 
         msg[u'to'] = []
-        for recipient in message.recipient_set.all():
+        recipients = defaultdict(list)
+        for recipient in message.recipients:
             rcp = {}
             rcp[u'email'] = recipient.mail
             if recipient.name:
@@ -51,9 +53,10 @@ class MandrillTransport(BaseTransport):
                 assert recipient.type == recipient.TYPES.BCC
                 rcp[u'type'] = u'bcc'
             msg[u'to'].append(rcp)
+            recipients[recipient.mail].append(recipient)
 
         msg[u'attachments'] = []
-        for attachment in message.attachment_set.all():
+        for attachment in message.attachments:
             attch = {}
             attch[u'type'] = attachment.content_type
             attch[u'name'] = attachment.name
@@ -71,7 +74,7 @@ class MandrillTransport(BaseTransport):
                     (message.pk, response.status_code, response.text))
 
         for rcp in response.json():
-            for recipient in message.recipient_set.filter(mail=rcp[u'email']):
+            for recipient in recipients[rcp[u'email']]:
                 recipient.remote_id = rcp[u'_id']
 
                 if rcp[u'status'] == u'sent':

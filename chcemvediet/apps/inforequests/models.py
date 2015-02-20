@@ -5,19 +5,23 @@ from email.utils import formataddr
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models, IntegrityError, transaction
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
 from aggregate_if import Count
 
+from poleno.attachments.models import Attachment
+from poleno.mail.models import Message
 from poleno.workdays import workdays
 from poleno.utils.misc import Bunch, random_readable_string, squeeze
-from poleno.utils.models import FieldChoices, QuerySet
+from poleno.utils.models import FieldChoices, QuerySet, join_lookup
 from poleno.utils.mail import render_mail
 from poleno.utils.date import utc_now, local_today
+from chcemvediet.apps.obligees.models import Obligee
 
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
@@ -56,6 +60,23 @@ class InforequestDraft(models.Model):
     class Meta:
         ordering = [u'pk']
 
+    @staticmethod
+    def prefetch_attachments(path=None, queryset=None):
+        u"""
+        Use to prefetch ``InforequestDraft.attachments``
+        """
+        if queryset is None:
+            queryset = Attachment.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
+
+    @cached_property
+    def attachments(self):
+        u"""
+        Cached list of all inforequest draft attachments. May be prefetched with
+        ``prefetch_related(InforequestDraft.prefetch_attachments())`` queryset method.
+        """
+        return list(self.attachment_set.all())
+
     def __unicode__(self):
         return u'%s' % self.pk
 
@@ -70,8 +91,12 @@ class InforequestQuerySet(QuerySet):
         return self.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED).distinct()
     def without_undecided_email(self):
         return self.exclude(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
-    def prefetch_has_undecided_email(self):
-        return self.annotate(_has_undecided_email=Count(u'inforequestemail', only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
+    def select_undecided_emails_count(self):
+        u"""
+        Use to select ``Inforequest.undecided_emails_count``. Redundant if
+        ``prefetch_related(Inforequest.prefetch_undecided_emails())`` is already used.
+        """
+        return self.annotate(undecided_emails_count=Count(u'inforequestemail', only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
 
 class Inforequest(models.Model):
     # May NOT be NULL
@@ -142,121 +167,213 @@ class Inforequest(models.Model):
     class Meta:
         ordering = [u'submission_date', u'pk']
 
-    # May NOT be NULL; Read-only
-    @property
-    def branch(self):
-        # FIXME: Django 1.6 can't prefetch filtered relations with ``prefetch_related`` queryset
-        # method. Perhaps we should upgrade to Django 1.7 and use ``Prefetch`` class.
-        # See: https://docs.djangoproject.com/en/1.7/ref/models/queries/#django.db.models.Prefetch
-        return self.branch_set.main().get()
+    @staticmethod
+    def prefetch_branches(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Inforequest.branches``
+        """
+        if queryset is None:
+            queryset = Branch.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'branch_set'), queryset, to_attr=u'branches')
 
-    # May be empty; Read-only
+    @cached_property
+    def branches(self):
+        u"""
+        Cached list of all inforequest branches. The list should not be empty. May be prefetched
+        with ``prefetch_related(Inforequest.prefetch_branches())`` queryset method.
+        """
+        return list(self.branch_set.all())
+
+    @staticmethod
+    def prefetch_main_branch(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Inforequest.main_branch``. Redundant if ``prefetch_branches()`` is
+        already used,
+        """
+        if queryset is None:
+            queryset = Branch.objects.get_queryset()
+        queryset = queryset.main()
+        return Prefetch(join_lookup(path, u'branch_set'), queryset, to_attr=u'_main_branch')
+
+    @cached_property
+    def main_branch(self):
+        u"""
+        Cached inforequest main branch. The inforequest should have exactly one main branch. Raises
+        Branch.DoesNotExist if the inforequest has no main branch and Branch.MultipleObjectsReturned
+        if it has more than one main branch. May be prefetched with ``prefetch_related(Inforequest.prefetch_main_branch())``
+        queryset method. Takes advantage of ``Inforequest.branches`` if it is already fetched.
+        """
+        if u'_main_branch' in self.__dict__:
+            res = self._main_branch
+        elif u'branches' in self.__dict__:
+            res = list(b for b in self.branches if b.is_main)
+        else:
+            res = list(self.branch_set.main())
+
+        if len(res) == 0:
+            raise Branch.DoesNotExist(u'Inforequest has no main branch.')
+        if len(res) > 1:
+            raise Branch.MultipleObjectsReturned(u'Inforequest has more than one main branch.')
+        return res[0]
+
     @property
-    def undecided_set(self):
+    def undecided_emails_set(self):
+        u"""
+        Queryset of all undecided emails assigned to the inforequest.
+        """
         return self.email_set.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
 
-    # May NOT be NULL; Read-only
-    @property
-    def has_undecided_email(self):
-        if not hasattr(self, u'_has_undecided_email'):
-            self._has_undecided_email = self.undecided_set.exists()
-        return self._has_undecided_email
+    @staticmethod
+    def prefetch_undecided_emails(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Inforequest.undecided_emails``.
+        """
+        if queryset is None:
+            queryset = Message.objects.get_queryset()
+        # There is some problem in Django and it joins InforequestEmail table twice.
+        queryset = queryset.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
+        return Prefetch(join_lookup(path, u'email_set'), queryset, to_attr=u'undecided_emails')
 
-    # May be NULL; Read-only
-    @property
+    @cached_property
+    def undecided_emails(self):
+        u"""
+        Cached list of all undecided emails assigned to the inforequest. May be prefetched with
+        ``prefetch_related(Inforequest.prefetch_undecided_emails())`` queryset method.
+        """
+        return list(self.undecided_emails_set.all())
+
+    @cached_property
+    def undecided_emails_count(self):
+        u"""
+        Cached number of undecided emails assigned to the inforequest. May be prefetched with
+        ``select_undecided_emails_count()`` queryset method, Takes advantage of ``Inforequest.undecided_emails``
+        if it is already fetched.
+        """
+        if u'undecided_emails' in self.__dict__:
+            return len(self.undecided_emails)
+        else:
+            return self.undecided_emails_set.count()
+
+    @cached_property
+    def has_undecided_emails(self):
+        u"""
+        Cached flag if the inforequest has any undecided emails assigned. Takes advantage of
+        ``Inforequest.undecided_emails_count`` or ``Inforequest.undecided_emails`` if either is
+        already fetched.
+        """
+        if u'undecided_emails_count' in self.__dict__:
+            return bool(self.undecided_emails_count)
+        elif u'undecided_emails' in self.__dict__:
+            return bool(self.undecided_emails)
+        else:
+            return self.undecided_emails_set.exists()
+
+    @cached_property
     def oldest_undecided_email(self):
-        return self.undecided_set.first()
+        u"""
+        Cached oldest undecided email assigned to the inforequest. Returns None if the inforequest
+        has no undecided emails assigned. Takes advantage of ``Inforequest.undecided_emails`` if it
+        is already fetched.
+        """
+        if u'undecided_emails' in self.__dict__:
+            try:
+                return self.undecided_emails[0]
+            except IndexError:
+                return None
+        else:
+            return self.undecided_emails_set.first()
 
-    # May be NULL; Read-only
-    @property
+    @cached_property
     def newest_undecided_email(self):
-        return self.undecided_set.last()
+        u"""
+        Cached newest undecided email assigned to the inforequest. Returns None if the inforequest
+        has no undecided emails assigned. Takes advantage of ``Inforequest.undecided_emails`` if it
+        is already fetched.
+        """
+        if u'undecided_emails' in self.__dict__:
+            try:
+                return self.undecided_emails[-1]
+            except IndexError:
+                return None
+        else:
+            return self.undecided_emails_set.last()
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_request(self):
         return self.can_add_action(Action.TYPES.REQUEST)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_clarification_response(self):
         return self.can_add_action(Action.TYPES.CLARIFICATION_RESPONSE)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_appeal(self):
         return self.can_add_action(Action.TYPES.APPEAL)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_confirmation(self):
         return self.can_add_action(Action.TYPES.CONFIRMATION)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_extension(self):
         return self.can_add_action(Action.TYPES.EXTENSION)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_advancement(self):
         return self.can_add_action(Action.TYPES.ADVANCEMENT)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_clarification_request(self):
         return self.can_add_action(Action.TYPES.CLARIFICATION_REQUEST)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_disclosure(self):
         return self.can_add_action(Action.TYPES.DISCLOSURE)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_refusal(self):
         return self.can_add_action(Action.TYPES.REFUSAL)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_affirmation(self):
         return self.can_add_action(Action.TYPES.AFFIRMATION)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_reversion(self):
         return self.can_add_action(Action.TYPES.REVERSION)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_remandment(self):
         return self.can_add_action(Action.TYPES.REMANDMENT)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_applicant_action(self):
         return self.can_add_action(*Action.APPLICANT_ACTION_TYPES)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_applicant_email_action(self):
         return self.can_add_action(*Action.APPLICANT_EMAIL_ACTION_TYPES)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_obligee_action(self):
         return self.can_add_action(*Action.OBLIGEE_ACTION_TYPES)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_obligee_email_action(self):
         return self.can_add_action(*Action.OBLIGEE_EMAIL_ACTION_TYPES)
 
     def can_add_action(self, *action_types):
-        for branch in self.branch_set.all():
+        for branch in self.branches:
             if branch.can_add_action(*action_types):
                 return True
         return False
+
+    def branches_advanced_by(self, action):
+        u"""
+        Returns list of branches advanced by ``action``. Takes advantage of cached list of all
+        inforequest branches stored in ``Inforequest.branches`` property.
+        """
+        return (b for b in self.branches if b.advanced_by_id == action.id)
 
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
@@ -426,28 +543,61 @@ class Branch(models.Model):
         ordering = [u'historicalobligee__name', u'pk']
         verbose_name_plural = u'Branches'
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def is_main(self):
-        return self.advanced_by is None
+        return self.advanced_by_id is None
 
-    # May NOT be NULL; Read-only
-    @property
+    @staticmethod
+    def prefetch_actions(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Branch.actions``.
+        """
+        if queryset is None:
+            queryset = Action.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'action_set'), queryset, to_attr=u'actions')
+
+    @cached_property
+    def actions(self):
+        u"""
+        Cached list of all branch actions. The list should not be empty. May be prefetched with
+        ``prefetch_related(Branch.prefetch_actions())`` queryset method.
+        """
+        return list(self.action_set.all())
+
+    @cached_property
+    def actions_by_email(self):
+        u"""
+        Cached list of all branch actions sent by email. Takes advantage of ``Branch.actions`` if
+        it is fetched already.
+        """
+        if u'actions' in self.__dict__:
+            return list(a for a in self.actions if a.is_by_email)
+        else:
+            return list(self.action_set.by_email())
+
+    @cached_property
     def last_action(self):
-        return self.action_set.last()
+        u"""
+        Cached last branch action. Returns None if the branch has no actions. Takes advantage of
+        ``Branch.actions`` if it is fetched already.
+        """
+        if u'actions' in self.__dict__:
+            try:
+                return self.actions[-1]
+            except IndexError:
+                return None
+        else:
+            return self.action_set.last()
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_request(self):
         return False
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_clarification_response(self):
         return self.last_action.type == Action.TYPES.CLARIFICATION_REQUEST
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_appeal(self):
         if self.last_action.type == Action.TYPES.DISCLOSURE:
             return self.last_action.disclosure_level != Action.DISCLOSURE_LEVELS.FULL
@@ -466,16 +616,14 @@ class Branch(models.Model):
                 Action.TYPES.EXPIRATION,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_confirmation(self):
         return self.last_action.type in [
                 Action.TYPES.REQUEST,
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_extension(self):
         return self.last_action.type in [
                 Action.TYPES.REQUEST,
@@ -485,8 +633,7 @@ class Branch(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_advancement(self):
         return self.last_action.type in [
                 Action.TYPES.REQUEST,
@@ -495,8 +642,7 @@ class Branch(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_clarification_request(self):
         return self.last_action.type in [
                 Action.TYPES.REQUEST,
@@ -506,8 +652,7 @@ class Branch(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_disclosure(self):
         return self.last_action.type in [
                 Action.TYPES.REQUEST,
@@ -518,8 +663,7 @@ class Branch(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_refusal(self):
         return self.last_action.type in [
                 Action.TYPES.REQUEST,
@@ -530,38 +674,31 @@ class Branch(models.Model):
                 Action.TYPES.ADVANCED_REQUEST,
                 ]
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_affirmation(self):
         return self.last_action.type == Action.TYPES.APPEAL
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_reversion(self):
         return self.last_action.type == Action.TYPES.APPEAL
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_remandment(self):
         return self.last_action.type == Action.TYPES.APPEAL
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_applicant_action(self):
         return self.can_add_action(*Action.APPLICANT_ACTION_TYPES)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_applicant_email_action(self):
         return self.can_add_action(*Action.APPLICANT_EMAIL_ACTION_TYPES)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_obligee_action(self):
         return self.can_add_action(*Action.OBLIGEE_ACTION_TYPES)
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def can_add_obligee_email_action(self):
         return self.can_add_action(*Action.OBLIGEE_EMAIL_ACTION_TYPES)
 
@@ -591,11 +728,11 @@ class Branch(models.Model):
 
     def collect_obligee_emails(self):
         res = {}
-        for action in self.action_set.by_email():
+        for action in self.actions_by_email:
             if action.email.type == action.email.TYPES.INBOUND:
                 res.update({action.email.from_mail: action.email.from_name})
             else: # OUTBOUND
-                res.update({r.mail: r.name for r in action.email.recipient_set.all()})
+                res.update({r.mail: r.name for r in action.email.recipients})
         # Current obligee emails
         res.update({mail: name for name, mail in self.obligee.emails_parsed})
 
@@ -847,48 +984,60 @@ class Action(models.Model):
     class Meta:
         ordering = [u'effective_date', u'pk']
 
-    # May NOT be NULL; Read-only
-    @property
+    @staticmethod
+    def prefetch_attachments(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Action.attachments``.
+        """
+        if queryset is None:
+            queryset = Attachment.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
+
+    @cached_property
+    def attachments(self):
+        u"""
+        Cached list of all action attachments. May be prefetched with
+        ``prefetch_related(Action.prefetch_attachments())`` queryset method.
+        """
+        return list(self.attachment_set.all())
+
+    @cached_property
     def is_applicant_action(self):
         return self.type in self.APPLICANT_ACTION_TYPES
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def is_obligee_action(self):
         return self.type in self.OBLIGEE_ACTION_TYPES
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def is_implicit_action(self):
         return self.type in self.IMPLICIT_ACTION_TYPES
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
+    def is_by_email(self):
+        return self.email_pk is not None
+
+    @cached_property
     def days_passed(self):
         return self.days_passed_at(local_today())
 
-    # May be NULL; Read-only
-    @property
+    @cached_property
     def deadline_remaining(self):
         return self.deadline_remaining_at(local_today())
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def deadline_missed(self):
         return self.deadline_missed_at(local_today())
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def has_deadline(self):
         return self.deadline is not None
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def has_applicant_deadline(self):
         return self.deadline is not None and self.type in self.SETTING_APPLICANT_DEADLINE_TYPES
 
-    # May NOT be NULL; Read-only
-    @property
+    @cached_property
     def has_obligee_deadline(self):
         return self.deadline is not None and self.type in self.SETTING_OBLIGEE_DEADLINE_TYPES
 
@@ -931,7 +1080,7 @@ class Action(models.Model):
         # content type should be replaced with 'application/octet-stream'.
 
         msg = EmailMessage(self.subject, self.content, sender_formatted, recipients)
-        for attachment in self.attachment_set.all():
+        for attachment in self.attachments:
             msg.attach(attachment.name, attachment.content, attachment.content_type)
         msg.send()
 
@@ -1000,6 +1149,40 @@ class ActionDraft(models.Model):
 
     class Meta:
         ordering = [u'pk']
+
+    @staticmethod
+    def prefetch_attachments(path=None, queryset=None):
+        u"""
+        Use to prefetch ``ActionDraft.attachments``.
+        """
+        if queryset is None:
+            queryset = Attachment.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
+
+    @cached_property
+    def attachments(self):
+        u"""
+        Cached list of all action draft attachments. May be prefetched with
+        ``prefetch_related(ActionDraft.prefetch_attachments())`` queryset method.
+        """
+        return list(self.attachment_set.all())
+
+    @staticmethod
+    def prefetch_obligees(path=None, queryset=None):
+        u"""
+        Use to prefetch ``ActionDraft.obligees``.
+        """
+        if queryset is None:
+            queryset = Obligee.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'obligee_set'), queryset, to_attr=u'obligees')
+
+    @cached_property
+    def obligees(self):
+        u"""
+        Cached list of all obligees the action draft advances to. May be prefetched with
+        ``prefetch_related(ActionDraft.prefetch_obligees())`` queryset method.
+        """
+        return list(self.obligee_set.all())
 
     def __unicode__(self):
         return u'%s' % self.pk

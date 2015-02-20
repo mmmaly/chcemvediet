@@ -4,6 +4,7 @@ import weakref
 
 from django.db import models
 from django.db.models.signals import post_save
+from django.db.models.constants import LOOKUP_SEP
 from django.shortcuts import get_object_or_404
 
 from .misc import Bunch
@@ -60,6 +61,15 @@ def after_saved(model):
         return func
     return _decorator
 
+def join_lookup(*args):
+    u"""
+    Joins Django field lookup path skipping empty parts. For instance:
+        join_lookup('foo', None, 'bar', 'bar') -> 'foo__bar__bar'
+        join_lookup('foo') -> 'foo'
+        join_lookup(None) -> ''
+    """
+    return LOOKUP_SEP.join(a for a in args if a)
+
 class FieldChoices(object):
     u"""
     Simple container for django model field choices following DRY principle.
@@ -114,3 +124,9 @@ class QuerySet(models.query.QuerySet):
         one object is found.
         """
         return get_object_or_404(self, *args, **kwargs)
+
+    def apply(self, func):
+        u"""
+        Applies ``func`` on the queryset.
+        """
+        return func(self)

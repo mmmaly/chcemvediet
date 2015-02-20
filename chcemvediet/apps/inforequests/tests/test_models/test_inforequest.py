@@ -244,21 +244,21 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
 
     def test_branch_property(self):
         inforequest, branch, _ = self._create_inforequest_scenario()
-        self.assertEqual(inforequest.branch, branch)
+        self.assertEqual(inforequest.main_branch, branch)
 
     def test_branch_property_with_advancement(self):
         inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
         _, (_, ((branch2, _),)) = actions
-        self.assertEqual(inforequest.branch, branch1)
+        self.assertEqual(inforequest.main_branch, branch1)
 
     def test_branch_property_raises_exception_if_inforequest_has_no_branch(self):
         inforequest = self._create_inforequest()
-        with self.assertRaisesMessage(Branch.DoesNotExist, u'Branch matching query does not exist.'):
-            inforequest.branch
+        with self.assertRaisesMessage(Branch.DoesNotExist, u'Inforequest has no main branch.'):
+            inforequest.main_branch
 
-    def test_undecided_set_property_and_friends(self):
+    def test_undecided_emails_set_property_and_friends(self):
         u"""
-        Tests ``undecided_set`` property and properties ``has_undecided_email``,
+        Tests ``undecided_emails_set`` property and properties ``has_undecided_emails``,
         ``oldest_undecided_email`` and ``newest_undecided_email`` using it.
         """
         inforequest, _, _ = self._create_inforequest_scenario()
@@ -268,21 +268,21 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         email4, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
         email5, rel5 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
         email6, rel6 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
-        self.assertTrue(inforequest.has_undecided_email)
+        self.assertTrue(inforequest.has_undecided_emails)
         self.assertEqual(inforequest.oldest_undecided_email, email3)
         self.assertEqual(inforequest.newest_undecided_email, email6)
-        self.assertItemsEqual(inforequest.undecided_set.all(), [email3, email6])
+        self.assertItemsEqual(inforequest.undecided_emails_set.all(), [email3, email6])
 
-    def test_undecided_set_property_and_friends_with_no_undecided_emails(self):
+    def test_undecided_emails_set_property_and_friends_with_no_undecided_emails(self):
         inforequest, _, _ = self._create_inforequest_scenario()
         email1, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
         email2, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
         email4, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
         email5, rel5 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
-        self.assertFalse(inforequest.has_undecided_email)
+        self.assertFalse(inforequest.has_undecided_emails)
         self.assertIsNone(inforequest.oldest_undecided_email)
         self.assertIsNone(inforequest.newest_undecided_email)
-        self.assertItemsEqual(inforequest.undecided_set.all(), [])
+        self.assertItemsEqual(inforequest.undecided_emails_set.all(), [])
 
     def test_can_add_x_properties_with_one_branch(self):
         inforequest, _, _ = self._create_inforequest_scenario()

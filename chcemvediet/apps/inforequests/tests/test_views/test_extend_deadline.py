@@ -35,7 +35,7 @@ class ExtendDeadlineViewTest(
         inforequest_scenario = kwargs.pop(u'inforequest_scenario', [u'request'])
         inforequest_args = list(inforequest_args) + list(inforequest_scenario)
         res.inforequest, res.branch, res.actions = self._create_inforequest_scenario(*inforequest_args)
-        res.action = res.branch.action_set.last()
+        res.action = res.branch.last_action
 
         now = kwargs.pop(u'now', u'2010-07-08 10:33:00')
         timewarp.jump(local_datetime_from_local(now))

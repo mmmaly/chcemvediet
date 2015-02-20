@@ -397,7 +397,7 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     @decorate(short_description=u'Obligee')
     @decorate(admin_order_field=u'branch__obligee__name')
     def obligee_column(self, inforequest):
-        obligee = inforequest.branch.obligee
+        obligee = inforequest.main_branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
 
     @decorate(short_description=u'Undecided E-mails')
@@ -475,12 +475,12 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     @decorate(short_description=u'Obligee')
     def obligee_details_field(self, inforequest):
-        obligee = inforequest.branch.obligee
+        obligee = inforequest.main_branch.obligee
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
     @decorate(short_description=u'Undecided E-mails')
     def undecided_emails_field(self, inforequest):
-        return inforequest.undecided_set.count()
+        return inforequest.undecided_emails_count
 
     def get_queryset(self, request):
         queryset = super(InforequestAdmin, self).get_queryset(request)
@@ -1931,13 +1931,13 @@ class UserAdminMixinInforequestInline(admin.TabularInline):
 
     @decorate(short_description=u'Obligee')
     def obligee_field(self, inforequest):
-        obligee = inforequest.branch.obligee
+        obligee = inforequest.main_branch.obligee
         return admin_obj_format(obligee, u'{obj.name}')
 
     @decorate(short_description=u'Undecided E-mail')
     @decorate(boolean=True)
     def has_undecided_field(self, inforequest):
-        return inforequest.has_undecided_email
+        return inforequest.has_undecided_emails
 
     def has_add_permission(self, request):
         return False

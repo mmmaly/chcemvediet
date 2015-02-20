@@ -14,5 +14,5 @@
 You can extend the period to be notified by the portal. Sometimes it is useful if you know that you are dealing with a very slow institution, or you hope, that you can still receive the information. Or the letter got misrouted in the postal office.
 </p>
 <p>
-Extend deadline of {{ action.get_type_display }} regarding your inforequest to {{ inforequest.branch.historicalobligee.name }}{% if inforequest.branch != branch %} advanced to {{ branch.historicalobligee.name }}{% endif %}.</p>
+Extend deadline of {{ action.get_type_display }} regarding your inforequest to {{ inforequest.main_branch.historicalobligee.name }}{% if inforequest.main_branch != branch %} advanced to {{ branch.historicalobligee.name }}{% endif %}.</p>
 <p>Its original deadline was {{ action.deadline }} working days since {{ action.effective_date }}{% if action.extension %} extended by another {{ action.extension }} working days by you{% endif %}. Up to today {{ action.days_passed }} working days passed.</p>

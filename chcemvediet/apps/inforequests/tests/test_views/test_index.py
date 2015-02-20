@@ -36,9 +36,9 @@ class IndexViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self._login_user(self.user1)
         response = self.client.get(reverse(u'inforequests:index'))
         self.assertEqual(response.status_code, 200)
-        self.assertItemsEqual(response.context[u'inforequest_list'], inforequests1)
-        self.assertItemsEqual(response.context[u'draft_list'], drafts1)
-        self.assertItemsEqual(response.context[u'closed_list'], closed1)
+        self.assertItemsEqual(response.context[u'inforequests'], inforequests1)
+        self.assertItemsEqual(response.context[u'drafts'], drafts1)
+        self.assertItemsEqual(response.context[u'closed_inforequests'], closed1)
 
     def test_with_user_with_no_his_inforequests_nor_drafts(self):
         drafts2 = [self._create_inforequest_draft(applicant=self.user2) for i in range(3)]
@@ -48,6 +48,6 @@ class IndexViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self._login_user(self.user1)
         response = self.client.get(reverse(u'inforequests:index'))
         self.assertEqual(response.status_code, 200)
-        self.assertItemsEqual(response.context[u'inforequest_list'], [])
-        self.assertItemsEqual(response.context[u'draft_list'], [])
-        self.assertItemsEqual(response.context[u'closed_list'], [])
+        self.assertItemsEqual(response.context[u'inforequests'], [])
+        self.assertItemsEqual(response.context[u'drafts'], [])
+        self.assertItemsEqual(response.context[u'closed_inforequests'], [])

@@ -52,7 +52,7 @@ def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprs
             res.append(sysrandom.choice(vowels))
     return u''.join(res)
 
-def try_except(func, failure, *exceptions):
+def try_except(func, failure=None, *exceptions):
     u"""
     Inline try-except block.
 

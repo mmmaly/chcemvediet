@@ -11,26 +11,38 @@ from allauth.account.decorators import verified_email_required
 
 from poleno.attachments import views as attachments_views
 from poleno.attachments.models import Attachment
-from poleno.mail.models import Message as EmailMessage
+from poleno.mail.models import Message
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.misc import Bunch
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_date, local_today
 
 from . import forms
-from .models import InforequestDraft, Inforequest, InforequestEmail, Action, ActionDraft
+from .models import InforequestDraft, Inforequest, InforequestEmail, Branch, Action, ActionDraft
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def index(request):
-    inforequest_list = Inforequest.objects.not_closed().owned_by(request.user).prefetch_has_undecided_email()
-    draft_list = InforequestDraft.objects.owned_by(request.user)
-    closed_list = Inforequest.objects.closed().owned_by(request.user)
+    inforequests = (Inforequest.objects
+            .not_closed()
+            .owned_by(request.user)
+            .select_undecided_emails_count()
+            .prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'historicalobligee')))
+            )
+    drafts = (InforequestDraft.objects
+            .owned_by(request.user)
+            .select_related(u'obligee')
+            )
+    closed_inforequests = (Inforequest.objects
+            .closed()
+            .owned_by(request.user)
+            .prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'historicalobligee')))
+            )
 
     return render(request, u'inforequests/index.html', {
-            u'inforequest_list': inforequest_list,
-            u'draft_list': draft_list,
-            u'closed_list': closed_list,
+            u'inforequests': inforequests,
+            u'drafts': drafts,
+            u'closed_inforequests': closed_inforequests,
             })
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
@@ -59,7 +71,7 @@ def create(request, draft_pk=None):
                 form.save(inforequest)
                 inforequest.save()
 
-                action = inforequest.branch.action_set.requests().first()
+                action = inforequest.main_branch.last_action
                 action.send_by_email()
 
                 if draft:
@@ -78,10 +90,25 @@ def create(request, draft_pk=None):
             u'form': form,
             })
 
+def _prefetch_inforequest_detail(queryset):
+    return (queryset
+            .prefetch_related(Inforequest.prefetch_branches())
+            .prefetch_related(Branch.prefetch_actions(u'branches', Action.objects.select_related(u'email')))
+            .prefetch_related(Message.prefetch_recipients(u'branches__actions__email'))
+            .prefetch_related(Action.prefetch_attachments(u'branches__actions'))
+            .prefetch_related(Inforequest.prefetch_undecided_emails())
+            .prefetch_related(Message.prefetch_recipients(u'undecided_emails'))
+            .prefetch_related(Message.prefetch_attachments(u'undecided_emails'))
+            )
+
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def detail(request, inforequest_pk):
-    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_pk)
+    inforequest = (Inforequest.objects
+            .owned_by(request.user)
+            .apply(_prefetch_inforequest_detail)
+            .get_or_404(pk=inforequest_pk)
+            )
     return render(request, u'inforequests/detail.html', {
             u'inforequest': inforequest,
             })
@@ -100,7 +127,7 @@ def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, te
     assert action_type in Action.OBLIGEE_EMAIL_ACTION_TYPES
 
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    email = inforequest.undecided_set.get_or_404(pk=email_pk)
+    email = inforequest.undecided_emails_set.get_or_404(pk=email_pk)
     inforequestemail = inforequest.inforequestemail_set.get(email=email)
 
     if email != inforequest.oldest_undecided_email:
@@ -121,7 +148,7 @@ def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, te
             form.save(action)
             action.save()
 
-            for attch in email.attachment_set.all():
+            for attch in email.attachments:
                 attachment = attch.clone()
                 attachment.generic_object = action
                 attachment.save()
@@ -129,6 +156,11 @@ def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, te
             inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
             inforequestemail.save()
 
+            # The inforequest was changed, we need to refetch it
+            inforequest = (Inforequest.objects
+                    .apply(_prefetch_inforequest_detail)
+                    .get(pk=inforequest.pk)
+                    )
             return JsonResponse({
                     u'result': u'success',
                     u'scroll_to': u'#action-%d' % action.pk,
@@ -183,7 +215,7 @@ def decide_email_refusal(request, inforequest_pk, email_pk):
 @login_required(raise_exception=True)
 def decide_email_unrelated(request, inforequest_pk, email_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    email = inforequest.undecided_set.get_or_404(pk=email_pk)
+    email = inforequest.undecided_emails_set.get_or_404(pk=email_pk)
     inforequestemail = inforequest.inforequestemail_set.get(email=email)
 
     if email != inforequest.oldest_undecided_email:
@@ -193,6 +225,11 @@ def decide_email_unrelated(request, inforequest_pk, email_pk):
         inforequestemail.type = InforequestEmail.TYPES.UNRELATED
         inforequestemail.save()
 
+        # The inforequest was changed, we need to refetch it
+        inforequest = (Inforequest.objects
+                .apply(_prefetch_inforequest_detail)
+                .get(pk=inforequest.pk)
+                )
         return JsonResponse({
                 u'result': u'success',
                 u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
@@ -211,7 +248,7 @@ def decide_email_unrelated(request, inforequest_pk, email_pk):
 @login_required(raise_exception=True)
 def decide_email_unknown(request, inforequest_pk, email_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    email = inforequest.undecided_set.get_or_404(pk=email_pk)
+    email = inforequest.undecided_emails_set.get_or_404(pk=email_pk)
     inforequestemail = inforequest.inforequestemail_set.get(email=email)
 
     if email != inforequest.oldest_undecided_email:
@@ -221,6 +258,11 @@ def decide_email_unknown(request, inforequest_pk, email_pk):
         inforequestemail.type = InforequestEmail.TYPES.UNKNOWN
         inforequestemail.save()
 
+        # The inforequest was changed, we need to refetch it
+        inforequest = (Inforequest.objects
+                .apply(_prefetch_inforequest_detail)
+                .get(pk=inforequest.pk)
+                )
         return JsonResponse({
                 u'result': u'success',
                 u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
@@ -243,7 +285,7 @@ def _add_smail(request, inforequest_pk, action_type, form_class, template):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     if request.method != u'POST': # The user can save a draft even if he may not submit.
-        if inforequest.has_undecided_email:
+        if inforequest.has_undecided_emails:
             return HttpResponseNotFound()
         if not inforequest.can_add_action(action_type):
             return HttpResponseNotFound()
@@ -276,6 +318,11 @@ def _add_smail(request, inforequest_pk, action_type, form_class, template):
                 if draft:
                     draft.delete()
 
+                # The inforequest was changed, we need to refetch it
+                inforequest = (Inforequest.objects
+                        .apply(_prefetch_inforequest_detail)
+                        .get(pk=inforequest.pk)
+                        )
                 return JsonResponse({
                         u'result': u'success',
                         u'scroll_to': u'#action-%d' % action.pk,
@@ -349,7 +396,7 @@ def _new_action(request, inforequest_pk, action_type, form_class, template):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     if request.method != u'POST': # The user can save a draft even if he may not submit.
-        if inforequest.has_undecided_email:
+        if inforequest.has_undecided_emails:
             return HttpResponseNotFound()
         if not inforequest.can_add_action(action_type):
             return HttpResponseNotFound()
@@ -391,6 +438,11 @@ def _new_action(request, inforequest_pk, action_type, form_class, template):
                 if draft:
                     draft.delete()
 
+                # The inforequest was changed, we need to refetch it
+                inforequest = (Inforequest.objects
+                        .apply(_prefetch_inforequest_detail)
+                        .get(pk=inforequest.pk)
+                        )
                 json = {
                         u'result': u'success',
                         u'scroll_to': u'#action-%d' % action.pk,
@@ -443,13 +495,13 @@ def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
     branch = inforequest.branch_set.get_or_404(pk=branch_pk)
     action = branch.action_set.get_or_404(pk=action_pk)
 
-    if action != branch.action_set.last():
+    if action != branch.last_action:
         return HttpResponseNotFound()
     if not action.has_obligee_deadline:
         return HttpResponseNotFound()
     if not action.deadline_missed:
         return HttpResponseNotFound()
-    if inforequest.has_undecided_email:
+    if inforequest.has_undecided_emails:
         return HttpResponseNotFound()
 
     if request.method == u'POST':
@@ -458,6 +510,11 @@ def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
             form.save(action)
             action.save()
 
+            # The inforequest was changed, we need to refetch it
+            inforequest = (Inforequest.objects
+                    .apply(_prefetch_inforequest_detail)
+                    .get(pk=inforequest.pk)
+                    )
             return JsonResponse({
                     u'result': u'success',
                     u'content': render_to_string(u'inforequests/detail-main.html', context_instance=RequestContext(request), dictionary={
@@ -497,7 +554,7 @@ def upload_attachment(request):
 def download_attachment(request, attachment_pk):
     attached_to = (
             Session.objects.get(session_key=request.session.session_key),
-            EmailMessage.objects.filter(inforequest__applicant=request.user),
+            Message.objects.filter(inforequest__applicant=request.user),
             InforequestDraft.objects.filter(applicant=request.user),
             Action.objects.filter(branch__inforequest__applicant=request.user),
             ActionDraft.objects.filter(inforequest__applicant=request.user),

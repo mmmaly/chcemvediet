@@ -13,14 +13,14 @@
 
 {% block content %}
   <h1>{% trans 'account:email:heading' %}</h1>
-  {% with user.emailaddress_set.all as emailaddress_set %}
-    {% if emailaddress_set %}
+  {% with user.emailaddress_set.all as emailaddresses %}
+    {% if emailaddresses %}
       {% include "account/texts/email-list.html" %}
       <form class="form-horizontal" method="post" action="{% url 'account_email' %}">
         {% csrf_token %}
         <div class="control-group">
           <div class="controls">
-            {% for emailaddress in emailaddress_set %}
+            {% for emailaddress in emailaddresses %}
               <label class="{% if not emailaddress.verified %}muted{%endif%} radio">
                 <input type="radio" name="email" {% if emailaddress.primary %}checked="checked"{% endif %} value="{{ emailaddress.email }}">
                 {{ emailaddress.email }}

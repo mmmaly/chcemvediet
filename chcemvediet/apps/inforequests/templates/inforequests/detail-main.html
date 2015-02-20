@@ -13,7 +13,7 @@
   {% include "inforequests/detail-request.html" with inforequest=inforequest %}
 </div>
 {% if not inforequest.closed %}
-  {% if inforequest.has_undecided_email %}
+  {% if inforequest.has_undecided_emails %}
     <div id="decide">
       {% include "inforequests/detail-decide.html" with inforequest=inforequest email=inforequest.oldest_undecided_email %}
     </div>
@@ -31,7 +31,7 @@
 {% endif %}
 <h2>History</h2>
 <div id="actions">
-  {% include "inforequests/detail-branch.html" with inforequest=inforequest branch=inforequest.branch %}
+  {% include "inforequests/detail-branch.html" with inforequest=inforequest branch=inforequest.main_branch %}
 </div>
 <div id="print-modal" class="modal modal-large hide"></div>
 <div id="ajax-fail-modal" class="modal hide fade">

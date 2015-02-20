@@ -18,8 +18,8 @@ from .models import Inforequest, InforequestEmail
 def assign_email_on_message_received(sender, message, **kwargs):
     if message.received_for:
         q = Q(unique_email__iexact=message.received_for)
-    elif message.recipient_set.exists():
-        q = (Q(unique_email__iexact=r.mail) for r in message.recipient_set.all())
+    elif message.recipients:
+        q = (Q(unique_email__iexact=r.mail) for r in message.recipients)
         q = reduce(operator.or_, q)
     else:
         return

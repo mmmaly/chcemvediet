@@ -17,7 +17,11 @@ RUN_AT_TIMES = [u'09:00', u'10:00', u'11:00', u'12:00', u'13:00', u'14:00']
 @cron_job(run_at_times=RUN_AT_TIMES)
 def undecided_email_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.not_closed().with_undecided_email():
+        inforequests = (Inforequest.objects
+                .not_closed()
+                .with_undecided_email()
+                )
+        for inforequest in inforequests:
             email = inforequest.newest_undecided_email
             last = inforequest.last_undecided_email_reminder
             if last and last > email.processed:
@@ -32,8 +36,13 @@ def undecided_email_reminder():
 @cron_job(run_at_times=RUN_AT_TIMES)
 def obligee_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.not_closed().without_undecided_email():
-            for branch in inforequest.branch_set.all():
+        inforequests = (Inforequest.objects
+                .not_closed()
+                .without_undecided_email()
+                .prefetch_related(Inforequest.prefetch_branches())
+                )
+        for inforequest in inforequests:
+            for branch in inforequest.branches:
                 if not branch.last_action.has_obligee_deadline:
                     continue
                 if not branch.last_action.deadline_missed:
@@ -54,8 +63,13 @@ def obligee_deadline_reminder():
 @cron_job(run_at_times=RUN_AT_TIMES)
 def applicant_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
-        for inforequest in Inforequest.objects.not_closed().without_undecided_email():
-            for branch in inforequest.branch_set.all():
+        inforequests = (Inforequest.objects
+                .not_closed()
+                .without_undecided_email()
+                .prefetch_related(Inforequest.prefetch_branches())
+                )
+        for inforequest in inforequests:
+            for branch in inforequest.branches:
                 if not branch.last_action.has_applicant_deadline:
                     continue
 
@@ -73,13 +87,17 @@ def applicant_deadline_reminder():
 
 @cron_job(run_at_times=RUN_AT_TIMES)
 def close_inforequests():
-    for inforequest in Inforequest.objects.not_closed():
-        for branch in inforequest.branch_set.all():
+    inforequests = (Inforequest.objects
+            .not_closed()
+            .prefetch_related(Inforequest.prefetch_branches())
+            )
+    for inforequest in inforequests:
+        for branch in inforequest.branches:
             if branch.last_action.has_deadline and branch.last_action.deadline_remaining > -100:
                 break
         else:
             # Every branch that has a deadline have been missed for at least 100 WD.
-            for branch in inforequest.branch_set.all():
+            for branch in inforequest.branches:
                 branch.add_expiration_if_expired()
 
             inforequest.closed = True

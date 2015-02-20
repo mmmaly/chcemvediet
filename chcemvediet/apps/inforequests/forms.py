@@ -104,7 +104,7 @@ class InforequestForm(PrefixedForm):
         self.initial[u'obligee'] = draft.obligee
         self.initial[u'subject'] = draft.subject
         self.initial[u'content'] = draft.content
-        self.initial[u'attachments'] = draft.attachment_set.all()
+        self.initial[u'attachments'] = draft.attachments
 
 
 class ActionAbstractForm(PrefixedForm):
@@ -132,8 +132,8 @@ class ActionAbstractForm(PrefixedForm):
         # Assumes that converting a Branch to a string gives its ``pk``
         field = self.fields[u'branch']
         field.choices = [(branch, branch.historicalobligee.name)
-                for branch in self.inforequest.branch_set.all()
-                if branch.can_add_action(self.action_type)]
+                for branch in self.inforequest.branches
+                    if branch.can_add_action(self.action_type)]
         if len(field.choices) > 1:
             field.choices = [(u'', u'')] + field.choices
 
@@ -275,7 +275,7 @@ class AttachmentsMixin(ActionAbstractForm):
 
     def load_from_draft(self, draft):
         super(AttachmentsMixin, self).load_from_draft(draft)
-        self.initial[u'attachments'] = draft.attachment_set.all()
+        self.initial[u'attachments'] = draft.attachments
 
 class DeadlineMixin(ActionAbstractForm):
     deadline = forms.IntegerField(
@@ -406,7 +406,7 @@ class AdvancedToMixin(ActionAbstractForm):
 
     def load_from_draft(self, draft):
         super(AdvancedToMixin, self).load_from_draft(draft)
-        for field, obligee in zip(self.ADVANCED_TO_FIELDS, draft.obligee_set.all()):
+        for field, obligee in zip(self.ADVANCED_TO_FIELDS, draft.obligees):
             self.initial[field] = obligee
 
 class DisclosureLevelMixin(ActionAbstractForm):
@@ -499,7 +499,7 @@ class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, AttachmentsMix
         cleaned_data = super(AddSmailCommonForm, self).clean()
 
         if not self.draft:
-            if self.inforequest.has_undecided_email:
+            if self.inforequest.has_undecided_emails:
                 msg = squeeze(render_to_string(u'inforequests/messages/add_smail-undecided_emails.txt', {
                         u'inforequest': self.inforequest,
                         }))
@@ -540,7 +540,7 @@ class NewActionCommonForm(SubjectContentMixin, AttachmentsMixin, ActionAbstractF
         cleaned_data = super(NewActionCommonForm, self).clean()
 
         if not self.draft:
-            if self.inforequest.has_undecided_email:
+            if self.inforequest.has_undecided_emails:
                 msg = squeeze(render_to_string(u'inforequests/messages/new_action-undecided_emails.txt', {
                         u'inforequest': self.inforequest,
                         }))

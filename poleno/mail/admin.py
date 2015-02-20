@@ -280,7 +280,7 @@ class MessageAdmin(admin.ModelAdmin):
             if message.received_for:
                 query[u'from_formatted'] = message.received_for
             else:
-                sender = message.recipient_set.to().first() or message.recipient_set.first()
+                sender = message.recipients_to.first() or message.recipients.first()
                 if sender:
                     query[u'from_formatted'] = sender.formatted
 

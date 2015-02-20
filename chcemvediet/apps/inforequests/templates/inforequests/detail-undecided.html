@@ -8,13 +8,13 @@
  %
 {% endcomment %}
 
-{% if inforequest.undecided_set.count >= 2 %}
+{% if inforequest.undecided_emails_count >= 2 %}
   <div class="alert alert-info alert-block clearfix">
     {% include "inforequests/texts/detail-undecided-text.html" with inforequest=inforequest %}
     <p><button class="btn" data-toggle="collapse" data-target="#undecided-collapse">{% trans 'inforequests:detail:undecided:show' %}</button></p>
   </div>
   <div id="undecided-collapse" class="collapse">
-    {% for email in inforequest.undecided_set.all %}
+    {% for email in inforequest.undecided_emails %}
       {% if forloop.counter >= 2 %}
         <div id="undecided-{{ email.pk }}" class="undecided well">
           {% include "inforequests/detail-email.html" with inforequest=inforequest email=email %}

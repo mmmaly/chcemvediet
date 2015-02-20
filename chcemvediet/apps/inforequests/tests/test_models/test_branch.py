@@ -336,6 +336,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
 
             # Check actions allowed when the last action deadline is expired
             timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+            branch = Branch.objects.get(pk=branch.pk)
             for can_add_property in can_add_properties:
                 value = getattr(branch, u'can_add_%s' % can_add_property)
                 expected = can_add_property in test.expired
@@ -432,9 +433,11 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
 
             # Any deadline is expired now
             timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+            branch = Branch.objects.get(pk=branch.pk)
             with created_instances(Action.objects) as action_set:
                 branch.add_expiration_if_expired()
 
+            branch = Branch.objects.get(pk=branch.pk)
             if expected_action_type is None:
                 self.assertEqual(action_set.count(), 0)
                 self.assertEqual(branch.last_action, original_last_action)

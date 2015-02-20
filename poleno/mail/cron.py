@@ -19,18 +19,27 @@ def mail():
             for message in transport.get_messages():
                 cron_logger.info(u'Received email: %s' % repr(message))
 
-    # Process inbound mail
-    messages = Message.objects.inbound().not_processed()[:10] # At most 10 messages in one batch
+    # Process inbound mail; At most 10 messages in one batch
+    messages = (Message.objects
+            .inbound()
+            .not_processed()
+            .prefetch_related(Message.prefetch_recipients())
+            )[:10]
     for message in messages:
         message.processed = utc_now()
         message.save()
         message_received.send(sender=None, message=message)
         cron_logger.info(u'Processed received email: %s' % repr(message))
 
-    # Send outbound mail
+    # Send outbound mail; At most 10 messages in one batch
     path = getattr(settings, u'EMAIL_OUTBOUND_TRANSPORT', None)
     if path:
-        messages = Message.objects.outbound().not_processed()[:10] # At most 10 messages in one batch
+        messages = (Message.objects
+                .outbound()
+                .not_processed()
+                .prefetch_related(Message.prefetch_recipients())
+                .prefetch_related(Message.prefetch_attachments())
+                )[:10]
         if messages:
             klass = import_by_path(path)
             with klass() as transport:

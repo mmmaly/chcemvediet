@@ -61,12 +61,10 @@ class Obligee(models.Model):
     class Meta:
         ordering = [u'name', u'pk']
 
-    # May NOT be empty; Read-only
     @property
     def emails_parsed(self):
         return ((n, a) for n, a in getaddresses([self.emails]) if a)
 
-    # May NOT be empty; Read-only
     @property
     def emails_formatted(self):
         return (formataddr((n, a)) for n, a in getaddresses([self.emails]) if a)

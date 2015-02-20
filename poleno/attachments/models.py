@@ -3,6 +3,7 @@
 from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models import Q
+from django.utils.functional import cached_property
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
@@ -73,8 +74,7 @@ class Attachment(models.Model):
     class Meta:
         ordering = [u'pk']
 
-    # May be empty; Read-only
-    @property
+    @cached_property
     def content(self):
         try:
             self.file.open(u'rb')

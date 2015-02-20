@@ -21,7 +21,7 @@
 <div class="row-fluid">
   <p class="span2 text-right">{% trans 'inforequests:detail:email:to' %}:</p>
   <p class="span10">
-    {% for recipient in email.recipient_set.all %}
+    {% for recipient in email.recipients %}
       {% filter squeeze %}
         {% if recipient.mail == email.received_for %}
           <b>{{ recipient.formatted }}</b>
@@ -36,11 +36,11 @@
   <p class="span2 text-right">{% trans 'inforequests:detail:email:processed' %}:</p>
   <p class="span10">{{ email.processed }}</p>
 </div>
-{% if email.attachment_set.exists %}
+{% if email.attachments %}
   <div class="row-fluid">
     <p class="span2 text-right">{% trans 'inforequests:detail:email:attachments' %}:</p>
     <p class="span10">
-      {% for attachment in email.attachment_set.all %}
+      {% for attachment in email.attachments %}
         <a href="{% url 'inforequests:download_attachment' attachment.pk %}"><span class="label label-info">{{ attachment.name }}</span></a>
       {% endfor %}
     </p>

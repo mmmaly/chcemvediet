@@ -3,13 +3,16 @@
 from email.utils import formataddr, parseaddr
 
 from django.db import models
+from django.db.models import Prefetch
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import escape
+from django.utils.functional import cached_property
 from django.contrib.contenttypes import generic
 
 from jsonfield import JSONField
 
-from poleno.utils.models import FieldChoices, QuerySet
+from poleno.attachments.models import Attachment
+from poleno.utils.models import FieldChoices, QuerySet, join_lookup
 from poleno.utils.misc import squeeze
 
 class MessageQuerySet(QuerySet):
@@ -93,7 +96,6 @@ class Message(models.Model):
     class Meta:
         ordering = [u'processed', u'pk']
 
-    # May be empty; Read-write
     @property
     def from_formatted(self):
         return formataddr((self.from_name, self.from_mail))
@@ -102,17 +104,84 @@ class Message(models.Model):
     def from_formatted(self, value):
         self.from_name, self.from_mail = parseaddr(value)
 
-    @property
+    @staticmethod
+    def prefetch_attachments(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Message.attachments``.
+        """
+        if queryset is None:
+            queryset = Attachment.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
+
+    @cached_property
+    def attachments(self):
+        u"""
+        Cached list of all message attachments. May be prefetched with
+        ``prefetch_related(Message.prefetch_attachments())`` queryset method.
+        """
+        return list(self.attachment_set.all())
+
+    @staticmethod
+    def prefetch_recipients(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Message.recipients``.
+        """
+        if queryset is None:
+            queryset = Recipient.objects.get_queryset()
+        return Prefetch(join_lookup(path, u'recipient_set'), queryset, to_attr=u'recipients')
+
+    @cached_property
+    def recipients(self):
+        u"""
+        Cached list of all message recipients. May be prefetched with
+        ``prefetch_related(Message.prefetch_recipients())`` queryset method.
+        """
+        return list(self.recipient_set.all())
+
+    @cached_property
+    def recipients_to(self):
+        u"""
+        Cached list of all message "to" recipients. Takes advantage of ``Message.recipients`` if it
+        is already fetched.
+        """
+        if u'recipients' in self.__dict__:
+            return list(r for r in self.recipients if r.type == Recipient.TYPES.TO)
+        else:
+            return list(self.recipient_set.to())
+
+    @cached_property
+    def recipients_cc(self):
+        u"""
+        Cached list of all message "cc" recipients. Takes advantage of ``Message.recipients`` if it
+        is already fetched.
+        """
+        if u'recipients' in self.__dict__:
+            return list(r for r in self.recipients if r.type == Recipient.TYPES.CC)
+        else:
+            return list(self.recipient_set.cc())
+
+    @cached_property
+    def recipients_bcc(self):
+        u"""
+        Cached list of all message "bcc" recipients. Takes advantage of ``Message.recipients`` if
+        it is already fetched.
+        """
+        if u'recipients' in self.__dict__:
+            return list(r for r in self.recipients if r.type == Recipient.TYPES.BCC)
+        else:
+            return list(self.recipient_set.bcc())
+
+    @cached_property
     def to_formatted(self):
-        return u', '.join(r.formatted for r in self.recipient_set.to())
+        return u', '.join(r.formatted for r in self.recipients_to)
 
-    @property
+    @cached_property
     def cc_formatted(self):
-        return u', '.join(r.formatted for r in self.recipient_set.cc())
+        return u', '.join(r.formatted for r in self.recipients_cc)
 
-    @property
+    @cached_property
     def bcc_formatted(self):
-        return u', '.join(r.formatted for r in self.recipient_set.bcc())
+        return u', '.join(r.formatted for r in self.recipients_bcc)
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -203,7 +272,6 @@ class Recipient(models.Model):
     class Meta:
         ordering = [u'pk']
 
-    # May be empty; Read-write
     @property
     def formatted(self):
         return formataddr((self.name, self.mail))

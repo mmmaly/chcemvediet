@@ -5,9 +5,9 @@
 {% comment %}
  %
  % Context:
- %  -- inforequest_list: [chcemvediet.apps.inforequests.models.Inforequest]
- %  -- draft_list: [chcemvediet.apps.inforequests.models.InforequestDraft]
- %  -- closed_list: [chcemvediet.apps.inforequests.models.Inforequest]
+ %  -- inforequests: [chcemvediet.apps.inforequests.models.Inforequest]
+ %  -- drafts: [chcemvediet.apps.inforequests.models.InforequestDraft]
+ %  -- closed_inforequests: [chcemvediet.apps.inforequests.models.Inforequest]
  %
 {% endcomment %}
 
@@ -15,8 +15,8 @@
 
 {% block content %}
   <h1>{% trans 'inforequests:index:heading' %}</h1>
-  {% if inforequest_list %}
-    {% include "inforequests/texts/index-submitted-list.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
+  {% if inforequests %}
+    {% include "inforequests/texts/index-submitted-list.html" with inforequests=inforequests drafts=drafts closed_inforequests=closed_inforequests %}
     <table class="table table-striped">
       <thead>
         <tr>
@@ -26,11 +26,11 @@
         </tr>
       </thead>
       <tbody>
-        {% for inforequest in inforequest_list %}
+        {% for inforequest in inforequests %}
           <tr>
-            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.branch.historicalobligee.name }}</a></td>
+            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.main_branch.historicalobligee.name }}</a></td>
             <td>
-              {% if inforequest.has_undecided_email %}
+              {% if inforequest.has_undecided_emails %}
                 <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/index-new_mail.txt" %}{% endspaceless %}">
                   <i class="icon-envelope"></i> {% trans 'inforequests:index:new_mail' %}
                 </span>
@@ -42,14 +42,14 @@
       </tbody>
     </table>
   {% else %}
-    {% include "inforequests/texts/index-submitted-empty.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
+    {% include "inforequests/texts/index-submitted-empty.html" with inforequests=inforequests drafts=drafts closed_inforequests=closed_inforequests %}
   {% endif %}
   <div class="clearfix">
     <a class="btn btn-primary btn-large pull-right" href="{% url 'inforequests:create' %}"><i class="icon-plus icon-white"></i> {% trans 'inforequests:index:create' %}</a>
   </div>
-  {% if draft_list %}
+  {% if drafts %}
     <h2>{% trans 'inforequests:index:drafts:heading' %}</h1>
-    {% include "inforequests/texts/index-drafts.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
+    {% include "inforequests/texts/index-drafts.html" with inforequests=inforequests drafts=drafts closed_inforequests=closed_inforequests %}
     <table class="table table-striped">
       <thead>
         <tr>
@@ -58,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for draft in draft_list %}
+        {% for draft in drafts %}
           <tr>
             {% if draft.obligee %}
               <td><a href="{% url 'inforequests:create_from_draft' draft.pk %}">{{ draft.obligee.name }}</a></td>
@@ -75,9 +75,9 @@
       </tbody>
     </table>
   {% endif %}
-  {% if closed_list %}
+  {% if closed_inforequests %}
     <h2>{% trans 'inforequests:index:closed:heading' %}</h1>
-    {% include "inforequests/texts/index-closed.html" with inforequest_list=inforequest_list draft_list=draft_list closed_list=closed_list %}
+    {% include "inforequests/texts/index-closed.html" with inforequests=inforequests drafts=drafts closed_inforequests=closed_inforequests %}
     <table class="table table-striped">
       <thead>
         <tr>
@@ -86,9 +86,9 @@
         </tr>
       </thead>
       <tbody>
-        {% for inforequest in closed_list %}
+        {% for inforequest in closed_inforequests %}
           <tr>
-            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.branch.historicalobligee.name }}</a></td>
+            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.main_branch.historicalobligee.name }}</a></td>
             <td>{{ inforequest.submission_date }}</td>
           </tr>
         {% endfor %}

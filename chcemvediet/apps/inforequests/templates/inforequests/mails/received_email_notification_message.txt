@@ -12,9 +12,9 @@
 
 {% autoescape off %}
 {% filter squeeze %}
-We received a new e-mail regarding your inforequest to {{ inforequest.branch.historicalobligee.name }}.
-{% if inforequest.undecided_set.count > 1 %}
-  We already have {{ inforequest.undecided_set.count }} waiting e-mails regarding your inforequest.
+We received a new e-mail regarding your inforequest to {{ inforequest.main_branch.historicalobligee.name }}.
+{% if inforequest.undecided_emails_count > 1 %}
+  We already have {{ inforequest.undecided_emails_count }} waiting e-mails regarding your inforequest.
 {% endif %}
 The e-mail was sent from: {{ email.from_formatted }}
 {% endfilter %}

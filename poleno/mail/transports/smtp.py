@@ -25,10 +25,10 @@ class SmtpTransport(BaseTransport):
         kwargs[u'connection'] = self.connection
         kwargs[u'subject'] = message.subject
         kwargs[u'from_email'] = message.from_formatted
-        kwargs[u'to'] = (r.formatted for r in message.recipient_set.to())
-        kwargs[u'cc'] = (r.formatted for r in message.recipient_set.cc())
-        kwargs[u'bcc'] = (r.formatted for r in message.recipient_set.bcc())
-        kwargs[u'attachments'] = ((a.name, a.content, a.content_type) for a in message.attachment_set.all())
+        kwargs[u'to'] = (r.formatted for r in message.recipients_to)
+        kwargs[u'cc'] = (r.formatted for r in message.recipients_cc)
+        kwargs[u'bcc'] = (r.formatted for r in message.recipients_bcc)
+        kwargs[u'attachments'] = ((a.name, a.content, a.content_type) for a in message.attachments)
         kwargs[u'headers'] = message.headers
 
         if message.text and message.html:
@@ -42,6 +42,6 @@ class SmtpTransport(BaseTransport):
 
         msg.send()
 
-        for recipient in message.recipient_set.all():
+        for recipient in message.recipients:
             recipient.status = recipient.STATUSES.SENT
             recipient.save()
