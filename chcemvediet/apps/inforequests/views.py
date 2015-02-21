@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest, JsonResponse
 from django.template import RequestContext
@@ -46,6 +47,7 @@ def index(request):
             })
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
+@transaction.atomic
 @verified_email_required
 def create(request, draft_pk=None):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk) if draft_pk else None
@@ -114,6 +116,7 @@ def detail(request, inforequest_pk):
             })
 
 @require_http_methods([u'POST'])
+@transaction.atomic
 @login_required
 def delete_draft(request, draft_pk):
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk)
@@ -122,6 +125,7 @@ def delete_draft(request, draft_pk):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, template):
     assert action_type in Action.OBLIGEE_EMAIL_ACTION_TYPES
@@ -212,6 +216,7 @@ def decide_email_refusal(request, inforequest_pk, email_pk):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def decide_email_unrelated(request, inforequest_pk, email_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
@@ -245,6 +250,7 @@ def decide_email_unrelated(request, inforequest_pk, email_pk):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def decide_email_unknown(request, inforequest_pk, email_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
@@ -278,6 +284,7 @@ def decide_email_unknown(request, inforequest_pk, email_pk):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def _add_smail(request, inforequest_pk, action_type, form_class, template):
     assert action_type in Action.OBLIGEE_ACTION_TYPES
@@ -389,6 +396,7 @@ def add_smail_remandment(request, inforequest_pk):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def _new_action(request, inforequest_pk, action_type, form_class, template):
     assert action_type in Action.APPLICANT_ACTION_TYPES
@@ -489,6 +497,7 @@ def new_action_appeal(request, inforequest_pk):
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
@@ -543,6 +552,7 @@ def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
 
 @require_http_methods([u'POST'])
 @require_ajax
+@transaction.atomic
 @login_required(raise_exception=True)
 def upload_attachment(request):
     session = Session.objects.get(session_key=request.session.session_key)

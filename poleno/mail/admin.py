@@ -279,10 +279,10 @@ class MessageAdmin(admin.ModelAdmin):
 
             if message.received_for:
                 query[u'from_formatted'] = message.received_for
-            else:
-                sender = message.recipients_to.first() or message.recipients.first()
-                if sender:
-                    query[u'from_formatted'] = sender.formatted
+            elif message.recipients_to:
+                query[u'from_formatted'] = message.recipients_to[0]
+            elif message.recipients:
+                query[u'from_formatted'] = message.recipients[0]
 
             date = formats.date_format(message.processed, u'DATETIME_FORMAT')
             name = message.from_name or message.from_mail

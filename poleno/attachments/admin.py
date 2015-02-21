@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.conf.urls import patterns, url
 from django.utils.html import format_html
 from django.contrib import admin
@@ -203,6 +204,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         generic = try_except(lambda: generic_type.get_object_for_this_type(pk=generic_id), None)
         return admin_obj_format(generic)
 
+    @transaction.atomic
     def upload_view(self, request):
         session = Session.objects.get(session_key=request.session.session_key)
         info = self.model._meta.app_label, self.model._meta.model_name

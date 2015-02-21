@@ -6,6 +6,7 @@ import json
 from base64 import b64encode
 
 from django.core.exceptions import ImproperlyConfigured
+from django.db import transaction
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
@@ -18,6 +19,7 @@ from .signals import webhook_event
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @csrf_exempt
 @secure_required(raise_exception=True)
+@transaction.atomic
 def webhook(request):
     # Based on djrill.views.DjrillWebhookView
     secret = getattr(settings, u'MANDRILL_WEBHOOK_SECRET', None)

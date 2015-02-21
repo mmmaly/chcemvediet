@@ -6,6 +6,7 @@ from functools import partial
 from django import forms
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.db.models import Q
 from django.conf.urls import patterns, url
 from django.http import HttpResponseNotFound, HttpResponseRedirect
@@ -924,6 +925,7 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         obligees = [try_except(lambda: Obligee.objects.get(pk=pk), None) for pk in obligee_pks]
         return admin_obj_format_join(u'\n', obligees, u'{tag} {obj.name}')
 
+    @transaction.atomic
     def decide_view(self, request, inforequestemail_pk):
         inforequestemail = self.get_object(request, inforequestemail_pk)
         message = inforequestemail.email if inforequestemail else None

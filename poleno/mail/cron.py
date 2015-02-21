@@ -1,5 +1,8 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import traceback
+
+from django.db import transaction
 from django.conf import settings
 from django.utils.module_loading import import_by_path
 
@@ -16,8 +19,17 @@ def mail():
     if path:
         klass = import_by_path(path)
         with klass() as transport:
-            for message in transport.get_messages():
-                cron_logger.info(u'Received email: %s' % repr(message))
+            messages = transport.get_messages()
+            while True:
+                try:
+                    with transaction.atomic():
+                        message = next(messages)
+                    cron_logger.info(u'Received email: %s' % repr(message))
+                except StopIteration:
+                    break
+                except Exception:
+                    cron_logger.error(u'Receiving emails failed:\n%s' % traceback.format_exc())
+                    break
 
     # Process inbound mail; At most 10 messages in one batch
     messages = (Message.objects
@@ -26,10 +38,14 @@ def mail():
             .prefetch_related(Message.prefetch_recipients())
             )[:10]
     for message in messages:
-        message.processed = utc_now()
-        message.save()
-        message_received.send(sender=None, message=message)
-        cron_logger.info(u'Processed received email: %s' % repr(message))
+        try:
+            with transaction.atomic():
+                message.processed = utc_now()
+                message.save()
+                message_received.send(sender=None, message=message)
+            cron_logger.info(u'Processed received email: %s' % repr(message))
+        except Exception:
+            cron_logger.error(u'Processing received email failed: %s\n%s' % (repr(message), traceback.format_exc()))
 
     # Send outbound mail; At most 10 messages in one batch
     path = getattr(settings, u'EMAIL_OUTBOUND_TRANSPORT', None)
@@ -44,8 +60,12 @@ def mail():
             klass = import_by_path(path)
             with klass() as transport:
                 for message in messages:
-                    transport.send_message(message)
-                    message.processed = utc_now()
-                    message.save()
-                    message_sent.send(sender=None, message=message)
-                    cron_logger.info(u'Sent email: %s' % repr(message))
+                    try:
+                        with transaction.atomic():
+                            transport.send_message(message)
+                            message.processed = utc_now()
+                            message.save()
+                            message_sent.send(sender=None, message=message)
+                        cron_logger.info(u'Sent email: %s' % repr(message))
+                    except Exception:
+                        cron_logger.error(u'Seding email failed: %s\n%s' % (repr(message), traceback.format_exc()))
