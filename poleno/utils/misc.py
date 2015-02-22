@@ -6,7 +6,10 @@ import string
 import mimetypes
 import contextlib
 import collections
+from functools import wraps
 from StringIO import StringIO
+
+from django.utils.decorators import available_attrs
 
 class Bunch(object):
     u"""
@@ -181,3 +184,68 @@ def decorate(func=None, **kwargs):
         return actual_decorator(func)
     else:
         return actual_decorator
+
+def cached_method(method=None, cached_exceptions=None):
+    u"""
+    Decorator to cache class methods. Cache is kept per instance in ``self._{methodname}__cache``
+    attribute. Pass a list of exception types to ``cached_exceptions`` to intercept and cache
+    matching exceptions as well. Exceptions that do not match are not touched.
+
+    Example:
+        class Moo(object):
+            @cached_method(cached_exceptions=ValidationError)
+            def foo(self, value):
+                print('Moo.foo(%s)' % value)
+                if value == 1:
+                    return 4
+                if value == 2:
+                    raise ValueError
+                raise ValidationError('Boo')
+
+        Returned value is cached:
+        >>> a = Moo()
+        >>> a.foo(1)
+        Moo.foo(1)
+        4
+        >>> a.foo(1)
+        4
+
+        ValueError exception is not cached:
+        >>> a = Moo()
+        >>> a.foo(2)
+        Moo.foo(2)
+        ValueError
+        >>> a.foo(2)
+        Moo.foo(2)
+        ValueError
+
+        ValidationError exception is cached:
+        >>> a = Moo()
+        >>> a.foo(3)
+        Moo.foo(3)
+        ValidationError
+        >>> a.foo(3)
+        ValidationError
+    """
+    def actual_decorator(method):
+        @wraps(method, assigned=available_attrs(method))
+        def wrapped_method(self, *args):
+            cache = self.__dict__.setdefault(u'_%s__cache' % method.__name__, {})
+            try:
+                res, exc = cache[args]
+            except KeyError:
+                try:
+                    res = method(self, *args)
+                except cached_exceptions as exc:
+                    res = None
+                else:
+                    exc = None
+                cache[args] = res, exc
+            if exc is None:
+                return res
+            else:
+                raise exc
+        return wrapped_method
+    if method:
+        return actual_decorator(method)
+    return actual_decorator

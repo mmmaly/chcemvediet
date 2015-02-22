@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
+from poleno.utils.misc import cached_method
+
 from .models import Attachment
 
 class AttachmentsWidget(forms.TextInput):
@@ -70,6 +72,7 @@ class AttachmentsField(forms.Field):
                 return None
         return value
 
+    @cached_method(cached_exceptions=ValidationError)
     def to_python(self, value):
         u""" Returns list of Attachments """
         if value is None:

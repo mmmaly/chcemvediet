@@ -1,14 +1,14 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse_lazy
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Obligee
+from poleno.utils.misc import cached_method
 
+from .models import Obligee
 
 class ObligeeWithAddressInput(forms.TextInput):
     u"""
@@ -60,6 +60,7 @@ class ObligeeAutocompleteField(forms.Field):
                 value = value.name
         return value
 
+    @cached_method(cached_exceptions=ValidationError)
     def to_python(self, value):
         u""" Returns an Obligee """
         if value in self.empty_values:
