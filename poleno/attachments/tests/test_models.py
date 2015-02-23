@@ -153,7 +153,7 @@ class AttachmentModelTest(TestCase):
 
     def test_clone_method_clone_is_not_saved_automatically(self):
         obj = self._create_instance()
-        new = obj.clone()
+        new = obj.clone(obj.generic_object)
         self.assertIsNone(new.pk)
 
     def test_clone_method_fields_after_clone_saved(self):
@@ -161,7 +161,7 @@ class AttachmentModelTest(TestCase):
         Checks that all fields but ``file.name`` are copied to the clone.
         """
         obj = self._create_instance()
-        new = obj.clone()
+        new = obj.clone(obj.generic_object)
         new.save()
         self.assertIsNotNone(new.pk)
         self.assertEqual(new.generic_type, obj.generic_type)
@@ -175,7 +175,7 @@ class AttachmentModelTest(TestCase):
 
     def test_clone_method_clone_has_new_file_name(self):
         obj = self._create_instance()
-        new = obj.clone()
+        new = obj.clone(obj.generic_object)
         self.assertIsNone(new.file.name)
         new.save()
         self.assertNotEqual(new.file.name, obj.file.name)
@@ -187,7 +187,7 @@ class AttachmentModelTest(TestCase):
         self.assertAlmostEqual(obj.created, utc_datetime_from_local(u'2014-10-05 15:33:10'), delta=datetime.timedelta(seconds=10))
 
         timewarp.jump(local_datetime_from_local(u'2014-10-07 20:23:11'))
-        new = obj.clone()
+        new = obj.clone(obj.generic_object)
         new.save()
         self.assertAlmostEqual(new.created, utc_datetime_from_local(u'2014-10-05 15:33:10'), delta=datetime.timedelta(seconds=10))
 

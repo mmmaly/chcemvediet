@@ -362,7 +362,7 @@ class AdvancedToMixin(ActionAbstractForm):
                 advanced_to = cleaned_data.get(field, None)
                 if advanced_to:
                     try:
-                        if branch and advanced_to == branch.obligee:
+                        if branch and advanced_to.pk == branch.obligee_id:
                             raise ValidationError(_(u'inforequests:AdvancedToMixin:same_obligee_error'))
                         for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
                             advanced_to_2 = cleaned_data.get(field_2, None)

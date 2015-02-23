@@ -119,6 +119,6 @@ def close_inforequests():
 
                     inforequest.closed = True
                     inforequest.save()
-            cron_logger.info(u'Closed inforequest: %s' % repr(inforequest))
+                    cron_logger.info(u'Closed inforequest: %s' % repr(inforequest))
         except Exception:
             cron_logger.error(u'Closing inforequest (or checking if it should be closed) failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))

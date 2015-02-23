@@ -91,10 +91,10 @@ class Attachment(models.Model):
 
         super(Attachment, self).save(*args, **kwargs)
 
-    def clone(self):
+    def clone(self, generic_object):
         u""" The returned copy is not saved. """
         return Attachment(
-                generic_object=self.generic_object,
+                generic_object=generic_object,
                 file=ContentFile(self.content),
                 name=self.name,
                 content_type=self.content_type,

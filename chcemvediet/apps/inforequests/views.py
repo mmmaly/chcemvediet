@@ -50,7 +50,11 @@ def index(request):
 @transaction.atomic
 @verified_email_required
 def create(request, draft_pk=None):
-    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk) if draft_pk else None
+    draft = (InforequestDraft.objects
+            .owned_by(request.user)
+            .get_or_404(pk=draft_pk)
+                if draft_pk else None
+            )
     session = Session.objects.get(session_key=request.session.session_key)
     attached_to = (session, draft) if draft else (session,)
 
@@ -94,7 +98,7 @@ def create(request, draft_pk=None):
 
 def _prefetch_inforequest_detail(queryset):
     return (queryset
-            .prefetch_related(Inforequest.prefetch_branches())
+            .prefetch_related(Inforequest.prefetch_branches(None, Branch.objects.select_related(u'historicalobligee')))
             .prefetch_related(Branch.prefetch_actions(u'branches', Action.objects.select_related(u'email')))
             .prefetch_related(Message.prefetch_recipients(u'branches__actions__email'))
             .prefetch_related(Action.prefetch_attachments(u'branches__actions'))
@@ -119,7 +123,10 @@ def detail(request, inforequest_pk):
 @transaction.atomic
 @login_required
 def delete_draft(request, draft_pk):
-    draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk)
+    draft = (InforequestDraft.objects
+            .owned_by(request.user)
+            .get_or_404(pk=draft_pk)
+            )
     draft.delete()
     return HttpResponseRedirect(reverse(u'inforequests:index'))
 
@@ -130,11 +137,22 @@ def delete_draft(request, draft_pk):
 def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, template):
     assert action_type in Action.OBLIGEE_EMAIL_ACTION_TYPES
 
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    email = inforequest.undecided_emails_set.get_or_404(pk=email_pk)
-    inforequestemail = inforequest.inforequestemail_set.get(email=email)
+    inforequest = (Inforequest.objects
+            .not_closed()
+            .owned_by(request.user)
+            .prefetch_related(Inforequest.prefetch_branches(None, Branch.objects.select_related(u'historicalobligee')))
+            .prefetch_related(Branch.prefetch_last_action(u'branches'))
+            .get_or_404(pk=inforequest_pk)
+            )
+    inforequestemail = (inforequest.inforequestemail_set
+            .undecided()
+            .oldest()
+            .select_related(u'email')
+            .get_or_404()
+            )
+    email = inforequestemail.email
 
-    if email != inforequest.oldest_undecided_email:
+    if email.pk != Message._meta.pk.to_python(email_pk):
         return HttpResponseNotFound()
     if not inforequest.can_add_action(action_type):
         return HttpResponseNotFound()
@@ -153,8 +171,7 @@ def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, te
             action.save()
 
             for attch in email.attachments:
-                attachment = attch.clone()
-                attachment.generic_object = action
+                attachment = attch.clone(action)
                 attachment.save()
 
             inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
@@ -219,11 +236,20 @@ def decide_email_refusal(request, inforequest_pk, email_pk):
 @transaction.atomic
 @login_required(raise_exception=True)
 def decide_email_unrelated(request, inforequest_pk, email_pk):
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    email = inforequest.undecided_emails_set.get_or_404(pk=email_pk)
-    inforequestemail = inforequest.inforequestemail_set.get(email=email)
+    inforequest = (Inforequest.objects
+            .not_closed()
+            .owned_by(request.user)
+            .get_or_404(pk=inforequest_pk)
+            )
+    inforequestemail = (inforequest.inforequestemail_set
+            .undecided()
+            .oldest()
+            .select_related(u'email')
+            .get_or_404()
+            )
+    email = inforequestemail.email
 
-    if email != inforequest.oldest_undecided_email:
+    if email.pk != Message._meta.pk.to_python(email_pk):
         return HttpResponseNotFound()
 
     if request.method == u'POST':
@@ -253,11 +279,20 @@ def decide_email_unrelated(request, inforequest_pk, email_pk):
 @transaction.atomic
 @login_required(raise_exception=True)
 def decide_email_unknown(request, inforequest_pk, email_pk):
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
-    email = inforequest.undecided_emails_set.get_or_404(pk=email_pk)
-    inforequestemail = inforequest.inforequestemail_set.get(email=email)
+    inforequest = (Inforequest.objects
+            .not_closed()
+            .owned_by(request.user)
+            .get_or_404(pk=inforequest_pk)
+            )
+    inforequestemail = (inforequest.inforequestemail_set
+            .undecided()
+            .oldest()
+            .select_related(u'email')
+            .get_or_404()
+            )
+    email = inforequestemail.email
 
-    if email != inforequest.oldest_undecided_email:
+    if email.pk != Message._meta.pk.to_python(email_pk):
         return HttpResponseNotFound()
 
     if request.method == u'POST':

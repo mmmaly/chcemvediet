@@ -636,8 +636,9 @@ class InforequestEmailAdminDecideForm(forms.Form):
             for attachment in self.cleaned_data[u'attachments']:
                 # We don't want to steal attachments owned by the email, so we clone them.
                 if attachment.generic_type != session_type:
-                    attachment = attachment.clone()
-                attachment.generic_object = action
+                    attachment = attachment.clone(action)
+                else:
+                    attachment.generic_object = action
                 attachment.save()
 
             for obligee in self.cleaned_data[u'obligee_set']:

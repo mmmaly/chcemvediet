@@ -4,7 +4,7 @@ from email.utils import formataddr
 
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
-from django.db import models, IntegrityError, transaction
+from django.db import models, IntegrityError, transaction, connection
 from django.db.models import Q, Prefetch
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -452,6 +452,14 @@ class Inforequest(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+class InforequestEmailQuerySet(QuerySet):
+    def undecided(self):
+        return self.filter(type=InforequestEmail.TYPES.UNDECIDED)
+    def oldest(self):
+        return self.order_by(u'email__processed', u'email__pk', u'pk')[:1]
+    def newest(self):
+        return self.order_by(u'email__processed', u'email__pk', u'pk').reverse()[:1]
+
 class InforequestEmail(models.Model):
     # May NOT be NULL; m2m ends
     inforequest = models.ForeignKey(u'Inforequest')
@@ -484,6 +492,8 @@ class InforequestEmail(models.Model):
     #  -- Inforequest.inforequestemail_set
     #
     #  -- Message.inforequestemail_set
+
+    objects = InforequestEmailQuerySet.as_manager()
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -575,13 +585,44 @@ class Branch(models.Model):
         else:
             return list(self.action_set.by_email())
 
+    @staticmethod
+    def prefetch_last_action(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Branch.last_action``. Redundant if ``prefetch_actions()`` is already
+        used.
+        """
+        if queryset is None:
+            queryset = Action.objects.get_queryset()
+        quote_name = connection.ops.quote_name
+        queryset = queryset.extra(where=[
+            u'{table}.{pk} = ('
+                u'SELECT p.{pk} '
+                u'FROM {table} p '
+                u'WHERE p.{branch} = {table}.{branch} '
+                u'ORDER BY p.{effective_date} DESC, {pk} DESC '
+                u'LIMIT 1'
+            u')'.format(
+                table = quote_name(Action._meta.db_table),
+                pk = quote_name(Action._meta.pk.column),
+                branch = quote_name(Action._meta.get_field(u'branch').column),
+                effective_date = quote_name(Action._meta.get_field(u'effective_date').column),
+                )
+            ])
+        return Prefetch(join_lookup(path, u'action_set'), queryset, to_attr=u'_last_action')
+
     @cached_property
     def last_action(self):
         u"""
-        Cached last branch action. Returns None if the branch has no actions. Takes advantage of
-        ``Branch.actions`` if it is fetched already.
+        Cached last branch action. Returns None if the branch has no actions. May be prefetched
+        with ``prefetch_related(Branch.prefetch_last_action())`` queryset method. Takes advantage
+        of ``Branch.actions`` if it is fetched already.
         """
-        if u'actions' in self.__dict__:
+        if u'_last_action' in self.__dict__:
+            try:
+                return self._last_action[0]
+            except IndexError:
+                return None
+        elif u'actions' in self.__dict__:
             try:
                 return self.actions[-1]
             except IndexError:

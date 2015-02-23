@@ -12,4 +12,5 @@ class DummyTransport(BaseTransport):
             recipient.save()
 
     def get_messages(self):
-        return []
+        return
+        yield
