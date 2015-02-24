@@ -229,10 +229,11 @@ class Inforequest(models.Model):
         Use to prefetch ``Inforequest.undecided_emails``.
         """
         if queryset is None:
-            queryset = Message.objects.get_queryset()
-        # There is some problem in Django and it joins InforequestEmail table twice.
-        queryset = queryset.filter(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)
-        return Prefetch(join_lookup(path, u'email_set'), queryset, to_attr=u'undecided_emails')
+            queryset = InforequestEmail.objects.get_queryset()
+        queryset = queryset.filter(type=InforequestEmail.TYPES.UNDECIDED)
+        queryset = queryset.order_by_email()
+        queryset = queryset.select_related(u'email')
+        return Prefetch(join_lookup(path, u'inforequestemail_set'), queryset, to_attr=u'_undecided_emails')
 
     @cached_property
     def undecided_emails(self):
@@ -240,7 +241,10 @@ class Inforequest(models.Model):
         Cached list of all undecided emails assigned to the inforequest. May be prefetched with
         ``prefetch_related(Inforequest.prefetch_undecided_emails())`` queryset method.
         """
-        return list(self.undecided_emails_set.all())
+        if u'_undecided_emails' in self.__dict__:
+            return list(r.email for r in self._undecided_emails)
+        else:
+            return list(self.undecided_emails_set.all())
 
     @cached_property
     def undecided_emails_count(self):
@@ -251,6 +255,8 @@ class Inforequest(models.Model):
         """
         if u'undecided_emails' in self.__dict__:
             return len(self.undecided_emails)
+        elif u'_undecided_emails' in self.__dict__:
+            return len(self._undecided_emails)
         else:
             return self.undecided_emails_set.count()
 
@@ -265,6 +271,8 @@ class Inforequest(models.Model):
             return bool(self.undecided_emails_count)
         elif u'undecided_emails' in self.__dict__:
             return bool(self.undecided_emails)
+        elif u'_undecided_emails' in self.__dict__:
+            return bool(self._undecided_emails)
         else:
             return self.undecided_emails_set.exists()
 
@@ -280,8 +288,45 @@ class Inforequest(models.Model):
                 return self.undecided_emails[0]
             except IndexError:
                 return None
+        elif u'_undecided_emails' in self.__dict__:
+            try:
+                return self._undecided_emails[0].email
+            except IndexError:
+                return None
         else:
             return self.undecided_emails_set.first()
+
+    @staticmethod
+    def prefetch_newest_undecided_email(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Inforequest.newest_undecided_email``. Redundant if
+        ``prefetch_undecided_emails()`` is already used.
+        """
+        if queryset is None:
+            queryset = InforequestEmail.objects.get_queryset()
+        quote_name = connection.ops.quote_name
+        queryset = queryset.filter(type=InforequestEmail.TYPES.UNDECIDED)
+        queryset = queryset.order_by_email()
+        queryset = queryset.select_related(u'email')
+        queryset = queryset.extra(where=[
+            u'{through}.{through_pk} = ('
+                u'SELECT p.{through_pk} '
+                u'FROM {through} p '
+                    u'INNER JOIN {message} m ON (m.{message_pk} = p.{through_email}) '
+                u'WHERE p.{through_inforequest} = {through}.{through_inforequest} '
+                u'ORDER BY m.{message_processed} DESC, m.{message_pk} DESC, p.{through_pk} DESC '
+                u'LIMIT 1'
+            u')'.format(
+                through = quote_name(InforequestEmail._meta.db_table),
+                through_pk = quote_name(InforequestEmail._meta.pk.column),
+                through_inforequest = quote_name(InforequestEmail._meta.get_field(u'inforequest').column),
+                through_email = quote_name(InforequestEmail._meta.get_field(u'email').column),
+                message = quote_name(Message._meta.db_table),
+                message_pk = quote_name(Message._meta.pk.column),
+                message_processed = quote_name(Message._meta.get_field(u'processed').column),
+                )
+            ])
+        return Prefetch(join_lookup(path, u'inforequestemail_set'), queryset, to_attr=u'_newest_undecided_email')
 
     @cached_property
     def newest_undecided_email(self):
@@ -290,9 +335,19 @@ class Inforequest(models.Model):
         has no undecided emails assigned. Takes advantage of ``Inforequest.undecided_emails`` if it
         is already fetched.
         """
-        if u'undecided_emails' in self.__dict__:
+        if u'_newest_undecided_email' in self.__dict__:
+            try:
+                return self._newest_undecided_email[0].email
+            except IndexError:
+                return None
+        elif u'undecided_emails' in self.__dict__:
             try:
                 return self.undecided_emails[-1]
+            except IndexError:
+                return None
+        elif u'_undecided_emails' in self.__dict__:
+            try:
+                return self._undecided_emails[-1].email
             except IndexError:
                 return None
         else:
@@ -375,6 +430,16 @@ class Inforequest(models.Model):
         """
         return (b for b in self.branches if b.advanced_by_id == action.id)
 
+    def branch_by_pk(self, pk):
+        u"""
+        Returns inforequest branch by its ``pk``. Takes advantage of cached list of all inforequest
+        branches stored in ``Inforequest.branches`` property.
+        """
+        for branch in self.branches:
+            if branch.pk == pk:
+                return branch
+        raise ValueError
+
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
 
@@ -455,10 +520,12 @@ class Inforequest(models.Model):
 class InforequestEmailQuerySet(QuerySet):
     def undecided(self):
         return self.filter(type=InforequestEmail.TYPES.UNDECIDED)
+    def order_by_email(self):
+        return self.order_by(u'email__processed', u'email__pk', u'pk')
     def oldest(self):
-        return self.order_by(u'email__processed', u'email__pk', u'pk')[:1]
+        return self.order_by_email()[:1]
     def newest(self):
-        return self.order_by(u'email__processed', u'email__pk', u'pk').reverse()[:1]
+        return self.order_by_email().reverse()[:1]
 
 class InforequestEmail(models.Model):
     # May NOT be NULL; m2m ends
@@ -550,7 +617,7 @@ class Branch(models.Model):
     objects = BranchQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'historicalobligee__name', u'pk']
+        ordering = [u'pk']
         verbose_name_plural = u'Branches'
 
     @cached_property
@@ -574,11 +641,22 @@ class Branch(models.Model):
         """
         return list(self.action_set.all())
 
+    @staticmethod
+    def prefetch_actions_by_email(path=None, queryset=None):
+        u"""
+        Use to prefetch ``Branch.actions_by_email``.
+        """
+        if queryset is None:
+            queryset = Action.objects.get_queryset()
+        queryset = queryset.by_email()
+        return Prefetch(join_lookup(path, u'action_set'), queryset, to_attr=u'actions_by_email')
+
     @cached_property
     def actions_by_email(self):
         u"""
-        Cached list of all branch actions sent by email. Takes advantage of ``Branch.actions`` if
-        it is fetched already.
+        Cached list of all branch actions sent by email. May be prefetched with
+        ``prefetch_related(Branch.prefetch_actions_by_email())`` queryset method. Takes advantage
+        of ``Branch.actions`` if it is fetched already.
         """
         if u'actions' in self.__dict__:
             return list(a for a in self.actions if a.is_by_email)
@@ -595,14 +673,14 @@ class Branch(models.Model):
             queryset = Action.objects.get_queryset()
         quote_name = connection.ops.quote_name
         queryset = queryset.extra(where=[
-            u'{table}.{pk} = ('
+            u'{action}.{pk} = ('
                 u'SELECT p.{pk} '
-                u'FROM {table} p '
-                u'WHERE p.{branch} = {table}.{branch} '
-                u'ORDER BY p.{effective_date} DESC, {pk} DESC '
+                u'FROM {action} p '
+                u'WHERE p.{branch} = {action}.{branch} '
+                u'ORDER BY p.{effective_date} DESC, p.{pk} DESC '
                 u'LIMIT 1'
             u')'.format(
-                table = quote_name(Action._meta.db_table),
+                action = quote_name(Action._meta.db_table),
                 pk = quote_name(Action._meta.pk.column),
                 branch = quote_name(Action._meta.get_field(u'branch').column),
                 effective_date = quote_name(Action._meta.get_field(u'effective_date').column),
@@ -1056,7 +1134,7 @@ class Action(models.Model):
 
     @cached_property
     def is_by_email(self):
-        return self.email_pk is not None
+        return self.email_id is not None
 
     @cached_property
     def days_passed(self):

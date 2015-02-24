@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest, JsonResponse
 from django.template import RequestContext
@@ -324,7 +325,13 @@ def decide_email_unknown(request, inforequest_pk, email_pk):
 def _add_smail(request, inforequest_pk, action_type, form_class, template):
     assert action_type in Action.OBLIGEE_ACTION_TYPES
 
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
+    inforequest = (Inforequest.objects
+            .not_closed()
+            .owned_by(request.user)
+            .prefetch_related(Inforequest.prefetch_branches(None, Branch.objects.select_related(u'historicalobligee')))
+            .prefetch_related(Branch.prefetch_last_action(u'branches'))
+            .get_or_404(pk=inforequest_pk)
+            )
 
     if request.method != u'POST': # The user can save a draft even if he may not submit.
         if inforequest.has_undecided_emails:
@@ -436,7 +443,13 @@ def add_smail_remandment(request, inforequest_pk):
 def _new_action(request, inforequest_pk, action_type, form_class, template):
     assert action_type in Action.APPLICANT_ACTION_TYPES
 
-    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
+    inforequest = (Inforequest.objects
+            .not_closed()
+            .owned_by(request.user)
+            .prefetch_related(Inforequest.prefetch_branches(None, Branch.objects.select_related(u'historicalobligee')))
+            .prefetch_related(Branch.prefetch_last_action(u'branches'))
+            .get_or_404(pk=inforequest_pk)
+            )
 
     if request.method != u'POST': # The user can save a draft even if he may not submit.
         if inforequest.has_undecided_emails:
@@ -475,17 +488,20 @@ def _new_action(request, inforequest_pk, action_type, form_class, template):
                 form.save(action)
                 action.save()
 
-                if button == u'email':
-                    action.send_by_email()
-
                 if draft:
                     draft.delete()
 
-                # The inforequest was changed, we need to refetch it
+                # The inforequest was changed, we need to refetch it. We alse prefetch all related
+                # models used by ``detail-main`` template later.
                 inforequest = (Inforequest.objects
                         .apply(_prefetch_inforequest_detail)
                         .get(pk=inforequest.pk)
                         )
+                action.branch = inforequest.branch_by_pk(action.branch.pk)
+
+                if button == u'email':
+                    action.send_by_email()
+
                 json = {
                         u'result': u'success',
                         u'scroll_to': u'#action-%d' % action.pk,
@@ -537,9 +553,9 @@ def new_action_appeal(request, inforequest_pk):
 def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
     branch = inforequest.branch_set.get_or_404(pk=branch_pk)
-    action = branch.action_set.get_or_404(pk=action_pk)
+    action = branch.last_action
 
-    if action != branch.last_action:
+    if action.pk != Action._meta.pk.to_python(action_pk):
         return HttpResponseNotFound()
     if not action.has_obligee_deadline:
         return HttpResponseNotFound()
@@ -597,12 +613,25 @@ def upload_attachment(request):
 @require_http_methods([u'HEAD', u'GET'])
 @login_required(raise_exception=True)
 def download_attachment(request, attachment_pk):
-    attached_to = (
-            Session.objects.get(session_key=request.session.session_key),
-            Message.objects.filter(inforequest__applicant=request.user),
-            InforequestDraft.objects.filter(applicant=request.user),
-            Action.objects.filter(branch__inforequest__applicant=request.user),
-            ActionDraft.objects.filter(inforequest__applicant=request.user),
-            )
-    attachment = Attachment.objects.attached_to(*attached_to).get_or_404(pk=attachment_pk)
+    permitted = {
+            Session: Q(session_key=request.session.session_key),
+            Message: Q(inforequest__applicant=request.user),
+            InforequestDraft: Q(applicant=request.user),
+            Action: Q(branch__inforequest__applicant=request.user),
+            ActionDraft: Q(inforequest__applicant=request.user),
+            }
+
+    attachment = Attachment.objects.get_or_404(pk=attachment_pk)
+    attached_to_class = attachment.generic_type.model_class()
+
+    try:
+        condition = permitted[attached_to_class]
+    except KeyError:
+        return HttpResponseNotFound()
+
+    try:
+        attached_to_class.objects.filter(condition).get(pk=attachment.generic_id)
+    except attached_to_class.DoesNotExist:
+        return HttpResponseNotFound()
+
     return attachments_views.download(request, attachment)

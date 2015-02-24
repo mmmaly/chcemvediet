@@ -294,6 +294,11 @@ class MessageAdmin(admin.ModelAdmin):
 
         return super(MessageAdmin, self).render_change_form(request, context, **kwargs)
 
+    def get_queryset(self, request):
+        queryset = super(MessageAdmin, self).get_queryset(request)
+        queryset = queryset.prefetch_related(Message.prefetch_recipients())
+        return queryset
+
     def get_fieldsets(self, request, obj=None):
         if obj is None:
             return self.fieldsets_add

@@ -215,6 +215,11 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         attachment = Attachment.objects.get_or_404(pk=attachment_pk)
         return attachments_views.download(request, attachment)
 
+    def get_queryset(self, request):
+        queryset = super(AttachmentAdmin, self).get_queryset(request)
+        queryset = queryset.prefetch_related(u'generic_object')
+        return queryset
+
     def get_urls(self):
         info = self.model._meta.app_label, self.model._meta.model_name
         urls = patterns('',

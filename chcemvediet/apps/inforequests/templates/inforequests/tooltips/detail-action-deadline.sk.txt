@@ -9,7 +9,7 @@
 {% endcomment %}
 
 {% if not action.deadline_missed %}
-Lehota ešte neuplynula. {% if action.has_applicant_deadline %} Čaká sa na Vás. Musíte poslať {{ action.get_type_display }} do {{ action.deadline_remaining }} pracovných dní. Ak neodpoviete, alebo odpoviete neskôr, hrozí riziko, že Vaša požiadavka nebude akceptovaná.{% endif %}.
+Lehota ešte neuplynula. {% if action.has_applicant_deadline %} Čaká sa na Vás. Musíte poslať {{ action.get_type_display }} do {{ action.deadline_remaining }} pracovných dní. Ak neodpoviete, alebo odpoviete neskôr, hrozí riziko, že Vaša požiadavka nebude akceptovaná.{% endif %}
 {% if action.has_obligee_deadline %} Čaká sa na inštitúciu. Musia odpovedať do {{ action.deadline_remaining }} pracovných dní. Keď táto doba uplynie, ponúkneme vám možnosti, ako ďalej postupovať. {% endif %}
 {%endif %}
 

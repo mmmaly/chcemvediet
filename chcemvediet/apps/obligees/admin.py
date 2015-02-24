@@ -53,6 +53,11 @@ class ObligeeAdminBranchInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(ObligeeAdminBranchInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'inforequest__applicant')
+        return queryset
+
 class ObligeeAdmin(SimpleHistoryAdmin):
     list_display = [
             u'obligee_column',

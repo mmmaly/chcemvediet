@@ -169,6 +169,12 @@ class InforequestDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     def obligee_details_live(self, obligee):
         return admin_obj_format(obligee, u'{tag}\n{obj.name}')
 
+    def get_queryset(self, request):
+        queryset = super(InforequestDraftAdmin, self).get_queryset(request)
+        queryset = queryset.select_related(u'applicant')
+        queryset = queryset.select_related(u'obligee')
+        return queryset
+
     def get_fieldsets(self, request, obj=None):
         if obj is None:
             return self.fieldsets_add
@@ -222,6 +228,11 @@ class InforequestAdminBranchInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(InforequestAdminBranchInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'obligee')
+        return queryset
+
 class InforequestAdminInforequestEmailInline(admin.TabularInline):
     model = InforequestEmail
     extra = 0
@@ -258,6 +269,11 @@ class InforequestAdminInforequestEmailInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(InforequestAdminInforequestEmailInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'email')
+        return queryset
+
 class InforequestAdminActionDraftInline(admin.TabularInline):
     model = ActionDraft
     extra = 0
@@ -289,6 +305,11 @@ class InforequestAdminActionDraftInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_queryset(self, request):
+        queryset = super(InforequestAdminActionDraftInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'branch__obligee')
+        return queryset
 
 class InforequestAdminAddForm(forms.ModelForm):
     obligee = Branch._meta.get_field(u'obligee').formfield(
@@ -369,8 +390,8 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     list_filter = [
             u'submission_date',
             simple_list_filter_factory(u'Undecided E-mail', u'undecided', [
-                (u'1', u'With', lambda qs: qs.filter(undecided__count__gt=0)),
-                (u'0', u'Without', lambda qs: qs.filter(undecided__count=0)),
+                (u'1', u'With', lambda qs: qs.filter(undecided_emails_count__gt=0)),
+                (u'0', u'Without', lambda qs: qs.filter(undecided_emails_count=0)),
                 ]),
             u'closed',
             ]
@@ -402,9 +423,9 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         return admin_obj_format(obligee, u'{obj.name}')
 
     @decorate(short_description=u'Undecided E-mails')
-    @decorate(admin_order_field=u'undecided__count')
+    @decorate(admin_order_field=u'undecided_emails_count')
     def undecided_emails_column(self, inforequest):
-        return inforequest.undecided__count
+        return inforequest.undecided_emails_count
 
     form_add = InforequestAdminAddForm
     form_change = forms.ModelForm
@@ -485,11 +506,9 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super(InforequestAdmin, self).get_queryset(request)
-        # We are interested in main branches only
-        queryset = queryset.filter(branch__advanced_by__isnull=True)
-        # Count undecided emails
-        queryset = queryset.annotate(undecided__count=Count(u'inforequestemail',
-            only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
+        queryset = queryset.select_related(u'applicant')
+        queryset = queryset.select_undecided_emails_count()
+        queryset = queryset.prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'obligee')))
         return queryset
 
     def get_fieldsets(self, request, obj=None):
@@ -601,6 +620,8 @@ class InforequestEmailAdminDecideForm(forms.Form):
 
     class _meta:
         model = InforequestEmail
+        labels = None
+        help_texts = None
 
     def __init__(self, *args, **kwargs):
         self.instance = kwargs.pop(u'instance')
@@ -987,8 +1008,8 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super(InforequestEmailAdmin, self).get_queryset(request)
-        # We are interested in main branches only now
-        queryset = queryset.filter(inforequest__branch__advanced_by__isnull=True)
+        queryset = queryset.select_related(u'inforequest__applicant')
+        queryset = queryset.select_related(u'email__action')
         return queryset
 
     def get_urls(self):
@@ -1061,6 +1082,11 @@ class BranchAdminActionInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_queryset(self, request):
+        queryset = super(BranchAdminActionInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'email')
+        return queryset
 
 class BranchAdminAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -1286,6 +1312,12 @@ class BranchAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         # its inforequest.
         return not obj.is_main
 
+    def get_queryset(self, request):
+        queryset = super(BranchAdmin, self).get_queryset(request)
+        queryset = queryset.select_related(u'inforequest__applicant')
+        queryset = queryset.select_related(u'obligee')
+        return queryset
+
     def get_fieldsets(self, request, obj=None):
         if obj is None:
             return self.fieldsets_add
@@ -1333,6 +1365,11 @@ class ActionAdminAdvancedToInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_queryset(self, request):
+        queryset = super(ActionAdminAdvancedToInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'obligee')
+        return queryset
 
 class ActionAdminAddForm(forms.ModelForm):
     attachments = AttachmentsField(
@@ -1720,6 +1757,13 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
         # Branches may not be left empty.
         return obj.branch.action_set.count() > 1
 
+    def get_queryset(self, request):
+        queryset = super(ActionAdmin, self).get_queryset(request)
+        queryset = queryset.select_related(u'branch__inforequest__applicant')
+        queryset = queryset.select_related(u'branch__obligee')
+        queryset = queryset.select_related(u'email')
+        return queryset
+
     def get_fieldsets(self, request, obj=None):
         if obj is None:
             return self.fieldsets_add
@@ -1912,6 +1956,12 @@ class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(ActionDraftAdmin, self).get_queryset(request)
+        queryset = queryset.select_related(u'inforequest__applicant')
+        queryset = queryset.select_related(u'branch__obligee')
+        return queryset
+
 
 class UserAdminMixinInforequestInline(admin.TabularInline):
     model = Inforequest
@@ -1948,6 +1998,12 @@ class UserAdminMixinInforequestInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(UserAdminMixinInforequestInline, self).get_queryset(request)
+        queryset = queryset.select_undecided_emails_count()
+        queryset = queryset.prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'obligee')))
+        return queryset
+
 class UserAdminMixinInforequestDraftInline(admin.TabularInline):
     model = InforequestDraft
     extra = 0
@@ -1974,6 +2030,11 @@ class UserAdminMixinInforequestDraftInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(UserAdminMixinInforequestDraftInline, self).get_queryset(request)
+        queryset = queryset.select_related(u'obligee')
+        return queryset
+
 class UserAdminMixin(admin.ModelAdmin):
     def __init__(self, *args, **kwargs):
         self.list_display = list(self.list_display) + [
@@ -1996,17 +2057,17 @@ class UserAdminMixin(admin.ModelAdmin):
     def inforequest_count_column(self, user):
         return user.inforequest__count
 
-    def get_queryset(self, request):
-        queryset = super(UserAdminMixin, self).get_queryset(request)
-        queryset = queryset.annotate(Count(u'inforequest'))
-        return queryset
-
     def has_delete_permission(self, request, obj=None):
         if obj:
             # Only users that don't own any inforequests may be deleted.
             if obj.inforequest_set.exists():
                 return False
         return super(UserAdminMixin, self).has_delete_permission(request, obj)
+
+    def get_queryset(self, request):
+        queryset = super(UserAdminMixin, self).get_queryset(request)
+        queryset = queryset.annotate(Count(u'inforequest'))
+        return queryset
 
     def get_formsets(self, request, obj=None):
         if obj is None:
@@ -2081,6 +2142,12 @@ class MessageAdminMixin(admin.ModelAdmin):
             if action is not None:
                 return False
         return super(MessageAdminMixin, self).has_delete_permission(request, obj)
+
+    def get_queryset(self, request):
+        queryset = super(MessageAdminMixin, self).get_queryset(request)
+        queryset = queryset.select_related(u'action')
+        queryset = queryset.prefetch_related(u'inforequest_set')
+        return queryset
 
 
 admin.site.disable_action('delete_selected')

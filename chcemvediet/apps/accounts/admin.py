@@ -66,6 +66,11 @@ class ProfileAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        queryset = super(ProfileAdmin, self).get_queryset(request)
+        queryset = select_related(u'user')
+        return queryset
+
 class UserAdminMixin(admin.ModelAdmin):
     def __init__(self, *args, **kwargs):
         # We don't want to change predecessor internal objects
