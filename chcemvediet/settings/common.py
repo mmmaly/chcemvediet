@@ -16,7 +16,7 @@ TEST_RUNNER = u'chcemvediet.tests.CustomTestRunner'
 WSGI_APPLICATION = u'chcemvediet.wsgi.application'
 
 TIME_ZONE = u'Europe/Bratislava'
-LANGUAGE_CODE = u'en'
+LANGUAGE_CODE = u'sk'
 LANGUAGES = (
     (u'sk', u'Slovensky'),
     (u'en', u'English'),
