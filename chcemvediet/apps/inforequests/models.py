@@ -28,14 +28,14 @@ class InforequestDraftQuerySet(QuerySet):
         return self.filter(applicant=user)
 
 class InforequestDraft(models.Model):
-    # May NOT be NULL
-    applicant = models.ForeignKey(User,
+    # May NOT be NULL; For index see index_together
+    applicant = models.ForeignKey(User, db_index=False,
             help_text=squeeze(u"""
                 The draft owner, the future inforequest applicant.
                 """))
 
-    # May be NULL
-    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True,
+    # May be NULL; For index see index_together
+    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True, db_index=False,
             help_text=squeeze(u"""
                 The obligee the inforequest will be sent to, if the user has already set it.
                 """))
@@ -59,6 +59,10 @@ class InforequestDraft(models.Model):
 
     class Meta:
         ordering = [u'pk']
+        index_together = [
+                [u'applicant'],
+                [u'obligee'],
+                ]
 
     @staticmethod
     def prefetch_attachments(path=None, queryset=None):
@@ -99,8 +103,8 @@ class InforequestQuerySet(QuerySet):
         return self.annotate(undecided_emails_count=Count(u'inforequestemail', only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
 
 class Inforequest(models.Model):
-    # May NOT be NULL
-    applicant = models.ForeignKey(User,
+    # May NOT be NULL; For index see index_together
+    applicant = models.ForeignKey(User, db_index=False,
             help_text=squeeze(u"""
                 The inforequest owner, the user who submitted it.
                 """))
@@ -166,6 +170,11 @@ class Inforequest(models.Model):
 
     class Meta:
         ordering = [u'submission_date', u'pk']
+        index_together = [
+                [u'applicant'],
+                [u'unique_email'],
+                [u'submission_date', u'id'],
+                ]
 
     @staticmethod
     def prefetch_branches(path=None, queryset=None):
@@ -528,9 +537,9 @@ class InforequestEmailQuerySet(QuerySet):
         return self.order_by_email().reverse()[:1]
 
 class InforequestEmail(models.Model):
-    # May NOT be NULL; m2m ends
-    inforequest = models.ForeignKey(u'Inforequest')
-    email = models.ForeignKey(u'mail.Message')
+    # May NOT be NULL; m2m ends; For index see index_together
+    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
+    email = models.ForeignKey(u'mail.Message', db_index=False)
 
     # May NOT be NULL
     TYPES = FieldChoices(
@@ -562,6 +571,13 @@ class InforequestEmail(models.Model):
 
     objects = InforequestEmailQuerySet.as_manager()
 
+    class Meta:
+        index_together = [
+                [u'email', u'inforequest'],
+                [u'inforequest', u'email'],
+                [u'type', u'inforequest'],
+                ]
+
     def __unicode__(self):
         return u'%s' % self.pk
 
@@ -572,20 +588,20 @@ class BranchQuerySet(QuerySet):
         return self.filter(advanced_by__isnull=False)
 
 class Branch(models.Model):
-    # May NOT be NULL
-    inforequest = models.ForeignKey(u'Inforequest')
+    # May NOT be NULL; For index see index_together
+    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
 
-    # May NOT be NULL
-    obligee = models.ForeignKey(u'obligees.Obligee',
+    # May NOT be NULL; For index see index_together
+    obligee = models.ForeignKey(u'obligees.Obligee', db_index=False,
             help_text=u'The obligee the inforequest was sent or advanced to.')
 
-    # May NOT be NULL; Automaticly frozen in save() when creating a new object.
-    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee',
+    # May NOT be NULL; Automaticly frozen in save() when creating a new object; For index see index_together
+    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee', db_index=False,
             help_text=u'Frozen Obligee at the time the Inforequest was submitted or advanced to it.')
 
-    # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
+    # Advancement action that advanced the inforequest to this obligee; None if it's inforequest; For index see index_together
     # main branch. Inforequest must contain exactly one branch with ``advanced_by`` set to None.
-    advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True,
+    advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, db_index=False,
             help_text=squeeze(u"""
                 NULL for main branches. The advancement action the inforequest was advanced by for
                 advanced branches. Every Inforequest must contain exactly one main branch.
@@ -619,6 +635,12 @@ class Branch(models.Model):
     class Meta:
         ordering = [u'pk']
         verbose_name_plural = u'Branches'
+        index_together = [
+                [u'inforequest', u'advanced_by'],
+                [u'obligee'],
+                [u'historicalobligee'],
+                [u'advanced_by', u'inforequest'],
+                ]
 
     @cached_property
     def is_main(self):
@@ -910,11 +932,11 @@ class ActionQuerySet(QuerySet):
         return self.filter(email__isnull=True)
 
 class Action(models.Model):
-    # May NOT be NULL
-    branch = models.ForeignKey(u'Branch')
+    # May NOT be NULL; For index see index_together
+    branch = models.ForeignKey(u'Branch', db_index=False)
 
-    # NOT NULL for actions sent or received by email; NULL otherwise
-    email = models.OneToOneField(u'mail.Message', blank=True, null=True, on_delete=models.SET_NULL)
+    # NOT NULL for actions sent or received by email; NULL otherwise; For index see index_together
+    email = models.OneToOneField(u'mail.Message', blank=True, null=True, db_index=False, on_delete=models.SET_NULL)
 
     # May NOT be NULL
     TYPES = FieldChoices(
@@ -1102,6 +1124,11 @@ class Action(models.Model):
 
     class Meta:
         ordering = [u'effective_date', u'pk']
+        index_together = [
+                [u'branch'],
+                [u'email'],
+                [u'effective_date', u'id'],
+                ]
 
     @staticmethod
     def prefetch_attachments(path=None, queryset=None):
@@ -1217,11 +1244,11 @@ class Action(models.Model):
         return u'%s' % self.pk
 
 class ActionDraft(models.Model):
-    # May NOT be NULL
-    inforequest = models.ForeignKey(u'Inforequest')
+    # May NOT be NULL; For index see index_together
+    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
 
-    # May be NULL; Must be owned by the inforequest if set.
-    branch = models.ForeignKey(u'Branch', blank=True, null=True,
+    # May be NULL; Must be owned by the inforequest if set; For index see index_together
+    branch = models.ForeignKey(u'Branch', blank=True, null=True, db_index=False,
             help_text=u'Must be owned by inforequest if set')
 
     # May NOT be NULL
@@ -1268,6 +1295,10 @@ class ActionDraft(models.Model):
 
     class Meta:
         ordering = [u'pk']
+        index_together = [
+                [u'inforequest'],
+                [u'branch'],
+                ]
 
     @staticmethod
     def prefetch_attachments(path=None, queryset=None):

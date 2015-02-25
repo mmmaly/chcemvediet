@@ -19,7 +19,7 @@ class ObligeeQuerySet(QuerySet):
 
 @register_history
 class Obligee(models.Model):
-    # Should NOT be empty
+    # Should NOT be empty; For index see index_together
     name = models.CharField(max_length=255)
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
@@ -35,7 +35,7 @@ class Obligee(models.Model):
 
     # Should NOT be empty; Read-only; Automaticly computed in save() whenever creating a new object
     # or changing its name. Any user defined value is replaced.
-    slug = models.SlugField(max_length=255,
+    slug = models.SlugField(max_length=255, db_index=False,
             help_text=squeeze(u"""
                 Slug for full-text search. Automaticly computed whenever creating a new object or
                 changing its name. Any user defined value is replaced.
@@ -60,6 +60,11 @@ class Obligee(models.Model):
 
     class Meta:
         ordering = [u'name', u'pk']
+        # FIXME: We need to define full-text search index for "slug" manually, because Django does
+        # not support it. Ordinary indexes do not work for LIKE '%word%'.
+        index_together = [
+                [u'name', u'id'],
+                ]
 
     @property
     def emails_parsed(self):

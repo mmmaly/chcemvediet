@@ -33,7 +33,7 @@ class Message(models.Model):
             )
     type = models.SmallIntegerField(choices=TYPES._choices)
 
-    # NOT NULL for processed messages; NULL for queued messages
+    # NOT NULL for processed messages; NULL for queued messages; For index see index_together
     processed = models.DateTimeField(blank=True, null=True,
             help_text=squeeze(u"""
                 Date and time the message was sent or received and processed. Leave blank if you
@@ -95,6 +95,9 @@ class Message(models.Model):
 
     class Meta:
         ordering = [u'processed', u'pk']
+        index_together = [
+                [u'processed', u'id'],
+                ]
 
     @property
     def from_formatted(self):
@@ -195,8 +198,8 @@ class RecipientQuerySet(QuerySet):
         return self.filter(type=Recipient.TYPES.BCC)
 
 class Recipient(models.Model):
-    # May NOT be NULL
-    message = models.ForeignKey(u'Message')
+    # May NOT be NULL; For index see index_together
+    message = models.ForeignKey(u'Message', db_index=False)
 
     # May be empty
     name = models.CharField(blank=True, max_length=255,
@@ -256,7 +259,7 @@ class Recipient(models.Model):
                 sure.
                 """))
 
-    # May be empty
+    # May be empty; For index see index_together
     remote_id = models.CharField(blank=True, max_length=255,
             help_text=squeeze(u"""
                 Recipient reference ID set by e-mail transport. Leave blank if not sure.
@@ -271,6 +274,10 @@ class Recipient(models.Model):
 
     class Meta:
         ordering = [u'pk']
+        index_together = [
+                [u'message'],
+                [u'remote_id'],
+                ]
 
     @property
     def formatted(self):

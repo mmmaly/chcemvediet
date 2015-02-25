@@ -36,8 +36,8 @@ class AttachmentQuerySet(QuerySet):
         return self.filter(q)
 
 class Attachment(models.Model):
-    # May NOT be NULL; Generic relation
-    generic_type = models.ForeignKey(ContentType)
+    # May NOT be NULL; Generic relation; For index see index_together
+    generic_type = models.ForeignKey(ContentType, db_index=False)
     generic_id = models.CharField(max_length=255)
     generic_object = generic.GenericForeignKey(u'generic_type', u'generic_id')
 
@@ -73,6 +73,9 @@ class Attachment(models.Model):
 
     class Meta:
         ordering = [u'pk']
+        index_together = [
+                [u'generic_type', u'generic_id'],
+                ]
 
     @cached_property
     def content(self):
