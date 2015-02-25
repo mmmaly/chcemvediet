@@ -157,9 +157,9 @@ ASSETS = (
     u'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css',
     u'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js',
     u'main/3part/jqueryui/1.10.3/datepicker-sk.js',
-    # Bootstrap
-    u'//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css',
-    u'//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js',
+    # Bootstrap; Version 2.3.2 has broken navbar on mobiles
+    u'//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css',
+    u'//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js',
     # JQuery File Upload (Requires: jquery.ui.widget.js)
     u'main/3part/jqueryplugins/jquery.iframe-transport.js',
     u'main/3part/jqueryplugins/jquery.fileupload.js',
