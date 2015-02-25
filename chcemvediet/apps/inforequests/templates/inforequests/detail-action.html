@@ -19,8 +19,7 @@
     <p class="span10">{{ action.effective_date }}
       {% if forloop.last and action.deadline %}&mdash;
         <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-deadline.txt" with action=action %}{% endspaceless %}">
-          Deadline: {{ action.deadline }} WD{% if action.extension %} + {{ action.extension }} WD{% endif %},
-          {% if action.deadline_missed %}Deadline is Missed{% else %}{{ action.deadline_remaining }} WD remains{% endif %}
+          {% include "inforequests/texts/detail-action-deadline.html" with action=action %}
           <i class="icon-question-sign"></i>
         </span>
       {% endif %}
