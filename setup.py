@@ -208,12 +208,13 @@ def configure_secret_key(configure, settings):
     settings.setting(u'SECRET_KEY', secret_key)
 
 def configure_email_addresses(configure, settings):
-    server_domain = configure.input(u'server_domain', u'Server domain (without www)', default=u'chcemvediet.sk', required=True)
+    server_domain = configure.input(u'server_domain', u'Server domain (with www if used)', default=u'www.chcemvediet.sk', required=True)
+    mail_domain = server_domain[4:] if server_domain.startswith(u'www.') else server_domain
 
     print(INFO + textwrap.dedent(u"""
             Set admin e-mail. It will be used for lowlevel error reporting and
             administration e-mails.""") + RESET)
-    admin_email = configure.input(u'admin_email', u'Admin e-mail', default=u'admin@%s' % server_domain, required=True)
+    admin_email = configure.input(u'admin_email', u'Admin e-mail', default=u'admin@%s' % mail_domain, required=True)
     settings.setting(u'SERVER_EMAIL', admin_email)
     settings.setting(u'ADMINS[len(ADMINS):]', [(u'Admin', admin_email)])
 
@@ -222,13 +223,13 @@ def configure_email_addresses(configure, settings):
             e-mail addresses used by inforequests. The unique e-mail template must contain
             '{token}' as a placeholder to distinguish individual inforequests. For instance
             '{token}@mail.example.com' may be expanded to 'lama@mail.example.com'.""") + RESET)
-    inforequest_unique_email = configure.input(u'inforequest_unique_email', u'Inforequest unique e-mail', default=u'{token}@mail.%s' % server_domain, required=True)
+    inforequest_unique_email = configure.input(u'inforequest_unique_email', u'Inforequest unique e-mail', default=u'{token}@mail.%s' % mail_domain, required=True)
     settings.setting(u'INFOREQUEST_UNIQUE_EMAIL', inforequest_unique_email)
 
     print(INFO + textwrap.dedent(u"""
             Set default from address. It will be used as the from e-mail addresses for all
             other e-mails.""") + RESET)
-    default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@%s' % server_domain, required=True)
+    default_from_email = configure.input(u'default_from_email', u'Default from e-mail', default=u'info@%s' % mail_domain, required=True)
     settings.setting(u'DEFAULT_FROM_EMAIL', default_from_email)
 
     # Production mode uses real obligee emails.
@@ -278,7 +279,7 @@ def configure_mandrill(configure, settings):
                 "https://<yoursubdomain>.ngrok.com/". If using a public server, the prefix
                 should be "https://<yourdomain>/".""") + RESET)
         mandrill_webhook_https = configure.input_yes_no(u'mandrill_webhook_https', u'Use "https" for Mandrill Webhooks?', default=u'Y')
-        mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix', default=u'%s://www.%s/' % (u'https' if mandrill_webhook_https == u'Y' else u'http', server_domain), required=True)
+        mandrill_webhook_prefix = configure.input(u'mandrill_webhook_prefix', u'Mandrill Webhook Prefix', default=u'%s://%s/' % (u'https' if mandrill_webhook_https == u'Y' else u'http', server_domain), required=True)
         mandrill_webhook_secret = configure.auto(u'mandrill_webhook_secret', generate_secret_key(32, string.digits + string.letters))
         mandrill_webhook_url = u'%s/mandrill/webhook/?secret=%s' % (mandrill_webhook_prefix.rstrip(u'/'), mandrill_webhook_secret)
         mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)

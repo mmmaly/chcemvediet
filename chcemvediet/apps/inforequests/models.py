@@ -484,7 +484,7 @@ class Inforequest(models.Model):
 
     def _send_notification(self, template, anchor, dictionary):
         site = Site.objects.get_current()
-        url = u'http://www.{0}{1}#{2}'.format(site.domain, reverse(u'inforequests:detail', args=(self.pk,)), anchor)
+        url = u'http://{0}{1}#{2}'.format(site.domain, reverse(u'inforequests:detail', args=(self.pk,)), anchor)
         dictionary.update({
                 u'inforequest': self,
                 u'url': url,
