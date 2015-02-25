@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-19 20:20+0100\n"
+"POT-Creation-Date: 2015-02-25 15:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -225,131 +225,131 @@ msgstr "Predĺženie lehoty"
 msgid "inforequests:ExtendDeadlineForm:extension:placeholder"
 msgstr "pracovných dní"
 
-#: apps/inforequests/models.py:346
+#: apps/inforequests/models.py:547
 msgid "inforequests:InforequestEmail:type:APPLICANT_ACTION"
 msgstr "Úkon žiadateľa"
 
-#: apps/inforequests/models.py:348
+#: apps/inforequests/models.py:549
 msgid "inforequests:InforequestEmail:type:OBLIGEE_ACTION"
 msgstr "Úkon inštitúcie"
 
-#: apps/inforequests/models.py:349
+#: apps/inforequests/models.py:550
 msgid "inforequests:InforequestEmail:type:UNDECIDED"
 msgstr "Nerozhodnuté"
 
-#: apps/inforequests/models.py:350
+#: apps/inforequests/models.py:551
 msgid "inforequests:InforequestEmail:type:UNRELATED"
 msgstr "Nesúvisiace"
 
-#: apps/inforequests/models.py:351
+#: apps/inforequests/models.py:552
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
 msgstr "Neznáme"
 
-#: apps/inforequests/models.py:666
+#: apps/inforequests/models.py:944
 msgid "inforequests:Action:type:REQUEST"
 msgstr "Žiadosť"
 
-#: apps/inforequests/models.py:667
+#: apps/inforequests/models.py:945
 msgid "inforequests:Action:type:CLARIFICATION_RESPONSE"
 msgstr "Odpoveď na výzvu na doplnenie"
 
-#: apps/inforequests/models.py:668
+#: apps/inforequests/models.py:946
 msgid "inforequests:Action:type:APPEAL"
 msgstr "Odvolanie"
 
-#: apps/inforequests/models.py:670
+#: apps/inforequests/models.py:948
 msgid "inforequests:Action:type:CONFIRMATION"
 msgstr "Potvrdenie prijatia"
 
-#: apps/inforequests/models.py:671
+#: apps/inforequests/models.py:949
 msgid "inforequests:Action:type:EXTENSION"
 msgstr "Predĺženie lehoty"
 
-#: apps/inforequests/models.py:672
+#: apps/inforequests/models.py:950
 msgid "inforequests:Action:type:ADVANCEMENT"
 msgstr "Postúpenie"
 
-#: apps/inforequests/models.py:673
+#: apps/inforequests/models.py:951
 msgid "inforequests:Action:type:CLARIFICATION_REQUEST"
 msgstr "Výzva na doplnenie žiadosti"
 
-#: apps/inforequests/models.py:674
+#: apps/inforequests/models.py:952
 msgid "inforequests:Action:type:DISCLOSURE"
 msgstr "Sprístupnenie informácií"
 
-#: apps/inforequests/models.py:675
+#: apps/inforequests/models.py:953
 msgid "inforequests:Action:type:REFUSAL"
 msgstr "Rozhodnutie o odmietnutí"
 
-#: apps/inforequests/models.py:676
+#: apps/inforequests/models.py:954
 msgid "inforequests:Action:type:AFFIRMATION"
 msgstr "Potvrdenie rozhodnutia"
 
-#: apps/inforequests/models.py:677
+#: apps/inforequests/models.py:955
 msgid "inforequests:Action:type:REVERSION"
 msgstr "Zrušenie rozhodnutia"
 
-#: apps/inforequests/models.py:678
+#: apps/inforequests/models.py:956
 msgid "inforequests:Action:type:REMANDMENT"
 msgstr "Vrátenie rozhodnutia"
 
-#: apps/inforequests/models.py:680
+#: apps/inforequests/models.py:958
 msgid "inforequests:Action:type:ADVANCED_REQUEST"
 msgstr "Postúpenie žiadosti"
 
-#: apps/inforequests/models.py:681
+#: apps/inforequests/models.py:959
 msgid "inforequests:Action:type:EXPIRATION"
 msgstr "Vypršanie lehoty"
 
-#: apps/inforequests/models.py:682
+#: apps/inforequests/models.py:960
 msgid "inforequests:Action:type:APPEAL_EXPIRATION"
 msgstr "Vypršanie lehoty na odvolanie"
 
-#: apps/inforequests/models.py:800
+#: apps/inforequests/models.py:1078
 msgid "inforequests:Action:disclosure_level:NONE"
 msgstr "Nič nebolo spístupnené"
 
-#: apps/inforequests/models.py:801
+#: apps/inforequests/models.py:1079
 msgid "inforequests:Action:disclosure_level:PARTIAL"
 msgstr "Čiastočné sprístupnenie"
 
-#: apps/inforequests/models.py:802
+#: apps/inforequests/models.py:1080
 msgid "inforequests:Action:disclosure_level:FULL"
 msgstr "Úplné sprístupnenie"
 
-#: apps/inforequests/models.py:813
+#: apps/inforequests/models.py:1091
 msgid "inforequests:Action:refusal_reason:DOES_NOT_HAVE"
 msgstr "Nemá informáciu"
 
-#: apps/inforequests/models.py:814
+#: apps/inforequests/models.py:1092
 msgid "inforequests:Action:refusal_reason:DOES_NOT_PROVIDE"
 msgstr "Neposkytuje informáciu"
 
-#: apps/inforequests/models.py:815
+#: apps/inforequests/models.py:1093
 msgid "inforequests:Action:refusal_reason:DOES_NOT_CREATE"
 msgstr "Nevytvára informáciu"
 
-#: apps/inforequests/models.py:816
+#: apps/inforequests/models.py:1094
 msgid "inforequests:Action:refusal_reason:COPYRIGHT"
 msgstr "Autorské právo"
 
-#: apps/inforequests/models.py:817
+#: apps/inforequests/models.py:1095
 msgid "inforequests:Action:refusal_reason:BUSINESS_SECRET"
 msgstr "Obchodné tajomstvo"
 
-#: apps/inforequests/models.py:818
+#: apps/inforequests/models.py:1096
 msgid "inforequests:Action:refusal_reason:PERSONAL"
 msgstr "Ochrana osobných informácií"
 
-#: apps/inforequests/models.py:819
+#: apps/inforequests/models.py:1097
 msgid "inforequests:Action:refusal_reason:CONFIDENTIAL"
 msgstr "Utajované skutočnosti"
 
-#: apps/inforequests/models.py:820
+#: apps/inforequests/models.py:1098
 msgid "inforequests:Action:refusal_reason:NO_REASON"
 msgstr "Bez udania dôvodu"
 
-#: apps/inforequests/models.py:821
+#: apps/inforequests/models.py:1099
 msgid "inforequests:Action:refusal_reason:OTHER_REASON"
 msgstr "Iná príčina"
 
@@ -916,7 +916,7 @@ msgstr ""
 msgid "^attachments/(?P<attachment_pk>\\d+)/$"
 msgstr ""
 
-#: apps/obligees/forms.py:70
+#: apps/obligees/forms.py:71
 msgid "obligees:ObligeeAutocompleteField:invalid_obligee_name"
 msgstr "Neplatný názov inštitúcie, zvoľte z menu."
 

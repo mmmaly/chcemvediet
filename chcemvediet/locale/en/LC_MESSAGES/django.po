@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-19 20:20+0100\n"
+"POT-Creation-Date: 2015-02-25 15:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -225,131 +225,131 @@ msgstr "Deadline Extension"
 msgid "inforequests:ExtendDeadlineForm:extension:placeholder"
 msgstr "Working Days"
 
-#: apps/inforequests/models.py:346
+#: apps/inforequests/models.py:547
 msgid "inforequests:InforequestEmail:type:APPLICANT_ACTION"
 msgstr "Applicant Action"
 
-#: apps/inforequests/models.py:348
+#: apps/inforequests/models.py:549
 msgid "inforequests:InforequestEmail:type:OBLIGEE_ACTION"
 msgstr "Obligee Action"
 
-#: apps/inforequests/models.py:349
+#: apps/inforequests/models.py:550
 msgid "inforequests:InforequestEmail:type:UNDECIDED"
 msgstr "Undecided"
 
-#: apps/inforequests/models.py:350
+#: apps/inforequests/models.py:551
 msgid "inforequests:InforequestEmail:type:UNRELATED"
 msgstr "Unrelated"
 
-#: apps/inforequests/models.py:351
+#: apps/inforequests/models.py:552
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
 msgstr "Unknown"
 
-#: apps/inforequests/models.py:666
+#: apps/inforequests/models.py:944
 msgid "inforequests:Action:type:REQUEST"
 msgstr "Request"
 
-#: apps/inforequests/models.py:667
+#: apps/inforequests/models.py:945
 msgid "inforequests:Action:type:CLARIFICATION_RESPONSE"
 msgstr "Clarification Response"
 
-#: apps/inforequests/models.py:668
+#: apps/inforequests/models.py:946
 msgid "inforequests:Action:type:APPEAL"
 msgstr "Appeal"
 
-#: apps/inforequests/models.py:670
+#: apps/inforequests/models.py:948
 msgid "inforequests:Action:type:CONFIRMATION"
 msgstr "Confirmation"
 
-#: apps/inforequests/models.py:671
+#: apps/inforequests/models.py:949
 msgid "inforequests:Action:type:EXTENSION"
 msgstr "Extension"
 
-#: apps/inforequests/models.py:672
+#: apps/inforequests/models.py:950
 msgid "inforequests:Action:type:ADVANCEMENT"
 msgstr "Advancement"
 
-#: apps/inforequests/models.py:673
+#: apps/inforequests/models.py:951
 msgid "inforequests:Action:type:CLARIFICATION_REQUEST"
 msgstr "Clarification Request"
 
-#: apps/inforequests/models.py:674
+#: apps/inforequests/models.py:952
 msgid "inforequests:Action:type:DISCLOSURE"
 msgstr "Disclosure"
 
-#: apps/inforequests/models.py:675
+#: apps/inforequests/models.py:953
 msgid "inforequests:Action:type:REFUSAL"
 msgstr "Refusal"
 
-#: apps/inforequests/models.py:676
+#: apps/inforequests/models.py:954
 msgid "inforequests:Action:type:AFFIRMATION"
 msgstr "Affirmation"
 
-#: apps/inforequests/models.py:677
+#: apps/inforequests/models.py:955
 msgid "inforequests:Action:type:REVERSION"
 msgstr "Reversion"
 
-#: apps/inforequests/models.py:678
+#: apps/inforequests/models.py:956
 msgid "inforequests:Action:type:REMANDMENT"
 msgstr "Remandment"
 
-#: apps/inforequests/models.py:680
+#: apps/inforequests/models.py:958
 msgid "inforequests:Action:type:ADVANCED_REQUEST"
 msgstr "Advanced Request"
 
-#: apps/inforequests/models.py:681
+#: apps/inforequests/models.py:959
 msgid "inforequests:Action:type:EXPIRATION"
 msgstr "Expiration"
 
-#: apps/inforequests/models.py:682
+#: apps/inforequests/models.py:960
 msgid "inforequests:Action:type:APPEAL_EXPIRATION"
 msgstr "Appeal Expiration"
 
-#: apps/inforequests/models.py:800
+#: apps/inforequests/models.py:1078
 msgid "inforequests:Action:disclosure_level:NONE"
 msgstr "No Disclosure at All"
 
-#: apps/inforequests/models.py:801
+#: apps/inforequests/models.py:1079
 msgid "inforequests:Action:disclosure_level:PARTIAL"
 msgstr "Partial Disclosure"
 
-#: apps/inforequests/models.py:802
+#: apps/inforequests/models.py:1080
 msgid "inforequests:Action:disclosure_level:FULL"
 msgstr "Full Disclosure"
 
-#: apps/inforequests/models.py:813
+#: apps/inforequests/models.py:1091
 msgid "inforequests:Action:refusal_reason:DOES_NOT_HAVE"
 msgstr "Does not Have Information"
 
-#: apps/inforequests/models.py:814
+#: apps/inforequests/models.py:1092
 msgid "inforequests:Action:refusal_reason:DOES_NOT_PROVIDE"
 msgstr "Does not Provide Information"
 
-#: apps/inforequests/models.py:815
+#: apps/inforequests/models.py:1093
 msgid "inforequests:Action:refusal_reason:DOES_NOT_CREATE"
 msgstr "Does not Create Information"
 
-#: apps/inforequests/models.py:816
+#: apps/inforequests/models.py:1094
 msgid "inforequests:Action:refusal_reason:COPYRIGHT"
 msgstr "Copyright Restriction"
 
-#: apps/inforequests/models.py:817
+#: apps/inforequests/models.py:1095
 msgid "inforequests:Action:refusal_reason:BUSINESS_SECRET"
 msgstr "Business Secret"
 
-#: apps/inforequests/models.py:818
+#: apps/inforequests/models.py:1096
 msgid "inforequests:Action:refusal_reason:PERSONAL"
 msgstr "Personal Information"
 
-#: apps/inforequests/models.py:819
+#: apps/inforequests/models.py:1097
 msgid "inforequests:Action:refusal_reason:CONFIDENTIAL"
 msgstr "Confidential Information"
 
-#: apps/inforequests/models.py:820
+#: apps/inforequests/models.py:1098
 msgid "inforequests:Action:refusal_reason:NO_REASON"
 msgstr "No Reason Specified"
 
-#: apps/inforequests/models.py:821
+#: apps/inforequests/models.py:1099
 msgid "inforequests:Action:refusal_reason:OTHER_REASON"
 msgstr "Other Reason"
 
@@ -514,7 +514,6 @@ msgid "inforequests:detail:heading"
 msgstr "Inforequest Detail"
 
 #: apps/inforequests/templates/inforequests/detail-main.html:32
-#| msgid "inforequests:detail:heading"
 msgid "inforequests:detail:history:heading"
 msgstr "Inforequest Detail"
 
@@ -917,7 +916,7 @@ msgstr ""
 msgid "^attachments/(?P<attachment_pk>\\d+)/$"
 msgstr ""
 
-#: apps/obligees/forms.py:70
+#: apps/obligees/forms.py:71
 msgid "obligees:ObligeeAutocompleteField:invalid_obligee_name"
 msgstr "Invalid obligee name. Select one form the menu."
 
