@@ -8,21 +8,9 @@ header { margin-bottom: 20px; }
 @media (min-width: 980px) { .modal.modal-large { width: 870px; margin-left: -435px; } }
 @media (min-width: 1200px) { .modal.modal-large { width: 1100px; margin-left: -550px; } }
 
-/* Naive workaround for responsive tall modals */
-@media (min-height: 650px) { .modal-body { max-height: 450px; } }
-@media (min-height: 700px) { .modal-body { max-height: 500px; } }
-@media (min-height: 750px) { .modal-body { max-height: 550px; } }
-@media (min-height: 800px) { .modal-body { max-height: 600px; } }
-@media (min-height: 850px) { .modal-body { max-height: 650px; } }
-@media (min-height: 900px) { .modal-body { max-height: 700px; } }
-@media (min-height: 950px) { .modal-body { max-height: 750px; } }
-@media (min-height: 1000px) { .modal-body { max-height: 800px; } }
-@media (min-width: 768px) and (min-height: 750px) { .modal-body { max-height: 450px; } }
-@media (min-width: 768px) and (min-height: 800px) { .modal-body { max-height: 500px; } }
-@media (min-width: 768px) and (min-height: 850px) { .modal-body { max-height: 550px; } }
-@media (min-width: 768px) and (min-height: 900px) { .modal-body { max-height: 600px; } }
-@media (min-width: 768px) and (min-height: 950px) { .modal-body { max-height: 650px; } }
-@media (min-width: 768px) and (min-height: 1000px) { .modal-body { max-height: 700px; } }
+/* Responsive tall modals */
+.modal-body { max-height: calc(100vh - 200px); overflow-y: auto;}
+@media (min-width: 768px) { .modal-body { max-height: calc(90vh - 230px); } }
 
 /* Bootstrap labels with links and close buttons */
 .label { vertical-align: middle; }
