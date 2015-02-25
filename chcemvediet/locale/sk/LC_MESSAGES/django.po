@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-05 14:44+0100\n"
+"POT-Creation-Date: 2015-02-19 20:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,69 +17,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: urls.py:22
-msgid "^about/"
-msgstr ""
-
-#: urls.py:23
-msgid "^obligees/"
-msgstr ""
-
-#: urls.py:24
-msgid "^inforequests/"
-msgstr ""
-
 #: apps/accounts/forms.py:9
 msgid "accounts:SignupForm:first_name:label"
-msgstr "First name"
+msgstr "Meno (krstné)"
 
 #: apps/accounts/forms.py:10
 msgid "accounts:SignupForm:first_name:placeholder"
-msgstr "First name"
+msgstr "Meno (krstné)"
 
 #: apps/accounts/forms.py:14
 msgid "accounts:SignupForm:last_name:label"
-msgstr "Last name"
+msgstr "Priezvisko"
 
 #: apps/accounts/forms.py:15
 msgid "accounts:SignupForm:last_name:placeholder"
-msgstr "Last name"
+msgstr "Priezvisko"
 
 #: apps/accounts/forms.py:19
 msgid "accounts:SignupForm:street:label"
-msgstr "Street"
+msgstr "Ulica"
 
 #: apps/accounts/forms.py:20
 msgid "accounts:SignupForm:street:placeholder"
-msgstr "Street"
+msgstr "Ulica"
 
 #: apps/accounts/forms.py:24
 msgid "accounts:SignupForm:city:label"
-msgstr "City"
+msgstr "Mesto"
 
 #: apps/accounts/forms.py:25
 msgid "accounts:SignupForm:city:placeholder"
-msgstr "City"
+msgstr "Mesto"
 
 #: apps/accounts/forms.py:29
 msgid "accounts:SignupForm:zip:label"
-msgstr "Zip"
+msgstr "PSČ"
 
 #: apps/accounts/forms.py:30
 msgid "accounts:SignupForm:zip:placeholder"
-msgstr "Zip"
-
-#: apps/accounts/urls.py:9
-msgid "^profile/$"
-msgstr ""
+msgstr "PSČ"
 
 #: apps/accounts/templates/accounts/profile.html:12
 msgid "accounts:profile:title"
-msgstr "User Profile"
+msgstr "Profil užívateľa"
 
 #: apps/accounts/templates/accounts/profile.html:15
 msgid "accounts:profile:heading"
-msgstr "User Profile"
+msgstr "Profil užívateľa"
 
 #: apps/accounts/templates/accounts/profile.html:17
 msgid "accounts:profile:email"
@@ -87,283 +71,746 @@ msgstr "E-mail"
 
 #: apps/accounts/templates/accounts/profile.html:21
 msgid "accounts:profile:street"
-msgstr "Street"
+msgstr "Ulica"
 
 #: apps/accounts/templates/accounts/profile.html:25
 msgid "accounts:profile:city"
-msgstr "City"
+msgstr "Mesto"
 
 #: apps/accounts/templates/accounts/profile.html:29
 msgid "accounts:profile:zip"
-msgstr "Zip"
+msgstr "PSČ"
 
 #: apps/accounts/templates/accounts/profile.html:33
 msgid "accounts:profile:change_password"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: apps/accounts/templates/accounts/profile.html:34
 msgid "accounts:profile:manage_emails"
-msgstr "Manage E-mails"
+msgstr "Spravovať e-maily"
 
 #: apps/accounts/templates/accounts/profile.html:35
 msgid "accounts:profile:manage_connections"
-msgstr "Manage Connections"
+msgstr "Spravovať pripojenia"
+
+#: apps/accounts/urls.py:9
+msgid "^profile/$"
+msgstr ""
 
 #: apps/inforequests/forms.py:26
 msgid "inforequests:InforequestForm:obligee:label"
-msgstr "Obligee"
+msgstr "Povinná osoba"
 
 #: apps/inforequests/forms.py:28
 msgid "inforequests:InforequestForm:obligee:placeholder"
-msgstr "Search Obligee"
+msgstr "Hľadať povinnú osobu"
 
 #: apps/inforequests/forms.py:37
 msgid "inforequests:InforequestForm:subject:label"
-msgstr "Subject"
+msgstr "Predmet"
 
 #: apps/inforequests/forms.py:40
 msgid "inforequests:InforequestForm:subject:placeholder"
-msgstr "Subject"
+msgstr "Predmet"
 
 #: apps/inforequests/forms.py:45
 msgid "inforequests:InforequestForm:content:label"
-msgstr "Request"
+msgstr "Žiadosť"
 
 #: apps/inforequests/forms.py:47
 msgid "inforequests:InforequestForm:content:placeholder"
-msgstr "Request"
+msgstr "Žiadosť"
 
 #: apps/inforequests/forms.py:52
 msgid "inforequests:InforequestForm:attachments:label"
-msgstr "Attachments"
+msgstr "Prílohy"
 
 #: apps/inforequests/forms.py:112
 msgid "inforequests:ActionAbstractForm:branch:label"
-msgstr "Obligee"
+msgstr "Povinná osoba"
 
 #: apps/inforequests/forms.py:163
 msgid "inforequests:EffectiveDateMixin:effective_date:label"
-msgstr "Effective Date"
+msgstr "Dátum, od ktorého sa počíta"
 
 #: apps/inforequests/forms.py:166
 msgid "inforequests:EffectiveDateMixin:effective_date:placeholder"
-msgstr "mm/dd/yyyy"
+msgstr "dd.mm.yyyy"
 
 #: apps/inforequests/forms.py:188
 msgid "inforequests:EffectiveDateMixin:older_than_previous_error"
-msgstr "May not be older than previous action."
+msgstr "Nesmie byť staršia, ako predošlé akcie."
 
 #: apps/inforequests/forms.py:190
 msgid "inforequests:EffectiveDateMixin:from_future_error"
-msgstr "May not be from future."
+msgstr "Nesmie byť z budúcnosti."
 
 #: apps/inforequests/forms.py:192
 msgid "inforequests:EffectiveDateMixin:older_than_month_error"
-msgstr "May not be older than one month."
+msgstr "Nesmie byť starší, ako 1 mesiac."
 
-#: apps/inforequests/forms.py:213
+#: apps/inforequests/forms.py:212
 msgid "inforequests:SubjectContentMixin:subject:label"
-msgstr "Subject"
+msgstr "Predmet"
 
-#: apps/inforequests/forms.py:216
+#: apps/inforequests/forms.py:215
 msgid "inforequests:SubjectContentMixin:subject:placeholder"
-msgstr "Subject"
+msgstr "Predmet"
 
-#: apps/inforequests/forms.py:221
+#: apps/inforequests/forms.py:220
 msgid "inforequests:SubjectContentMixin:content:label"
-msgstr "Content"
+msgstr "Obsah"
 
-#: apps/inforequests/forms.py:223
+#: apps/inforequests/forms.py:222
 msgid "inforequests:SubjectContentMixin:content:placeholder"
-msgstr "Content"
+msgstr "Obsah"
 
-#: apps/inforequests/forms.py:251
+#: apps/inforequests/forms.py:250
 msgid "inforequests:AttachmentsMixin:attachments:label"
-msgstr "Attachments"
+msgstr "Prílohy"
 
-#: apps/inforequests/forms.py:283
+#: apps/inforequests/forms.py:282
 msgid "inforequests:DeadlineMixin:deadline:label"
-msgstr "New Deadline"
+msgstr "Nová lehota"
 
-#: apps/inforequests/forms.py:288
+#: apps/inforequests/forms.py:287
 msgid "inforequests:DeadlineMixin:deadline:placeholder"
-msgstr "Deadline"
+msgstr "Lehota"
 
-#: apps/inforequests/forms.py:315
+#: apps/inforequests/forms.py:314
 msgid "inforequests:AdvancedToMixin:advanced_to_1:label"
-msgstr "Advanced To"
+msgstr "Postúpené pre"
 
-#: apps/inforequests/forms.py:317
+#: apps/inforequests/forms.py:316
 msgid "inforequests:AdvancedToMixin:advanced_to_1:placeholder"
-msgstr "Obligee"
+msgstr "Povinná osoba"
 
-#: apps/inforequests/forms.py:326
+#: apps/inforequests/forms.py:325
 msgid "inforequests:AdvancedToMixin:advanced_to_2:label"
 msgstr " "
 
-#: apps/inforequests/forms.py:329
+#: apps/inforequests/forms.py:328
 msgid "inforequests:AdvancedToMixin:advanced_to_2:placeholder"
-msgstr "Obligee"
+msgstr "Povinná osoba"
 
-#: apps/inforequests/forms.py:338
+#: apps/inforequests/forms.py:337
 msgid "inforequests:AdvancedToMixin:advanced_to_3:label"
 msgstr " "
 
-#: apps/inforequests/forms.py:341
+#: apps/inforequests/forms.py:340
 msgid "inforequests:AdvancedToMixin:advanced_to_3:placeholder"
-msgstr "Obligee"
+msgstr "Povinná osoba"
 
-#: apps/inforequests/forms.py:367
+#: apps/inforequests/forms.py:366
 msgid "inforequests:AdvancedToMixin:same_obligee_error"
-msgstr "May not advance to the same obligee."
+msgstr "Nemožno postúpiť tej istej inštitúcii."
 
-#: apps/inforequests/forms.py:371
+#: apps/inforequests/forms.py:370
 msgid "inforequests:AdvancedToMixin:duplicate_obligee_error"
-msgstr "May not advance twice to the same obligee."
+msgstr "Nemožno postúpiť dva krát tej istej inštitúcii."
 
-#: apps/inforequests/forms.py:416
+#: apps/inforequests/forms.py:414
 msgid "inforequests:DisclosureLevelMixin:disclosure_level:label"
-msgstr "Disclosure Level"
+msgstr "Miera sprístupnenia"
 
-#: apps/inforequests/forms.py:447
+#: apps/inforequests/forms.py:445
 msgid "inforequests:RefusalReasonMixin:refusal_reason:label"
-msgstr "Refusal Reason"
+msgstr "Dôvod odmietnutia"
 
-#: apps/inforequests/forms.py:562
+#: apps/inforequests/forms.py:560
 msgid "inforequests:ExtendDeadlineForm:extension:label"
-msgstr "Deadline Extension"
+msgstr "Predĺženie lehoty"
 
-#: apps/inforequests/forms.py:567
+#: apps/inforequests/forms.py:565
 msgid "inforequests:ExtendDeadlineForm:extension:placeholder"
-msgstr "Working Days"
+msgstr "pracovných dní"
 
-#: apps/inforequests/models.py:335
+#: apps/inforequests/models.py:346
 msgid "inforequests:InforequestEmail:type:APPLICANT_ACTION"
-msgstr "Applicant Action"
+msgstr "Úkon žiadateľa"
 
-#: apps/inforequests/models.py:337
+#: apps/inforequests/models.py:348
 msgid "inforequests:InforequestEmail:type:OBLIGEE_ACTION"
-msgstr "Obligee Action"
+msgstr "Úkon inštitúcie"
 
-#: apps/inforequests/models.py:338
+#: apps/inforequests/models.py:349
 msgid "inforequests:InforequestEmail:type:UNDECIDED"
-msgstr "Undecided"
+msgstr "Nerozhodnuté"
 
-#: apps/inforequests/models.py:339
+#: apps/inforequests/models.py:350
 msgid "inforequests:InforequestEmail:type:UNRELATED"
-msgstr "Unrelated"
+msgstr "Nesúvisiace"
 
-#: apps/inforequests/models.py:340
+#: apps/inforequests/models.py:351
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
-msgstr "Unknown"
-
-#: apps/inforequests/models.py:655
-msgid "inforequests:Action:type:REQUEST"
-msgstr "Request"
-
-#: apps/inforequests/models.py:656
-msgid "inforequests:Action:type:CLARIFICATION_RESPONSE"
-msgstr "Clarification Response"
-
-#: apps/inforequests/models.py:657
-msgid "inforequests:Action:type:APPEAL"
-msgstr "Appeal"
-
-#: apps/inforequests/models.py:659
-msgid "inforequests:Action:type:CONFIRMATION"
-msgstr "Confirmation"
-
-#: apps/inforequests/models.py:660
-msgid "inforequests:Action:type:EXTENSION"
-msgstr "Extension"
-
-#: apps/inforequests/models.py:661
-msgid "inforequests:Action:type:ADVANCEMENT"
-msgstr "Advancement"
-
-#: apps/inforequests/models.py:662
-msgid "inforequests:Action:type:CLARIFICATION_REQUEST"
-msgstr "Clarification Request"
-
-#: apps/inforequests/models.py:663
-msgid "inforequests:Action:type:DISCLOSURE"
-msgstr "Disclosure"
-
-#: apps/inforequests/models.py:664
-msgid "inforequests:Action:type:REFUSAL"
-msgstr "Refusal"
-
-#: apps/inforequests/models.py:665
-msgid "inforequests:Action:type:AFFIRMATION"
-msgstr "Affirmation"
+msgstr "Neznáme"
 
 #: apps/inforequests/models.py:666
-msgid "inforequests:Action:type:REVERSION"
-msgstr "Reversion"
+msgid "inforequests:Action:type:REQUEST"
+msgstr "Žiadosť"
 
 #: apps/inforequests/models.py:667
-msgid "inforequests:Action:type:REMANDMENT"
-msgstr "Remandment"
+msgid "inforequests:Action:type:CLARIFICATION_RESPONSE"
+msgstr "Odpoveď na výzvu na doplnenie"
 
-#: apps/inforequests/models.py:669
-msgid "inforequests:Action:type:ADVANCED_REQUEST"
-msgstr "Advanced Request"
+#: apps/inforequests/models.py:668
+msgid "inforequests:Action:type:APPEAL"
+msgstr "Odvolanie"
 
 #: apps/inforequests/models.py:670
-msgid "inforequests:Action:type:EXPIRATION"
-msgstr "Expiration"
+msgid "inforequests:Action:type:CONFIRMATION"
+msgstr "Potvrdenie prijatia"
 
 #: apps/inforequests/models.py:671
+msgid "inforequests:Action:type:EXTENSION"
+msgstr "Predĺženie lehoty"
+
+#: apps/inforequests/models.py:672
+msgid "inforequests:Action:type:ADVANCEMENT"
+msgstr "Postúpenie"
+
+#: apps/inforequests/models.py:673
+msgid "inforequests:Action:type:CLARIFICATION_REQUEST"
+msgstr "Výzva na doplnenie žiadosti"
+
+#: apps/inforequests/models.py:674
+msgid "inforequests:Action:type:DISCLOSURE"
+msgstr "Sprístupnenie informácií"
+
+#: apps/inforequests/models.py:675
+msgid "inforequests:Action:type:REFUSAL"
+msgstr "Rozhodnutie o odmietnutí"
+
+#: apps/inforequests/models.py:676
+msgid "inforequests:Action:type:AFFIRMATION"
+msgstr "Potvrdenie rozhodnutia"
+
+#: apps/inforequests/models.py:677
+msgid "inforequests:Action:type:REVERSION"
+msgstr "Zrušenie rozhodnutia"
+
+#: apps/inforequests/models.py:678
+msgid "inforequests:Action:type:REMANDMENT"
+msgstr "Vrátenie rozhodnutia"
+
+#: apps/inforequests/models.py:680
+msgid "inforequests:Action:type:ADVANCED_REQUEST"
+msgstr "Postúpenie žiadosti"
+
+#: apps/inforequests/models.py:681
+msgid "inforequests:Action:type:EXPIRATION"
+msgstr "Vypršanie lehoty"
+
+#: apps/inforequests/models.py:682
 msgid "inforequests:Action:type:APPEAL_EXPIRATION"
-msgstr "Appeal Expiration"
+msgstr "Vypršanie lehoty na odvolanie"
 
-#: apps/inforequests/models.py:789
+#: apps/inforequests/models.py:800
 msgid "inforequests:Action:disclosure_level:NONE"
-msgstr "No Disclosure at All"
+msgstr "Nič nebolo spístupnené"
 
-#: apps/inforequests/models.py:790
+#: apps/inforequests/models.py:801
 msgid "inforequests:Action:disclosure_level:PARTIAL"
-msgstr "Partial Disclosure"
-
-#: apps/inforequests/models.py:791
-msgid "inforequests:Action:disclosure_level:FULL"
-msgstr "Full Disclosure"
+msgstr "Čiastočné sprístupnenie"
 
 #: apps/inforequests/models.py:802
+msgid "inforequests:Action:disclosure_level:FULL"
+msgstr "Úplné sprístupnenie"
+
+#: apps/inforequests/models.py:813
 msgid "inforequests:Action:refusal_reason:DOES_NOT_HAVE"
-msgstr "Does not Have Information"
+msgstr "Nemá informáciu"
 
-#: apps/inforequests/models.py:803
+#: apps/inforequests/models.py:814
 msgid "inforequests:Action:refusal_reason:DOES_NOT_PROVIDE"
-msgstr "Does not Provide Information"
+msgstr "Neposkytuje informáciu"
 
-#: apps/inforequests/models.py:804
+#: apps/inforequests/models.py:815
 msgid "inforequests:Action:refusal_reason:DOES_NOT_CREATE"
-msgstr "Does not Create Information"
+msgstr "Nevytvára informáciu"
 
-#: apps/inforequests/models.py:805
+#: apps/inforequests/models.py:816
 msgid "inforequests:Action:refusal_reason:COPYRIGHT"
-msgstr "Copyright Restriction"
+msgstr "Autorské právo"
 
-#: apps/inforequests/models.py:806
+#: apps/inforequests/models.py:817
 msgid "inforequests:Action:refusal_reason:BUSINESS_SECRET"
-msgstr "Business Secret"
+msgstr "Obchodné tajomstvo"
 
-#: apps/inforequests/models.py:807
+#: apps/inforequests/models.py:818
 msgid "inforequests:Action:refusal_reason:PERSONAL"
-msgstr "Personal Information"
+msgstr "Ochrana osobných informácií"
 
-#: apps/inforequests/models.py:808
+#: apps/inforequests/models.py:819
 msgid "inforequests:Action:refusal_reason:CONFIDENTIAL"
-msgstr "Confidential Information"
+msgstr "Utajované skutočnosti"
 
-#: apps/inforequests/models.py:809
+#: apps/inforequests/models.py:820
 msgid "inforequests:Action:refusal_reason:NO_REASON"
-msgstr "No Reason Specified"
+msgstr "Bez udania dôvodu"
 
-#: apps/inforequests/models.py:810
+#: apps/inforequests/models.py:821
 msgid "inforequests:Action:refusal_reason:OTHER_REASON"
-msgstr "Other Reason"
+msgstr "Iná príčina"
+
+#: apps/inforequests/templates/inforequests/create.html:13
+msgid "inforequests:create:title"
+msgstr "Nová infožiadosť"
+
+#: apps/inforequests/templates/inforequests/create.html:16
+msgid "inforequests:create:heding"
+msgstr "Nová infožiadosť"
+
+#: apps/inforequests/templates/inforequests/create.html:21
+msgid "inforequests:create:applicant_label"
+msgstr "Žiadateľ"
+
+#: apps/inforequests/templates/inforequests/create.html:32
+msgid "inforequests:create:submit"
+msgstr "Odoslať žiadosť"
+
+#: apps/inforequests/templates/inforequests/create.html:36
+msgid "inforequests:create:draft"
+msgstr "Uložť ako rozpracované"
+
+#: apps/inforequests/templates/inforequests/create.html:40
+msgid "inforequests:create:cancel"
+msgstr "Zrušiť"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:18
+msgid "inforequests:detail:action:effective_date"
+msgstr "Dátum, od ktorého sa počíta lehota"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:31
+msgid "inforequests:detail:action:email_from"
+msgstr "Odosielateľ"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:35
+msgid "inforequests:detail:action:email_to"
+msgstr "Adresát"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:57
+msgid "inforequests:detail:action:subject"
+msgstr "Predmet"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:63
+msgid "inforequests:detail:action:disclosure_level"
+msgstr "Miera sprístupnenia"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:69
+msgid "inforequests:detail:action:refusal_reason"
+msgstr "Dôvod odmietnutia"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:75
+msgid "inforequests:detail:action:attachments"
+msgstr "Prílohy"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:91
+msgid "inforequests:detail:action:extend_deadline"
+msgstr "Lehota uplynula, predĺžte ju"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:97
+msgid "inforequests:detail:action:advanced_to"
+msgstr "Nová povinná osoba"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:12
+msgid "inforequests:detail:add_smail:heading"
+msgstr "Pridaj list, ktorý prišiel poštou"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:17
+msgid "inforequests:detail:add_smail:confirmation"
+msgstr "Potvrdenie prijatia"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:18
+msgid "inforequests:detail:add_smail:extension"
+msgstr "Predĺženie lehoty"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:19
+msgid "inforequests:detail:add_smail:advancement"
+msgstr "Postúpenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:20
+msgid "inforequests:detail:add_smail:clarification_request"
+msgstr "Výzva na doplnenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:21
+msgid "inforequests:detail:add_smail:disclosure"
+msgstr "Sprístupnenie"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:22
+msgid "inforequests:detail:add_smail:refusal"
+msgstr "Rozhodnutie o odmietnutí"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:23
+msgid "inforequests:detail:add_smail:affirmation"
+msgstr "Potvrdenie rozhodnutia o odmietnutí"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:24
+msgid "inforequests:detail:add_smail:reversion"
+msgstr "Zrušenie rozhodnutia o odmietnutí"
+
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:25
+msgid "inforequests:detail:add_smail:remandment"
+msgstr "Vrátenie rozhodnutia o odmietnutí"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:13
+msgid "inforequests:detail:decide:title"
+msgstr "Došlé nerozhodnuté emaily"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:19
+msgid "inforequests:detail:decide:confirmation"
+msgstr "Potvrdenie prijatia"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:20
+msgid "inforequests:detail:decide:extension"
+msgstr "Predĺženie"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:21
+msgid "inforequests:detail:decide:advancement"
+msgstr "Postúpenie"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:22
+msgid "inforequests:detail:decide:clarification_request"
+msgstr "Výzva na doplnenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:23
+msgid "inforequests:detail:decide:disclosure"
+msgstr "Sprístupnenie"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:24
+msgid "inforequests:detail:decide:refusal"
+msgstr "Rozhodnutie o odmietnutí"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:30
+msgid "inforequests:detail:decide:unrelated"
+msgstr "Nesúvisiaci email, alebo spam"
+
+#: apps/inforequests/templates/inforequests/detail-decide.html:33
+msgid "inforequests:detail:decide:unknown"
+msgstr "Neviem a potrebujem pomoc"
+
+#: apps/inforequests/templates/inforequests/detail-email.html:14
+msgid "inforequests:detail:email:subject"
+msgstr "Predmet"
+
+#: apps/inforequests/templates/inforequests/detail-email.html:18
+msgid "inforequests:detail:email:from"
+msgstr "Odosielateľ"
+
+#: apps/inforequests/templates/inforequests/detail-email.html:22
+msgid "inforequests:detail:email:to"
+msgstr "Adresát"
+
+#: apps/inforequests/templates/inforequests/detail-email.html:36
+msgid "inforequests:detail:email:processed"
+msgstr "Prijaté"
+
+#: apps/inforequests/templates/inforequests/detail-email.html:41
+msgid "inforequests:detail:email:attachments"
+msgstr "Prílohy"
+
+#: apps/inforequests/templates/inforequests/detail-main.html:11
+msgid "inforequests:detail:heading"
+msgstr "Detail infožiadosti"
+
+#: apps/inforequests/templates/inforequests/detail-main.html:32
+msgid "inforequests:detail:history:heading"
+msgstr "Detail infožiadosti"
+
+#: apps/inforequests/templates/inforequests/detail-new_action.html:12
+msgid "inforequests:detail:new_action:title"
+msgstr "Čo môžete vykonať"
+
+#: apps/inforequests/templates/inforequests/detail-new_action.html:17
+msgid "inforequests:detail:new_action:clarification_response"
+msgstr "Odpoveď na výzvu na doplnenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/detail-new_action.html:18
+msgid "inforequests:detail:new_action:appeal"
+msgstr "Odvolanie"
+
+#: apps/inforequests/templates/inforequests/detail-request.html:12
+msgid "inforequests:detail:request:applicant"
+msgstr "Žiadateľ"
+
+#: apps/inforequests/templates/inforequests/detail-request.html:20
+msgid "inforequests:detail:request:obligee"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/templates/inforequests/detail-request.html:28
+msgid "inforequests:detail:request:unique_email"
+msgstr "Unikátna emailová adresa"
+
+#: apps/inforequests/templates/inforequests/detail-request.html:32
+msgid "inforequests:detail:request:submission_date"
+msgstr "Dátum odoslania"
+
+#: apps/inforequests/templates/inforequests/detail-undecided.html:14
+msgid "inforequests:detail:undecided:show"
+msgstr "Ukázať"
+
+#: apps/inforequests/templates/inforequests/detail.html:12
+msgid "inforequests:detail:title"
+msgstr "Detail infožiadosti"
+
+#: apps/inforequests/templates/inforequests/index.html:14
+msgid "inforequests:index:title"
+msgstr "Odoslané infožiadosti"
+
+#: apps/inforequests/templates/inforequests/index.html:17
+msgid "inforequests:index:heading"
+msgstr "Odoslané infožiadosti"
+
+#: apps/inforequests/templates/inforequests/index.html:23
+msgid "inforequests:index:obligee"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/templates/inforequests/index.html:25
+msgid "inforequests:index:submission_date"
+msgstr "Dátum odoslania"
+
+#: apps/inforequests/templates/inforequests/index.html:35
+msgid "inforequests:index:new_mail"
+msgstr "Nový email"
+
+#: apps/inforequests/templates/inforequests/index.html:48
+msgid "inforequests:index:create"
+msgstr "Nová infožiadosť"
+
+#: apps/inforequests/templates/inforequests/index.html:51
+msgid "inforequests:index:drafts:heading"
+msgstr "Rozpracované infožiadosti"
+
+#: apps/inforequests/templates/inforequests/index.html:56
+msgid "inforequests:index:drafts:obligee"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/templates/inforequests/index.html:66
+msgid "inforequests:index:drafts:empty_obligee"
+msgstr "(neboli vybrané žiadne inštitúcie)"
+
+#: apps/inforequests/templates/inforequests/index.html:69
+msgid "inforequests:index:drafts:create_from_draft"
+msgstr "Editovať a odoslať"
+
+#: apps/inforequests/templates/inforequests/index.html:71
+msgid "inforequests:index:draft:delete:confirm"
+msgstr "Chcete naozaj vymazať túto rozpracovanú žiadosť?"
+
+#: apps/inforequests/templates/inforequests/index.html:71
+msgid "inforequests:index:draft:delete"
+msgstr "Zmazať"
+
+#: apps/inforequests/templates/inforequests/index.html:79
+msgid "inforequests:index:closed:heading"
+msgstr "Uzavreté infožiadosti"
+
+#: apps/inforequests/templates/inforequests/index.html:84
+msgid "inforequests:index:closed:obligee"
+msgstr "Povinná osoba"
+
+#: apps/inforequests/templates/inforequests/index.html:85
+msgid "inforequests:index:closed:submission_date"
+msgstr "Dátum odoslania Date"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-email.html:18
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:17
+msgid "inforequests:modals:advancement:heading"
+msgstr "Postúpenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-email.html:27
+msgid "inforequests:modals:advancement:decide_email"
+msgstr "Označ ako postúpenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-email.html:28
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:21
+#: apps/inforequests/templates/inforequests/modals/appeal.html:28
+#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:28
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:29
+#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:28
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:28
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:29
+#: apps/inforequests/templates/inforequests/modals/extension-email.html:28
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/print.html:46
+#: apps/inforequests/templates/inforequests/modals/refusal-email.html:28
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:28
+#: apps/inforequests/templates/inforequests/modals/unknown-email.html:24
+#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:24
+msgid "inforequests:modals:close"
+msgstr "Zavrieť"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:26
+msgid "inforequests:modals:advancement:add_smail"
+msgstr "Pridať postúpenie"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/appeal.html:27
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:28
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:27
+msgid "inforequests:modals:draft"
+msgstr "Uložiť ako rozpracované"
+
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:17
+msgid "inforequests:modals:affirmation:heading"
+msgstr "Potvrdenie rozhodnutia"
+
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:26
+msgid "inforequests:modals:affirmation:add_smail"
+msgstr "Pridať potvrdenie rozhodnutia"
+
+#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:14
+msgid "inforequests:modals:ajax_fail:heading"
+msgstr "Niečo sa pokazilo"
+
+#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:20
+msgid "inforequests:modals:ajax_fail:reload"
+msgstr "Obnoviť stránku"
+
+#: apps/inforequests/templates/inforequests/modals/appeal.html:17
+msgid "inforequests:modals:appeal:heading"
+msgstr "Odvolanie"
+
+#: apps/inforequests/templates/inforequests/modals/appeal.html:26
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:27
+msgid "inforequests:modals:print"
+msgstr "Vytlačiť a poslať obyčajným listom"
+
+#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:18
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:17
+msgid "inforequests:modals:clarification_request:heading"
+msgstr "Výzva na doplnenie žiadosti "
+
+#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:27
+msgid "inforequests:modals:clarification_request:decide_email"
+msgstr "Označiť ako Výzva na doplnenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:26
+msgid "inforequests:modals:clarification_request:add_smail"
+msgstr "Pridať Výzvu na doplnenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:17
+msgid "inforequests:modals:clarification_response:heading"
+msgstr "Odpoveď na výzvu na doplnenie žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:26
+msgid "inforequests:modals:email"
+msgstr "Poslať emailom"
+
+#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:18
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:17
+msgid "inforequests:modals:confirmation:heading"
+msgstr "Potvrdenie prijatia"
+
+#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:27
+msgid "inforequests:modals:confirmation:decide_email"
+msgstr "Označiť ako potvrdenie prijatia žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:26
+msgid "inforequests:modals:confirmation:add_smail"
+msgstr "Pridať potvrdenie prijatia žiadosti"
+
+#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:18
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:17
+msgid "inforequests:modals:disclosure:heading"
+msgstr "Sprístupnenie informácie"
+
+#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:27
+msgid "inforequests:modals:disclosure:decide_email"
+msgstr "Označiť ako Sprístupnenie informácie"
+
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:26
+msgid "inforequests:modals:disclosure:add_smail"
+msgstr "Pridať Sprístupnenie informácie"
+
+#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:19
+msgid "inforequests:modals:extend-deadline:heading"
+msgstr "Oznámenie o predĺžení lehoty"
+
+#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:28
+msgid "inforequests:modals:extend-deadline:extend"
+msgstr "Oznámenie o predĺžení lehoty"
+
+#: apps/inforequests/templates/inforequests/modals/extension-email.html:18
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:17
+msgid "inforequests:modals:extension:heading"
+msgstr "Oznámenie o predĺžení lehoty"
+
+#: apps/inforequests/templates/inforequests/modals/extension-email.html:27
+msgid "inforequests:modals:extension:decide_email"
+msgstr "Označiť ako oznámenie o predĺžení lehoty"
+
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:26
+msgid "inforequests:modals:extension:add_smail"
+msgstr "Pridať oznámenie o predĺžení lehoty"
+
+#: apps/inforequests/templates/inforequests/modals/print.html:15
+#, python-format
+msgid "inforequests:modals:print:heading %(action_name)s"
+msgstr "Vytlačiť %(action_name)s"
+
+#: apps/inforequests/templates/inforequests/modals/print.html:45
+msgid "inforequests:modals:print:print"
+msgstr "Tlačiť"
+
+#: apps/inforequests/templates/inforequests/modals/refusal-email.html:18
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:17
+msgid "inforequests:modals:refusal:heading"
+msgstr "Rozhodnutie o nesprístupnení informácie"
+
+#: apps/inforequests/templates/inforequests/modals/refusal-email.html:27
+msgid "inforequests:modals:refusal:decide_email"
+msgstr "Označiť ako Rozhodnutie o nesprístupnení informácie"
+
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:26
+msgid "inforequests:modals:refusal:add_smail"
+msgstr "Pridať Rozhodnutie o nesprístupnení informácie"
+
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:17
+msgid "inforequests:modals:remandment:heading"
+msgstr "Pridať rozhodnutie, ktorým sa zrušuje predošlé rozhodnutie"
+
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:26
+msgid "inforequests:modals:remandment:add_smail"
+msgstr "Pridať rozhodnutie, ktorým sa zrušuje predošlé rozhodnutie"
+
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:17
+msgid "inforequests:modals:reversion:heading"
+msgstr "Pridať rozhodnutie, ktorým sa vec vracia na ďalšie konanie"
+
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:26
+msgid "inforequests:modals:reversion:add_smail"
+msgstr "Pridať rozhodnutie, ktorým sa vec vracia na ďalšie konanie"
+
+#: apps/inforequests/templates/inforequests/modals/unknown-email.html:17
+msgid "inforequests:modals:unknown:heading"
+msgstr "Neviem, čo znamená tento email"
+
+#: apps/inforequests/templates/inforequests/modals/unknown-email.html:23
+msgid "inforequests:modals:unknown:decide_email"
+msgstr "Požiadať o pomoc administrátora"
+
+#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:17
+msgid "inforequests:modals:unrelated:heading"
+msgstr "Nesúvisiaci email"
+
+#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:23
+msgid "inforequests:modals:unrelated:decide_email"
+msgstr "Označiť ako Nesúvisiaci email"
 
 #: apps/inforequests/urls.py:10
 msgid "^create/$"
@@ -469,488 +916,33 @@ msgstr ""
 msgid "^attachments/(?P<attachment_pk>\\d+)/$"
 msgstr ""
 
-#: apps/inforequests/templates/inforequests/create.html:13
-msgid "inforequests:create:title"
-msgstr "New Inforequest"
-
-#: apps/inforequests/templates/inforequests/create.html:16
-msgid "inforequests:create:heding"
-msgstr "New Inforequest"
-
-#: apps/inforequests/templates/inforequests/create.html:21
-msgid "inforequests:create:applicant_label"
-msgstr "Applicant"
-
-#: apps/inforequests/templates/inforequests/create.html:32
-msgid "inforequests:create:submit"
-msgstr "Submit Request"
-
-#: apps/inforequests/templates/inforequests/create.html:36
-msgid "inforequests:create:draft"
-msgstr "Save as Draft"
-
-#: apps/inforequests/templates/inforequests/create.html:40
-msgid "inforequests:create:cancel"
-msgstr "Cancel"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:18
-msgid "inforequests:detail:action:effective_date"
-msgstr "Effective Date"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:31
-msgid "inforequests:detail:action:email_from"
-msgstr "From"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:35
-msgid "inforequests:detail:action:email_to"
-msgstr "To"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:57
-msgid "inforequests:detail:action:subject"
-msgstr "Subject"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:63
-msgid "inforequests:detail:action:disclosure_level"
-msgstr "Disclosure Level"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:69
-msgid "inforequests:detail:action:refusal_reason"
-msgstr "Refusal Reason"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:75
-msgid "inforequests:detail:action:attachments"
-msgstr "Attachments"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:91
-msgid "inforequests:detail:action:extend_deadline"
-msgstr "Deadline is Missed, Extend it"
-
-#: apps/inforequests/templates/inforequests/detail-action.html:97
-msgid "inforequests:detail:action:advanced_to"
-msgstr "New Obligee"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:12
-msgid "inforequests:detail:add_smail:heading"
-msgstr "Add Received Regular Mail"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:17
-msgid "inforequests:detail:add_smail:confirmation"
-msgstr "Confirmation"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:18
-msgid "inforequests:detail:add_smail:extension"
-msgstr "Extension"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:19
-msgid "inforequests:detail:add_smail:advancement"
-msgstr "Advancement"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:20
-msgid "inforequests:detail:add_smail:clarification_request"
-msgstr "Clarification Request"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:21
-msgid "inforequests:detail:add_smail:disclosure"
-msgstr "Disclosure"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:22
-msgid "inforequests:detail:add_smail:refusal"
-msgstr "Refusal"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:23
-msgid "inforequests:detail:add_smail:affirmation"
-msgstr "Affirmation"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:24
-msgid "inforequests:detail:add_smail:reversion"
-msgstr "Reversion"
-
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:25
-msgid "inforequests:detail:add_smail:remandment"
-msgstr "Remandment"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:13
-msgid "inforequests:detail:decide:title"
-msgstr "Undecided Received E-mail"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:19
-msgid "inforequests:detail:decide:confirmation"
-msgstr "Confirmation"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:20
-msgid "inforequests:detail:decide:extension"
-msgstr "Extension"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:21
-msgid "inforequests:detail:decide:advancement"
-msgstr "Advancement"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:22
-msgid "inforequests:detail:decide:clarification_request"
-msgstr "Clarification Request"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:23
-msgid "inforequests:detail:decide:disclosure"
-msgstr "Disclosure"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:24
-msgid "inforequests:detail:decide:refusal"
-msgstr "Refusal"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:30
-msgid "inforequests:detail:decide:unrelated"
-msgstr "Unrelated e-mail, or SPAM"
-
-#: apps/inforequests/templates/inforequests/detail-decide.html:33
-msgid "inforequests:detail:decide:unknown"
-msgstr "I don't know"
-
-#: apps/inforequests/templates/inforequests/detail-email.html:14
-msgid "inforequests:detail:email:subject"
-msgstr "Subject"
-
-#: apps/inforequests/templates/inforequests/detail-email.html:18
-msgid "inforequests:detail:email:from"
-msgstr "From"
-
-#: apps/inforequests/templates/inforequests/detail-email.html:22
-msgid "inforequests:detail:email:to"
-msgstr "To"
-
-#: apps/inforequests/templates/inforequests/detail-email.html:36
-msgid "inforequests:detail:email:processed"
-msgstr "Received"
-
-#: apps/inforequests/templates/inforequests/detail-email.html:41
-msgid "inforequests:detail:email:attachments"
-msgstr "Attachments"
-
-#: apps/inforequests/templates/inforequests/detail-main.html:11
-msgid "inforequests:detail:heading"
-msgstr "Inforequest Detail"
-
-#: apps/inforequests/templates/inforequests/detail-new_action.html:12
-msgid "inforequests:detail:new_action:title"
-msgstr "What You Can Do"
-
-#: apps/inforequests/templates/inforequests/detail-new_action.html:17
-msgid "inforequests:detail:new_action:clarification_response"
-msgstr "Clarification Response"
-
-#: apps/inforequests/templates/inforequests/detail-new_action.html:18
-msgid "inforequests:detail:new_action:appeal"
-msgstr "Appeal"
-
-#: apps/inforequests/templates/inforequests/detail-request.html:12
-msgid "inforequests:detail:request:applicant"
-msgstr "Applicant"
-
-#: apps/inforequests/templates/inforequests/detail-request.html:20
-msgid "inforequests:detail:request:obligee"
-msgstr "Obligee"
-
-#: apps/inforequests/templates/inforequests/detail-request.html:28
-msgid "inforequests:detail:request:unique_email"
-msgstr "Unique E-mail"
-
-#: apps/inforequests/templates/inforequests/detail-request.html:32
-msgid "inforequests:detail:request:submission_date"
-msgstr "Submission Date"
-
-#: apps/inforequests/templates/inforequests/detail-undecided.html:14
-msgid "inforequests:detail:undecided:show"
-msgstr "Show them"
-
-#: apps/inforequests/templates/inforequests/detail.html:12
-msgid "inforequests:detail:title"
-msgstr "Inforequest Detail"
-
-#: apps/inforequests/templates/inforequests/index.html:14
-msgid "inforequests:index:title"
-msgstr "Submitted Inforequests"
-
-#: apps/inforequests/templates/inforequests/index.html:17
-msgid "inforequests:index:heading"
-msgstr "Submitted Inforequests"
-
-#: apps/inforequests/templates/inforequests/index.html:23
-msgid "inforequests:index:obligee"
-msgstr "Obligee"
-
-#: apps/inforequests/templates/inforequests/index.html:25
-msgid "inforequests:index:submission_date"
-msgstr "Submission Date"
-
-#: apps/inforequests/templates/inforequests/index.html:35
-msgid "inforequests:index:new_mail"
-msgstr "New E-mail"
-
-#: apps/inforequests/templates/inforequests/index.html:48
-msgid "inforequests:index:create"
-msgstr "New Inforequest"
-
-#: apps/inforequests/templates/inforequests/index.html:51
-msgid "inforequests:index:drafts:heading"
-msgstr "Inforequest Drafts"
-
-#: apps/inforequests/templates/inforequests/index.html:56
-msgid "inforequests:index:drafts:obligee"
-msgstr "Obligee"
-
-#: apps/inforequests/templates/inforequests/index.html:66
-msgid "inforequests:index:drafts:empty_obligee"
-msgstr "(no obligee selected)"
-
-#: apps/inforequests/templates/inforequests/index.html:69
-msgid "inforequests:index:drafts:create_from_draft"
-msgstr "Edit and Submit"
-
-#: apps/inforequests/templates/inforequests/index.html:71
-msgid "inforequests:index:draft:delete:confirm"
-msgstr "Are you sure you want to delete this draft?"
-
-#: apps/inforequests/templates/inforequests/index.html:71
-msgid "inforequests:index:draft:delete"
-msgstr "Delete"
-
-#: apps/inforequests/templates/inforequests/index.html:79
-msgid "inforequests:index:closed:heading"
-msgstr "Closed Inforequests"
-
-#: apps/inforequests/templates/inforequests/index.html:84
-msgid "inforequests:index:closed:obligee"
-msgstr "Obligee"
-
-#: apps/inforequests/templates/inforequests/index.html:85
-msgid "inforequests:index:closed:submission_date"
-msgstr "Submission Date"
-
-#: apps/inforequests/templates/inforequests/modals/advancement-email.html:18
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:17
-msgid "inforequests:modals:advancement:heading"
-msgstr "Inforequest Advancement"
-
-#: apps/inforequests/templates/inforequests/modals/advancement-email.html:27
-msgid "inforequests:modals:advancement:decide_email"
-msgstr "Mark as Advancement"
-
-#: apps/inforequests/templates/inforequests/modals/advancement-email.html:28
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:21
-#: apps/inforequests/templates/inforequests/modals/appeal.html:28
-#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:28
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:29
-#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:28
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:28
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:29
-#: apps/inforequests/templates/inforequests/modals/extension-email.html:28
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/print.html:46
-#: apps/inforequests/templates/inforequests/modals/refusal-email.html:28
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/unknown-email.html:24
-#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:24
-msgid "inforequests:modals:close"
-msgstr "Close"
-
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:26
-msgid "inforequests:modals:advancement:add_smail"
-msgstr "Add an Advancement"
-
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/appeal.html:27
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:28
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:27
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:27
-msgid "inforequests:modals:draft"
-msgstr "Save as Draft"
-
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:17
-msgid "inforequests:modals:affirmation:heading"
-msgstr "Affirmation"
-
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:26
-msgid "inforequests:modals:affirmation:add_smail"
-msgstr "Add an Affirmation"
-
-#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:14
-msgid "inforequests:modals:ajax_fail:heading"
-msgstr "Something Went Wrong"
-
-#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:20
-msgid "inforequests:modals:ajax_fail:reload"
-msgstr "Reload Page"
-
-#: apps/inforequests/templates/inforequests/modals/appeal.html:17
-msgid "inforequests:modals:appeal:heading"
-msgstr "Appeal"
-
-#: apps/inforequests/templates/inforequests/modals/appeal.html:26
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:27
-msgid "inforequests:modals:print"
-msgstr "Print and Send by Regular Mail"
-
-#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:18
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:17
-msgid "inforequests:modals:clarification_request:heading"
-msgstr "Clarification Request"
-
-#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:27
-msgid "inforequests:modals:clarification_request:decide_email"
-msgstr "Mark as Clarification Request"
-
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:26
-msgid "inforequests:modals:clarification_request:add_smail"
-msgstr "Add an Clarification Request"
-
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:17
-msgid "inforequests:modals:clarification_response:heading"
-msgstr "Clarification Response"
-
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:26
-msgid "inforequests:modals:email"
-msgstr "Send by E-mail"
-
-#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:18
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:17
-msgid "inforequests:modals:confirmation:heading"
-msgstr "Confirmation"
-
-#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:27
-msgid "inforequests:modals:confirmation:decide_email"
-msgstr "Mark as Inforequest Confirmation"
-
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:26
-msgid "inforequests:modals:confirmation:add_smail"
-msgstr "Add an Inforequest Confirmation"
-
-#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:18
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:17
-msgid "inforequests:modals:disclosure:heading"
-msgstr "Information Disclosure"
-
-#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:27
-msgid "inforequests:modals:disclosure:decide_email"
-msgstr "Mark as Information Disclosure"
-
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:26
-msgid "inforequests:modals:disclosure:add_smail"
-msgstr "Add an Information Disclosure"
-
-#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:19
-msgid "inforequests:modals:extend-deadline:heading"
-msgstr "Deadline Extension"
-
-#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:28
-msgid "inforequests:modals:extend-deadline:extend"
-msgstr "Extend Deadline"
-
-#: apps/inforequests/templates/inforequests/modals/extension-email.html:18
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:17
-msgid "inforequests:modals:extension:heading"
-msgstr "Deadline Extension"
-
-#: apps/inforequests/templates/inforequests/modals/extension-email.html:27
-msgid "inforequests:modals:extension:decide_email"
-msgstr "Mark as Deadline Extension"
-
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:26
-msgid "inforequests:modals:extension:add_smail"
-msgstr "Add a Deadline Extension"
-
-#: apps/inforequests/templates/inforequests/modals/print.html:15
-#, python-format
-msgid "inforequests:modals:print:heading %(action_name)s"
-msgstr "Print %(action_name)s"
-
-#: apps/inforequests/templates/inforequests/modals/print.html:45
-msgid "inforequests:modals:print:print"
-msgstr "Print"
-
-#: apps/inforequests/templates/inforequests/modals/refusal-email.html:18
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:17
-msgid "inforequests:modals:refusal:heading"
-msgstr "Refusal to Disclose Information"
-
-#: apps/inforequests/templates/inforequests/modals/refusal-email.html:27
-msgid "inforequests:modals:refusal:decide_email"
-msgstr "Mark as Refusal to Disclose Information"
-
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:26
-msgid "inforequests:modals:refusal:add_smail"
-msgstr "Add a Refusal to Disclose Information"
-
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:17
-msgid "inforequests:modals:remandment:heading"
-msgstr "Remandment"
-
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:26
-msgid "inforequests:modals:remandment:add_smail"
-msgstr "Add a Remandment"
-
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:17
-msgid "inforequests:modals:reversion:heading"
-msgstr "Reversion"
-
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:26
-msgid "inforequests:modals:reversion:add_smail"
-msgstr "Add a Reversion"
-
-#: apps/inforequests/templates/inforequests/modals/unknown-email.html:17
-msgid "inforequests:modals:unknown:heading"
-msgstr "I don't Know, What This E-mail Is"
-
-#: apps/inforequests/templates/inforequests/modals/unknown-email.html:23
-msgid "inforequests:modals:unknown:decide_email"
-msgstr "Ask Admin for Help"
-
-#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:17
-msgid "inforequests:modals:unrelated:heading"
-msgstr "Unrelated E-mail"
-
-#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:23
-msgid "inforequests:modals:unrelated:decide_email"
-msgstr "Mark as Unrelated"
-
 #: apps/obligees/forms.py:70
 msgid "obligees:ObligeeAutocompleteField:invalid_obligee_name"
-msgstr "Invalid obligee name. Select one form the menu."
+msgstr "Neplatný názov inštitúcie, zvoľte z menu."
 
 #: apps/obligees/models.py:46
 msgid "obligees:Obligee:status:PENDING"
-msgstr "Pending"
+msgstr "Čakajúce"
 
 #: apps/obligees/models.py:47
 msgid "obligees:Obligee:status:DISSOLVED"
-msgstr "Dissolved"
+msgstr "Zrušené"
 
 #: apps/obligees/templates/obligees/index.html:13
 msgid "obligees:index:title"
-msgstr "Obligees List"
+msgstr "Zoznam inštitúcií"
 
 #: apps/obligees/templates/obligees/index.html:16
 msgid "obligees:index:heading"
-msgstr "Obligees List"
+msgstr "Zoznam inštitúcií"
 
 #: apps/obligees/templates/obligees/index.html:21
 msgid "obligees:index:table:name"
-msgstr "Organization"
+msgstr "Organizácia"
 
 #: apps/obligees/templates/obligees/index.html:22
 msgid "obligees:index:table:address"
-msgstr "Address"
+msgstr "Adresa"
 
 #: apps/obligees/templates/obligees/index.html:23
 msgid "obligees:index:table:emails"
@@ -962,239 +954,239 @@ msgstr "E-mail"
 
 #: templates/account/account_inactive.html:12
 msgid "account:inactive:title"
-msgstr "Account Inactive"
+msgstr "Neaktívny účet"
 
 #: templates/account/account_inactive.html:15
 msgid "account:inactive:heading"
-msgstr "Account Inactive"
+msgstr "Neaktívny účet"
 
 #: templates/account/account_inactive.html:16
 msgid "account:inactive:text"
-msgstr "This account is inactive."
+msgstr "Tento účet nie je aktívny."
 
 #: templates/account/email.html:12
 msgid "account:email:title"
-msgstr "E-mail Addresses"
+msgstr "E-mailové adresy"
 
 #: templates/account/email.html:15
 msgid "account:email:heading"
-msgstr "E-mail Addresses"
+msgstr "E-mailové adresy"
 
-#: templates/account/email.html:27
+#: templates/account/email.html:28
 msgid "account:email:verified"
-msgstr "Verified"
+msgstr "Potvrdená"
 
-#: templates/account/email.html:29
+#: templates/account/email.html:30
 msgid "account:email:unverified"
-msgstr "Unverified"
+msgstr "Nepotvrdená"
 
-#: templates/account/email.html:32
+#: templates/account/email.html:33
 msgid "account:email:primary"
-msgstr "Primary"
-
-#: templates/account/email.html:39
-msgid "account:email:action_primary"
-msgstr "Make Primary"
+msgstr "Primárna"
 
 #: templates/account/email.html:40
+msgid "account:email:action_primary"
+msgstr "Označiť ako primárnu"
+
+#: templates/account/email.html:41
 msgid "account:email:action_send"
-msgstr "Re-send Verification"
+msgstr "Znovu poslať verifikáciu"
 
-#: templates/account/email.html:41
+#: templates/account/email.html:42
 msgid "account:email:action_remove:confirm"
-msgstr "Do you really want to remove the selected e-mail address?"
+msgstr "Naozaj chcete odobrať zvolenú emailovú adresu?"
 
-#: templates/account/email.html:41
+#: templates/account/email.html:42
 msgid "account:email:action_remove"
-msgstr "Remove"
+msgstr "Odobrať"
 
-#: templates/account/email.html:48
+#: templates/account/email.html:50
 msgid "account:email:add:heading"
-msgstr "Add E-mail Address"
+msgstr "Pridať emailovú adresu"
 
-#: templates/account/email.html:54
+#: templates/account/email.html:56
 msgid "account:email:add:action_add"
-msgstr "Add E-mail"
+msgstr "Pridať email"
 
 #: templates/account/email_confirm.html:12
 msgid "account:email_confirm:title"
-msgstr "Confirm E-mail Address"
+msgstr "Potvrdiť emailovú adresu"
 
 #: templates/account/email_confirm.html:15
 msgid "account:email_confirm:heading"
-msgstr "Confirm E-mail Address"
+msgstr "Potvrdiť emailovú adresu"
 
 #: templates/account/email_confirm.html:21
 msgid "account:email_confirm:submit"
-msgstr "Confirm"
+msgstr "Potvrdzujem"
 
 #: templates/account/email_confirmed.html:13
 msgid "account:email_confirmed:title"
-msgstr "Confirm E-mail Address"
+msgstr "Potvrdené emailové adresy"
 
 #: templates/account/email_confirmed.html:16
 msgid "account:email_confirmed:heading"
-msgstr "Confirm E-mail Address"
+msgstr "Potvrdené emailové adresy"
 
 #: templates/account/login.html:15
 msgid "account:login:title"
-msgstr "Sign In"
+msgstr "Prihlásiť sa"
 
 #: templates/account/login.html:18
 msgid "account:login:heading"
-msgstr "Sign In"
+msgstr "Prihlásiť sa"
 
 #: templates/account/login.html:33
 msgid "account:login:social_buttons"
-msgstr "Sign In With"
+msgstr "Prihlásiť sa s"
 
 #: templates/account/login.html:44
 msgid "account:login:submit"
-msgstr "Sign In"
+msgstr "Prihlásiť sa"
 
 #: templates/account/login.html:45
 msgid "account:login:reset_password"
-msgstr "Forgot Password?"
+msgstr "Zabudnuté heslo?"
 
 #: templates/account/logout.html:13
 msgid "account:logout:title"
-msgstr "Sign Out"
+msgstr "Odhlásiť sa"
 
 #: templates/account/logout.html:16
 msgid "account:logout:heading"
-msgstr "Sign Out"
+msgstr "Odhlásiť sa"
 
 #: templates/account/logout.html:24
 msgid "account:logout:submit"
-msgstr "Sign Out"
+msgstr "Odhlásiť sa"
 
 #: templates/account/password_change.html:12
 msgid "account:password_change:title"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_change.html:15
 msgid "account:password_change:heading"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_change.html:21
 msgid "account:password_change:submit"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_reset.html:12
 msgid "account:password_reset:title"
-msgstr "Password Reset"
+msgstr "Resetnutie hesla"
 
 #: templates/account/password_reset.html:15
 msgid "account:password_reset:heading"
-msgstr "Password Reset"
+msgstr "Resetnutie hesla"
 
 #: templates/account/password_reset.html:24
 msgid "account:password_reset:submit"
-msgstr "Reset My Password"
+msgstr "Resetnúť moje heslo"
 
 #: templates/account/password_reset_done.html:12
 msgid "account:password_reset_done:title"
-msgstr "Password Reset"
+msgstr "Resetnutie hesla"
 
 #: templates/account/password_reset_done.html:15
 msgid "account:password_reset_done:heading"
-msgstr "Password Reset"
+msgstr "Resetnutie hesla"
 
 #: templates/account/password_reset_from_key.html:13
 msgid "account:password_reset_from_key:title"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_reset_from_key.html:17
 msgid "account:password_reset_from_key:token_fail:heading"
-msgstr "Bad Token"
+msgstr "Zlý token"
 
 #: templates/account/password_reset_from_key.html:20
 msgid "account:password_reset_from_key:heading"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_reset_from_key.html:26
 msgid "account:password_reset_from_key:submit"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_reset_from_key_done.html:12
 msgid "account:password_reset_from_key_done:title"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_reset_from_key_done.html:15
 msgid "account:password_reset_from_key_done:heading"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/account/password_set.html:12
 msgid "account:password_set:title"
-msgstr "Set Password"
+msgstr "Nastaviť heslo"
 
 #: templates/account/password_set.html:15
 msgid "account:password_set:heading"
-msgstr "Set Password"
+msgstr "Nastaviť heslo"
 
 #: templates/account/password_set.html:21
 msgid "account:password_set:submit"
-msgstr "Set Password"
+msgstr "Nastaviť heslo"
 
 #: templates/account/signup.html:15
 msgid "account:signup:title"
-msgstr "Sign Up"
+msgstr "Zaregistrovať"
 
 #: templates/account/signup.html:18
 msgid "account:signup:heading"
-msgstr "Sign Up"
+msgstr "Registrácia"
 
 #: templates/account/signup.html:33
 msgid "account:signup:social_buttons"
-msgstr "Sign Up With"
+msgstr "Zaregistrovať sa s"
 
 #: templates/account/signup.html:44
 msgid "account:signup:submit"
-msgstr "Sign Up"
+msgstr "Zaregistrovať"
 
 #: templates/account/signup_closed.html:12
 msgid "account:signup_closed:title"
-msgstr "Sign Up Closed"
+msgstr "Registrácia pozastavená"
 
 #: templates/account/signup_closed.html:15
 msgid "account:signup_closed:heading"
-msgstr "Sign Up Closed"
+msgstr "Registrácia pozastavená"
 
 #: templates/account/signup_closed.html:16
 msgid "account:signup_closed:text"
-msgstr "We are sorry, but the sign up is currently closed."
-
-#: templates/account/verification_sent.html:12
-msgid "account:verification_sent:title"
-msgstr "Verify Your E-mail Address"
-
-#: templates/account/verification_sent.html:15
-msgid "account:verification_sent:heading"
-msgstr "Verify Your E-mail Address"
-
-#: templates/account/verified_email_required.html:12
-msgid "account:verified_email_required:title"
-msgstr "Verify Your E-mail Address"
-
-#: templates/account/verified_email_required.html:15
-msgid "account:verified_email_required:heading"
-msgstr "Verify Your E-mail Address"
+msgstr "Ospravedlňujeme sa, registrácia je momentálne pozastavená."
 
 #: templates/account/snippets/social_login_buttons.html:13
 msgid "account:social_buttons:facebook"
-msgstr "Login With Facebook"
+msgstr "Prihlásiť pomocou Facebooku"
 
 #: templates/account/snippets/social_login_buttons.html:14
 msgid "account:social_buttons:google"
-msgstr "Login With Google"
+msgstr "Prihlásiť pomocou Googlu"
 
 #: templates/account/snippets/social_login_buttons.html:15
 msgid "account:social_buttons:twitter"
-msgstr "Login With Twitter"
+msgstr "Prihlásiť pomocou Twittra"
 
 #: templates/account/snippets/social_login_buttons.html:16
 msgid "account:social_buttons:linkedin"
-msgstr "Login With LinkedIn"
+msgstr "Prihlásiť pomocou Linkedinu"
+
+#: templates/account/verification_sent.html:12
+msgid "account:verification_sent:title"
+msgstr "Overiť emailovú adresu"
+
+#: templates/account/verification_sent.html:15
+msgid "account:verification_sent:heading"
+msgstr "Overenie Vašej emailovej adresy"
+
+#: templates/account/verified_email_required.html:12
+msgid "account:verified_email_required:title"
+msgstr "Overte Vašu emailovú adresu"
+
+#: templates/account/verified_email_required.html:15
+msgid "account:verified_email_required:heading"
+msgstr "Je potrebné overenie emailovej adresy"
 
 #: templates/main/base/base.html:27
 msgid "main:base:title"
@@ -1202,92 +1194,104 @@ msgstr "Chcem Vedieť"
 
 #: templates/main/snippets/header-account.html:16
 msgid "main:menu:account:profile"
-msgstr "User Profile"
+msgstr "Profil užívateľa"
 
 #: templates/main/snippets/header-account.html:17
 msgid "main:menu:account:password"
-msgstr "Change Password"
+msgstr "Zmeniť heslo"
 
 #: templates/main/snippets/header-account.html:18
 msgid "main:menu:account:email"
-msgstr "Manage E-mails"
+msgstr "Spravovať emaily"
 
 #: templates/main/snippets/header-account.html:19
 msgid "main:menu:account:connections"
-msgstr "Manage Connections"
+msgstr "Spravovať napojenia"
 
 #: templates/main/snippets/header-account.html:21
 msgid "main:menu:account:logout"
-msgstr "Log Out"
+msgstr "Odhásiť"
 
 #: templates/main/snippets/header-account.html:25
 msgid "main:menu:account:login"
-msgstr "Sign In"
+msgstr "Prihlásiť"
 
 #: templates/main/snippets/header-account.html:26
 msgid "main:menu:account:signup"
-msgstr "Sign Up"
+msgstr "Zaregistrovať sa"
 
 #: templates/main/snippets/header-menu.html:12
 msgid "main:menu:about"
-msgstr "About Project"
+msgstr "O projekte"
 
 #: templates/main/snippets/header-menu.html:13
 msgid "main:menu:inforequests"
-msgstr "Requests"
+msgstr "Žiadosti"
 
 #: templates/main/snippets/header-menu.html:14
 msgid "main:menu:obligees"
-msgstr "Obligees"
+msgstr "Inštitúcie"
 
-#: templates/main/snippets/header.html:20
+#: templates/main/snippets/header.html:28
 msgid "main:menu:brand"
 msgstr "Chcem Vedieť (Pre Alpha)"
 
 #: templates/socialaccount/authentication_error.html:12
 msgid "socialaccount:authentication_error:title"
-msgstr "Social Network Login Failure"
+msgstr "Zlyhalo prihlásenie cez sociálnu sieť"
 
 #: templates/socialaccount/authentication_error.html:15
 msgid "socialaccount:authentication_error:heading"
-msgstr "Social Network Login Failure"
+msgstr "Zlyhalo prihlásenie cez sociálnu sieť"
 
 #: templates/socialaccount/connections.html:12
 msgid "socialaccount:connections:title"
-msgstr "Account Connections"
+msgstr "Napojenia účtu"
 
 #: templates/socialaccount/connections.html:15
 msgid "socialaccount:connections:heading"
-msgstr "Account Connections"
+msgstr "Napojenia účtu"
 
 #: templates/socialaccount/connections.html:38
 msgid "socialaccount:connections:remove"
-msgstr "Remove Connection"
+msgstr "Odstrániť napojenie"
 
 #: templates/socialaccount/connections.html:45
 msgid "socialaccount:connections:add:heading"
-msgstr "Add a 3rd Party Account"
+msgstr "Pridať účet tretej strany"
 
 #: templates/socialaccount/connections.html:48
 msgid "socialaccount:connections:add:social_buttons"
-msgstr "Connect With"
+msgstr "Napojiť sa na"
 
 #: templates/socialaccount/login_cancelled.html:12
 msgid "socialaccount:login_cancelled:title"
-msgstr "Login Cancelled"
+msgstr "Zrušenie prihlásenia"
 
 #: templates/socialaccount/login_cancelled.html:15
 msgid "socialaccount:login_cancelled:heading"
-msgstr "Login Cancelled"
+msgstr "Zrušenie prihlásenia"
 
 #: templates/socialaccount/signup.html:15
 msgid "socialaccount:signup:title"
-msgstr "Sign Up"
+msgstr "Prihlásiť sa"
 
 #: templates/socialaccount/signup.html:18
 msgid "socialaccount:signup:heading"
-msgstr "Sign Up"
+msgstr "Prihlásiť sa"
 
 #: templates/socialaccount/signup.html:38
 msgid "socialaccount:signup:submit"
-msgstr "Sign Up"
+msgstr "Prihlásiť sa"
+
+#: urls.py:22
+msgid "^about/"
+msgstr ""
+
+#: urls.py:23
+msgid "^obligees/"
+msgstr ""
+
+#: urls.py:24
+msgid "^inforequests/"
+msgstr ""

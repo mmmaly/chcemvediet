@@ -19,11 +19,11 @@ msgstr ""
 
 #: models.py:28
 msgid "mail:Message:type:INBOUND"
-msgstr "Inbound"
+msgstr "Príchodzí"
 
 #: models.py:29
 msgid "mail:Message:type:OUTBOUND"
-msgstr "Outbound"
+msgstr "Odchádzajúci"
 
 #: models.py:145
 msgid "mail:Recipient:type:TO"
@@ -39,32 +39,32 @@ msgstr "Bcc"
 
 #: models.py:155
 msgid "mail:Recipient:status:INBOUND"
-msgstr "Inbound"
+msgstr "Príchodzí"
 
 #: models.py:157
 msgid "mail:Recipient:status:UNDEFINED"
-msgstr "Undefined"
+msgstr "Nedefinovaný"
 
 #: models.py:158
 msgid "mail:Recipient:status:QUEUED"
-msgstr "Queued"
+msgstr "Zaradený do fronty"
 
 #: models.py:159
 msgid "mail:Recipient:status:REJECTED"
-msgstr "Rejected"
+msgstr "Odmietnutý email"
 
 #: models.py:160
 msgid "mail:Recipient:status:INVALID"
-msgstr "Invalid"
+msgstr "Neplatný email"
 
 #: models.py:161
 msgid "mail:Recipient:status:SENT"
-msgstr "Sent"
+msgstr "Odoslaný"
 
 #: models.py:162
 msgid "mail:Recipient:status:DELIVERED"
-msgstr "Delivered"
+msgstr "Doručený"
 
 #: models.py:163
 msgid "mail:Recipient:status:OPENED"
-msgstr "Opened"
+msgstr "Otvorený"
