@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
 from aggregate_if import Count
+from jsonfield import JSONField
 
 from poleno.attachments.models import Attachment
 from poleno.mail.models import Message
@@ -41,8 +42,8 @@ class InforequestDraft(models.Model):
                 """))
 
     # May be empty
-    subject = models.CharField(blank=True, max_length=255)
-    content = models.TextField(blank=True)
+    subject = JSONField(blank=True, default=[])
+    content = JSONField(blank=True, default=[])
 
     # May be empty
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id')

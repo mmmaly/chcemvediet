@@ -1,0 +1,14 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Warning: Watch your white-space and line breaks. They are preserved.
+ %
+ % Context:
+ %  -- inputs.0: string | html
+ %  -- finalize: boolean
+ %
+{% endcomment %}
+
+Ziadost o informacie podla 211/2000 Z.z. {{ inputs.0 }}

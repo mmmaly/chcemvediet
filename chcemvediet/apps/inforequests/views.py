@@ -63,7 +63,7 @@ def create(request, draft_pk=None):
         button = clean_button(request.POST, [u'submit', u'draft'])
 
         if button == u'draft':
-            form = forms.InforequestForm(request.POST, draft=True, attached_to=attached_to)
+            form = forms.InforequestForm(request.POST, draft=True, attached_to=attached_to, user=request.user)
             if form.is_valid():
                 if not draft:
                     draft = InforequestDraft(applicant=request.user)
@@ -72,7 +72,7 @@ def create(request, draft_pk=None):
                 return HttpResponseRedirect(reverse(u'inforequests:index'))
 
         elif button == u'submit':
-            form = forms.InforequestForm(request.POST, attached_to=attached_to)
+            form = forms.InforequestForm(request.POST, attached_to=attached_to, user=request.user)
             if form.is_valid():
                 inforequest = Inforequest(applicant=request.user)
                 form.save(inforequest)
@@ -89,7 +89,7 @@ def create(request, draft_pk=None):
             return HttpResponseBadRequest()
 
     else:
-        form = forms.InforequestForm(attached_to=attached_to)
+        form = forms.InforequestForm(attached_to=attached_to, user=request.user)
         if draft:
             form.load_from_draft(draft)
 

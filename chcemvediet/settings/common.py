@@ -167,11 +167,14 @@ ASSETS = (
     u'main/3part/jqueryplugins/jquery.cookie.js',
     u'main/3part/jqueryplugins/jquery.PrintArea.js',
     # Reused apps
+    u'poleno/css/*.css',
     u'poleno/js/*.js',
+    u'attachments/css/*.css',
     u'attachments/js/*.js',
     # Local to the project
     u'obligees/css/*.css',
     u'obligees/js/*.js',
+    u'inforequests/css/*.css',
     u'inforequests/js/*.js',
     u'main/css/*.css',
     u'main/js/*.js',

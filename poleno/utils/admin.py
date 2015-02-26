@@ -8,12 +8,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import patterns, url
 from django.db import models
 from django.http import HttpResponse, HttpResponseNotFound
+from django.forms.util import flatatt
 from django.utils.html import format_html, format_html_join, conditional_escape
 from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
 from django.contrib import admin
-
-from poleno.utils.html import format_tag
 
 def extend_model_admin(model, mixin):
     klass = admin.site._registry[model].__class__
@@ -132,7 +131,7 @@ def live_field(*fields):
                     u'data-url': reverse(u'admin:%s_%s_live' % info, args=[method.__name__]),
                     }
             attrs.update({u'data-value-%s' % f: v for f, v in zip(fields, vals)})
-            res = format_tag(u'span', attrs, res)
+            res = format_html(u'<span{0}>{1}</span>', flatatt(attrs), res)
             return res
         return wrapped_method
     return decorator

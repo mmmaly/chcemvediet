@@ -1,0 +1,33 @@
+{# vim: set filetype=htmldjango :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Warning: Watch your white-space and line breaks. They are preserved.
+ %
+ % Context:
+ %  -- inputs.0: string | html
+ %  -- finalize: boolean
+ %  -- unique_email: string | html
+ %  -- user: django.contrib.auth.models.User
+ %  -- obligee: chcemvediet.apps.obligees.models.Obligee (only if finalize is True)
+ %
+{% endcomment %}
+
+{% if finalize %}
+Pre: {{ obligee.name }}, {{ obligee.street }}, {{ obligee.city }} {{ obligee.zip }}, {{ obligee.emails }}
+Od: {{ user.get_full_name }}, {{ user.profile.street }}, {{ user.profile.city }} {{ user.profile.zip }}, {{ unique_email }}
+{% endif %}
+
+Dobrý deň,
+
+na základe zákona č. 211/2000 Z. z. o slobodnom prístupe k informáciám v znení neskorších predpisov žiadam o nasledovné informácie:
+
+{{ inputs.0 }}
+
+Informáciu žiadam zaslať v elektronickej podobe na moju emailovú adresu: {{ unique_email }}
+
+V zmysle § 14 ods 5. zákona žiadam o potvrdenie prijatia žiadosti o informácie.
+
+Ďakujem,
+{{ user.get_full_name }}

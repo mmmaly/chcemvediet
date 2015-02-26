@@ -133,8 +133,8 @@ class InforequestsTestCaseMixin(TestCase):
         return self._call_with_defaults(InforequestDraft.objects.create, kwargs, {
                 u'applicant': self.user1,
                 u'obligee': self.obligee1,
-                u'subject': u'Default Testing Subject',
-                u'content': u'Default Testing Content',
+                u'subject': [u'Default Testing Subject'],
+                u'content': [u'Default Testing Content'],
                 })
 
     def _create_inforequest(self, **kwargs):

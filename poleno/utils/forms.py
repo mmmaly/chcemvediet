@@ -7,8 +7,13 @@ from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.forms.util import flatatt
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_text
+from django.utils.safestring import mark_safe
 from django.utils.html import format_html
+
+from poleno.utils.html import merge_html_attrs
 
 def clean_button(post, clean_values, default_value=None, key=u'button'):
     u"""
@@ -66,6 +71,71 @@ class AutoSuppressedSelect(forms.Select):
                 return format_html(u'<span{0}><input type="hidden" name="{1}" value="{2}">{3}</span>',
                         flatatt(self.suppressed_attrs), name, option_value, option_label)
         return super(AutoSuppressedSelect, self).render(name, value, attrs, choices)
+
+class CompositeTextWidget(forms.MultiWidget):
+    u"""
+    See ``CompositeTextField``.
+    """
+    def __init__(self, *args, **kwargs):
+        self.template = kwargs.pop(u'template')
+        self.composite_attrs = kwargs.pop(u'composite_attrs', {})
+        self.context = kwargs.pop(u'context', {})
+        super(CompositeTextWidget, self).__init__(*args, **kwargs)
+
+    def format_output(self, rendered_widgets):
+        context = dict(self.context, inputs=rendered_widgets, finalize=False)
+        content = mark_safe(render_to_string(self.template, context).strip())
+        attrs = merge_html_attrs(self.composite_attrs, class_=u'composite-text')
+        return format_html(u'<div{0}>{1}</div>', flatatt(attrs), content)
+
+    def decompress(self, value):
+        if value is None:
+            return [None for w in self.widgets]
+        return value
+
+class CompositeTextField(forms.MultiValueField):
+    u"""
+    Form field for structured fields with multiple inputs/textareas and static text. Field
+    structure is defined with a template. Uses ``CompositeTextWidget``.
+
+    Example:
+        class InforequestForm(PrefixedForm):
+            address = CompositeTextField(
+                    label='Address',
+                    template=u'address.txt',
+                    fields=[
+                        forms.CharField(widget=forms.TextInput(attrs={
+                            u'placeholder': 'Street',
+                            })),
+                        forms.CharField(widget=forms.TextInput(attrs={
+                            u'placeholder': 'City',
+                            })),
+                        forms.CharField(widget=forms.Textarea(attrs={
+                            u'placeholder': 'Description how to get there',
+                            u'class': u'autosize',
+                            })),
+                        ],
+                    composite_attrs={
+                        u'class': u'input-block-level',
+                        },
+                    )
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs[u'widget'] = CompositeTextWidget(
+                template=kwargs.pop(u'template'),
+                composite_attrs=kwargs.pop(u'composite_attrs', {}),
+                context=kwargs.pop(u'context', {}),
+                widgets=[f.widget for f in kwargs.get(u'fields')],
+                )
+        super(CompositeTextField, self).__init__(*args, **kwargs)
+
+    def compress(self, data_list):
+        return data_list
+
+    def finalize(self, data, context={}):
+        context = dict(self.widget.context, inputs=data, finalize=True, **context)
+        return render_to_string(self.widget.template, context).strip()
 
 class PrefixedForm(forms.Form):
     def __init__(self, *args, **kwargs):

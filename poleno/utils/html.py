@@ -1,19 +1,35 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.utils.html import format_html, format_html_join
 
-def format_tag(tag, attrs={}, content=u''):
+def merge_html_attrs(*args, **kwargs):
     u"""
-    Helper to render html tag with proper escaping.
+    Merges html tag attributes from multiple dictionaries and keyword arguments. If multiple
+    dictionaries define a "class" or a "style" attribute, all "class" and "style" attributes are
+    combined. Classes are unified and styles are concatenated. If there is any other attribute in
+    more than one dictionary, ``ValueError`` is raised.
 
-    Examples:
-        format_tag('a', dict(href='mailto:smith@example.com'), 'John Smith <smith@example.com>')
-         -> '<a href="mailto:smith@example.com">John Smith &lt;smith@example.com&gt;</a>'
+    Example:
+        >>> a = {'href': '#', 'title': 'Title'}
+        >>> b = {'class': 'btn', 'style': 'color: red;'}
+        >>> merge_html_attrs(a, b, alt='Go', class_='btn-go', style='border: 1px;')
+        {'href': '#', 'title': 'Title', 'class': 'btn btn-go', style: 'color: red; border: 1px;', alt: 'Go'}
 
-        format_tag('span', dict(title='John Smith <smith@example.com>'), 'John Smith')
-         -> '<span title="John Smith &lt;smith@example.com&gt;">John Smith</span>'
-
-        format_tag('p', {'class': 'moo'}, format_tag('span', {'class': 'foo'}, '"goo"'))
-         -> '<p class="moo"><span class="foo">&quot;goo&quot;</span></p>'
     """
-    return format_html(u'<{0} {1}>{2}</{0}>', tag, format_html_join(u' ', u'{0}="{1}"', attrs.iteritems()), content)
+    attrs = {}
+    for arg in args + (kwargs,):
+        if not arg:
+            continue
+        for key, val in arg.items():
+            if key in [u'class', u'class_']:
+                attrs.setdefault(u'class', {}).update(dict.fromkeys(val.split()))
+            elif key == u'style':
+                attrs.setdefault(u'style', []).append(val)
+            elif key in attrs:
+                raise ValueError(u'Duplicate attribute "%s".' % key)
+            else:
+                attrs[key] = val
+    if u'class' in attrs:
+        attrs[u'class'] = u' '.join(attrs[u'class'].keys())
+    if u'style' in attrs:
+        attrs[u'style'] = u' '.join(attrs[u'style'])
+    return attrs
