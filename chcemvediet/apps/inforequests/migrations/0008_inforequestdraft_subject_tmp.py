@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='inforequestdraft',
             name='subject_tmp',
-            field=jsonfield.fields.JSONField(default=[], blank=True),
+            field=jsonfield.fields.JSONField(default=(), blank=True),
             preserve_default=True,
         ),
     ]

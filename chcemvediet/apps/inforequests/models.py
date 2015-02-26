@@ -42,8 +42,8 @@ class InforequestDraft(models.Model):
                 """))
 
     # May be empty
-    subject = JSONField(blank=True, default=[])
-    content = JSONField(blank=True, default=[])
+    subject = JSONField(blank=True, default=())
+    content = JSONField(blank=True, default=())
 
     # May be empty
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id')
