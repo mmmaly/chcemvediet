@@ -41,7 +41,7 @@ class InforequestDraft(models.Model):
                 The obligee the inforequest will be sent to, if the user has already set it.
                 """))
 
-    # May be empty
+    # May be empty; Django migrations for MySQL backend are broken in ``default`` is mutable.
     subject = JSONField(blank=True, default=())
     content = JSONField(blank=True, default=())
 

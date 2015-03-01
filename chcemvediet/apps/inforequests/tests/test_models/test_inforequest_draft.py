@@ -35,7 +35,7 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
 
     def test_subject_field_default_value_if_omitted(self):
         draft = self._create_inforequest_draft(omit=[u'subject'])
-        self.assertEqual(draft.subject, [])
+        self.assertEqual(draft.subject, ())
 
     def test_content_field(self):
         draft = self._create_inforequest_draft(content=[u'Content'])
@@ -43,7 +43,7 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
 
     def test_content_field_default_value_if_omitted(self):
         draft = self._create_inforequest_draft(omit=[u'content'])
-        self.assertEqual(draft.content, [])
+        self.assertEqual(draft.content, ())
 
     def test_attachment_set_relation(self):
         draft = self._create_inforequest_draft()

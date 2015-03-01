@@ -1,13 +1,16 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from testfixtures import TempDirectory
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template import Context, Template
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
+from django.test.utils import override_settings
 
-from poleno.utils.forms import (clean_button, AutoSuppressedSelect, PrefixedForm,
-        validate_formatted_email, validate_comma_separated_emails)
+from poleno.utils.forms import (clean_button, AutoSuppressedSelect, CompositeTextField,
+        PrefixedForm, validate_formatted_email, validate_comma_separated_emails)
 
 class CleanButtonTest(TestCase):
     u"""
@@ -237,6 +240,134 @@ class AutoSuppressedSelectTest(TestCase):
                   <span class="class-for-plain-text"><input name="name" type="hidden" value="1" />first</span>
                 </td></tr>
                 """)
+
+class CompositeTextFieldTest(TestCase):
+    u"""
+    Tests ``CompositeTextField`` with ``CompositeTextWidget``.
+    """
+
+    class Form(forms.Form):
+        composite = CompositeTextField(
+                template=u'composite.txt',
+                fields=[
+                    forms.EmailField(),
+                    forms.IntegerField(),
+                    ],
+                composite_attrs={
+                    u'class': u'custom-class',
+                    u'custom-attribute': u'value',
+                    },
+                context={
+                    u'aaa': u'(aaa)',
+                    u'bbb': u'(bbb)',
+                    },
+                )
+
+
+    def _render(self, template, **context):
+        return Template(template).render(Context(context))
+
+
+    def setUp(self):
+        self.tempdir = TempDirectory()
+        self.settings_override = override_settings(
+            TEMPLATE_LOADERS=(u'django.template.loaders.filesystem.Loader',),
+            TEMPLATE_DIRS=(self.tempdir.path,),
+            )
+        self.settings_override.enable()
+        self.tempdir.write(u'composite.txt', u'(composite.txt)\n{{ aaa }}{{ bbb }}\n{{ inputs.0 }}\n{{ inputs.1 }}\n')
+
+    def tearDown(self):
+        self.settings_override.disable()
+        self.tempdir.cleanup()
+
+
+    def test_new_form(self):
+        form = self.Form()
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<label for="id_composite_0">Composite:</label>', rendered)
+        self.assertInHTML(u"""
+                <div class="custom-class composite-text" custom-attribute="value">
+                  (composite.txt)
+                  (aaa)(bbb)
+                  <input id="id_composite_0" name="composite_0" type="email">
+                  <input id="id_composite_1" name="composite_1" type="number">
+                </div>
+                """, rendered)
+
+    def test_new_form_with_initial_value(self):
+        form = self.Form(initial={u'composite': [u'aaa', u'bbb']})
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email" value="aaa">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number" value="bbb">', rendered)
+
+    def test_submitted_with_both_empty_values_but_required(self):
+        form = self.Form({u'composite_0': u'', u'composite_1': u''})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'composite'], [u'This field is required.'])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number">', rendered)
+
+    def test_submitted_with_both_empty_values_but_not_required(self):
+        form = self.Form({u'composite_0': u'', u'composite_1': u''})
+        form.fields[u'composite'].required = False
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data[u'composite'], [])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered, count=0)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number">', rendered)
+
+    def test_submitted_with_one_invalid_and_one_empty_value(self):
+        form = self.Form({u'composite_0': u'invalid', u'composite_1': u''})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'composite'], [u'This field is required.'])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<ul class="errorlist"><li>This field is required.</li></ul>', rendered)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email" value="invalid">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number">', rendered)
+
+    def test_submitted_with_both_invalid_values(self):
+        form = self.Form({u'composite_0': u'invalid', u'composite_1': u'invalid'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'composite'], [u'Enter a valid email address.', u'Enter a whole number.'])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<ul class="errorlist"><li>Enter a valid email address.</li><li>Enter a whole number.</li></ul>', rendered)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email" value="invalid">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number" value="invalid">', rendered)
+
+    def test_submitted_with_one_valid_and_one_invalid_value(self):
+        form = self.Form({u'composite_0': u'invalid', u'composite_1': u'47'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[u'composite'], [u'Enter a valid email address.'])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertInHTML(u'<ul class="errorlist"><li>Enter a valid email address.</li></ul>', rendered)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email" value="invalid">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number" value="47">', rendered)
+
+    def test_submitted_with_both_valid_values(self):
+        form = self.Form({u'composite_0': u'valid@example.com', u'composite_1': u'47'})
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data[u'composite'], [u'valid@example.com', 47])
+
+        rendered = self._render(u'{{ form }}', form=form)
+        self.assertNotIn(u'errorlist', rendered)
+        self.assertInHTML(u'<input id="id_composite_0" name="composite_0" type="email" value="valid@example.com">', rendered)
+        self.assertInHTML(u'<input id="id_composite_1" name="composite_1" type="number" value="47">', rendered)
+
+    def test_finalize(self):
+        form = self.Form({u'composite_0': u'valid@example.com', u'composite_1': u'47'})
+        self.assertTrue(form.is_valid())
+
+        finalized = form.fields[u'composite'].finalize(form.cleaned_data[u'composite'], context={u'bbb': u'(new_bbb)'})
+        self.assertEqual(finalized, u'(composite.txt)\n(aaa)(new_bbb)\nvalid@example.com\n47')
 
 class PrefixedFormTest(TestCase):
     u"""

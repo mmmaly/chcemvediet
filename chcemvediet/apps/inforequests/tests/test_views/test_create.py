@@ -284,12 +284,11 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.post(reverse(u'inforequests:create'), data)
         self.assertFormError(response, u'form', u'obligee', 'This field is required.')
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_obligee_field_is_not_required_for_draft_button(self):
-    #    data = self._create_post_data(button=u'draft', omit=[u'obligee'])
-    #    self._login_user()
-    #    response = self.client.post(reverse(u'inforequests:create'), data)
-    #    self.assertIsNone(response.context)
+    def test_obligee_field_is_not_required_for_draft_button(self):
+        data = self._create_post_data(button=u'draft', omit=[u'obligee'])
+        self._login_user()
+        response = self.client.post(reverse(u'inforequests:create'), data)
+        self.assertRedirects(response, reverse(u'inforequests:index'))
 
     def test_obligee_field_with_invalid_obligee_name_is_invalid(self):
         data = self._create_post_data(button=u'draft', obligee=u'invalid')
@@ -303,12 +302,11 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.post(reverse(u'inforequests:create'), data)
         self.assertFormError(response, u'form', u'subject', 'This field is required.')
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_subject_field_is_not_required_for_draft_button(self):
-    #    data = self._create_post_data(button=u'draft', omit=[u'subject'])
-    #    self._login_user()
-    #    response = self.client.post(reverse(u'inforequests:create'), data)
-    #    self.assertIsNone(response.context)
+    def test_subject_field_is_not_required_for_draft_button(self):
+        data = self._create_post_data(button=u'draft', omit=[u'subject'])
+        self._login_user()
+        response = self.client.post(reverse(u'inforequests:create'), data)
+        self.assertRedirects(response, reverse(u'inforequests:index'))
 
     def test_subject_field_max_length(self):
         data = self._create_post_data(button=u'draft', subject=[u'x'*256])
@@ -322,26 +320,25 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.post(reverse(u'inforequests:create'), data)
         self.assertFormError(response, u'form', u'content', 'This field is required.')
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_content_field_is_not_required_for_draft_button(self):
-    #    data = self._create_post_data(button=u'draft', omit=[u'content'])
-    #    self._login_user()
-    #    response = self.client.post(reverse(u'inforequests:create'), data)
-    #    self.assertIsNone(response.context)
+    def test_content_field_is_not_required_for_draft_button(self):
+        data = self._create_post_data(button=u'draft', omit=[u'content'])
+        self._login_user()
+        response = self.client.post(reverse(u'inforequests:create'), data)
+        self.assertRedirects(response, reverse(u'inforequests:index'))
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_attachments_field_is_not_required_for_submit_button(self):
-    #    data = self._create_post_data(button=u'submit', omit=[u'attachments'])
-    #    self._login_user()
-    #    response = self.client.post(reverse(u'inforequests:create'), data)
-    #    self.assertIsNone(response.context)
+    def test_attachments_field_is_not_required_for_submit_button(self):
+        data = self._create_post_data(button=u'submit', omit=[u'attachments'])
+        self._login_user()
+        with created_instances(Inforequest.objects) as inforequest_set:
+            response = self.client.post(reverse(u'inforequests:create'), data)
+        inforequest = inforequest_set.get()
+        self.assertRedirects(response, reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_attachments_field_is_not_required_for_draft_button(self):
-    #    data = self._create_post_data(button=u'draft', omit=[u'attachments'])
-    #    self._login_user()
-    #    response = self.client.post(reverse(u'inforequests:create'), data)
-    #    self.assertIsNone(response.context)
+    def test_attachments_field_is_not_required_for_draft_button(self):
+        data = self._create_post_data(button=u'draft', omit=[u'attachments'])
+        self._login_user()
+        response = self.client.post(reverse(u'inforequests:create'), data)
+        self.assertRedirects(response, reverse(u'inforequests:index'))
 
     def test_attachments_field_with_invalid_attachment_is_invalid(self):
         data = self._create_post_data(button=u'draft', attachments=u',47,')
@@ -368,22 +365,20 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft1.pk,)), data)
         self.assertFormError(response, u'form', u'attachments', 'Invalid attachments.')
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_attachments_field_with_attachment_owned_by_session_is_valid(self):
-    #    self._login_user()
-    #    attachment = self._create_attachment()
-    #    data = self._create_post_data(button=u'draft', attachments=u',%s,' % attachment.pk)
-    #    response = self.client.post(reverse(u'inforequests:create'), data)
-    #    self.assertIsNone(response.context)
+    def test_attachments_field_with_attachment_owned_by_session_is_valid(self):
+        self._login_user()
+        attachment = self._create_attachment()
+        data = self._create_post_data(button=u'draft', attachments=u',%s,' % attachment.pk)
+        response = self.client.post(reverse(u'inforequests:create'), data)
+        self.assertRedirects(response, reverse(u'inforequests:index'))
 
-    # FIXME: 'subject' and 'content' fields are using templates now
-    #def test_attachments_field_with_attachment_assigned_to_used_draft_is_valid(self):
-    #    draft = self._create_inforequest_draft()
-    #    attachment = self._create_attachment(generic_object=draft)
-    #    data = self._create_post_data(button=u'draft', attachments=u',%s,' % attachment.pk)
-    #    self._login_user()
-    #    response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft.pk,)), data)
-    #    self.assertIsNone(response.context)
+    def test_attachments_field_with_attachment_assigned_to_used_draft_is_valid(self):
+        draft = self._create_inforequest_draft()
+        attachment = self._create_attachment(generic_object=draft)
+        data = self._create_post_data(button=u'draft', attachments=u',%s,' % attachment.pk)
+        self._login_user()
+        response = self.client.post(reverse(u'inforequests:create_from_draft', args=(draft.pk,)), data)
+        self.assertRedirects(response, reverse(u'inforequests:index'))
 
     def test_attachments_field_upload_and_download_url_funcs(self):
         draft = self._create_inforequest_draft(applicant=self.user1)

@@ -102,21 +102,21 @@ class CompositeTextField(forms.MultiValueField):
         class InforequestForm(PrefixedForm):
             address = CompositeTextField(
                     label='Address',
-                    template=u'address.txt',
+                    template='address.txt',
                     fields=[
                         forms.CharField(widget=forms.TextInput(attrs={
-                            u'placeholder': 'Street',
+                            'placeholder': 'Street',
                             })),
                         forms.CharField(widget=forms.TextInput(attrs={
-                            u'placeholder': 'City',
+                            'placeholder': 'City',
                             })),
                         forms.CharField(widget=forms.Textarea(attrs={
-                            u'placeholder': 'Description how to get there',
-                            u'class': u'autosize',
+                            'placeholder': 'Description how to get there',
+                            'class': u'autosize',
                             })),
                         ],
                     composite_attrs={
-                        u'class': u'input-block-level',
+                        'class': u'input-block-level',
                         },
                     )
     """
@@ -133,8 +133,8 @@ class CompositeTextField(forms.MultiValueField):
     def compress(self, data_list):
         return data_list
 
-    def finalize(self, data, context={}):
-        context = dict(self.widget.context, inputs=data, finalize=True, **context)
+    def finalize(self, cleaned_data, context={}):
+        context = dict(self.widget.context, inputs=cleaned_data, finalize=True, **context)
         return render_to_string(self.widget.template, context).strip()
 
 class PrefixedForm(forms.Form):
