@@ -5,6 +5,7 @@ import random
 from django.db import IntegrityError
 from django.test import TestCase
 
+from poleno.attachments.models import Attachment
 from poleno.utils.date import utc_now, utc_datetime_from_local
 
 from . import MailTestCaseMixin
@@ -171,6 +172,129 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         msg.from_formatted = u'another@example.com'
         self.assertEqual(msg.from_name, u'')
         self.assertEqual(msg.from_mail, u'another@example.com')
+
+    def test_prefetch_attachments_staticmethod(self):
+        msg = self._create_message()
+        attch1 = self._create_attachment(generic_object=msg)
+        attch2 = self._create_attachment(generic_object=msg)
+        rcpt1 = self._create_recipient(message=msg)
+        rcpt2 = self._create_recipient(message=msg)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            msg = Message.objects.prefetch_related(Message.prefetch_attachments()).get(pk=msg.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(2):
+            rcpt = (Recipient.objects
+                    .select_related(u'message')
+                    .prefetch_related(Message.prefetch_attachments(u'message', Attachment.objects.extra(select=dict(moo=47))))
+                    .get(pk=rcpt1.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(rcpt.message.attachments, [attch1, attch2])
+            self.assertEqual(rcpt.message.attachments[0].moo, 47)
+
+    def test_attachments_property(self):
+        msg = self._create_message()
+        attch1 = self._create_attachment(generic_object=msg)
+        attch2 = self._create_attachment(generic_object=msg)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            msg = Message.objects.get(pk=msg.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+
+        # Property is prefetched with prefetch_attachments()
+        with self.assertNumQueries(2):
+            msg = Message.objects.prefetch_related(Message.prefetch_attachments()).get(pk=msg.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+
+    def test_prefetch_recipients_staticmethod(self):
+        msg = self._create_message()
+        attch1 = self._create_attachment(generic_object=msg)
+        attch2 = self._create_attachment(generic_object=msg)
+        rcpt1 = self._create_recipient(message=msg)
+        rcpt2 = self._create_recipient(message=msg)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            msg = Message.objects.prefetch_related(Message.prefetch_recipients()).get(pk=msg.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(2):
+            rcpt = (Recipient.objects
+                    .select_related(u'message')
+                    .prefetch_related(Message.prefetch_recipients(u'message', Recipient.objects.extra(select=dict(moo=47))))
+                    .get(pk=rcpt1.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(rcpt.message.recipients, [rcpt1, rcpt2])
+            self.assertEqual(rcpt.message.recipients[0].moo, 47)
+
+    def test_recipients_property(self):
+        msg = self._create_message()
+        rcpt1 = self._create_recipient(message=msg)
+        rcpt2 = self._create_recipient(message=msg)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            msg = Message.objects.get(pk=msg.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+
+        # Property is prefetched with prefetch_recipients()
+        with self.assertNumQueries(2):
+            msg = Message.objects.prefetch_related(Message.prefetch_recipients()).get(pk=msg.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+
+    def test_recipients_to_cc_and_bcc_properties(self):
+        msg = self._create_message()
+        to1 = self._create_recipient(message=msg, type=Recipient.TYPES.TO)
+        to2 = self._create_recipient(message=msg, type=Recipient.TYPES.TO)
+        to3 = self._create_recipient(message=msg, type=Recipient.TYPES.TO)
+        cc1 = self._create_recipient(message=msg, type=Recipient.TYPES.CC)
+        cc2 = self._create_recipient(message=msg, type=Recipient.TYPES.CC)
+        bcc = self._create_recipient(message=msg, type=Recipient.TYPES.BCC)
+
+        # Properies are cached
+        with self.assertNumQueries(1):
+            msg = Message.objects.get(pk=msg.pk)
+        with self.assertNumQueries(3):
+            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+
+        # Properies use cached recipients property
+        with self.assertNumQueries(1):
+            msg = Message.objects.get(pk=msg.pk)
+        with self.assertNumQueries(1):
+            msg.recipients
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+
+        # Properties are prefetched with prefetch_recipients()
+        with self.assertNumQueries(2):
+            msg = Message.objects.prefetch_related(Message.prefetch_recipients()).get(pk=msg.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertItemsEqual(msg.recipients_bcc, [bcc])
 
     def test_to_cc_and_bcc_formatted_properties(self):
         msg = self._create_message()

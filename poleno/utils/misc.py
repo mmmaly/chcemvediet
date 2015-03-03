@@ -63,10 +63,15 @@ def try_except(func, failure=None, *exceptions):
         a = dict(moo=3, foo=4)
         b = try_except(lambda: a.goo, 7, KeyError)
     """
+    if not exceptions:
+        exceptions = (Exception,)
     try:
         return func()
-    except exceptions or Exception:
+    except exceptions:
         return failure() if callable(failure) else failure
+
+def nop():
+    pass
 
 def squeeze(s):
     u"""

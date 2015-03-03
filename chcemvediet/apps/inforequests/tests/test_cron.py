@@ -10,7 +10,6 @@ from poleno.mail.models import Message, Recipient
 from poleno.timewarp import timewarp
 from poleno.cron.test import mock_cron_jobs
 from poleno.utils.date import local_datetime_from_local, utc_datetime_from_local
-from poleno.utils.misc import collect_stdout
 from poleno.utils.test import created_instances
 
 from . import InforequestsTestCaseMixin
@@ -51,8 +50,7 @@ class UndecidedEmailReminderCronJobTest(CronTestCaseMixin, InforequestsTestCaseM
     def _call_cron_job(self):
         with mock.patch(u'chcemvediet.apps.inforequests.cron.workdays.between', side_effect=lambda a,b: (b-a).days):
             with created_instances(Message.objects) as message_set:
-                with collect_stdout():
-                    undecided_email_reminder().do()
+                undecided_email_reminder().do()
         return message_set
 
 
@@ -185,6 +183,37 @@ class UndecidedEmailReminderCronJobTest(CronTestCaseMixin, InforequestsTestCaseM
         message_set = self._call_cron_job()
         self.assertTrue(message_set.exists())
 
+    def test_inforequest_is_skipped_if_exception_raised_while_checking_it(self):
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        inforequests = [self._create_inforequest() for i in range(3)]
+        emails = [self._create_inforequest_email(inforequest=ir) for ir in inforequests]
+
+        timewarp.jump(local_datetime_from_local(u'2010-10-20 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, Exception, None, None, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                message_set = self._call_cron_job()
+        self.assertEqual(message_set.count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Checking if undecided email reminder should be sent failed: <Inforequest: %s>' % inforequests[1].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Sent undecided email reminder: <Inforequest: %s>' % inforequests[0].pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent undecided email reminder: <Inforequest: %s>' % inforequests[2].pk)
+
+    def test_inforequest_is_skipped_if_exception_raised_while_sending_reminder(self):
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        inforequests = [self._create_inforequest() for i in range(3)]
+        emails = [self._create_inforequest_email(inforequest=ir) for ir in inforequests]
+
+        timewarp.jump(local_datetime_from_local(u'2010-10-20 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, None, None, None, Exception, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                message_set = self._call_cron_job()
+
+        self.assertEqual(message_set.count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Sent undecided email reminder: <Inforequest: %s>' % inforequests[0].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Sending undecided email reminder failed: <Inforequest: %s>' % inforequests[1].pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent undecided email reminder: <Inforequest: %s>' % inforequests[2].pk)
+
 class ObligeeDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin, TestCase):
     u"""
     Tests ``obligee_deadline_reminder()`` cron job.
@@ -193,8 +222,7 @@ class ObligeeDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCase
     def _call_cron_job(self):
         with mock.patch(u'chcemvediet.apps.inforequests.cron.workdays.between', side_effect=lambda a,b: (b-a).days):
             with created_instances(Message.objects) as message_set:
-                with collect_stdout():
-                    obligee_deadline_reminder().do()
+                obligee_deadline_reminder().do()
         return message_set
 
 
@@ -350,6 +378,36 @@ class ObligeeDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCase
         message_set = self._call_cron_job()
         self.assertTrue(message_set.exists())
 
+    def test_branch_is_skipped_if_exception_raised_while_checking_it(self):
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        inforequest, _, actions = self._create_inforequest_scenario((u'advancement', [], [], []))
+        _, (_, ((_, (action1,)), (_, (action2,)), (_, (action3,)))) = actions
+
+        timewarp.jump(local_datetime_from_local(u'2010-11-20 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, Exception, None, None, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                message_set = self._call_cron_job()
+        self.assertEqual(message_set.count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Checking if obligee deadline reminder should be sent failed: <Action: %s>' % action2.pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Sent obligee deadline reminder: <Action: %s>' % action1.pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent obligee deadline reminder: <Action: %s>' % action3.pk)
+
+    def test_branch_is_skipped_if_exception_raised_while_sending_reminder(self):
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        inforequest, _, actions = self._create_inforequest_scenario((u'advancement', [], [], []))
+        _, (_, ((_, (action1,)), (_, (action2,)), (_, (action3,)))) = actions
+
+        timewarp.jump(local_datetime_from_local(u'2010-11-20 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, None, None, None, Exception, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                message_set = self._call_cron_job()
+        self.assertEqual(message_set.count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Sent obligee deadline reminder: <Action: %s>' % action1.pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Sending obligee deadline reminder failed: <Action: %s>' % action2.pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent obligee deadline reminder: <Action: %s>' % action3.pk)
+
 class ApplicantDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin, TestCase):
     u"""
     Tests ``applicant_deadline_reminder()`` cron job.
@@ -358,8 +416,7 @@ class ApplicantDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCa
     def _call_cron_job(self):
         with mock.patch(u'chcemvediet.apps.inforequests.cron.workdays.between', side_effect=lambda a,b: (b-a).days):
             with created_instances(Message.objects) as message_set:
-                with collect_stdout():
-                    applicant_deadline_reminder().do()
+                applicant_deadline_reminder().do()
         return message_set
 
 
@@ -507,6 +564,36 @@ class ApplicantDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCa
         message_set = self._call_cron_job()
         self.assertTrue(message_set.exists())
 
+    def test_branch_is_skipped_if_exception_raised_while_checking_it(self):
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        inforequest, _, actions = self._create_inforequest_scenario((u'advancement', [u'clarification_request'], [u'clarification_request'], [u'clarification_request']))
+        _, (_, ((_, (_, action1)), (_, (_, action2)), (_, (_, action3)))) = actions
+
+        timewarp.jump(local_datetime_from_local(u'2010-11-20 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, Exception, None, None, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                message_set = self._call_cron_job()
+        self.assertEqual(message_set.count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Checking if applicant deadline reminder should be sent failed: <Action: %s>' % action2.pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Sent applicant deadline reminder: <Action: %s>' % action1.pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent applicant deadline reminder: <Action: %s>' % action3.pk)
+
+    def test_branch_is_skipped_if_exception_raised_while_sending_reminder(self):
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        inforequest, _, actions = self._create_inforequest_scenario((u'advancement', [u'clarification_request'], [u'clarification_request'], [u'clarification_request']))
+        _, (_, ((_, (_, action1)), (_, (_, action2)), (_, (_, action3)))) = actions
+
+        timewarp.jump(local_datetime_from_local(u'2010-11-20 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, None, None, None, Exception, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                message_set = self._call_cron_job()
+        self.assertEqual(message_set.count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Sent applicant deadline reminder: <Action: %s>' % action1.pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Sending applicant deadline reminder failed: <Action: %s>' % action2.pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent applicant deadline reminder: <Action: %s>' % action3.pk)
+
 class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin, TestCase):
     u"""
     Tests ``close_inforequests()`` cron job.
@@ -514,8 +601,7 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
 
     def _call_cron_job(self):
         with mock.patch(u'chcemvediet.apps.inforequests.cron.workdays.between', side_effect=lambda a,b: (b-a).days):
-            with collect_stdout():
-                close_inforequests().do()
+            close_inforequests().do()
 
 
     def test_times_job_is_run_at(self):
@@ -643,3 +729,35 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
 
         inforequest = Inforequest.objects.get(pk=inforequest.pk)
         self.assertTrue(inforequest.closed)
+
+    def test_inforequest_is_skipped_if_exception_raised_while_checking_it(self):
+        timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
+        scenarios = [self._create_inforequest_scenario() for i in range(3)]
+
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, Exception, None, None, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                with created_instances(Action.objects) as action_set:
+                    self._call_cron_job()
+        self.assertEqual(action_set.count(), 2)
+        self.assertEqual(Inforequest.objects.closed().count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Checking if inforequest should be closed failed: <Inforequest: %s>' % scenarios[1][0].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Closed inforequest: <Inforequest: %s>' % scenarios[0][0].pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Closed inforequest: <Inforequest: %s>' % scenarios[2][0].pk)
+
+    def test_inforequest_is_skipped_if_exception_raised_while_closing_id(self):
+        timewarp.jump(local_datetime_from_local(u'2010-03-05 10:33:00'))
+        scenarios = [self._create_inforequest_scenario() for i in range(3)]
+
+        timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
+        with mock.patch(u'chcemvediet.apps.inforequests.cron.nop', side_effect=[None, None, None, None, Exception, None]):
+            with mock.patch(u'chcemvediet.apps.inforequests.cron.cron_logger') as logger:
+                with created_instances(Action.objects) as action_set:
+                    self._call_cron_job()
+        self.assertEqual(action_set.count(), 2)
+        self.assertEqual(Inforequest.objects.closed().count(), 2)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Closed inforequest: <Inforequest: %s>' % scenarios[0][0].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Closing inforequest failed: <Inforequest: %s>' % scenarios[1][0].pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Closed inforequest: <Inforequest: %s>' % scenarios[2][0].pk)

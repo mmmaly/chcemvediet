@@ -8,6 +8,7 @@ from django.utils.module_loading import import_by_path
 
 from poleno.cron import cron_job, cron_logger
 from poleno.utils.date import utc_now
+from poleno.utils.misc import nop
 
 from .models import Message
 from .signals import message_sent, message_received
@@ -24,6 +25,7 @@ def mail():
                 try:
                     with transaction.atomic():
                         message = next(messages)
+                        nop() # To let tests raise testing exception here.
                     cron_logger.info(u'Received email: %s' % repr(message))
                 except StopIteration:
                     break
@@ -43,6 +45,7 @@ def mail():
                 message.processed = utc_now()
                 message.save()
                 message_received.send(sender=None, message=message)
+                nop() # To let tests raise testing exception here.
             cron_logger.info(u'Processed received email: %s' % repr(message))
         except Exception:
             cron_logger.error(u'Processing received email failed: %s\n%s' % (repr(message), traceback.format_exc()))
@@ -66,6 +69,7 @@ def mail():
                             message.processed = utc_now()
                             message.save()
                             message_sent.send(sender=None, message=message)
+                            nop() # To let tests raise testing exception here.
                         cron_logger.info(u'Sent email: %s' % repr(message))
                     except Exception:
                         cron_logger.error(u'Seding email failed: %s\n%s' % (repr(message), traceback.format_exc()))

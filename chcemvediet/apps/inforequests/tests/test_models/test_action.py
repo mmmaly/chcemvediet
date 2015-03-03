@@ -10,12 +10,13 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 from poleno.timewarp import timewarp
+from poleno.attachments.models import Attachment
 from poleno.mail.models import Message, Recipient
 from poleno.utils.date import local_datetime_from_local, naive_date, local_today
 from poleno.utils.test import created_instances
 
 from .. import InforequestsTestCaseMixin
-from ...models import InforequestEmail, Action
+from ...models import InforequestEmail, Branch, Action
 
 class ActionTest(InforequestsTestCaseMixin, TestCase):
     u"""
@@ -326,6 +327,50 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
             actions.append(self._create_action(branch=branch, effective_date=naive_date(date)))
         result = Action.objects.all()
         self.assertEqual(list(result), sorted(actions, key=lambda a: (a.effective_date, a.pk)))
+
+    def test_prefetch_attachments_staticmethod(self):
+        inforequest = self._create_inforequest()
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
+        attachment1 = self._create_attachment(generic_object=action)
+        attachment2 = self._create_attachment(generic_object=action)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            action = Action.objects.prefetch_related(Action.prefetch_attachments()).get(pk=action.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            branch = (Branch.objects
+                    .prefetch_related(Branch.prefetch_actions())
+                    .prefetch_related(Action.prefetch_attachments(u'actions', Attachment.objects.extra(select=dict(moo=47))))
+                    .get(pk=branch.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(branch.actions[0].attachments, [attachment1, attachment2])
+            self.assertEqual(branch.actions[0].attachments[0].moo, 47)
+
+    def test_attachments_property(self):
+        inforequest = self._create_inforequest()
+        branch = self._create_branch(inforequest=inforequest)
+        action = self._create_action(branch=branch)
+        attachment1 = self._create_attachment(generic_object=action)
+        attachment2 = self._create_attachment(generic_object=action)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            action = Action.objects.get(pk=action.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+
+        # Property is prefetched with prefetch_attachments()
+        with self.assertNumQueries(2):
+            action = Action.objects.prefetch_related(Action.prefetch_attachments()).get(pk=action.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
 
     def test_is_applicant_is_obligee_and_is_implicit_action_properties(self):
         tests = (                                   # Applicant, Obligee, Implicit

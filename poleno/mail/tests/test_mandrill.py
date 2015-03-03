@@ -12,8 +12,8 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbid
 from django.test import TestCase
 
 from poleno.utils.date import utc_now
-from poleno.utils.misc import Bunch, collect_stdout
-from poleno.utils.test import override_signals, created_instances, ViewTestCaseMixin
+from poleno.utils.misc import Bunch
+from poleno.utils.test import override_signals, created_instances, patch_with_exception, ViewTestCaseMixin
 
 from . import MailTestCaseMixin
 from ..models import Message, Recipient
@@ -64,8 +64,7 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
                 delattr(settings, name)
             with mock.patch(u'poleno.mail.transports.mandrill.transport.requests', requests):
                 with override_signals(message_sent, message_received):
-                    with collect_stdout():
-                        mail_cron_job().do()
+                    mail_cron_job().do()
 
         posts = [Bunch(url=call[0][0], data=json.loads(call[1][u'data'])) for call in requests.post.call_args_list]
         return posts
@@ -77,12 +76,15 @@ class MandrillTransportTest(MailTestCaseMixin, TestCase):
         requests = self._run_mail_cron_job()
         self.assertEqual(len(requests), 10)
 
-    # FIXME: check the error is logged not raised
-    #def test_failed_post_request_raises_exception(self):
-    #    msg = self._create_message()
-    #    rcpt = self._create_recipient(message=msg)
-    #    with self.assertRaisesMessage(RuntimeError, u'Sending Message(pk=%s) failed with status code 404. Mandrill response: Response text' % msg.pk):
-    #        requests = self._run_mail_cron_job(status_code=404)
+    def test_failed_post_request_logs_error(self):
+        msg = self._create_message()
+        rcpt = self._create_recipient(message=msg)
+        logger = mock.Mock()
+        with mock.patch(u'poleno.mail.cron.cron_logger', logger):
+            self._run_mail_cron_job(status_code=404)
+        logged = logger.error.call_args[0][0]
+        self.assertIn(u'Seding email failed: <Message: %s>' % msg.pk, logged)
+        self.assertIn(u'RuntimeError: Sending Message(pk=%s) failed with status code 404.' % msg.pk, logged)
 
     def test_mandrill_api_key_setting(self):
         msg = self._create_message()
@@ -431,6 +433,32 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
             mock.call(signal=webhook_event, data={u'_id': u'remote-2', u'event': u'soft_bounce'}, event_type=u'soft_bounce', sender=None),
             mock.call(signal=webhook_event, data={u'_id': u'remote-3', u'event': u'click'}, event_type=u'click', sender=None),
             ])
+
+    def test_post_request_with_valid_data_rolls_back_if_exception_raised(self):
+        def receiver(*args, **kwargs):
+            self._create_message()
+
+        with self._overrides(MANDRILL_WEBHOOK_URL=u'https://testhost/', MANDRILL_WEBHOOK_KEYS=[u'testkey']):
+            webhook_event.connect(receiver)
+
+            # No exceptions, data commited
+            with created_instances(Message.objects) as msg_set:
+                self.client.post(self._webhook_url(), secure=True,
+                        data={u'mandrill_events': json.dumps([
+                            {u'event': u'click', u'_id': u'remote-1'},
+                            ])},
+                        HTTP_X_MANDRILL_SIGNATURE=u'phOye9ZN3XunJ8SG7R9AT6KhpUo=')
+            self.assertTrue(msg_set.exists())
+
+            # With exception, data rolled back
+            with created_instances(Message.objects) as msg_set:
+                with patch_with_exception(u'poleno.mail.transports.mandrill.views.HttpResponse'):
+                    self.client.post(self._webhook_url(), secure=True,
+                            data={u'mandrill_events': json.dumps([
+                                {u'event': u'click', u'_id': u'remote-1'},
+                                ])},
+                            HTTP_X_MANDRILL_SIGNATURE=u'phOye9ZN3XunJ8SG7R9AT6KhpUo=')
+            self.assertFalse(msg_set.exists())
 
 class MessageStatusWebhookEventTest(MailTestCaseMixin, TestCase):
     u"""

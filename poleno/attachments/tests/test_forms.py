@@ -3,6 +3,7 @@
 from testfixtures import TempDirectory
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.template import Context, Template
 from django.contrib.auth.models import User
@@ -189,3 +190,22 @@ class AttachmentsFieldTest(TestCase):
         self.assertEqual(field.download_url_func(self.attachment2), u'/download/%s/' % self.attachment2.pk)
         self.assertEqual(field.widget.upload_url_func(), u'/upload/')
         self.assertEqual(field.widget.download_url_func(self.attachment2), u'/download/%s/' % self.attachment2.pk)
+
+    def test_to_python_is_cached(self):
+        field = AttachmentsField(attached_to=self.user1)
+
+        # Valid value
+        value = u'%s,%s' % (self.attachment1a.pk, self.attachment1b.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(field.clean(value), [self.attachment1a, self.attachment1b])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(field.clean(value), [self.attachment1a, self.attachment1b])
+
+        # Invalid value
+        value = u'%s,%s' % (self.attachment1a.pk, self.attachment2.pk)
+        with self.assertNumQueries(1):
+            with self.assertRaises(ValidationError):
+                field.clean(value)
+        with self.assertNumQueries(0):
+            with self.assertRaises(ValidationError):
+                field.clean(value)

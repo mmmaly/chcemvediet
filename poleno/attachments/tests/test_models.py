@@ -191,6 +191,14 @@ class AttachmentModelTest(TestCase):
         new.save()
         self.assertAlmostEqual(new.created, utc_datetime_from_local(u'2014-10-05 15:33:10'), delta=datetime.timedelta(seconds=10))
 
+    def test_clone_method_generic_object_argument(self):
+        obj = self._create_instance(generic_object=self.user)
+        new = obj.clone(self.user2)
+        new.save()
+        self.assertEqual(new.generic_type, ContentType.objects.get_for_model(User))
+        self.assertEqual(new.generic_id, self.user2.pk)
+        self.assertEqual(new.generic_object, self.user2)
+
     def test_repr(self):
         obj = self._create_instance()
         self.assertEqual(repr(obj), u'<Attachment: %s>' % obj.pk)

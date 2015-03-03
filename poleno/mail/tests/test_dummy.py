@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 
-from poleno.utils.misc import collect_stdout
 from poleno.utils.test import override_signals, created_instances
 
 from . import MailTestCaseMixin
@@ -22,8 +21,7 @@ class DummyTransportTest(MailTestCaseMixin, TestCase):
                 }
         with self.settings(**overrides):
             with override_signals(message_sent, message_received):
-                with collect_stdout():
-                    mail_cron_job().do()
+                mail_cron_job().do()
 
 
     def test_inbound_transport_does_not_create_any_message(self):

@@ -3,6 +3,8 @@
 from django.db import IntegrityError
 from django.test import TestCase
 
+from poleno.utils.date import utc_datetime_from_local
+
 from .. import InforequestsTestCaseMixin
 from ...models import InforequestEmail
 
@@ -80,3 +82,26 @@ class InforequestEmailTest(InforequestsTestCaseMixin, TestCase):
         inforequest = self._create_inforequest()
         email, rel = self._create_inforequest_email(inforequest=inforequest)
         self.assertEqual(repr(rel), u'<InforequestEmail: %s>' % rel.pk)
+
+    def test_undecided_oldest_newest_and_order_by_email_query_methods(self):
+        inforequest = self._create_inforequest()
+        _, rel4 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 13:22'), reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        _, rel2 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 11:22'), reltype=InforequestEmail.TYPES.UNRELATED)
+        _, rel5 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 14:22'), reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        _, rel3 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 12:22'), reltype=InforequestEmail.TYPES.UNDECIDED)
+        _, rel7 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 16:22'), reltype=InforequestEmail.TYPES.UNRELATED)
+        _, rel6 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 15:22'), reltype=InforequestEmail.TYPES.UNDECIDED)
+        _, rel1 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 10:22'), reltype=InforequestEmail.TYPES.UNKNOWN)
+
+        # Oldest
+        self.assertEqual(list(InforequestEmail.objects.oldest()), [rel1])
+        # Newest
+        self.assertEqual(list(InforequestEmail.objects.newest()), [rel7])
+        # All undecided
+        self.assertItemsEqual(InforequestEmail.objects.undecided(), [rel6, rel3])
+        # Oldest undecided
+        self.assertEqual(list(InforequestEmail.objects.undecided().oldest()), [rel3])
+        # Newest undecided
+        self.assertEqual(list(InforequestEmail.objects.undecided().newest()), [rel6])
+        # order_by_email
+        self.assertEqual(list(InforequestEmail.objects.order_by_email()), [rel1, rel2, rel3, rel4, rel5, rel6, rel7])

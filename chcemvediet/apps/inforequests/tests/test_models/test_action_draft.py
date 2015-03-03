@@ -6,9 +6,11 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 from poleno.utils.date import naive_date
+from poleno.attachments.models import Attachment
+from chcemvediet.apps.obligees.models import Obligee
 
 from .. import InforequestsTestCaseMixin
-from ...models import ActionDraft
+from ...models import Inforequest, ActionDraft
 
 class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
     u"""
@@ -266,6 +268,90 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         sample = random.sample(drafts, 5)
         result = ActionDraft.objects.filter(pk__in=[d.pk for d in sample])
         self.assertEqual(list(result), sorted(sample, key=lambda d: d.pk))
+
+    def test_prefetch_attachments_staticmethod(self):
+        inforequest = self._create_inforequest()
+        draft = self._create_action_draft(inforequest=inforequest)
+        attachment1 = self._create_attachment(generic_object=draft)
+        attachment2 = self._create_attachment(generic_object=draft)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_attachments()).get(pk=draft.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            inforequest = (Inforequest.objects
+                    .prefetch_related(u'actiondraft_set')
+                    .prefetch_related(ActionDraft.prefetch_attachments(u'actiondraft_set', Attachment.objects.extra(select=dict(moo=47))))
+                    .get(pk=inforequest.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest.actiondraft_set.first().attachments, [attachment1, attachment2])
+            self.assertEqual(inforequest.actiondraft_set.first().attachments[0].moo, 47)
+
+    def test_attachments_property(self):
+        inforequest = self._create_inforequest()
+        draft = self._create_action_draft(inforequest=inforequest)
+        attachment1 = self._create_attachment(generic_object=draft)
+        attachment2 = self._create_attachment(generic_object=draft)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            draft = ActionDraft.objects.get(pk=draft.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+
+        # Property is prefetched with prefetch_attachments()
+        with self.assertNumQueries(2):
+            draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_attachments()).get(pk=draft.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+
+    def test_prefetch_obligees_staticmethod(self):
+        inforequest = self._create_inforequest()
+        draft = self._create_action_draft(inforequest=inforequest)
+        draft.obligee_set.add(self.obligee1)
+        draft.obligee_set.add(self.obligee2)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_obligees()).get(pk=draft.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            inforequest = (Inforequest.objects
+                    .prefetch_related(u'actiondraft_set')
+                    .prefetch_related(ActionDraft.prefetch_obligees(u'actiondraft_set', Obligee.objects.extra(select=dict(moo=47))))
+                    .get(pk=inforequest.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest.actiondraft_set.first().obligees, [self.obligee1, self.obligee2])
+            self.assertEqual(inforequest.actiondraft_set.first().obligees[0].moo, 47)
+
+    def test_obligees_property(self):
+        inforequest = self._create_inforequest()
+        draft = self._create_action_draft(inforequest=inforequest)
+        draft.obligee_set.add(self.obligee1)
+        draft.obligee_set.add(self.obligee2)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            draft = ActionDraft.objects.get(pk=draft.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+
+        # Property is prefetched with prefetch_obligees()
+        with self.assertNumQueries(2):
+            draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_obligees()).get(pk=draft.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
 
     def test_repr(self):
         inforequest = self._create_inforequest()

@@ -1,13 +1,18 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import mock
+import contextlib
 from testfixtures import TempDirectory
 
 from django.core.files.base import ContentFile
+from django.db import connection
 from django.template import Context, Template
+from django.template.loader import render_to_string
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from django.test import TestCase
-from django.test.utils import override_settings
+from django.test.utils import override_settings, CaptureQueriesContext
 
 from poleno.timewarp import timewarp
 from poleno.attachments.models import Attachment
@@ -18,6 +23,48 @@ from chcemvediet.apps.obligees.models import Obligee
 from ..models import InforequestDraft, Inforequest, InforequestEmail, Branch, Action, ActionDraft
 
 class InforequestsTestCaseMixin(TestCase):
+
+    @contextlib.contextmanager
+    def assertQueriesDuringRender(self, *patterns, **kwargs):
+        u"""
+        Use to assert that views prefetch all related models before rendering their templates.
+        Views should prefetch their related models to prevent templates from making database
+        queries in a loop.
+        """
+        pre_mock_render = kwargs.pop(u'pre_mock_render', None)
+        pre_mock_render_to_string = kwargs.pop(u'pre_mock_render_to_string', None)
+        queries = []
+        def mock_render(*args, **kwargs):
+            if pre_mock_render:
+                pre_mock_render(*args, **kwargs)
+            with CaptureQueriesContext(connection) as captured:
+                res = render(*args, **kwargs)
+            queries.append(captured)
+            return res
+        def mock_render_to_string(*args, **kwargs):
+            if pre_mock_render_to_string: # pragma: no cover
+                self.pre_mock_render_to_string(*args, **kwargs)
+            with CaptureQueriesContext(connection) as captured:
+                res = render_to_string(*args, **kwargs)
+            queries.append(captured)
+            return res
+
+        with mock.patch(u'chcemvediet.apps.inforequests.views.render', mock_render):
+            with mock.patch(u'chcemvediet.apps.inforequests.views.render_to_string', mock_render_to_string):
+                yield
+
+        self.assertEqual(len(queries), len(patterns), u'%d renders executed, %d expected' % (len(queries), len(patterns)))
+        for render_queries, render_patterns in zip(queries, patterns):
+            self.assertEqual(len(render_queries), len(render_patterns), u'\n'.join([
+                u'%d queries executed, %d expected' % (len(render_queries), len(render_patterns)),
+                u'Captured queries were:',
+                u'\n'.join(q[u'sql'] for q in render_queries),
+                u'Expected patterns were:',
+                u'\n'.join(render_patterns),
+                ]))
+            for query, pattern in zip(render_queries, render_patterns):
+                self.assertRegexpMatches(query[u'sql'], pattern)
+
 
     def _pre_setup(self):
         super(InforequestsTestCaseMixin, self)._pre_setup()

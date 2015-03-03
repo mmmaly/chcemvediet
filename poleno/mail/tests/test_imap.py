@@ -8,7 +8,6 @@ from django.conf import settings
 from django.test import TestCase
 
 from poleno.utils.date import utc_now
-from poleno.utils.misc import collect_stdout
 from poleno.utils.test import override_signals
 
 from . import MailTestCaseMixin
@@ -71,8 +70,7 @@ class ImapTransportTest(MailTestCaseMixin, TestCase):
                 delattr(settings, name)
             with mock.patch.multiple(u'poleno.mail.transports.imap', IMAP4=imap4, IMAP4_SSL=imap4ssl):
                 with override_signals(message_sent, message_received):
-                    with collect_stdout():
-                        mail_cron_job().do()
+                    mail_cron_job().do()
 
         return transport
 

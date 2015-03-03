@@ -3,7 +3,10 @@
 import random
 
 from django.db import IntegrityError
+from django.contrib.auth.models import User
 from django.test import TestCase
+
+from poleno.attachments.models import Attachment
 
 from .. import InforequestsTestCaseMixin
 from ...models import InforequestDraft
@@ -82,6 +85,46 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
         sample = random.sample(drafts, 5)
         result = InforequestDraft.objects.filter(pk__in=[d.pk for d in sample])
         self.assertEqual(list(result), sorted(sample, key=lambda d: d.pk))
+
+    def test_prefetch_attachments_staticmethod(self):
+        draft = self._create_inforequest_draft()
+        attch1 = self._create_attachment(generic_object=draft)
+        attch2 = self._create_attachment(generic_object=draft)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            draft = InforequestDraft.objects.prefetch_related(InforequestDraft.prefetch_attachments()).get(pk=draft.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            user = (User.objects
+                    .prefetch_related(u'inforequestdraft_set')
+                    .prefetch_related(InforequestDraft.prefetch_attachments(u'inforequestdraft_set', Attachment.objects.extra(select=dict(moo=47))))
+                    .get(pk=self.user1.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(user.inforequestdraft_set.first().attachments, [attch1, attch2])
+            self.assertEqual(user.inforequestdraft_set.first().attachments[0].moo, 47)
+
+    def test_attachments_property(self):
+        draft = self._create_inforequest_draft()
+        attch1 = self._create_attachment(generic_object=draft)
+        attch2 = self._create_attachment(generic_object=draft)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            draft = InforequestDraft.objects.get(pk=draft.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+
+        # Property is prefetched with prefetch_attachments()
+        with self.assertNumQueries(2):
+            draft = InforequestDraft.objects.prefetch_related(InforequestDraft.prefetch_attachments()).get(pk=draft.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(draft.attachments, [attch1, attch2])
 
     def test_repr(self):
         draft = self._create_inforequest_draft()

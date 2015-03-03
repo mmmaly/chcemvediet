@@ -13,4 +13,4 @@ class DummyTransport(BaseTransport):
 
     def get_messages(self):
         return
-        yield
+        yield # pragma: no cover

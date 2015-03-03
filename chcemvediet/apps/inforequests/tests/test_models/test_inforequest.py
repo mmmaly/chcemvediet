@@ -242,47 +242,509 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         result = Inforequest.objects.all()
         self.assertEqual(list(result), sorted(inforequests, key=lambda ir: (ir.submission_date, ir.pk)))
 
-    def test_branch_property(self):
-        inforequest, branch, _ = self._create_inforequest_scenario()
-        self.assertEqual(inforequest.main_branch, branch)
-
-    def test_branch_property_with_advancement(self):
+    def test_prefetch_branches_staticmethod(self):
         inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
         _, (_, ((branch2, _),)) = actions
-        self.assertEqual(inforequest.main_branch, branch1)
 
-    def test_branch_property_raises_exception_if_inforequest_has_no_branch(self):
+        # Without arguments
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            user = (User.objects
+                    .prefetch_related(u'inforequest_set')
+                    .prefetch_related(Inforequest.prefetch_branches(u'inforequest_set', Branch.objects.extra(select=dict(moo=47))))
+                    .get(pk=self.user1.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(user.inforequest_set.first().branches, [branch1, branch2])
+            self.assertEqual(user.inforequest_set.first().branches[0].moo, 47)
+
+    def test_branches_property(self):
+        inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (_, ((branch2, _),)) = actions
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+
+        # Property is prefetched with prefetch_branches()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+
+    def test_prefetch_main_branch_staticmethod(self):
+        inforequest, branch, _ = self._create_inforequest_scenario(u'advancement')
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_main_branch()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest._main_branch, [branch])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            user = (User.objects
+                    .prefetch_related(u'inforequest_set')
+                    .prefetch_related(Inforequest.prefetch_main_branch(u'inforequest_set', Branch.objects.extra(select=dict(moo=47))))
+                    .get(pk=self.user1.pk))
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(user.inforequest_set.first()._main_branch, [branch])
+            self.assertEqual(user.inforequest_set.first()._main_branch[0].moo, 47)
+
+    def test_main_branch_property(self):
+        inforequest, branch, _ = self._create_inforequest_scenario(u'advancement')
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.main_branch, branch)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.main_branch, branch)
+
+        # Property uses cached branches property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.branches
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.main_branch, branch)
+
+        # Property is prefetched with prefetch_main_branch()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_main_branch()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.main_branch, branch)
+
+        # Property is prefetched with prefetch_branches()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.main_branch, branch)
+
+    def test_main_branch_property_raises_exception_if_there_is_no_main_branch(self):
         inforequest = self._create_inforequest()
         with self.assertRaisesMessage(Branch.DoesNotExist, u'Inforequest has no main branch.'):
             inforequest.main_branch
 
-    def test_undecided_emails_set_property_and_friends(self):
-        u"""
-        Tests ``undecided_emails_set`` property and properties ``has_undecided_emails``,
-        ``oldest_undecided_email`` and ``newest_undecided_email`` using it.
-        """
+    def test_main_branch_property_raises_exception_if_there_are_multiple_main_branches(self):
+        inforequest = self._create_inforequest()
+        branch1 = self._create_branch(inforequest=inforequest)
+        branch2 = self._create_branch(inforequest=inforequest)
+        with self.assertRaisesMessage(Branch.MultipleObjectsReturned, u'Inforequest has more than one main branch.'):
+            inforequest.main_branch
+
+    def test_undecided_emails_set_property(self):
         inforequest, _, _ = self._create_inforequest_scenario()
-        email1, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
-        email2, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
-        email3, rel3 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
-        email4, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
-        email5, rel5 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
-        email6, rel6 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
-        self.assertTrue(inforequest.has_undecided_emails)
-        self.assertEqual(inforequest.oldest_undecided_email, email3)
-        self.assertEqual(inforequest.newest_undecided_email, email6)
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email3, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        email6, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
         self.assertItemsEqual(inforequest.undecided_emails_set.all(), [email3, email6])
 
-    def test_undecided_emails_set_property_and_friends_with_no_undecided_emails(self):
+    def test_undecided_emails_set_property_with_no_undecided_emails(self):
         inforequest, _, _ = self._create_inforequest_scenario()
-        email1, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
-        email2, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
-        email4, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
-        email5, rel5 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
-        self.assertFalse(inforequest.has_undecided_emails)
-        self.assertIsNone(inforequest.oldest_undecided_email)
-        self.assertIsNone(inforequest.newest_undecided_email)
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
         self.assertItemsEqual(inforequest.undecided_emails_set.all(), [])
+
+    def test_prefetch_undecided_emails_staticmethod(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        _, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        _, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        _, rel3 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        _, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        _, rel5 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        _, rel6 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest._undecided_emails, [rel3, rel6])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            user = (User.objects
+                    .prefetch_related(u'inforequest_set')
+                    .prefetch_related(Inforequest.prefetch_undecided_emails(u'inforequest_set', InforequestEmail.objects.extra(select=dict(moo=47))))
+                    .get(pk=self.user1.pk))
+        with self.assertNumQueries(0):
+            self.assertEqual(user.inforequest_set.first()._undecided_emails, [rel3, rel6])
+            self.assertEqual(user.inforequest_set.first()._undecided_emails[0].moo, 47)
+
+    def test_undecided_emails_property(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email3, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        email6, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.undecided_emails, [email3, email6])
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails, [email3, email6])
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails, [email3, email6])
+
+    def test_undecided_emails_property_with_no_undecided_emails(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.undecided_emails, [])
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails, [])
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails, [])
+
+    def test_undecided_emails_count_property(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email3, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        email6, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.undecided_emails_count, 2)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 2)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 2)
+
+        # Property is prefetched with select_undecided_emails_count()
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.select_undecided_emails_count().get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 2)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 2)
+
+    def test_undecided_emails_count_property_with_no_undecided_emails(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.undecided_emails_count, 0)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 0)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 0)
+
+        # Property is prefetched with select_undecided_emails_count()
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.select_undecided_emails_count().get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 0)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.undecided_emails_count, 0)
+
+    def test_has_undecided_emails_property(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email3, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        email6, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertTrue(inforequest.has_undecided_emails)
+        with self.assertNumQueries(0):
+            self.assertTrue(inforequest.has_undecided_emails)
+
+        # Property uses cached undecided_emails_count property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails_count
+        with self.assertNumQueries(0):
+            self.assertTrue(inforequest.has_undecided_emails)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertTrue(inforequest.has_undecided_emails)
+
+        # Property is prefetched with select_undecided_emails_count()
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.select_undecided_emails_count().get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertTrue(inforequest.has_undecided_emails)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertTrue(inforequest.has_undecided_emails)
+
+    def test_has_undecided_emails_property_with_no_undecided_emails(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertFalse(inforequest.has_undecided_emails)
+        with self.assertNumQueries(0):
+            self.assertFalse(inforequest.has_undecided_emails)
+
+        # Property uses cached undecided_emails_count property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails_count
+        with self.assertNumQueries(0):
+            self.assertFalse(inforequest.has_undecided_emails)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertFalse(inforequest.has_undecided_emails)
+
+        # Property is prefetched with select_undecided_emails_count()
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.select_undecided_emails_count().get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertFalse(inforequest.has_undecided_emails)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertFalse(inforequest.has_undecided_emails)
+
+    def test_oldest_undecided_email_property(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email3, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        email6, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.oldest_undecided_email, email3)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.oldest_undecided_email, email3)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.oldest_undecided_email, email3)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.oldest_undecided_email, email3)
+
+    def test_oldest_undecided_email_property_with_no_undecided_emails(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertIsNone(inforequest.oldest_undecided_email)
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.oldest_undecided_email)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.oldest_undecided_email)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.oldest_undecided_email)
+
+    def test_prefetch_newest_undecided_email_staticmethod(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        _, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        _, rel2 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        _, rel3 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        _, rel4 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        _, rel5 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        _, rel6 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Without arguments
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_newest_undecided_email()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest._newest_undecided_email, [rel6])
+
+        # With custom path and queryset
+        with self.assertNumQueries(3):
+            user = (User.objects
+                    .prefetch_related(u'inforequest_set')
+                    .prefetch_related(Inforequest.prefetch_newest_undecided_email(u'inforequest_set', InforequestEmail.objects.extra(select=dict(moo=47))))
+                    .get(pk=self.user1.pk))
+        with self.assertNumQueries(0):
+            self.assertEqual(user.inforequest_set.first()._newest_undecided_email, [rel6])
+            self.assertEqual(user.inforequest_set.first()._newest_undecided_email[0].moo, 47)
+
+    def test_newest_undecided_email_property(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email3, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+        email6, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNDECIDED)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.newest_undecided_email, email6)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.newest_undecided_email, email6)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.newest_undecided_email, email6)
+
+        # Property is prefetched with prefetch_newest_undecided_email()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_newest_undecided_email()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.newest_undecided_email, email6)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.newest_undecided_email, email6)
+
+    def test_newest_undecided_email_property_with_no_undecided_emails(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        email1, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
+        email2, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNRELATED)
+        email4, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
+        email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
+
+        # Property is cached
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertIsNone(inforequest.newest_undecided_email)
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.newest_undecided_email)
+
+        # Property uses cached undecided_emails property
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            inforequest.undecided_emails
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.newest_undecided_email)
+
+        # Property is prefetched with prefetch_newest_undecided_email()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_newest_undecided_email()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.newest_undecided_email)
+
+        # Property is prefetched with prefetch_undecided_emails()
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_undecided_emails()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertIsNone(inforequest.newest_undecided_email)
 
     def test_can_add_x_properties_with_one_branch(self):
         inforequest, _, _ = self._create_inforequest_scenario()
@@ -392,6 +854,55 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
             else:
                 with self.assertRaisesMessage(expected_result, expected_message):
                     inforequest.can_add_action(*action_types)
+
+    def test_branches_advanced_by_method(self):
+        inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (advancement, ((branch2, _),)) = actions
+
+        # Fetch branches if not prefetched
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertItemsEqual(inforequest.branches_advanced_by(advancement), [branch2])
+
+        # Use prefetched branches if prefetched
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertItemsEqual(inforequest.branches_advanced_by(advancement), [branch2])
+
+    def test_branch_by_pk_method(self):
+        inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
+        _, (_, ((branch2, _),)) = actions
+
+        # Fetch branches if not prefetched
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            self.assertEqual(inforequest.branch_by_pk(branch2.pk), branch2)
+
+        # Use prefetched branches if prefetched
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            self.assertEqual(inforequest.branch_by_pk(branch2.pk), branch2)
+
+    def test_branch_by_pk_method_with_invalid_pk(self):
+        inforequest, _, _ = self._create_inforequest_scenario(u'advancement')
+
+        # Fetch branches if not prefetched
+        with self.assertNumQueries(1):
+            inforequest = Inforequest.objects.get(pk=inforequest.pk)
+        with self.assertNumQueries(1):
+            with self.assertRaises(ValueError):
+                self.assertEqual(inforequest.branch_by_pk(47), branch2)
+
+        # Use prefetched branches if prefetched
+        with self.assertNumQueries(2):
+            inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
+        with self.assertNumQueries(0):
+            with self.assertRaises(ValueError):
+                self.assertEqual(inforequest.branch_by_pk(47), branch2)
 
     def test_send_notification(self):
         u"""

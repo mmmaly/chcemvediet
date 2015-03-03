@@ -6,6 +6,7 @@ from django.template import Context, Template
 from django.http import HttpResponse
 from django.conf.urls import patterns, url, include
 from django.conf.urls.i18n import i18n_patterns
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.test import TestCase
 
@@ -132,6 +133,19 @@ class TemplatetagsStringTest(TestCase):
                 u'({% filter squeeze %}\n\n\txxx    yyy\nzzz\n\n\n\r{% endfilter %})' # block context
                 u'', s=u'  aaa\t\n\n bbb ccc\n\r\n')
         self.assertEqual(rendered, u'(aaa bbb ccc)(f f)(xxx yyy zzz)')
+
+    def test_generic_type_filter(self):
+        u"""
+        Tests ``obj|generic_type|method`` filter calls the method.
+        """
+        user = User.objects.create_user(u'aaa')
+        rendered = self._render(
+                u'{% load generic_type method from poleno.utils %}'
+                u'({{ user|generic_type|method:"app_label" }})'
+                u'({{ user|generic_type|method:"model" }})'
+                u'({{ user|generic_type|method:"name" }})'
+                u'', user=user)
+        self.assertEqual(rendered, u'(auth)(user)(user)')
 
     def test_call_method_filters(self):
         u"""

@@ -55,6 +55,12 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertTemplateUsedCount(response, u'inforequests/detail-branch.html', 1)
         self.assertTemplateUsedCount(response, u'inforequests/detail-action.html', 3)
 
+    def test_inforequest_with_single_branch_related_models_are_prefetched_before_render(self):
+        inforequest, _, _ = self._create_inforequest_scenario(u'confirmation', u'extension')
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+
     def test_inforequest_with_multiple_branches(self):
         inforequest, _, _ = self._create_inforequest_scenario(
                 u'confirmation',
@@ -87,6 +93,18 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertTemplateUsedCount(response, u'inforequests/detail-branch.html', 5)
         self.assertTemplateUsedCount(response, u'inforequests/detail-action.html', 12)
 
+    def test_inforequest_with_multiple_branches_related_models_are_prefetched_before_render(self):
+        inforequest, _, _ = self._create_inforequest_scenario(
+                u'confirmation',
+                (u'advancement',
+                    [u'disclosure'],
+                    [u'refusal'],
+                    [u'confirmation', (u'advancement', [u'refusal'])]),
+                )
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+
     def test_inforequest_with_undecided_email(self):
         inforequest, _, _ = self._create_inforequest_scenario()
         self._create_inforequest_email(inforequest=inforequest)
@@ -109,6 +127,16 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
 
         self.assertTemplateUsedCount(response, u'inforequests/detail-email.html', 3)
 
+    def test_inforequest_with_undecided_email_related_models_are_prefetched_before_render(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        self._create_inforequest_email(inforequest=inforequest)
+        self._create_inforequest_email(inforequest=inforequest)
+        self._create_inforequest_email(inforequest=inforequest)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+
     def test_inforequest_without_undecided_email(self):
         inforequest, _, _ = self._create_inforequest_scenario()
         self._login_user()
@@ -120,6 +148,12 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         # User may act
         self.assertTemplateUsed(response, u'inforequests/detail-add_smail.html')
         self.assertTemplateUsed(response, u'inforequests/detail-new_action.html')
+
+    def test_inforequest_without_undecided_email_related_models_are_prefetched_before_render(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
     def test_closed_inforequest_with_undecided_email(self):
         inforequest, _, _ = self._create_inforequest_scenario(dict(closed=True))
@@ -146,3 +180,13 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertTemplateNotUsed(response, u'inforequests/detail-undecided.html')
         self.assertTemplateNotUsed(response, u'inforequests/detail-add_smail.html')
         self.assertTemplateNotUsed(response, u'inforequests/detail-new_action.html')
+
+    def test_closed_inforequest_related_models_are_prefetched_before_render(self):
+        inforequest, _, _ = self._create_inforequest_scenario(dict(closed=True))
+        self._create_inforequest_email(inforequest=inforequest)
+        self._create_inforequest_email(inforequest=inforequest)
+        self._create_inforequest_email(inforequest=inforequest)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))

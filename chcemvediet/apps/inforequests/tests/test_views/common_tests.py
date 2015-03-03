@@ -4,7 +4,7 @@ import json
 
 from django.http import JsonResponse
 
-from poleno.utils.test import created_instances
+from poleno.utils.test import created_instances, patch_with_exception
 
 from ...models import InforequestEmail, Action, ActionDraft
 from . import AbstractTests
@@ -259,6 +259,14 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
         self.assertIsInstance(response.context[u'form'], self.form_class)
 
+    def test_get_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
     def test_post_with_draft_button_and_valid_data_creates_new_draft_instance(self):
         scenario = self._create_scenario()
         data = self._create_post_data(button=u'draft', branch=scenario.branch)
@@ -271,6 +279,17 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
         self.assertEqual(draft.inforequest, scenario.inforequest)
         self.assertEqual(draft.branch, scenario.branch)
+
+    def test_post_with_draft_button_and_valid_data_does_not_create_new_draft_instance_if_exception_raised(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with created_instances(ActionDraft.objects) as actiondraft_set:
+            with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+                response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+        self.assertFalse(actiondraft_set.exists())
 
     def test_post_with_draft_button_and_valid_data_updates_existing_draft_instance(self):
         scenario = self._create_scenario(draft_args=dict(branch=None))
@@ -286,6 +305,21 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         self.assertEqual(draft.inforequest, scenario.inforequest)
         self.assertEqual(draft.branch, scenario.branch)
 
+    def test_post_with_draft_button_and_valid_data_does_not_update_existing_draft_instance_if_exception_raised(self):
+        scenario = self._create_scenario(draft_args=dict(branch=None))
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with created_instances(ActionDraft.objects) as actiondraft_set:
+            with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+                response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+        self.assertFalse(actiondraft_set.exists())
+
+        draft = ActionDraft.objects.get(pk=scenario.draft.pk)
+        self.assertEqual(draft.inforequest, scenario.inforequest)
+        self.assertIsNone(draft.branch)
+
     def test_post_with_draft_button_and_valid_data_returns_json_with_success(self):
         scenario = self._create_scenario()
         data = self._create_post_data(button=u'draft', branch=scenario.branch)
@@ -298,6 +332,15 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         self.assertIsInstance(response, JsonResponse)
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'success')
+
+    def test_post_with_draft_button_and_valid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(button=u'draft', branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender():
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
     def test_post_with_draft_button_and_invalid_data_does_not_create_new_draft_instance(self):
         scenario = self._create_scenario()
@@ -342,6 +385,15 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'invalid')
 
+    def test_post_with_draft_button_and_invalid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(button=u'draft', branch=u'invalid')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
     def test_post_with_default_button_and_valid_data_creates_action(self):
         scenario = self._create_scenario()
         data = self._create_post_data(branch=scenario.branch)
@@ -356,6 +408,17 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         self.assertEqual(action.type, self.action_type)
         self.assertEqual(action.branch, scenario.branch)
 
+    def test_post_with_default_button_and_valid_data_does_not_create_action_if_exception_raised(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with created_instances(scenario.branch.action_set) as action_set:
+            with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+                response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+        self.assertFalse(action_set.exists())
+
     def test_post_with_default_button_and_valid_data_deletes_draft(self):
         scenario = self._create_scenario(draft_args=dict())
         data = self._create_post_data(branch=scenario.branch)
@@ -365,6 +428,17 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
         self.assertFalse(ActionDraft.objects.filter(pk=scenario.draft.pk).exists())
+
+    def test_post_with_default_button_and_valid_data_does_not_delete_draft_if_exception_raised(self):
+        scenario = self._create_scenario(draft_args=dict())
+        data = self._create_post_data(branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        self.assertTrue(ActionDraft.objects.filter(pk=scenario.draft.pk).exists())
 
     def test_post_with_default_button_and_valid_data_returns_json_with_success_and_inforequests_detail(self):
         scenario = self._create_scenario()
@@ -384,6 +458,16 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'success')
         self.assertEqual(data[u'scroll_to'], u'#action-%s' % action.pk)
+
+    def test_post_with_default_button_and_valid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        patterns = ([], [u'FROM "obligees_obligee"']) if data[u'button'] == u'print' else ([],)
+        with self.assertQueriesDuringRender(*patterns):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
     def test_post_with_default_button_and_invalid_data_does_not_create_action(self):
         scenario = self._create_scenario()
@@ -421,6 +505,15 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'invalid')
+
+    def test_post_with_default_button_and_invalid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(branch=u'invalid')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
     def test_post_with_invalid_button_returns_400_bad_request(self):
         scenario = self._create_scenario()

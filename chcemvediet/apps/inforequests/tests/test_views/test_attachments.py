@@ -116,6 +116,14 @@ class DownloadAttachmentViewTest(CustomTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
+    def test_attachment_owned_by_user_returns_404_not_found(self):
+        self._login_user(self.user1)
+        attachment = self._create_attachment(generic_object=self.user1)
+        url = reverse(u'inforequests:download_attachment', args=(attachment.pk,))
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
     def test_attachment_owned_by_another_session_returns_404_not_found(self):
         self._login_user()
         attachment = self._create_attachment()

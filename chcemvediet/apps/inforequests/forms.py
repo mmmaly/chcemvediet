@@ -162,7 +162,7 @@ class ActionAbstractForm(PrefixedForm):
             for o, v in field.choices:
                 if o and smart_text(o.pk) == val:
                     return o
-            raise ValueError
+            raise ValueError # pragma: no cover
         field.coerce = coerce
 
         if self.draft:

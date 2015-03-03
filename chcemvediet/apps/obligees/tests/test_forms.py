@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from . import ObligeesTestCaseMixin
@@ -103,6 +104,25 @@ class ObligeeAutocompleteFieldWithTextInputWidgetTest(ObligeesTestCaseMixin, Tes
         self.assertInHTML(u"""
                 <input class="autocomplete" data-autocomplete-url="{url}" id="id_obligee" name="obligee" type="text" value="invalid">
                 """.format(url=reverse(u'obligees:autocomplete')), rendered)
+
+    def test_to_python_is_cached(self):
+        names = [u'aaa', u'bbb', u'ccc', u'ddd']
+        oblgs = [self._create_obligee(name=n) for n in names]
+        field = ObligeeAutocompleteField()
+
+        # Valid value
+        with self.assertNumQueries(1):
+            self.assertEqual(field.clean(u'bbb'), oblgs[1])
+        with self.assertNumQueries(0):
+            self.assertEqual(field.clean(u'bbb'), oblgs[1])
+
+        # Invalid value
+        with self.assertNumQueries(1):
+            with self.assertRaises(ValidationError):
+                field.clean(u'invalid')
+        with self.assertNumQueries(0):
+            with self.assertRaises(ValidationError):
+                field.clean(u'invalid')
 
 class ObligeeAutocompleteFieldWithObligeeWithAddressInputWidget(ObligeesTestCaseMixin, TestCase):
     u"""

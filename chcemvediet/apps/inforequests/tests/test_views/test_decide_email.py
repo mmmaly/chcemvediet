@@ -7,7 +7,7 @@ from django.http import JsonResponse
 
 from poleno.utils.date import utc_datetime_from_local, naive_date
 from poleno.utils.misc import Bunch
-from poleno.utils.test import created_instances
+from poleno.utils.test import created_instances, patch_with_exception
 
 from ... import forms
 from ...models import InforequestEmail, Action
@@ -72,6 +72,14 @@ class DecideEmailTests(
         self.assertEqual(response.context[u'email'], scenario.email)
         self.assertIsInstance(response.context[u'form'], self.form_class)
 
+    def test_get_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
     def test_post_with_valid_data_creates_action_instance(self):
         scenario = self._create_scenario(email_args=dict(subject=u'Subject', text=u'Content', processed=utc_datetime_from_local(u'2010-10-05 00:33:00')))
         attachment1 = self._create_attachment(generic_object=scenario.email, name=u'filename.txt', content=u'content', content_type=u'text/plain')
@@ -99,6 +107,22 @@ class DecideEmailTests(
         scenario.rel = InforequestEmail.objects.get(pk=scenario.rel.pk)
         self.assertEqual(scenario.rel.type, InforequestEmail.TYPES.OBLIGEE_ACTION)
 
+    def test_post_with_valid_data_does_not_create_action_instance_if_exception_raised(self):
+        scenario = self._create_scenario(email_args=dict(subject=u'Subject', text=u'Content', processed=utc_datetime_from_local(u'2010-10-05 00:33:00')))
+        attachment1 = self._create_attachment(generic_object=scenario.email, name=u'filename.txt', content=u'content', content_type=u'text/plain')
+        attachment2 = self._create_attachment(generic_object=scenario.email, name=u'filename.html', content=u'<p>content</p>', content_type=u'text/html')
+        data = self._create_post_data(branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with created_instances(scenario.branch.action_set) as action_set:
+            with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+                response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+        self.assertFalse(action_set.exists())
+
+        scenario.rel = InforequestEmail.objects.get(pk=scenario.rel.pk)
+        self.assertEqual(scenario.rel.type, InforequestEmail.TYPES.UNDECIDED)
+
     def test_post_with_valid_data_returns_json_with_success_and_inforequests_detail(self):
         scenario = self._create_scenario()
         data = self._create_post_data(branch=scenario.branch)
@@ -117,6 +141,15 @@ class DecideEmailTests(
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'success')
         self.assertEqual(data[u'scroll_to'], u'#action-%s' % action.pk)
+
+    def test_post_with_valid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(branch=scenario.branch)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
     def test_post_with_invalid_data_does_not_create_action_instance(self):
         scenario = self._create_scenario()
@@ -149,6 +182,14 @@ class DecideEmailTests(
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'invalid')
 
+    def test_post_with_invalid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(branch=u'invalid')
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
 class DecideEmailConfirmationViewTest(
         DecideEmailTests,

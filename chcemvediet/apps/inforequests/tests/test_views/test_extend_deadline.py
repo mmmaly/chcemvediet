@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from poleno.timewarp import timewarp
 from poleno.utils.date import local_datetime_from_local
 from poleno.utils.misc import Bunch
+from poleno.utils.test import patch_with_exception
 
 from ...forms import ExtendDeadlineForm
 from ...models import Action
@@ -159,6 +160,17 @@ class ExtendDeadlineViewTest(
         self.assertIsInstance(response.context[u'form'], ExtendDeadlineForm)
         self.assertEqual(response.context[u'form'][u'extension'].value(), 5)
 
+    def test_get_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([
+                u'FROM "inforequests_branch" WHERE .* "inforequests_branch"."advanced_by_id" IS NULL',
+                u'FROM "obligees_historicalobligee"',
+                ]):
+            response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
     def test_post_with_valid_data_saves_deadline_extension(self):
         scenario = self._create_scenario(created=u'2014-10-01', now=u'2014-10-16',
                 inforequest_scenario=[(u'request', dict(deadline=10))])
@@ -177,6 +189,20 @@ class ExtendDeadlineViewTest(
         action = Action.objects.get(pk=scenario.action.pk)
         self.assertEqual(action.extension, 12)
 
+    def test_post_with_valid_data_does_not_save_deadline_extension_if_exception_raised(self):
+        scenario = self._create_scenario(created=u'2014-10-01', now=u'2014-10-16',
+                inforequest_scenario=[(u'request', dict(deadline=10))])
+        data = self._create_post_data(extension=7)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with mock.patch(u'chcemvediet.apps.inforequests.models.workdays.between', side_effect=lambda a,b: (b-a).days):
+            with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+                response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        action = Action.objects.get(pk=scenario.action.pk)
+        self.assertIsNone(action.extension)
+
     def test_post_with_valid_data_returns_json_with_success_and_inforequests_detail(self):
         scenario = self._create_scenario()
         data = self._create_post_data(extension=7)
@@ -192,6 +218,15 @@ class ExtendDeadlineViewTest(
 
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'success')
+
+    def test_post_with_valid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(extension=7)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
     def test_post_with_invalid_data_does_not_save_deadline_extension(self):
         scenario = self._create_scenario()
@@ -222,6 +257,18 @@ class ExtendDeadlineViewTest(
 
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'invalid')
+
+    def test_post_with_invalid_data_related_models_are_prefetched_before_render(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data(extension=10000)
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with self.assertQueriesDuringRender([
+                u'FROM "inforequests_branch" WHERE .* "inforequests_branch"."advanced_by_id" IS NULL',
+                u'FROM "obligees_historicalobligee"',
+                ]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
     def test_extension_field_min_value(self):
         scenario = self._create_scenario()

@@ -29,9 +29,8 @@ urlpatterns += i18n_patterns(u'',
     url(r'^i18n/', include(u'django.conf.urls.i18n')),
 )
 
-if settings.DEBUG:
+if settings.DEBUG: # pragma: no cover
     urlpatterns = patterns(u'',
         url(r'^media/(?P<path>.*)$', u'django.views.static.serve', {u'document_root': settings.MEDIA_ROOT, u'show_indexes': True}),
         url(r'', include(u'django.contrib.staticfiles.urls')),
     ) + urlpatterns
-

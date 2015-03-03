@@ -26,7 +26,8 @@ class _Receiver(object):
 
     def __call__(self, sender, instance, **kwargs):
         model = self.weak()
-        if model and self.connected and instance is model:
+        assert model
+        if self.connected and instance is model:
             self.disconnect()
             self.func(model)
 

@@ -110,3 +110,38 @@ class CronserverManagementTest(TestCase):
             with mock.patch(u'poleno.cron.management.commands.cronserver.call_command') as mock_call_command:
                 self._call_cronserver()
         self.assertEqual(mock_call_command.mock_calls, [mock.call(u'runcrons')] * 11)
+
+class RunCronsTimewarpAwareTest(TestCase):
+    u"""
+    Tests ``runcrons_timewarp_aware`` management command.
+    """
+
+    def _call_runcrons_timewarp_aware(self, *args, **kwargs):
+        # ``runcrons`` command runs ``logging.debug()`` that somehow spoils stderr.
+        with mock.patch(u'django_cron.logging'):
+            call_command(u'runcrons_timewarp_aware', *args, **kwargs)
+
+
+    def test_runcrons_called(self):
+        self.assertFalse(CronJobLog.objects.exists())
+        self._call_runcrons_timewarp_aware()
+        self.assertTrue(CronJobLog.objects.exists())
+
+    def test_clear_logs_from_future(self):
+        past_log = CronJobLog.objects.create(
+                code=u'mock_code',
+                start_time=(utc_now() + datetime.timedelta(hours=-1)),
+                end_time=(utc_now() + datetime.timedelta(hours=-1)),
+                is_success=True,
+                ran_at_time=None,
+                )
+        future_log = CronJobLog.objects.create(
+                code=u'mock_code',
+                start_time=(utc_now() + datetime.timedelta(hours=+1)),
+                end_time=(utc_now() + datetime.timedelta(hours=+1)),
+                is_success=True,
+                ran_at_time=None,
+                )
+        self._call_runcrons_timewarp_aware()
+        self.assertTrue(CronJobLog.objects.filter(pk=past_log.pk).exists())
+        self.assertFalse(CronJobLog.objects.filter(pk=future_log.pk).exists())

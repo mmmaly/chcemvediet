@@ -6,8 +6,8 @@ import random
 
 from django.test import TestCase
 
-from poleno.utils.misc import Bunch, random_string, random_readable_string, try_except, squeeze
-from poleno.utils.misc import flatten, guess_extension, filesize, collect_stdout, decorate
+from poleno.utils.misc import (Bunch, random_string, random_readable_string, try_except, squeeze,
+        flatten, guess_extension, filesize, collect_stdout, decorate, cached_method)
 
 class BunchTest(TestCase):
     u"""
@@ -300,3 +300,80 @@ class DecorateTest(TestCase):
         self.assertEqual(func.moo, 4)
         self.assertEqual(func.foo, 7)
         self.assertEqual(func(2, 3), 5)
+
+class CachedMethodTest(TestCase):
+    u"""
+    Tests ``cached_method()`` decorator
+    """
+    class Klass(object):
+        @cached_method
+        def method1(self, a, b):
+            print(u'method1')
+            if a == 4: raise TypeError
+            if a == 7: raise ValueError
+            return a + b
+        @cached_method(cached_exceptions=TypeError)
+        def method2(self, a, b):
+            print(u'method2')
+            if a == 4: raise TypeError
+            if a == 7: raise ValueError
+            return a + b
+        @cached_method(cached_exceptions=(TypeError, ValueError))
+        def method3(self, a, b):
+            print(u'method3')
+            if a == 4: raise TypeError
+            if a == 7: raise ValueError
+            return a + b
+
+    def test_methods_are_cached_separately(self):
+        obj = self.Klass()
+        with collect_stdout() as output:
+            self.assertEqual(obj.method1(2, 3), 5)
+            self.assertEqual(obj.method2(2, 3), 5)
+            self.assertEqual(obj.method3(2, 3), 5)
+        self.assertEqual(output.stdout, u'method1\nmethod2\nmethod3\n')
+        with collect_stdout() as output:
+            self.assertEqual(obj.method1(2, 3), 5)
+            self.assertEqual(obj.method2(2, 3), 5)
+            self.assertEqual(obj.method3(2, 3), 5)
+        self.assertEqual(output.stdout, u'')
+
+    def test_methods_are_cached_per_instance(self):
+        obj1 = self.Klass()
+        obj2 = self.Klass()
+        with collect_stdout() as output:
+            self.assertEqual(obj1.method1(2, 3), 5)
+            self.assertEqual(obj1.method2(2, 3), 5)
+            self.assertEqual(obj1.method3(2, 3), 5)
+        self.assertEqual(output.stdout, u'method1\nmethod2\nmethod3\n')
+        with collect_stdout() as output:
+            self.assertEqual(obj2.method1(2, 3), 5)
+            self.assertEqual(obj2.method2(2, 3), 5)
+            self.assertEqual(obj2.method3(2, 3), 5)
+        self.assertEqual(output.stdout, u'method1\nmethod2\nmethod3\n')
+
+    def test_cached_exceptions(self):
+        obj = self.Klass()
+        with collect_stdout() as output:
+            with self.assertRaises(TypeError): obj.method2(4, 7)
+            with self.assertRaises(TypeError): obj.method3(4, 7)
+            with self.assertRaises(ValueError): obj.method3(7, 4)
+        self.assertEqual(output.stdout, u'method2\nmethod3\nmethod3\n')
+        with collect_stdout() as output:
+            with self.assertRaises(TypeError): obj.method2(4, 7)
+            with self.assertRaises(TypeError): obj.method3(4, 7)
+            with self.assertRaises(ValueError): obj.method3(7, 4)
+        self.assertEqual(output.stdout, u'')
+
+    def test_not_cached_exceptions(self):
+        obj = self.Klass()
+        with collect_stdout() as output:
+            with self.assertRaises(TypeError): obj.method1(4, 7)
+            with self.assertRaises(ValueError): obj.method1(7, 4)
+            with self.assertRaises(ValueError): obj.method2(7, 4)
+        self.assertEqual(output.stdout, u'method1\nmethod1\nmethod2\n')
+        with collect_stdout() as output:
+            with self.assertRaises(TypeError): obj.method1(4, 7)
+            with self.assertRaises(ValueError): obj.method1(7, 4)
+            with self.assertRaises(ValueError): obj.method2(7, 4)
+        self.assertEqual(output.stdout, u'method1\nmethod1\nmethod2\n')

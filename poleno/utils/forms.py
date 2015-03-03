@@ -89,9 +89,8 @@ class CompositeTextWidget(forms.MultiWidget):
         return format_html(u'<div{0}>{1}</div>', flatatt(attrs), content)
 
     def decompress(self, value):
-        if value is None:
-            return [None for w in self.widgets]
-        return value
+        assert value is None
+        return [None for w in self.widgets]
 
 class CompositeTextField(forms.MultiValueField):
     u"""

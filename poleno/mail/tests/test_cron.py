@@ -9,8 +9,7 @@ from django.test import TestCase
 from poleno.timewarp import timewarp
 from poleno.cron.test import mock_cron_jobs
 from poleno.utils.date import utc_now, local_datetime_from_local
-from poleno.utils.misc import collect_stdout
-from poleno.utils.test import override_signals
+from poleno.utils.test import override_signals, created_instances
 
 from . import MailTestCaseMixin
 from ..models import Message
@@ -45,8 +44,7 @@ class MailCronjobTest(MailTestCaseMixin, TestCase):
                         message_sent.connect(message_sent_receiver)
                     if message_received_receiver is not None:
                         message_received.connect(message_received_receiver)
-                    with collect_stdout():
-                        mail_cron_job().do()
+                    mail_cron_job().do()
 
 
     def test_job_is_run_with_empty_logs(self):
@@ -111,6 +109,18 @@ class MailCronjobTest(MailTestCaseMixin, TestCase):
         self.assertItemsEqual(method.mock_calls, [mock.call(m) for m in msgs])
         self.assertItemsEqual(receiver.mock_calls, [mock.call(message=m, sender=None, signal=message_sent) for m in msgs])
 
+    def test_outbound_transport_lefts_message_unprocessed_if_exception_raised_while_pocessing_it(self):
+        msgs = [self._create_message(type=Message.TYPES.OUTBOUND, processed=None) for i in range(3)]
+
+        with mock.patch(u'poleno.mail.cron.nop', side_effect=[None, Exception, None]):
+            with mock.patch(u'poleno.mail.cron.cron_logger') as logger:
+                self._run_mail_cron_job(outbound=True)
+        self.assertItemsEqual(Message.objects.filter(pk__in=(m.pk for m in msgs)).processed(), [msgs[0], msgs[2]])
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Sent email: <Message: %s>' % msgs[0].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Seding email failed: <Message: %s>' % msgs[1].pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Sent email: <Message: %s>' % msgs[2].pk)
+
     def test_inbound_transport(self):
         u"""
         Checks that ``message_received`` signal is emmited for all messages returned by the
@@ -164,3 +174,43 @@ class MailCronjobTest(MailTestCaseMixin, TestCase):
         receiver = mock.Mock()
         self._run_mail_cron_job(inbound=True, get_messages_method=method, message_received_receiver=receiver)
         self.assertItemsEqual(receiver.mock_calls, [mock.call(message=msg, sender=None, signal=message_received)])
+
+    def test_inbound_transport_stops_if_exception_raised_while_receiving_message(self):
+        msgs = []
+        def method(transport): # pragma: no cover
+            for i in range(3):
+                msg = self._create_message(type=Message.TYPES.INBOUND, processed=None)
+                msgs.append(msg)
+                yield msg
+
+        with mock.patch(u'poleno.mail.cron.nop', side_effect=[None, Exception, None]):
+            with mock.patch(u'poleno.mail.cron.cron_logger') as logger:
+                with created_instances(Message.objects) as message_set:
+                    self._run_mail_cron_job(inbound=True, get_messages_method=method)
+        self.assertEqual(message_set.count(), 1)
+        self.assertEqual(len(logger.mock_calls), 3)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Received email: <Message: %s>' % msgs[0].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Receiving emails failed:')
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Processed received email: <Message: %s>' % msgs[0].pk)
+
+    def test_inbound_transport_lefts_message_unprocessed_if_exception_raised_while_pocessing_it(self):
+        msgs = []
+        def method(transport):
+            for i in range(3):
+                msg = self._create_message(type=Message.TYPES.INBOUND, processed=None)
+                msgs.append(msg)
+                yield msg
+
+        with mock.patch(u'poleno.mail.cron.nop', side_effect=[None, None, None, None, Exception, None]):
+            with mock.patch(u'poleno.mail.cron.cron_logger') as logger:
+                with created_instances(Message.objects) as message_set:
+                    self._run_mail_cron_job(inbound=True, get_messages_method=method)
+        self.assertEqual(message_set.count(), 3)
+        self.assertItemsEqual(message_set.processed(), [msgs[0], msgs[2]])
+        self.assertEqual(len(logger.mock_calls), 6)
+        self.assertRegexpMatches(logger.mock_calls[0][1][0], u'Received email: <Message: %s>' % msgs[0].pk)
+        self.assertRegexpMatches(logger.mock_calls[1][1][0], u'Received email: <Message: %s>' % msgs[1].pk)
+        self.assertRegexpMatches(logger.mock_calls[2][1][0], u'Received email: <Message: %s>' % msgs[2].pk)
+        self.assertRegexpMatches(logger.mock_calls[3][1][0], u'Processed received email: <Message: %s>' % msgs[0].pk)
+        self.assertRegexpMatches(logger.mock_calls[4][1][0], u'Processing received email failed: <Message: %s>' % msgs[1].pk)
+        self.assertRegexpMatches(logger.mock_calls[5][1][0], u'Processed received email: <Message: %s>' % msgs[2].pk)

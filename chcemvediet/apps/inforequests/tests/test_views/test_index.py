@@ -51,3 +51,19 @@ class IndexViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         self.assertItemsEqual(response.context[u'inforequests'], [])
         self.assertItemsEqual(response.context[u'drafts'], [])
         self.assertItemsEqual(response.context[u'closed_inforequests'], [])
+
+    def test_related_models_are_prefetched_before_render(self):
+        drafts1 = [self._create_inforequest_draft(applicant=self.user1) for i in range(5)]
+        inforequests1 = [self._create_inforequest(applicant=self.user1) for i in range(4)]
+        closed1 = [self._create_inforequest(applicant=self.user1, closed=True) for i in range(3)]
+
+        # Force view querysets to evaluate before calling render
+        def pre_mock_render(request, temaplate, context):
+            list(context[u'inforequests'])
+            list(context[u'drafts'])
+            list(context[u'closed_inforequests'])
+
+        self._login_user(self.user1)
+        with self.assertQueriesDuringRender([], pre_mock_render=pre_mock_render):
+            response = self.client.get(reverse(u'inforequests:index'))
+        self.assertEqual(response.status_code, 200)

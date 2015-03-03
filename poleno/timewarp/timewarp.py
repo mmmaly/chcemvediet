@@ -160,7 +160,7 @@ class Timewarp(object):
         return datetime_orig
 
     def _update(self):
-        if self._recursive:
+        if self._recursive: # pragma: no cover
             return
         if self._lastupdate and self._lastupdate + 1 > time_orig.time():
             return

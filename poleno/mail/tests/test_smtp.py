@@ -9,7 +9,7 @@ from django.test import TestCase
 
 from poleno.timewarp import timewarp
 from poleno.utils.date import local_datetime_from_utc
-from poleno.utils.misc import Bunch, collect_stdout
+from poleno.utils.misc import Bunch
 from poleno.utils.test import override_signals
 
 from . import MailTestCaseMixin
@@ -44,8 +44,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
         with self.settings(EMAIL_OUTBOUND_TRANSPORT=u'poleno.mail.transports.smtp.SmtpTransport', EMAIL_INBOUND_TRANSPORT=None):
             with mock.patch(u'poleno.mail.transports.smtp.get_connection', return_value=connection):
                 with override_signals(message_sent, message_received):
-                    with collect_stdout():
-                        mail_cron_job().do()
+                    mail_cron_job().do()
         res = []
         for call in connection.send_messages.call_args_list:
             for mail in call[0][0]:

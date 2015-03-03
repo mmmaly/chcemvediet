@@ -3,13 +3,14 @@
 import datetime
 
 from django.test import TestCase
-from django_cron import CronJobBase
+from django_cron import CronJobBase, CronJobLog
 
 from poleno.timewarp import timewarp
-from poleno.utils.date import local_datetime_from_local
+from poleno.utils.date import local_datetime_from_local, utc_now
 
-from .. import cron_job
 from . import CronTestCaseMixin
+from .. import cron_job
+from ..cron import clear_old_cronlogs
 
 class CronJobTest(CronTestCaseMixin, TestCase):
     u"""
@@ -294,3 +295,30 @@ class CronJobTest(CronTestCaseMixin, TestCase):
                 expected_logs=[],
                 )
         timewarp.reset()
+
+class ClearOldCronlogsCronjobTest(TestCase):
+    u"""
+    Tests ``poleno.cron.cron.clear_old_cronlogs`` cron job.
+    """
+
+    def test_logs_older_that_one_week_are_cleared(self):
+        old_log = CronJobLog.objects.create(
+                code=u'mock_code',
+                start_time=(utc_now() - datetime.timedelta(days=8)),
+                end_time=(utc_now() - datetime.timedelta(days=8)),
+                is_success=True,
+                ran_at_time=None,
+                )
+        clear_old_cronlogs().do()
+        self.assertFalse(CronJobLog.objects.filter(pk=old_log.pk).exists())
+
+    def test_logs_newer_than_one_week_are_kept(self):
+        old_log = CronJobLog.objects.create(
+                code=u'mock_code',
+                start_time=(utc_now() - datetime.timedelta(days=6)),
+                end_time=(utc_now() - datetime.timedelta(days=6)),
+                is_success=True,
+                ran_at_time=None,
+                )
+        clear_old_cronlogs().do()
+        self.assertTrue(CronJobLog.objects.filter(pk=old_log.pk).exists())

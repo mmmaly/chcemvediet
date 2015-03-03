@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import mock
 import contextlib
 
 from django.core.urlresolvers import reverse
@@ -46,6 +47,23 @@ def created_instances(query_set):
     """
     original_pk = (o.pk for o in query_set.all())
     yield query_set.exclude(pk__in=original_pk)
+
+@contextlib.contextmanager
+def patch_with_exception(target):
+    u"""
+    Patches ``target`` with dummy function that always raises an exception. The raised
+    exception is catched after it bubbles out of the context. Usefull if you want to test how
+    the code reacts to unexpected exceptions.
+    """
+    class MockException(Exception):
+        pass
+    def mock_func(*args, **kwargs):
+        raise MockException
+    with mock.patch(target, mock_func):
+        try:
+            yield
+        except MockException:
+            pass
 
 class ViewTestCaseMixin(TestCase):
 

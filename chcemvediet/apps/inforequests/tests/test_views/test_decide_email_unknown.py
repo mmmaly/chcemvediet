@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 
 from poleno.utils.misc import Bunch
+from poleno.utils.test import patch_with_exception
 
 from ...models import InforequestEmail
 from . import CustomTestCase
@@ -58,6 +59,14 @@ class DecideEmailUnknownViewTest(
         self.assertEqual(response.context[u'email'], scenario.email)
         self.assertNotIn(u'form', response.context)
 
+    def test_get_related_models_are_prefetched_before_render(self):
+        self._login_user()
+        scenario = self._create_scenario()
+        url = self._create_url(scenario)
+
+        with self.assertQueriesDuringRender([]):
+            response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
     def test_post_marks_email_as_unknown(self):
         self._login_user()
         scenario = self._create_scenario()
@@ -68,6 +77,18 @@ class DecideEmailUnknownViewTest(
 
         scenario.rel = InforequestEmail.objects.get(pk=scenario.rel.pk)
         self.assertEqual(scenario.rel.type, InforequestEmail.TYPES.UNKNOWN)
+
+    def test_post_does_not_mark_email_as_unknown_if_exception_raised(self):
+        scenario = self._create_scenario()
+        data = self._create_post_data()
+        url = self._create_url(scenario)
+
+        self._login_user()
+        with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
+
+        scenario.rel = InforequestEmail.objects.get(pk=scenario.rel.pk)
+        self.assertEqual(scenario.rel.type, InforequestEmail.TYPES.UNDECIDED)
 
     def test_post_returns_json_with_success_and_inforequests_detail(self):
         self._login_user()
@@ -84,3 +105,12 @@ class DecideEmailUnknownViewTest(
 
         data = json.loads(response.content)
         self.assertEqual(data[u'result'], u'success')
+
+    def test_post_related_models_are_prefetched_before_render(self):
+        self._login_user()
+        scenario = self._create_scenario()
+        data = self._create_post_data()
+        url = self._create_url(scenario)
+
+        with self.assertQueriesDuringRender([]):
+            response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')

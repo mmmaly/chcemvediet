@@ -9,6 +9,7 @@ from poleno.cron import cron_job, cron_logger
 from poleno.workdays import workdays
 from poleno.utils.translation import translation
 from poleno.utils.date import local_date, local_today
+from poleno.utils.misc import nop
 
 from .models import Inforequest, Branch
 
@@ -37,6 +38,7 @@ def undecided_email_reminder():
                 days = workdays.between(local_date(email.processed), local_today())
                 if days < 5:
                     continue
+                nop() # To let tests raise testing exception here.
                 filtered.append(inforequest)
             except Exception:
                 cron_logger.error(u'Checking if undecided email reminder should be sent failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))
@@ -55,7 +57,8 @@ def undecided_email_reminder():
             try:
                 with transaction.atomic():
                     inforequest.send_undecided_email_reminder()
-                    cron_logger.info(u'Sent undecided email reminder: %s' % repr(inforequest))
+                    nop() # To let tests raise testing exception here.
+                    cron_logger.info(u'Sent undecided email reminder: %s' % repr(inforequest)) # pragma: no branch
             except Exception:
                 cron_logger.error(u'Sending undecided email reminder failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))
 
@@ -86,6 +89,7 @@ def obligee_deadline_reminder():
                     last_date = local_date(last) if last else None
                     if last and branch.last_action.deadline_missed_at(last_date):
                         continue
+                    nop() # To let tests raise testing exception here.
                     filtered.append(branch)
                 except Exception:
                     cron_logger.error(u'Checking if obligee deadline reminder should be sent failed: %s\n%s' % (repr(branch.last_action), traceback.format_exc()))
@@ -103,7 +107,8 @@ def obligee_deadline_reminder():
             try:
                 with transaction.atomic():
                     branch.inforequest.send_obligee_deadline_reminder(branch.last_action)
-                    cron_logger.info(u'Sent obligee deadline reminder: %s' % repr(branch.last_action))
+                    nop() # To let tests raise testing exception here.
+                    cron_logger.info(u'Sent obligee deadline reminder: %s' % repr(branch.last_action)) # pragma: no branch
             except Exception:
                 cron_logger.error(u'Sending obligee deadline reminder failed: %s\n%s' % (repr(branch.last_action), traceback.format_exc()))
 
@@ -131,6 +136,7 @@ def applicant_deadline_reminder():
                     # deadline reminder for the action.
                     if branch.last_action.last_deadline_reminder:
                         continue
+                    nop() # To let tests raise testing exception here.
                     filtered.append(branch)
                 except Exception:
                     cron_logger.error(u'Checking if applicant deadline reminder should be sent failed: %s\n%s' % (repr(branch.last_action), traceback.format_exc()))
@@ -147,7 +153,8 @@ def applicant_deadline_reminder():
             try:
                 with transaction.atomic():
                     branch.inforequest.send_applicant_deadline_reminder(branch.last_action)
-                    cron_logger.info(u'Sent applicant deadline reminder: %s' % repr(branch.last_action))
+                    nop() # To let tests raise testing exception here.
+                    cron_logger.info(u'Sent applicant deadline reminder: %s' % repr(branch.last_action)) # pragma: no branch
             except Exception:
                 cron_logger.error(u'Sending applicant deadline reminder failed: %s\n%s' % (repr(branch.last_action), traceback.format_exc()))
 
@@ -167,8 +174,8 @@ def close_inforequests():
                 if branch.last_action.has_deadline and branch.last_action.deadline_remaining > -100:
                     break
             else:
-                # Every branch that has a deadline have been missed for at least 100 WD.
-                filtered.append(inforequest)
+                nop() # To let tests raise testing exception here.
+                filtered.append(inforequest) # Every branch that has a deadline have been missed for at least 100 WD.
         except Exception:
             cron_logger.error(u'Checking if inforequest should be closed failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))
 
@@ -179,6 +186,7 @@ def close_inforequests():
                     branch.add_expiration_if_expired()
                 inforequest.closed = True
                 inforequest.save()
-                cron_logger.info(u'Closed inforequest: %s' % repr(inforequest))
+                nop() # To let tests raise testing exception here.
+                cron_logger.info(u'Closed inforequest: %s' % repr(inforequest)) # pragma: no branch
         except Exception:
             cron_logger.error(u'Closing inforequest failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))

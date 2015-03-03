@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.http import Http404
 from django.test import TestCase
 
-from poleno.utils.models import after_saved, FieldChoices, QuerySet
+from poleno.utils.models import after_saved, join_lookup, FieldChoices, QuerySet
 
 class TestModelsModel(models.Model):
     name = models.CharField(blank=True, max_length=255)
@@ -170,7 +170,7 @@ class AfterSavedTest(TestCase):
         receivers = len(post_save.receivers)
 
         @after_saved(obj)
-        def deffered(obj):
+        def deffered(obj): # pragma: no cover
             counter[0] += 1
 
         self.assertEqual(len(post_save.receivers), receivers+1)
@@ -192,6 +192,19 @@ class AfterSavedTest(TestCase):
         obj.save()
         self.assertEqual(counter, [1])
         self.assertEqual(len(post_save.receivers), receivers)
+
+class JoinLookupTest(TestCase):
+    u"""
+    Tests ``join_lookup()`` function.
+    """
+
+    def test(self):
+        self.assertEqual(join_lookup(), u'')
+        self.assertEqual(join_lookup(u'foo'), u'foo')
+        self.assertEqual(join_lookup(u'foo', u'bar', u'bar'), u'foo__bar__bar')
+        self.assertEqual(join_lookup(None, u'', None), u'')
+        self.assertEqual(join_lookup(None, u'foo', None), u'foo')
+        self.assertEqual(join_lookup(u'foo', None, u'bar', u'', u'bar'), u'foo__bar__bar')
 
 class FieldChoicesTest(TestCase):
     u"""
@@ -257,3 +270,8 @@ class QuerySetTest(TestCase):
     def test_get_or_404_with_multiple_results(self):
         with self.assertRaises(TestModelsModel.MultipleObjectsReturned):
             res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.BLACK)
+
+    def test_apply(self):
+        func = lambda q: q.filter(type=TestModelsModel.TYPES.BLACK)
+        res = TestModelsModel.objects.apply(func)
+        self.assertItemsEqual(res, [self.black1, self.black2])
