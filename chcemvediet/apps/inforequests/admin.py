@@ -659,7 +659,7 @@ class InforequestEmailAdminDecideForm(forms.Form):
             session_type = ContentType.objects.get_for_model(Session)
             for attachment in self.cleaned_data[u'attachments']:
                 # We don't want to steal attachments owned by the email, so we clone them.
-                if attachment.generic_type != session_type:
+                if attachment.generic_type_id != session_type.pk:
                     attachment = attachment.clone(action)
                 else:
                     attachment.generic_object = action
@@ -1136,13 +1136,13 @@ class BranchAdminChangeForm(forms.ModelForm):
 
                 if u'inforequest' in cleaned_data:
                     inforequest = cleaned_data[u'inforequest']
-                    if advanced_by is not None and inforequest != advanced_by.branch.inforequest:
+                    if advanced_by is not None and inforequest.pk != advanced_by.branch.inforequest_id:
                         raise ValidationError(u'Advanced branch must belong to the same inforequest as the parent branch.')
 
                 node = advanced_by
                 count = 0
                 while node is not None:
-                    if node.branch == self.instance:
+                    if node.branch_id == self.instance.pk:
                         raise ValidationError(u'The branch may not be a sub-branch of itself.')
                     if count > 10:
                         raise ValidationError(u'Too deep branch inheritance.')
@@ -1475,7 +1475,7 @@ class ActionAdminChangeForm(forms.ModelForm):
 
         if u'email' in cleaned_data:
             action = try_except(lambda: cleaned_data[u'email'].action, None, Action.DoesNotExist)
-            if action is not None and action != self.instance:
+            if action is not None and action.pk != self.instance.pk:
                 self.add_error(u'email', u'This e-mail is already used with another action.')
 
         return cleaned_data

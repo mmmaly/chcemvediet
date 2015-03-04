@@ -500,7 +500,7 @@ def _new_action(request, inforequest_pk, action_type, form_class, template):
                         .apply(_prefetch_inforequest_detail)
                         .get(pk=inforequest.pk)
                         )
-                action.branch = inforequest.branch_by_pk(action.branch.pk)
+                action.branch = inforequest.branch_by_pk(action.branch_id)
 
                 if button == u'email':
                     action.send_by_email()
