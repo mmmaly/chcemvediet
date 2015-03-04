@@ -31,6 +31,7 @@ class AttachmentInline(generic.GenericTabularInline):
             u'size_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Attachment')
     def attachment_field(self, attachment):

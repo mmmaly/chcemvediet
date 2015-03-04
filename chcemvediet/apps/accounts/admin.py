@@ -68,7 +68,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super(ProfileAdmin, self).get_queryset(request)
-        queryset = select_related(u'user')
+        queryset = queryset.select_related(u'user')
         return queryset
 
 class UserAdminMixin(admin.ModelAdmin):

@@ -78,12 +78,15 @@ class InforequestEmailTest(InforequestsTestCaseMixin, TestCase):
         result = email.inforequestemail_set.all()
         self.assertItemsEqual(result, [])
 
+    def test_no_default_ordering(self):
+        self.assertFalse(InforequestEmail.objects.all().ordered)
+
     def test_repr(self):
         inforequest = self._create_inforequest()
         email, rel = self._create_inforequest_email(inforequest=inforequest)
         self.assertEqual(repr(rel), u'<InforequestEmail: %s>' % rel.pk)
 
-    def test_undecided_oldest_newest_and_order_by_email_query_methods(self):
+    def test_undecided_oldest_newest_and_order_by_query_methods(self):
         inforequest = self._create_inforequest()
         _, rel4 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 13:22'), reltype=InforequestEmail.TYPES.APPLICANT_ACTION)
         _, rel2 = self._create_inforequest_email(inforequest=inforequest, processed=utc_datetime_from_local(u'2014-10-10 11:22'), reltype=InforequestEmail.TYPES.UNRELATED)
@@ -103,5 +106,7 @@ class InforequestEmailTest(InforequestsTestCaseMixin, TestCase):
         self.assertEqual(list(InforequestEmail.objects.undecided().oldest()), [rel3])
         # Newest undecided
         self.assertEqual(list(InforequestEmail.objects.undecided().newest()), [rel6])
+        # order_by_pk
+        self.assertEqual(list(InforequestEmail.objects.order_by_pk()), [rel4, rel2, rel5, rel3, rel7, rel6, rel1])
         # order_by_email
         self.assertEqual(list(InforequestEmail.objects.order_by_email()), [rel1, rel2, rel3, rel4, rel5, rel6, rel7])

@@ -27,6 +27,8 @@ from chcemvediet.apps.obligees.models import Obligee
 class InforequestDraftQuerySet(QuerySet):
     def owned_by(self, user):
         return self.filter(applicant=user)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
 
 class InforequestDraft(models.Model):
     # May NOT be NULL; For index see index_together
@@ -59,7 +61,6 @@ class InforequestDraft(models.Model):
     objects = InforequestDraftQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'pk']
         index_together = [
                 [u'applicant'],
                 [u'obligee'],
@@ -72,15 +73,16 @@ class InforequestDraft(models.Model):
         """
         if queryset is None:
             queryset = Attachment.objects.get_queryset()
+        queryset = queryset.order_by_pk()
         return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
 
     @cached_property
     def attachments(self):
         u"""
-        Cached list of all inforequest draft attachments. May be prefetched with
+        Cached list of all inforequest draft attachments ordered by ``pk``. May be prefetched with
         ``prefetch_related(InforequestDraft.prefetch_attachments())`` queryset method.
         """
-        return list(self.attachment_set.all())
+        return list(self.attachment_set.order_by_pk())
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -102,6 +104,10 @@ class InforequestQuerySet(QuerySet):
         ``prefetch_related(Inforequest.prefetch_undecided_emails())`` is already used.
         """
         return self.annotate(undecided_emails_count=Count(u'inforequestemail', only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
+    def order_by_pk(self):
+        return self.order_by(u'pk')
+    def order_by_submission_date(self):
+        return self.order_by(u'submission_date', u'pk')
 
 class Inforequest(models.Model):
     # May NOT be NULL; For index see index_together
@@ -170,7 +176,6 @@ class Inforequest(models.Model):
     objects = InforequestQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'submission_date', u'pk']
         index_together = [
                 [u'applicant'],
                 [u'unique_email'],
@@ -184,15 +189,17 @@ class Inforequest(models.Model):
         """
         if queryset is None:
             queryset = Branch.objects.get_queryset()
+        queryset = queryset.order_by_pk()
         return Prefetch(join_lookup(path, u'branch_set'), queryset, to_attr=u'branches')
 
     @cached_property
     def branches(self):
         u"""
-        Cached list of all inforequest branches. The list should not be empty. May be prefetched
-        with ``prefetch_related(Inforequest.prefetch_branches())`` queryset method.
+        Cached list of all inforequest branches ordered by ``pk``. The list should not be empty.
+        May be prefetched with ``prefetch_related(Inforequest.prefetch_branches())`` queryset
+        method.
         """
-        return list(self.branch_set.all())
+        return list(self.branch_set.order_by_pk())
 
     @staticmethod
     def prefetch_main_branch(path=None, queryset=None):
@@ -248,13 +255,14 @@ class Inforequest(models.Model):
     @cached_property
     def undecided_emails(self):
         u"""
-        Cached list of all undecided emails assigned to the inforequest. May be prefetched with
-        ``prefetch_related(Inforequest.prefetch_undecided_emails())`` queryset method.
+        Cached list of all undecided emails assigned to the inforequest ordered by ``processed``.
+        May be prefetched with ``prefetch_related(Inforequest.prefetch_undecided_emails())``
+        queryset method.
         """
         if u'_undecided_emails' in self.__dict__:
             return list(r.email for r in self._undecided_emails)
         else:
-            return list(self.undecided_emails_set.all())
+            return list(self.undecided_emails_set.order_by_processed())
 
     @cached_property
     def undecided_emails_count(self):
@@ -304,7 +312,7 @@ class Inforequest(models.Model):
             except IndexError:
                 return None
         else:
-            return self.undecided_emails_set.first()
+            return self.undecided_emails_set.order_by_processed().first()
 
     @staticmethod
     def prefetch_newest_undecided_email(path=None, queryset=None):
@@ -316,7 +324,6 @@ class Inforequest(models.Model):
             queryset = InforequestEmail.objects.get_queryset()
         quote_name = connection.ops.quote_name
         queryset = queryset.filter(type=InforequestEmail.TYPES.UNDECIDED)
-        queryset = queryset.order_by_email()
         queryset = queryset.select_related(u'email')
         queryset = queryset.extra(where=[
             u'{through}.{through_pk} = ('
@@ -361,7 +368,7 @@ class Inforequest(models.Model):
             except IndexError:
                 return None
         else:
-            return self.undecided_emails_set.last()
+            return self.undecided_emails_set.order_by_processed().last()
 
     @cached_property
     def can_add_request(self):
@@ -530,6 +537,8 @@ class Inforequest(models.Model):
 class InforequestEmailQuerySet(QuerySet):
     def undecided(self):
         return self.filter(type=InforequestEmail.TYPES.UNDECIDED)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
     def order_by_email(self):
         return self.order_by(u'email__processed', u'email__pk', u'pk')
     def oldest(self):
@@ -587,6 +596,8 @@ class BranchQuerySet(QuerySet):
         return self.filter(advanced_by__isnull=True)
     def advanced(self):
         return self.filter(advanced_by__isnull=False)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
 
 class Branch(models.Model):
     # May NOT be NULL; For index see index_together
@@ -634,7 +645,6 @@ class Branch(models.Model):
     objects = BranchQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'pk']
         verbose_name_plural = u'Branches'
         index_together = [
                 [u'inforequest', u'advanced_by'],
@@ -654,15 +664,17 @@ class Branch(models.Model):
         """
         if queryset is None:
             queryset = Action.objects.get_queryset()
+        queryset = queryset.order_by_effective_date()
         return Prefetch(join_lookup(path, u'action_set'), queryset, to_attr=u'actions')
 
     @cached_property
     def actions(self):
         u"""
-        Cached list of all branch actions. The list should not be empty. May be prefetched with
-        ``prefetch_related(Branch.prefetch_actions())`` queryset method.
+        Cached list of all branch actions ordered by ``effective_date``. The list should not be
+        empty. May be prefetched with ``prefetch_related(Branch.prefetch_actions())`` queryset
+        method.
         """
-        return list(self.action_set.all())
+        return list(self.action_set.order_by_effective_date())
 
     @staticmethod
     def prefetch_actions_by_email(path=None, queryset=None):
@@ -672,19 +684,20 @@ class Branch(models.Model):
         if queryset is None:
             queryset = Action.objects.get_queryset()
         queryset = queryset.by_email()
+        queryset = queryset.order_by_effective_date()
         return Prefetch(join_lookup(path, u'action_set'), queryset, to_attr=u'actions_by_email')
 
     @cached_property
     def actions_by_email(self):
         u"""
-        Cached list of all branch actions sent by email. May be prefetched with
-        ``prefetch_related(Branch.prefetch_actions_by_email())`` queryset method. Takes advantage
-        of ``Branch.actions`` if it is fetched already.
+        Cached list of all branch actions sent by email ordered by ``effective_date``. May be
+        prefetched with ``prefetch_related(Branch.prefetch_actions_by_email())`` queryset method.
+        Takes advantage of ``Branch.actions`` if it is fetched already.
         """
         if u'actions' in self.__dict__:
             return list(a for a in self.actions if a.is_by_email)
         else:
-            return list(self.action_set.by_email())
+            return list(self.action_set.by_email().order_by_effective_date())
 
     @staticmethod
     def prefetch_last_action(path=None, queryset=None):
@@ -729,7 +742,7 @@ class Branch(models.Model):
             except IndexError:
                 return None
         else:
-            return self.action_set.last()
+            return self.action_set.order_by_effective_date().last()
 
     @cached_property
     def can_add_request(self):
@@ -926,11 +939,15 @@ class ActionQuerySet(QuerySet):
     def appeal_expirations(self):
         return self.filter(type=Action.TYPES.APPEAL_EXPIRATION)
 
-    # Action form
+    # Other methods
     def by_email(self):
         return self.filter(email__isnull=False)
     def by_smail(self):
         return self.filter(email__isnull=True)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
+    def order_by_effective_date(self):
+        return self.order_by(u'effective_date', u'pk')
 
 class Action(models.Model):
     # May NOT be NULL; For index see index_together
@@ -1124,7 +1141,6 @@ class Action(models.Model):
     objects = ActionQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'effective_date', u'pk']
         index_together = [
                 [u'branch'],
                 [u'email'],
@@ -1138,15 +1154,16 @@ class Action(models.Model):
         """
         if queryset is None:
             queryset = Attachment.objects.get_queryset()
+        queryset = queryset.order_by_pk()
         return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
 
     @cached_property
     def attachments(self):
         u"""
-        Cached list of all action attachments. May be prefetched with
+        Cached list of all action attachments ordered by ``pk``. May be prefetched with
         ``prefetch_related(Action.prefetch_attachments())`` queryset method.
         """
-        return list(self.attachment_set.all())
+        return list(self.attachment_set.order_by_pk())
 
     @cached_property
     def is_applicant_action(self):
@@ -1244,6 +1261,10 @@ class Action(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
+class ActionDraftQuerySet(QuerySet):
+    def order_by_pk(self):
+        return self.order_by(u'pk')
+
 class ActionDraft(models.Model):
     # May NOT be NULL; For index see index_together
     inforequest = models.ForeignKey(u'Inforequest', db_index=False)
@@ -1292,10 +1313,9 @@ class ActionDraft(models.Model):
     #
     #  -- Obligee.actiondraft_set
 
-    objects = QuerySet.as_manager()
+    objects = ActionDraftQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'pk']
         index_together = [
                 [u'inforequest'],
                 [u'branch'],
@@ -1308,15 +1328,16 @@ class ActionDraft(models.Model):
         """
         if queryset is None:
             queryset = Attachment.objects.get_queryset()
+        queryset = queryset.order_by_pk()
         return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
 
     @cached_property
     def attachments(self):
         u"""
-        Cached list of all action draft attachments. May be prefetched with
+        Cached list of all action draft attachments ordered by ``pk``. May be prefetched with
         ``prefetch_related(ActionDraft.prefetch_attachments())`` queryset method.
         """
-        return list(self.attachment_set.all())
+        return list(self.attachment_set.order_by_pk())
 
     @staticmethod
     def prefetch_obligees(path=None, queryset=None):
@@ -1325,15 +1346,16 @@ class ActionDraft(models.Model):
         """
         if queryset is None:
             queryset = Obligee.objects.get_queryset()
+        queryset = queryset.order_by_name()
         return Prefetch(join_lookup(path, u'obligee_set'), queryset, to_attr=u'obligees')
 
     @cached_property
     def obligees(self):
         u"""
-        Cached list of all obligees the action draft advances to. May be prefetched with
-        ``prefetch_related(ActionDraft.prefetch_obligees())`` queryset method.
+        Cached list of all obligees the action draft advances to ordered by ``name``. May be
+        prefetched with ``prefetch_related(ActionDraft.prefetch_obligees())`` queryset method.
         """
-        return list(self.obligee_set.all())
+        return list(self.obligee_set.order_by_name())
 
     def __unicode__(self):
         return u'%s' % self.pk

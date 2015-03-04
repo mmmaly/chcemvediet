@@ -63,6 +63,7 @@ class RecipientInline(admin.TabularInline):
             u'status_details',
             u'remote_id',
             ]
+    ordering = [u'pk']
 
 class MessageAdminAddForm(forms.ModelForm):
     from_formatted = forms.CharField(

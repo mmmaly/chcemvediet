@@ -24,6 +24,10 @@ class MessageQuerySet(QuerySet):
         return self.filter(processed__isnull=False)
     def not_processed(self):
         return self.filter(processed__isnull=True)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
+    def order_by_processed(self):
+        return self.order_by(u'processed', u'pk')
 
 class Message(models.Model):
     # May NOT be NULL
@@ -94,7 +98,6 @@ class Message(models.Model):
     objects = MessageQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'processed', u'pk']
         index_together = [
                 [u'processed', u'id'],
                 ]
@@ -114,15 +117,16 @@ class Message(models.Model):
         """
         if queryset is None:
             queryset = Attachment.objects.get_queryset()
+        queryset = queryset.order_by_pk()
         return Prefetch(join_lookup(path, u'attachment_set'), queryset, to_attr=u'attachments')
 
     @cached_property
     def attachments(self):
         u"""
-        Cached list of all message attachments. May be prefetched with
+        Cached list of all message attachments ordered by ``pk``. May be prefetched with
         ``prefetch_related(Message.prefetch_attachments())`` queryset method.
         """
-        return list(self.attachment_set.all())
+        return list(self.attachment_set.order_by_pk())
 
     @staticmethod
     def prefetch_recipients(path=None, queryset=None):
@@ -131,48 +135,49 @@ class Message(models.Model):
         """
         if queryset is None:
             queryset = Recipient.objects.get_queryset()
+        queryset = queryset.order_by_pk()
         return Prefetch(join_lookup(path, u'recipient_set'), queryset, to_attr=u'recipients')
 
     @cached_property
     def recipients(self):
         u"""
-        Cached list of all message recipients. May be prefetched with
+        Cached list of all message recipients ordered by ``pk``. May be prefetched with
         ``prefetch_related(Message.prefetch_recipients())`` queryset method.
         """
-        return list(self.recipient_set.all())
+        return list(self.recipient_set.order_by_pk())
 
     @cached_property
     def recipients_to(self):
         u"""
-        Cached list of all message "to" recipients. Takes advantage of ``Message.recipients`` if it
-        is already fetched.
+        Cached list of all message "to" recipients ordered by ``pk``. Takes advantage of
+        ``Message.recipients`` if it is already fetched.
         """
         if u'recipients' in self.__dict__:
             return list(r for r in self.recipients if r.type == Recipient.TYPES.TO)
         else:
-            return list(self.recipient_set.to())
+            return list(self.recipient_set.to().order_by_pk())
 
     @cached_property
     def recipients_cc(self):
         u"""
-        Cached list of all message "cc" recipients. Takes advantage of ``Message.recipients`` if it
-        is already fetched.
+        Cached list of all message "cc" recipients ordered by ``pk``. Takes advantage of
+        ``Message.recipients`` if it is already fetched.
         """
         if u'recipients' in self.__dict__:
             return list(r for r in self.recipients if r.type == Recipient.TYPES.CC)
         else:
-            return list(self.recipient_set.cc())
+            return list(self.recipient_set.cc().order_by_pk())
 
     @cached_property
     def recipients_bcc(self):
         u"""
-        Cached list of all message "bcc" recipients. Takes advantage of ``Message.recipients`` if
-        it is already fetched.
+        Cached list of all message "bcc" recipients ordered by ``pk``. Takes advantage of
+        ``Message.recipients`` if it is already fetched.
         """
         if u'recipients' in self.__dict__:
             return list(r for r in self.recipients if r.type == Recipient.TYPES.BCC)
         else:
-            return list(self.recipient_set.bcc())
+            return list(self.recipient_set.bcc().order_by_pk())
 
     @cached_property
     def to_formatted(self):
@@ -196,6 +201,8 @@ class RecipientQuerySet(QuerySet):
         return self.filter(type=Recipient.TYPES.CC)
     def bcc(self):
         return self.filter(type=Recipient.TYPES.BCC)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
 
 class Recipient(models.Model):
     # May NOT be NULL; For index see index_together
@@ -273,7 +280,6 @@ class Recipient(models.Model):
     objects = RecipientQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'pk']
         index_together = [
                 [u'message'],
                 [u'remote_id'],

@@ -141,11 +141,8 @@ class AttachmentModelTest(TestCase):
         obj = self._create_instance(_omit=['size'])
         self.assertEqual(obj.size, 7)
 
-    def test_default_ordering_by_pk(self):
-        objs = [self._create_instance(generic_object=self.user) for i in range(10)]
-        objs = random.sample(objs, 5)
-        result = Attachment.objects.filter(pk__in=[o.pk for o in objs])
-        self.assertEqual(list(result), sorted(objs, key=lambda o: o.pk))
+    def test_no_default_ordering(self):
+        self.assertFalse(Attachment.objects.all().ordered)
 
     def test_content_property(self):
         obj = self._create_instance(file=ContentFile(u'content'))
@@ -232,3 +229,9 @@ class AttachmentModelTest(TestCase):
             result = Attachment.objects.attached_to(object)
         with self.assertRaisesMessage(TypeError, u'Expecting QuerySet, Model instance, or Model class.'):
             result = Attachment.objects.attached_to(None)
+
+    def test_order_by_pk_query_method(self):
+        objs = [self._create_instance(generic_object=self.user) for i in range(20)]
+        sample = random.sample(objs, 10)
+        result = Attachment.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))

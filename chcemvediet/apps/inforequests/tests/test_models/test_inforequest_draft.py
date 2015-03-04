@@ -80,11 +80,8 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
         result = self.obligee1.inforequestdraft_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_default_ordering_by_pk(self):
-        drafts = [self._create_inforequest_draft() for i in range(10)]
-        sample = random.sample(drafts, 5)
-        result = InforequestDraft.objects.filter(pk__in=[d.pk for d in sample])
-        self.assertEqual(list(result), sorted(sample, key=lambda d: d.pk))
+    def test_no_default_ordering(self):
+        self.assertFalse(InforequestDraft.objects.all().ordered)
 
     def test_prefetch_attachments_staticmethod(self):
         draft = self._create_inforequest_draft()
@@ -95,7 +92,7 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             draft = InforequestDraft.objects.prefetch_related(InforequestDraft.prefetch_attachments()).get(pk=draft.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+            self.assertEqual(draft.attachments, [attch1, attch2])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -104,8 +101,8 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(InforequestDraft.prefetch_attachments(u'inforequestdraft_set', Attachment.objects.extra(select=dict(moo=47))))
                     .get(pk=self.user1.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(user.inforequestdraft_set.first().attachments, [attch1, attch2])
-            self.assertEqual(user.inforequestdraft_set.first().attachments[0].moo, 47)
+            self.assertEqual(user.inforequestdraft_set.all()[0].attachments, [attch1, attch2])
+            self.assertEqual(user.inforequestdraft_set.all()[0].attachments[0].moo, 47)
 
     def test_attachments_property(self):
         draft = self._create_inforequest_draft()
@@ -116,15 +113,15 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             draft = InforequestDraft.objects.get(pk=draft.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+            self.assertEqual(draft.attachments, [attch1, attch2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+            self.assertEqual(draft.attachments, [attch1, attch2])
 
         # Property is prefetched with prefetch_attachments()
         with self.assertNumQueries(2):
             draft = InforequestDraft.objects.prefetch_related(InforequestDraft.prefetch_attachments()).get(pk=draft.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.attachments, [attch1, attch2])
+            self.assertEqual(draft.attachments, [attch1, attch2])
 
     def test_repr(self):
         draft = self._create_inforequest_draft()
@@ -143,3 +140,9 @@ class InforequestDraftTest(InforequestsTestCaseMixin, TestCase):
         draft2 = self._create_inforequest_draft(applicant=self.user1)
         result = InforequestDraft.objects.owned_by(self.user2)
         self.assertItemsEqual(result, [])
+
+    def test_order_by_pk_query_method(self):
+        drafts = [self._create_inforequest_draft() for i in range(20)]
+        sample = random.sample(drafts, 10)
+        result = InforequestDraft.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))

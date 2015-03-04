@@ -105,33 +105,8 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         rcpt2 = self._create_recipient(message=msg)
         self.assertItemsEqual(msg.recipient_set.all(), [rcpt1, rcpt2])
 
-    def test_default_ordering_by_processed_then_pk(self):
-        dates = [
-                u'2010-11-06 10:19:11',
-                u'2014-10-06 10:19:11',
-                u'2014-10-05 10:20:11',
-                u'2014-10-05 11:20:11',
-                u'2014-10-05 13:20:11',
-                u'2014-10-06 13:20:11',
-                u'2014-10-06 13:20:12.000000', # Many same dates to ckeck secondary sorting by pk
-                u'2014-10-06 13:20:12.000000',
-                u'2014-10-06 13:20:12.000000',
-                u'2014-10-06 13:20:12.000000',
-                u'2014-10-06 13:20:12.000000',
-                u'2014-10-06 13:20:12.000000',
-                u'2014-10-06 13:20:12.000000',
-                u'2014-10-06 13:20:12.000001',
-                u'2014-10-06 13:20:12.000001',
-                u'2014-10-06 13:20:12.000001',
-                u'2014-10-06 13:20:12.000001',
-                u'2014-10-06 13:20:12.000001',
-                u'2014-10-06 13:20:12.000001',
-                u'2014-11-06 10:19:11',
-                ]
-        random.shuffle(dates)
-        msgs = [self._create_message(processed=utc_datetime_from_local(d)) for d in dates]
-        result = Message.objects.all()
-        self.assertEqual(list(result), sorted(msgs, key=lambda o: (o.processed, o.pk)))
+    def test_no_default_ordering(self):
+        self.assertFalse(Message.objects.all().ordered)
 
     def test_from_formatted_property(self):
         msg = self._create_message(from_name=u'From Name', from_mail=u'mail@example.com')
@@ -184,7 +159,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             msg = Message.objects.prefetch_related(Message.prefetch_attachments()).get(pk=msg.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+            self.assertEqual(msg.attachments, [attch1, attch2])
 
         # With custom path and queryset
         with self.assertNumQueries(2):
@@ -193,7 +168,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
                     .prefetch_related(Message.prefetch_attachments(u'message', Attachment.objects.extra(select=dict(moo=47))))
                     .get(pk=rcpt1.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(rcpt.message.attachments, [attch1, attch2])
+            self.assertEqual(rcpt.message.attachments, [attch1, attch2])
             self.assertEqual(rcpt.message.attachments[0].moo, 47)
 
     def test_attachments_property(self):
@@ -205,15 +180,15 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             msg = Message.objects.get(pk=msg.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+            self.assertEqual(msg.attachments, [attch1, attch2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+            self.assertEqual(msg.attachments, [attch1, attch2])
 
         # Property is prefetched with prefetch_attachments()
         with self.assertNumQueries(2):
             msg = Message.objects.prefetch_related(Message.prefetch_attachments()).get(pk=msg.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.attachments, [attch1, attch2])
+            self.assertEqual(msg.attachments, [attch1, attch2])
 
     def test_prefetch_recipients_staticmethod(self):
         msg = self._create_message()
@@ -226,7 +201,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             msg = Message.objects.prefetch_related(Message.prefetch_recipients()).get(pk=msg.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+            self.assertEqual(msg.recipients, [rcpt1, rcpt2])
 
         # With custom path and queryset
         with self.assertNumQueries(2):
@@ -235,7 +210,7 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
                     .prefetch_related(Message.prefetch_recipients(u'message', Recipient.objects.extra(select=dict(moo=47))))
                     .get(pk=rcpt1.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(rcpt.message.recipients, [rcpt1, rcpt2])
+            self.assertEqual(rcpt.message.recipients, [rcpt1, rcpt2])
             self.assertEqual(rcpt.message.recipients[0].moo, 47)
 
     def test_recipients_property(self):
@@ -247,15 +222,15 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             msg = Message.objects.get(pk=msg.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+            self.assertEqual(msg.recipients, [rcpt1, rcpt2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+            self.assertEqual(msg.recipients, [rcpt1, rcpt2])
 
         # Property is prefetched with prefetch_recipients()
         with self.assertNumQueries(2):
             msg = Message.objects.prefetch_related(Message.prefetch_recipients()).get(pk=msg.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.recipients, [rcpt1, rcpt2])
+            self.assertEqual(msg.recipients, [rcpt1, rcpt2])
 
     def test_recipients_to_cc_and_bcc_properties(self):
         msg = self._create_message()
@@ -270,13 +245,13 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             msg = Message.objects.get(pk=msg.pk)
         with self.assertNumQueries(3):
-            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
-            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
-            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+            self.assertEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertEqual(msg.recipients_bcc, [bcc])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
-            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
-            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+            self.assertEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertEqual(msg.recipients_bcc, [bcc])
 
         # Properies use cached recipients property
         with self.assertNumQueries(1):
@@ -284,17 +259,17 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             msg.recipients
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
-            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
-            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+            self.assertEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertEqual(msg.recipients_bcc, [bcc])
 
         # Properties are prefetched with prefetch_recipients()
         with self.assertNumQueries(2):
             msg = Message.objects.prefetch_related(Message.prefetch_recipients()).get(pk=msg.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(msg.recipients_to, [to1, to2, to3])
-            self.assertItemsEqual(msg.recipients_cc, [cc1, cc2])
-            self.assertItemsEqual(msg.recipients_bcc, [bcc])
+            self.assertEqual(msg.recipients_to, [to1, to2, to3])
+            self.assertEqual(msg.recipients_cc, [cc1, cc2])
+            self.assertEqual(msg.recipients_bcc, [bcc])
 
     def test_to_cc_and_bcc_formatted_properties(self):
         msg = self._create_message()
@@ -329,6 +304,40 @@ class MessageModelTest(MailTestCaseMixin, TestCase):
         self.assertItemsEqual(result, [obj3])
         result = Message.objects.not_processed()
         self.assertItemsEqual(result, [obj1, obj2])
+
+    def test_order_by_pk_query_method(self):
+        msgs = [self._create_message() for i in range(20)]
+        sample = random.sample(msgs, 10)
+        result = Message.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))
+
+    def test_order_by_processed_query_method(self):
+        dates = [
+                u'2010-11-06 10:19:11',
+                u'2014-10-06 10:19:11',
+                u'2014-10-05 10:20:11',
+                u'2014-10-05 11:20:11',
+                u'2014-10-05 13:20:11',
+                u'2014-10-06 13:20:11',
+                u'2014-10-06 13:20:12.000000', # Many same dates to ckeck secondary sorting by pk
+                u'2014-10-06 13:20:12.000000',
+                u'2014-10-06 13:20:12.000000',
+                u'2014-10-06 13:20:12.000000',
+                u'2014-10-06 13:20:12.000000',
+                u'2014-10-06 13:20:12.000000',
+                u'2014-10-06 13:20:12.000000',
+                u'2014-10-06 13:20:12.000001',
+                u'2014-10-06 13:20:12.000001',
+                u'2014-10-06 13:20:12.000001',
+                u'2014-10-06 13:20:12.000001',
+                u'2014-10-06 13:20:12.000001',
+                u'2014-10-06 13:20:12.000001',
+                u'2014-11-06 10:19:11',
+                ]
+        random.shuffle(dates)
+        msgs = [self._create_message(processed=utc_datetime_from_local(d)) for d in dates]
+        result = Message.objects.order_by_processed()
+        self.assertEqual(list(result), sorted(msgs, key=lambda o: (o.processed, o.pk)))
 
 class RecipientModelTest(MailTestCaseMixin, TestCase):
     u"""
@@ -435,12 +444,8 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
         result = msg.recipient_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_default_ordering_by_pk(self):
-        msg = self._create_message()
-        rcpts = [self._create_recipient(message=msg) for i in range(10)]
-        rcpts = random.sample(rcpts, 5)
-        result = msg.recipient_set.filter(pk__in=[r.pk for r in rcpts])
-        self.assertEqual(list(result), sorted(rcpts, key=lambda r: r.pk))
+    def test_no_default_ordering(self):
+        self.assertFalse(Recipient.objects.all().ordered)
 
     def test_formatted_property(self):
         msg = self._create_message()
@@ -490,3 +495,10 @@ class RecipientModelTest(MailTestCaseMixin, TestCase):
         self.assertItemsEqual(result, [cc1, cc2])
         result = msg.recipient_set.bcc()
         self.assertItemsEqual(result, [bcc])
+
+    def test_order_by_pk_query_method(self):
+        msg = self._create_message()
+        rcpts = [self._create_recipient(message=msg) for i in range(20)]
+        sample = random.sample(rcpts, 10)
+        result = msg.recipient_set.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))

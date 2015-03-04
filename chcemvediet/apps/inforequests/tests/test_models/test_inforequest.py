@@ -222,25 +222,8 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         result = email.inforequest_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_default_ordering_by_submission_date_then_pk(self):
-        dates = [
-                u'2014-10-04',
-                u'2014-10-05',
-                u'2014-10-06', # Several with the same date, to check secondary ordering
-                u'2014-10-06',
-                u'2014-10-06',
-                u'2014-10-06',
-                u'2014-10-06',
-                u'2014-11-05',
-                u'2015-10-05',
-                ]
-        random.shuffle(dates)
-        inforequests = []
-        for date in dates:
-            timewarp.jump(local_datetime_from_local(u'%s 10:33:00' % date))
-            inforequests.append(self._create_inforequest())
-        result = Inforequest.objects.all()
-        self.assertEqual(list(result), sorted(inforequests, key=lambda ir: (ir.submission_date, ir.pk)))
+    def test_no_default_ordering(self):
+        self.assertFalse(Inforequest.objects.all().ordered)
 
     def test_prefetch_branches_staticmethod(self):
         inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
@@ -250,7 +233,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+            self.assertEqual(inforequest.branches, [branch1, branch2])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -259,8 +242,8 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Inforequest.prefetch_branches(u'inforequest_set', Branch.objects.extra(select=dict(moo=47))))
                     .get(pk=self.user1.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(user.inforequest_set.first().branches, [branch1, branch2])
-            self.assertEqual(user.inforequest_set.first().branches[0].moo, 47)
+            self.assertEqual(user.inforequest_set.all()[0].branches, [branch1, branch2])
+            self.assertEqual(user.inforequest_set.all()[0].branches[0].moo, 47)
 
     def test_branches_property(self):
         inforequest, branch1, actions = self._create_inforequest_scenario(u'advancement')
@@ -270,15 +253,15 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             inforequest = Inforequest.objects.get(pk=inforequest.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+            self.assertEqual(inforequest.branches, [branch1, branch2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+            self.assertEqual(inforequest.branches, [branch1, branch2])
 
         # Property is prefetched with prefetch_branches()
         with self.assertNumQueries(2):
             inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_branches()).get(pk=inforequest.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.branches, [branch1, branch2])
+            self.assertEqual(inforequest.branches, [branch1, branch2])
 
     def test_prefetch_main_branch_staticmethod(self):
         inforequest, branch, _ = self._create_inforequest_scenario(u'advancement')
@@ -287,7 +270,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             inforequest = Inforequest.objects.prefetch_related(Inforequest.prefetch_main_branch()).get(pk=inforequest.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest._main_branch, [branch])
+            self.assertEqual(inforequest._main_branch, [branch])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -296,8 +279,8 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Inforequest.prefetch_main_branch(u'inforequest_set', Branch.objects.extra(select=dict(moo=47))))
                     .get(pk=self.user1.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(user.inforequest_set.first()._main_branch, [branch])
-            self.assertEqual(user.inforequest_set.first()._main_branch[0].moo, 47)
+            self.assertEqual(user.inforequest_set.all()[0]._main_branch, [branch])
+            self.assertEqual(user.inforequest_set.all()[0]._main_branch[0].moo, 47)
 
     def test_main_branch_property(self):
         inforequest, branch, _ = self._create_inforequest_scenario(u'advancement')
@@ -360,6 +343,10 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         email5, _ = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.OBLIGEE_ACTION)
         self.assertItemsEqual(inforequest.undecided_emails_set.all(), [])
 
+    def test_undecided_emails_set_property_is_not_ordered(self):
+        inforequest, _, _ = self._create_inforequest_scenario()
+        self.assertFalse(inforequest.undecided_emails_set.all().ordered)
+
     def test_prefetch_undecided_emails_staticmethod(self):
         inforequest, _, _ = self._create_inforequest_scenario()
         _, rel1 = self._create_inforequest_email(inforequest=inforequest, reltype=InforequestEmail.TYPES.UNKNOWN)
@@ -382,8 +369,8 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Inforequest.prefetch_undecided_emails(u'inforequest_set', InforequestEmail.objects.extra(select=dict(moo=47))))
                     .get(pk=self.user1.pk))
         with self.assertNumQueries(0):
-            self.assertEqual(user.inforequest_set.first()._undecided_emails, [rel3, rel6])
-            self.assertEqual(user.inforequest_set.first()._undecided_emails[0].moo, 47)
+            self.assertEqual(user.inforequest_set.all()[0]._undecided_emails, [rel3, rel6])
+            self.assertEqual(user.inforequest_set.all()[0]._undecided_emails[0].moo, 47)
 
     def test_undecided_emails_property(self):
         inforequest, _, _ = self._create_inforequest_scenario()
@@ -671,8 +658,8 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Inforequest.prefetch_newest_undecided_email(u'inforequest_set', InforequestEmail.objects.extra(select=dict(moo=47))))
                     .get(pk=self.user1.pk))
         with self.assertNumQueries(0):
-            self.assertEqual(user.inforequest_set.first()._newest_undecided_email, [rel6])
-            self.assertEqual(user.inforequest_set.first()._newest_undecided_email[0].moo, 47)
+            self.assertEqual(user.inforequest_set.all()[0]._newest_undecided_email, [rel6])
+            self.assertEqual(user.inforequest_set.all()[0]._newest_undecided_email[0].moo, 47)
 
     def test_newest_undecided_email_property(self):
         inforequest, _, _ = self._create_inforequest_scenario()
@@ -1030,3 +1017,29 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(result, [inforequest2, inforequest3])
         result = Inforequest.objects.without_undecided_email()
         self.assertItemsEqual(result, [inforequest1, inforequest4])
+
+    def test_order_by_pk_query_method(self):
+        inforequests = [self._create_inforequest() for i in range(20)]
+        sample = random.sample(inforequests, 10)
+        result = Inforequest.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))
+
+    def test_order_by_submission_date_query_method(self):
+        dates = [
+                u'2014-10-04',
+                u'2014-10-05',
+                u'2014-10-06', # Several with the same date, to check secondary ordering
+                u'2014-10-06',
+                u'2014-10-06',
+                u'2014-10-06',
+                u'2014-10-06',
+                u'2014-11-05',
+                u'2015-10-05',
+                ]
+        random.shuffle(dates)
+        inforequests = []
+        for date in dates:
+            timewarp.jump(local_datetime_from_local(u'%s 10:33:00' % date))
+            inforequests.append(self._create_inforequest())
+        result = Inforequest.objects.order_by_submission_date()
+        self.assertEqual(list(result), sorted(inforequests, key=lambda ir: (ir.submission_date, ir.pk)))

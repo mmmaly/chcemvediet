@@ -165,12 +165,8 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         result = request.advanced_to_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_default_ordering_by_pk(self):
-        inforequest = self._create_inforequest()
-        branches = [self._create_branch(inforequest=inforequest) for i in range(10)]
-        sample = random.sample(branches, 5)
-        result = Branch.objects.filter(pk__in=[b.pk for b in sample])
-        self.assertEqual(list(result), sorted(sample, key=lambda d: d.pk))
+    def test_no_default_ordering(self):
+        self.assertFalse(Branch.objects.all().ordered)
 
     def test_is_main_property(self):
         _, branch1, actions = self._create_inforequest_scenario(u'advancement')
@@ -185,7 +181,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             branch = Branch.objects.prefetch_related(Branch.prefetch_actions()).get(pk=branch.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions, actions)
+            self.assertEqual(branch.actions, actions)
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -194,7 +190,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Branch.prefetch_actions(u'branches', Action.objects.extra(select=dict(moo=47))))
                     .get(pk=inforequest.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.branches[0].actions, actions)
+            self.assertEqual(inforequest.branches[0].actions, actions)
             self.assertEqual(inforequest.branches[0].actions[0].moo, 47)
 
     def test_actions_property(self):
@@ -204,15 +200,15 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             branch = Branch.objects.get(pk=branch.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(branch.actions, actions)
+            self.assertEqual(branch.actions, actions)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions, actions)
+            self.assertEqual(branch.actions, actions)
 
         # Property is prefetched with prefetch_actions()
         with self.assertNumQueries(2):
             branch = Branch.objects.prefetch_related(Branch.prefetch_actions()).get(pk=branch.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions, actions)
+            self.assertEqual(branch.actions, actions)
 
     def test_actions_property_with_no_actions(self):
         inforequest = self._create_inforequest()
@@ -222,15 +218,15 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             branch = Branch.objects.get(pk=branch.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(branch.actions, [])
+            self.assertEqual(branch.actions, [])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions, [])
+            self.assertEqual(branch.actions, [])
 
         # Property is prefetched with prefetch_actions()
         with self.assertNumQueries(2):
             branch = Branch.objects.prefetch_related(Branch.prefetch_actions()).get(pk=branch.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions, [])
+            self.assertEqual(branch.actions, [])
 
     def test_prefetch_actions_by_email_staticmethod(self):
         inforequest, branch, actions = self._create_inforequest_scenario((u'confirmation', dict(email=False)), u'extension')
@@ -240,7 +236,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             branch = Branch.objects.prefetch_related(Branch.prefetch_actions_by_email()).get(pk=branch.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions_by_email, [request, extension])
+            self.assertEqual(branch.actions_by_email, [request, extension])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -249,7 +245,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Branch.prefetch_actions_by_email(u'branches', Action.objects.extra(select=dict(moo=47))))
                     .get(pk=inforequest.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.branches[0].actions_by_email, [request, extension])
+            self.assertEqual(inforequest.branches[0].actions_by_email, [request, extension])
             self.assertEqual(inforequest.branches[0].actions_by_email[0].moo, 47)
 
     def test_actions_by_email_property(self):
@@ -260,7 +256,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             branch = Branch.objects.get(pk=branch.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(branch.actions_by_email, [request, extension])
+            self.assertEqual(branch.actions_by_email, [request, extension])
 
         # Property uses cached actions property
         with self.assertNumQueries(1):
@@ -268,19 +264,19 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             branch.actions
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions_by_email, [request, extension])
+            self.assertEqual(branch.actions_by_email, [request, extension])
 
         # Property is prefetched with prefetch_actions_by_email()
         with self.assertNumQueries(2):
             branch = Branch.objects.prefetch_related(Branch.prefetch_actions_by_email()).get(pk=branch.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions_by_email, [request, extension])
+            self.assertEqual(branch.actions_by_email, [request, extension])
 
         # Property is prefetched with prefetch_actions()
         with self.assertNumQueries(2):
             branch = Branch.objects.prefetch_related(Branch.prefetch_actions()).get(pk=branch.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions_by_email, [request, extension])
+            self.assertEqual(branch.actions_by_email, [request, extension])
 
     def test_prefetch_last_action_staticmethod(self):
         inforequest, branch, actions = self._create_inforequest_scenario(u'confirmation', u'extension')
@@ -299,7 +295,7 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Branch.prefetch_last_action(u'branches', Action.objects.extra(select=dict(moo=47))))
                     .get(pk=inforequest.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.branches[0]._last_action, [extension])
+            self.assertEqual(inforequest.branches[0]._last_action, [extension])
             self.assertEqual(inforequest.branches[0]._last_action[0].moo, 47)
 
     def test_last_action_property(self):
@@ -704,3 +700,10 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
         self.assertItemsEqual(result, [branch1])
         result = Branch.objects.advanced()
         self.assertItemsEqual(result, [branch2, branch3])
+
+    def test_order_by_pk_query_method(self):
+        inforequest = self._create_inforequest()
+        branches = [self._create_branch(inforequest=inforequest) for i in range(20)]
+        sample = random.sample(branches, 10)
+        result = Branch.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))

@@ -28,16 +28,19 @@ def index(request):
     inforequests = (Inforequest.objects
             .not_closed()
             .owned_by(request.user)
+            .order_by_submission_date()
             .select_undecided_emails_count()
             .prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'historicalobligee')))
             )
     drafts = (InforequestDraft.objects
             .owned_by(request.user)
+            .order_by_pk()
             .select_related(u'obligee')
             )
     closed_inforequests = (Inforequest.objects
             .closed()
             .owned_by(request.user)
+            .order_by_submission_date()
             .prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'historicalobligee')))
             )
 
@@ -339,7 +342,7 @@ def _add_smail(request, inforequest_pk, action_type, form_class, template):
         if not inforequest.can_add_action(action_type):
             return HttpResponseNotFound()
 
-    draft = inforequest.actiondraft_set.filter(type=action_type).first()
+    draft = inforequest.actiondraft_set.filter(type=action_type).order_by_pk().first()
     session = Session.objects.get(session_key=request.session.session_key)
     attached_to = (session, draft) if draft else (session,)
 
@@ -457,7 +460,7 @@ def _new_action(request, inforequest_pk, action_type, form_class, template):
         if not inforequest.can_add_action(action_type):
             return HttpResponseNotFound()
 
-    draft = inforequest.actiondraft_set.filter(type=action_type).first()
+    draft = inforequest.actiondraft_set.filter(type=action_type).order_by_pk().first()
     session = Session.objects.get(session_key=request.session.session_key)
     attached_to = (session, draft) if draft else (session,)
 

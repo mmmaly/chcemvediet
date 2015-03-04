@@ -34,6 +34,8 @@ class AttachmentQuerySet(QuerySet):
                 raise TypeError(u'Expecting QuerySet, Model instance, or Model class.')
         q = reduce((lambda a, b: a | b), q, Q())
         return self.filter(q)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
 
 class Attachment(models.Model):
     # May NOT be NULL; Generic relation; For index see index_together
@@ -72,7 +74,6 @@ class Attachment(models.Model):
     objects = AttachmentQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'pk']
         index_together = [
                 [u'generic_type', u'generic_id'],
                 ]

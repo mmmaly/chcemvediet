@@ -207,6 +207,7 @@ class InforequestAdminBranchInline(admin.TabularInline):
             u'main_branch_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Branch')
     def branch_field(self, branch):
@@ -245,6 +246,7 @@ class InforequestAdminInforequestEmailInline(admin.TabularInline):
             u'type',
             ]
     readonly_fields = fields
+    ordering = [u'email__processed', u'email__pk', u'pk']
 
     @decorate(short_description=u'Inforequest E-mail')
     def inforequestemail_field(self, inforequestemail):
@@ -285,6 +287,7 @@ class InforequestAdminActionDraftInline(admin.TabularInline):
             u'type',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Action Draft')
     def actiondraft_field(self, draft):
@@ -627,11 +630,11 @@ class InforequestEmailAdminDecideForm(forms.Form):
         self.instance = kwargs.pop(u'instance')
         attached_to = kwargs.pop(u'attached_to')
         super(InforequestEmailAdminDecideForm, self).__init__(*args, **kwargs)
-        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.inforequest)
+        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.inforequest).order_by_pk()
         self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.inforequest)
         self.fields[u'subject'].initial = self.instance.email.subject
         self.fields[u'content'].initial = self.instance.email.text
-        self.fields[u'attachments'].initial = self.instance.email.attachment_set.all()
+        self.fields[u'attachments'].initial = self.instance.email.attachment_set.order_by_pk()
         self.fields[u'attachments'].attached_to = [self.instance.email, attached_to]
         self.fields[u'effective_date'].initial = local_date(self.instance.email.processed)
 
@@ -1052,6 +1055,7 @@ class BranchAdminActionInline(admin.TabularInline):
             u'deadline_details_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Action')
     def action_field(self, action):
@@ -1350,6 +1354,7 @@ class ActionAdminAdvancedToInline(admin.TabularInline):
             u'obligee_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Branch')
     def branch_field(self, branch):
@@ -1460,9 +1465,9 @@ class ActionAdminChangeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ActionAdminChangeForm, self).__init__(*args, **kwargs)
-        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.branch.inforequest)
+        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.branch.inforequest).order_by_pk()
         self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.branch.inforequest)
-        self.fields[u'email'].queryset = Message.objects.filter(inforequest=self.instance.branch.inforequest)
+        self.fields[u'email'].queryset = Message.objects.filter(inforequest=self.instance.branch.inforequest).order_by_processed()
         self.fields[u'email'].widget.url_params = dict(inforequest=self.instance.branch.inforequest)
 
     def clean(self):
@@ -1794,7 +1799,7 @@ class ActionDraftAdminChangeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ActionDraftAdminChangeForm, self).__init__(*args, **kwargs)
-        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.branch.inforequest)
+        self.fields[u'branch'].queryset = Branch.objects.filter(inforequest=self.instance.branch.inforequest).order_by_pk()
         self.fields[u'branch'].widget.url_params = dict(inforequest=self.instance.branch.inforequest)
 
 class ActionDraftAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
@@ -1977,6 +1982,7 @@ class UserAdminMixinInforequestInline(admin.TabularInline):
             u'has_undecided_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Inforequest')
     def inforequest_field(self, inforequest):
@@ -2014,6 +2020,7 @@ class UserAdminMixinInforequestDraftInline(admin.TabularInline):
             u'obligee_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Inforequest Draft')
     def inforequestdraft_field(self, draft):
@@ -2107,7 +2114,7 @@ class MessageAdminMixin(admin.ModelAdmin):
     @decorate(short_description=u'Assigned To')
     @decorate(admin_order_field=u'inforequest__pk')
     def assigned_to_column(self, message):
-        inforequests = message.inforequest_set.all()
+        inforequests = message.inforequest_set.order_by_pk()
         return admin_obj_format_join(u', ', inforequests)
 
     @decorate(short_description=u'Action')
@@ -2118,7 +2125,7 @@ class MessageAdminMixin(admin.ModelAdmin):
 
     @decorate(short_description=u'Assigned To')
     def assigned_to_field(self, message):
-        inforequests = message.inforequest_set.all()
+        inforequests = message.inforequest_set.order_by_pk()
         if inforequests:
             return admin_obj_format_join(u', ', inforequests)
         elif message.type == Message.TYPES.INBOUND and message.processed:

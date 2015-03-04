@@ -262,12 +262,8 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         result = self.obligee1.actiondraft_set.all()
         self.assertItemsEqual(result, [])
 
-    def test_default_ordering_by_pk(self):
-        inforequest = self._create_inforequest()
-        drafts = [self._create_action_draft(inforequest=inforequest) for i in range(10)]
-        sample = random.sample(drafts, 5)
-        result = ActionDraft.objects.filter(pk__in=[d.pk for d in sample])
-        self.assertEqual(list(result), sorted(sample, key=lambda d: d.pk))
+    def test_no_default_ordering(self):
+        self.assertFalse(ActionDraft.objects.all().ordered)
 
     def test_prefetch_attachments_staticmethod(self):
         inforequest = self._create_inforequest()
@@ -279,7 +275,7 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_attachments()).get(pk=draft.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+            self.assertEqual(draft.attachments, [attachment1, attachment2])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -288,8 +284,8 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(ActionDraft.prefetch_attachments(u'actiondraft_set', Attachment.objects.extra(select=dict(moo=47))))
                     .get(pk=inforequest.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.actiondraft_set.first().attachments, [attachment1, attachment2])
-            self.assertEqual(inforequest.actiondraft_set.first().attachments[0].moo, 47)
+            self.assertEqual(inforequest.actiondraft_set.all()[0].attachments, [attachment1, attachment2])
+            self.assertEqual(inforequest.actiondraft_set.all()[0].attachments[0].moo, 47)
 
     def test_attachments_property(self):
         inforequest = self._create_inforequest()
@@ -301,15 +297,15 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             draft = ActionDraft.objects.get(pk=draft.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+            self.assertEqual(draft.attachments, [attachment1, attachment2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+            self.assertEqual(draft.attachments, [attachment1, attachment2])
 
         # Property is prefetched with prefetch_attachments()
         with self.assertNumQueries(2):
             draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_attachments()).get(pk=draft.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.attachments, [attachment1, attachment2])
+            self.assertEqual(draft.attachments, [attachment1, attachment2])
 
     def test_prefetch_obligees_staticmethod(self):
         inforequest = self._create_inforequest()
@@ -321,7 +317,7 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_obligees()).get(pk=draft.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+            self.assertEqual(draft.obligees, [self.obligee1, self.obligee2])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -330,8 +326,8 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(ActionDraft.prefetch_obligees(u'actiondraft_set', Obligee.objects.extra(select=dict(moo=47))))
                     .get(pk=inforequest.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(inforequest.actiondraft_set.first().obligees, [self.obligee1, self.obligee2])
-            self.assertEqual(inforequest.actiondraft_set.first().obligees[0].moo, 47)
+            self.assertEqual(inforequest.actiondraft_set.all()[0].obligees, [self.obligee1, self.obligee2])
+            self.assertEqual(inforequest.actiondraft_set.all()[0].obligees[0].moo, 47)
 
     def test_obligees_property(self):
         inforequest = self._create_inforequest()
@@ -343,17 +339,24 @@ class ActionDraftTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             draft = ActionDraft.objects.get(pk=draft.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+            self.assertEqual(draft.obligees, [self.obligee1, self.obligee2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+            self.assertEqual(draft.obligees, [self.obligee1, self.obligee2])
 
         # Property is prefetched with prefetch_obligees()
         with self.assertNumQueries(2):
             draft = ActionDraft.objects.prefetch_related(ActionDraft.prefetch_obligees()).get(pk=draft.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(draft.obligees, [self.obligee1, self.obligee2])
+            self.assertEqual(draft.obligees, [self.obligee1, self.obligee2])
 
     def test_repr(self):
         inforequest = self._create_inforequest()
         draft = self._create_action_draft(inforequest=inforequest)
         self.assertEqual(repr(draft), u'<ActionDraft: %s>' % draft.pk)
+
+    def test_order_by_pk_query_method(self):
+        inforequest = self._create_inforequest()
+        drafts = [self._create_action_draft(inforequest=inforequest) for i in range(20)]
+        sample = random.sample(drafts, 10)
+        result = ActionDraft.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))

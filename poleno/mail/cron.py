@@ -37,6 +37,7 @@ def mail():
     messages = (Message.objects
             .inbound()
             .not_processed()
+            .order_by_pk()
             .prefetch_related(Message.prefetch_recipients())
             )[:10]
     for message in messages:
@@ -56,6 +57,7 @@ def mail():
         messages = (Message.objects
                 .outbound()
                 .not_processed()
+                .order_by_pk()
                 .prefetch_related(Message.prefetch_recipients())
                 .prefetch_related(Message.prefetch_attachments())
                 )[:10]

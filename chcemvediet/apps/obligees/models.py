@@ -16,6 +16,10 @@ from poleno.utils.misc import squeeze
 class ObligeeQuerySet(QuerySet):
     def pending(self):
         return self.filter(status=Obligee.STATUSES.PENDING)
+    def order_by_pk(self):
+        return self.order_by(u'pk')
+    def order_by_name(self):
+        return self.order_by(u'name', u'pk')
 
 @register_history
 class Obligee(models.Model):
@@ -59,7 +63,6 @@ class Obligee(models.Model):
     objects = ObligeeQuerySet.as_manager()
 
     class Meta:
-        ordering = [u'name', u'pk']
         # FIXME: We need to define full-text search index for "slug" manually, because Django does
         # not support it. Ordinary indexes do not work for LIKE '%word%'.
         index_together = [

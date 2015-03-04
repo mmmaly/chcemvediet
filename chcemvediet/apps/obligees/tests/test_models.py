@@ -131,13 +131,8 @@ class ObligeeModelTest(ObligeesTestCaseMixin, TestCase):
         with self.assertRaisesMessage(IntegrityError, u'obligees_obligee.status may not be NULL'):
             self._create_obligee(omit=[u'status'])
 
-    def test_default_ordering_by_name_then_pk(self):
-        names = [u'aaa', u'bbb', u'ccc', u'ddd', u'eee', u'ggg', u'hhh', u'iii', u'jjj']
-        names += [u'fff', u'fff', u'fff', u'fff', u'fff'] # Many same names to check secondary sorting by ``pk``
-        random.shuffle(names)
-        oblgs = [self._create_obligee(name=n) for n in names]
-        result = Obligee.objects.all()
-        self.assertEqual(list(result), sorted(oblgs, key=lambda o: (o.name, o.pk)))
+    def test_no_default_ordering(self):
+        self.assertFalse(Obligee.objects.all().ordered)
 
     def test_emails_parsed_property(self):
         oblg = self._create_obligee(emails=u'The Agency <agency@example.com>')
@@ -214,6 +209,20 @@ class ObligeeModelTest(ObligeesTestCaseMixin, TestCase):
         oblg4 = self._create_obligee(status=Obligee.STATUSES.PENDING)
         result = Obligee.objects.pending()
         self.assertItemsEqual(result, [oblg3, oblg4])
+
+    def test_order_by_pk_query_method(self):
+        oblgs = [self._create_obligee() for i in range(20)]
+        sample = random.sample(oblgs, 10)
+        result = Obligee.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))
+
+    def test_order_by_name_query_method(self):
+        names = [u'aaa', u'bbb', u'ccc', u'ddd', u'eee', u'ggg', u'hhh', u'iii', u'jjj']
+        names += [u'fff', u'fff', u'fff', u'fff', u'fff'] # Many same names to check secondary sorting by ``pk``
+        random.shuffle(names)
+        oblgs = [self._create_obligee(name=n) for n in names]
+        result = Obligee.objects.order_by_name()
+        self.assertEqual(list(result), sorted(oblgs, key=lambda o: (o.name, o.pk)))
 
     def test_historical_obligee_model_exists(self):
         oblg = self._create_obligee(name=u'Agency', street=u'Westside')

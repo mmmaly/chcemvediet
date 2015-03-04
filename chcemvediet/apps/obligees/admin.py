@@ -22,6 +22,7 @@ class ObligeeAdminBranchInline(admin.TabularInline):
             u'main_branch_field',
             ]
     readonly_fields = fields
+    ordering = [u'pk']
 
     @decorate(short_description=u'Branch')
     def branch_field(self, branch):
@@ -78,6 +79,7 @@ class ObligeeAdmin(SimpleHistoryAdmin):
             u'name',
             u'emails',
             ]
+    ordering = [u'name', u'pk']
 
     @decorate(short_description=u'Obligee')
     @decorate(admin_order_field=u'pk')
@@ -135,6 +137,7 @@ class HistoricalObligeeAdmin(admin.ModelAdmin):
             u'=id',
             u'name',
             ]
+    ordering = [u'-history_date', u'-pk']
 
     @decorate(short_description=u'Historical Obligee')
     @decorate(admin_order_field=u'pk')

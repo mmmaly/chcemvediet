@@ -307,26 +307,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         with self.assertRaisesMessage(Action.DoesNotExist, u'Message has no action.'):
             email.action
 
-    def test_default_ordering_by_effective_date_then_pk(self):
-        dates = [
-                u'2014-10-04',
-                u'2014-10-05',
-                u'2014-10-06', # Several with the same date, to check secondary ordering
-                u'2014-10-06',
-                u'2014-10-06',
-                u'2014-10-06',
-                u'2014-10-06',
-                u'2014-11-05',
-                u'2015-10-05',
-                ]
-        random.shuffle(dates)
-        inforequest = self._create_inforequest()
-        branch = self._create_branch(inforequest=inforequest)
-        actions = []
-        for date in dates:
-            actions.append(self._create_action(branch=branch, effective_date=naive_date(date)))
-        result = Action.objects.all()
-        self.assertEqual(list(result), sorted(actions, key=lambda a: (a.effective_date, a.pk)))
+    def test_no_default_ordering(self):
+        self.assertFalse(Action.objects.all().ordered)
 
     def test_prefetch_attachments_staticmethod(self):
         inforequest = self._create_inforequest()
@@ -339,7 +321,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(2):
             action = Action.objects.prefetch_related(Action.prefetch_attachments()).get(pk=action.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+            self.assertEqual(action.attachments, [attachment1, attachment2])
 
         # With custom path and queryset
         with self.assertNumQueries(3):
@@ -348,7 +330,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
                     .prefetch_related(Action.prefetch_attachments(u'actions', Attachment.objects.extra(select=dict(moo=47))))
                     .get(pk=branch.pk))
         with self.assertNumQueries(0):
-            self.assertItemsEqual(branch.actions[0].attachments, [attachment1, attachment2])
+            self.assertEqual(branch.actions[0].attachments, [attachment1, attachment2])
             self.assertEqual(branch.actions[0].attachments[0].moo, 47)
 
     def test_attachments_property(self):
@@ -362,15 +344,15 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         with self.assertNumQueries(1):
             action = Action.objects.get(pk=action.pk)
         with self.assertNumQueries(1):
-            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+            self.assertEqual(action.attachments, [attachment1, attachment2])
         with self.assertNumQueries(0):
-            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+            self.assertEqual(action.attachments, [attachment1, attachment2])
 
         # Property is prefetched with prefetch_attachments()
         with self.assertNumQueries(2):
             action = Action.objects.prefetch_related(Action.prefetch_attachments()).get(pk=action.pk)
         with self.assertNumQueries(0):
-            self.assertItemsEqual(action.attachments, [attachment1, attachment2])
+            self.assertEqual(action.attachments, [attachment1, attachment2])
 
     def test_is_applicant_is_obligee_and_is_implicit_action_properties(self):
         tests = (                                   # Applicant, Obligee, Implicit
@@ -726,3 +708,32 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         result_by_smail = Action.objects.by_smail()
         self.assertItemsEqual(result_by_email, [request, confirmation, refusal, extension])
         self.assertItemsEqual(result_by_smail, [appeal, remandment, expiration])
+
+    def test_order_by_pk_query_method(self):
+        inforequest = self._create_inforequest()
+        branch = self._create_branch(inforequest=inforequest)
+        actions = [self._create_action(branch=branch) for i in range(20)]
+        sample = random.sample(actions, 10)
+        result = Action.objects.filter(pk__in=(d.pk for d in sample)).order_by_pk().reverse()
+        self.assertEqual(list(result), sorted(sample, key=lambda d: -d.pk))
+
+    def test_order_by_effective_date_query_method(self):
+        dates = [
+                u'2014-10-04',
+                u'2014-10-05',
+                u'2014-10-06', # Several with the same date, to check secondary ordering
+                u'2014-10-06',
+                u'2014-10-06',
+                u'2014-10-06',
+                u'2014-10-06',
+                u'2014-11-05',
+                u'2015-10-05',
+                ]
+        random.shuffle(dates)
+        inforequest = self._create_inforequest()
+        branch = self._create_branch(inforequest=inforequest)
+        actions = []
+        for date in dates:
+            actions.append(self._create_action(branch=branch, effective_date=naive_date(date)))
+        result = Action.objects.order_by_effective_date()
+        self.assertEqual(list(result), sorted(actions, key=lambda a: (a.effective_date, a.pk)))
