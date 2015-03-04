@@ -118,6 +118,23 @@ class QuerySet(models.query.QuerySet):
     ``QuerySet`` with common custom methods.
     """
 
+    def bulk_create(self, *args, **kwargs):
+        u"""
+        Prevents ``bulk_create`` on models that forbid it. Bulk create does not call model
+        ``save()`` method nor emit ``pre_save`` and ``post_save`` signals. To prevent using
+        bulk create on a model decorate its save method with:
+
+            class Book(Model):
+                ...
+                @decorate(prevent_bulk_create=True)
+                def save(...):
+                     ...
+
+        """
+        if getattr(self.model.save, u'prevent_bulk_create', False):
+            raise ValueError(u"Can't bulk create %s" % self.model.__name__)
+        super(QuerySet, self).bulk_create(*args, **kwargs)
+
     def get_or_404(self, *args, **kwargs):
         u"""
         Uses ``get()`` to return an object, or raises a ``Http404`` exception if the object does

@@ -185,7 +185,7 @@ def close_inforequests():
                 for branch in inforequest.branches:
                     branch.add_expiration_if_expired()
                 inforequest.closed = True
-                inforequest.save()
+                inforequest.save(update_fields=[u'closed'])
                 nop() # To let tests raise testing exception here.
                 cron_logger.info(u'Closed inforequest: %s' % repr(inforequest)) # pragma: no branch
         except Exception:

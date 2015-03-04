@@ -28,7 +28,7 @@ def message_status_webhook_event(sender, event_type, data, **kwargs):
         recipient = Recipient.objects.get(remote_id=data['_id'])
         recipient.status = status
         recipient.status_details = event_type
-        recipient.save()
+        recipient.save(update_fields=[u'status', u'status_details'])
     except (Recipient.DoesNotExist, Recipient.MultipleObjectsReturned):
         pass
 

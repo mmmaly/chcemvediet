@@ -89,4 +89,4 @@ class MandrillTransport(BaseTransport):
                 else:
                     recipient.status = recipient.STATUSES.UNDEFINED
 
-                recipient.save()
+                recipient.save(update_fields=[u'remote_id', u'status', u'status_details'])

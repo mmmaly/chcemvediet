@@ -8,6 +8,8 @@ from django.http import Http404
 from django.test import TestCase
 
 from poleno.utils.models import after_saved, join_lookup, FieldChoices, QuerySet
+from poleno.utils.misc import decorate
+from poleno.utils.test import created_instances
 
 class TestModelsModel(models.Model):
     name = models.CharField(blank=True, max_length=255)
@@ -27,6 +29,28 @@ class TestModelsModel(models.Model):
 
     class Meta:
         app_label = u'utils'
+
+class TestModelsBulkModel(models.Model):
+    name = models.CharField(blank=True, max_length=255)
+    objects = QuerySet.as_manager()
+
+    class Meta:
+        app_label = u'utils'
+
+    @decorate(prevent_bulk_create=False)
+    def save(self, *args, **kwargs): # pragma: no cover
+        super(TestModelsModel2, self).save(*args, **kwargs)
+
+class TestModelsNoBulkModel(models.Model):
+    name = models.CharField(blank=True, max_length=255)
+    objects = QuerySet.as_manager()
+
+    class Meta:
+        app_label = u'utils'
+
+    @decorate(prevent_bulk_create=True)
+    def save(self, *args, **kwargs): # pragma: no cover
+        super(TestModelsModel2, self).save(*args, **kwargs)
 
 
 class AfterSavedTest(TestCase):
@@ -258,6 +282,31 @@ class QuerySetTest(TestCase):
         self.white = TestModelsModel.objects.create(name=u'white', type=TestModelsModel.TYPES.WHITE)
         self.red = TestModelsModel.objects.create(name=u'red', type=TestModelsModel.TYPES.RGB.RED)
         self.blue = TestModelsModel.objects.create(name=u'blue', type=TestModelsModel.TYPES.RGB.BLUE)
+
+    def test_bulk_create_without_save_method(self):
+        with created_instances(TestModelsModel.objects) as obj_set:
+            TestModelsModel.objects.bulk_create([
+                TestModelsModel(name=u'aaa'),
+                TestModelsModel(name=u'bbb'),
+                ])
+        self.assertEqual(obj_set.count(), 2)
+
+    def test_bulk_create_with_prevent_bulk_create_true(self):
+        with created_instances(TestModelsBulkModel.objects) as obj_set:
+            TestModelsBulkModel.objects.bulk_create([
+                TestModelsBulkModel(name=u'aaa'),
+                TestModelsBulkModel(name=u'bbb'),
+                ])
+        self.assertEqual(obj_set.count(), 2)
+
+    def test_bulk_create_with_prevent_bulk_create_false(self):
+        with created_instances(TestModelsNoBulkModel.objects) as obj_set:
+            with self.assertRaisesMessage(ValueError, u"Can't bulk create TestModelsNoBulkModel"):
+                TestModelsNoBulkModel.objects.bulk_create([
+                    TestModelsNoBulkModel(name=u'aaa'),
+                    TestModelsNoBulkModel(name=u'bbb'),
+                    ])
+        self.assertFalse(obj_set.exists())
 
     def test_get_or_404_with_single_result(self):
         res = TestModelsModel.objects.get_or_404(type=TestModelsModel.TYPES.WHITE)

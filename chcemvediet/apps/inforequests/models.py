@@ -18,7 +18,7 @@ from jsonfield import JSONField
 from poleno.attachments.models import Attachment
 from poleno.mail.models import Message
 from poleno.workdays import workdays
-from poleno.utils.misc import Bunch, random_readable_string, squeeze
+from poleno.utils.misc import Bunch, random_readable_string, squeeze, decorate
 from poleno.utils.models import FieldChoices, QuerySet, join_lookup
 from poleno.utils.mail import render_mail
 from poleno.utils.date import utc_now, local_today
@@ -457,6 +457,7 @@ class Inforequest(models.Model):
                 return branch
         raise ValueError
 
+    @decorate(prevent_bulk_create=True)
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
 
@@ -513,7 +514,7 @@ class Inforequest(models.Model):
                 })
 
         self.last_undecided_email_reminder = utc_now()
-        self.save()
+        self.save(update_fields=[u'last_undecided_email_reminder'])
 
     def send_obligee_deadline_reminder(self, action):
         self._send_notification(u'inforequests/mails/obligee_deadline_reminder', u'action-%s' % action.pk, {
@@ -521,7 +522,7 @@ class Inforequest(models.Model):
                 })
 
         action.last_deadline_reminder = utc_now()
-        action.save()
+        action.save(update_fields=[u'last_deadline_reminder'])
 
     def send_applicant_deadline_reminder(self, action):
         self._send_notification(u'inforequests/mails/applicant_deadline_reminder', u'action-%s' % action.pk, {
@@ -529,7 +530,7 @@ class Inforequest(models.Model):
                 })
 
         action.last_deadline_reminder = utc_now()
-        action.save()
+        action.save(update_fields=[u'last_deadline_reminder'])
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -864,6 +865,7 @@ class Branch(models.Model):
                 return True
         return False
 
+    @decorate(prevent_bulk_create=True)
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
             assert self.obligee_id is not None, u'%s.obligee is mandatory' % self.__class__.__name__
@@ -1205,6 +1207,7 @@ class Action(models.Model):
     def has_obligee_deadline(self):
         return self.deadline is not None and self.type in self.SETTING_OBLIGEE_DEADLINE_TYPES
 
+    @decorate(prevent_bulk_create=True)
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
 
@@ -1256,7 +1259,7 @@ class Action(models.Model):
         inforequestemail.save()
 
         self.email = msg.instance
-        self.save()
+        self.save(update_fields=[u'email'])
 
     def __unicode__(self):
         return u'%s' % self.pk

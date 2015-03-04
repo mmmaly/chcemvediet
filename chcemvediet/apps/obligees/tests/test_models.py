@@ -112,6 +112,22 @@ class ObligeeModelTest(ObligeesTestCaseMixin, TestCase):
         oblg = Obligee.objects.get(pk=oblg.pk)
         self.assertEqual(oblg.slug, u'-another-agency-')
 
+    def test_slug_field_is_not_changed_if_name_is_not_saved(self):
+        oblg = self._create_obligee(name=u'Agency')
+        oblg.name = u'Another Agency'
+        oblg.save(update_fields=[u'street'])
+        self.assertEqual(oblg.slug, u'-agency-')
+        oblg = Obligee.objects.get(pk=oblg.pk)
+        self.assertEqual(oblg.slug, u'-agency-')
+
+    def test_slug_field_is_changed_if_name_is_saved(self):
+        oblg = self._create_obligee(name=u'Agency')
+        oblg.name = u'Another Agency'
+        oblg.save(update_fields=[u'name'])
+        self.assertEqual(oblg.slug, u'-another-agency-')
+        oblg = Obligee.objects.get(pk=oblg.pk)
+        self.assertEqual(oblg.slug, u'-another-agency-')
+
     def test_status_field(self):
         tests = (
                 (Obligee.STATUSES.PENDING, u'Pending'),

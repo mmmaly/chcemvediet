@@ -44,7 +44,7 @@ def mail():
         try:
             with transaction.atomic():
                 message.processed = utc_now()
-                message.save()
+                message.save(update_fields=[u'processed'])
                 message_received.send(sender=None, message=message)
                 nop() # To let tests raise testing exception here.
             cron_logger.info(u'Processed received email: %s' % repr(message))
@@ -69,7 +69,7 @@ def mail():
                         with transaction.atomic():
                             transport.send_message(message)
                             message.processed = utc_now()
-                            message.save()
+                            message.save(update_fields=[u'processed'])
                             message_sent.send(sender=None, message=message)
                             nop() # To let tests raise testing exception here.
                         cron_logger.info(u'Sent email: %s' % repr(message))

@@ -179,7 +179,7 @@ def _decide_email(request, inforequest_pk, email_pk, action_type, form_class, te
                 attachment.save()
 
             inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
-            inforequestemail.save()
+            inforequestemail.save(update_fields=[u'type'])
 
             # The inforequest was changed, we need to refetch it
             inforequest = (Inforequest.objects
@@ -258,7 +258,7 @@ def decide_email_unrelated(request, inforequest_pk, email_pk):
 
     if request.method == u'POST':
         inforequestemail.type = InforequestEmail.TYPES.UNRELATED
-        inforequestemail.save()
+        inforequestemail.save(update_fields=[u'type'])
 
         # The inforequest was changed, we need to refetch it
         inforequest = (Inforequest.objects
@@ -301,7 +301,7 @@ def decide_email_unknown(request, inforequest_pk, email_pk):
 
     if request.method == u'POST':
         inforequestemail.type = InforequestEmail.TYPES.UNKNOWN
-        inforequestemail.save()
+        inforequestemail.save(update_fields=[u'type'])
 
         # The inforequest was changed, we need to refetch it
         inforequest = (Inforequest.objects
@@ -571,7 +571,7 @@ def extend_deadline(request, inforequest_pk, branch_pk, action_pk):
         form = forms.ExtendDeadlineForm(request.POST, prefix=action.pk)
         if form.is_valid():
             form.save(action)
-            action.save()
+            action.save(update_fields=[u'extension'])
 
             # The inforequest was changed, we need to refetch it
             inforequest = (Inforequest.objects

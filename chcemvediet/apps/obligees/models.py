@@ -11,7 +11,7 @@ from django.utils.html import escape
 from poleno.utils.models import FieldChoices, QuerySet
 from poleno.utils.forms import validate_comma_separated_emails
 from poleno.utils.history import register_history
-from poleno.utils.misc import squeeze
+from poleno.utils.misc import squeeze, decorate
 
 class ObligeeQuerySet(QuerySet):
     def pending(self):
@@ -77,11 +77,18 @@ class Obligee(models.Model):
     def emails_formatted(self):
         return (formataddr((n, a)) for n, a in getaddresses([self.emails]) if a)
 
+    @decorate(prevent_bulk_create=True)
     def save(self, *args, **kwargs):
-        # Generate or update slug from name
-        name = unidecode(self.name).lower()
-        words = (w for w in re.split(r'[^a-z0-9]+', name) if w)
-        self.slug = u'-%s-' % u'-'.join(words)
+        update_fields = kwargs.get(u'update_fields', None)
+
+        # Generate and save slug if saving name
+        if update_fields is None or u'name' in update_fields:
+            name = unidecode(self.name).lower()
+            words = (w for w in re.split(r'[^a-z0-9]+', name) if w)
+            self.slug = u'-%s-' % u'-'.join(words)
+
+            if update_fields is not None:
+                update_fields.append(u'slug')
 
         super(Obligee, self).save(*args, **kwargs)
 

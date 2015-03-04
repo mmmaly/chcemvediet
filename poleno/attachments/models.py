@@ -9,7 +9,7 @@ from django.contrib.contenttypes import generic
 
 from poleno.utils.models import QuerySet
 from poleno.utils.date import utc_now
-from poleno.utils.misc import random_string, squeeze
+from poleno.utils.misc import random_string, squeeze, decorate
 
 class AttachmentQuerySet(QuerySet):
     def attached_to(self, *args):
@@ -86,6 +86,7 @@ class Attachment(models.Model):
         finally:
             self.file.close()
 
+    @decorate(prevent_bulk_create=True)
     def save(self, *args, **kwargs):
         if self.pk is None: # Creating a new object
             self.file.name = random_string(10)

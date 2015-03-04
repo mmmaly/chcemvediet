@@ -44,4 +44,4 @@ class SmtpTransport(BaseTransport):
 
         for recipient in message.recipients:
             recipient.status = recipient.STATUSES.SENT
-            recipient.save()
+            recipient.save(update_fields=[u'status'])

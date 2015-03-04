@@ -387,7 +387,7 @@ class AdvancedToMixin(ActionAbstractForm):
                             raise ValidationError(_(u'inforequests:AdvancedToMixin:same_obligee_error'))
                         for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
                             advanced_to_2 = cleaned_data.get(field_2, None)
-                            if advanced_to_2.pk == advanced_to.pk:
+                            if advanced_to_2 == advanced_to:
                                 raise ValidationError(_(u'inforequests:AdvancedToMixin:duplicate_obligee_error'))
                     except ValidationError as e:
                         self.add_error(field, e)
