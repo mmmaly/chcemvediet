@@ -16,10 +16,13 @@ ERROR = u'\033[91m'
 PROMPT = u'\033[96m'
 RESET = u'\033[0m'
 
-def call(msg, args):
-    print(INFO + u'\n' + msg + RESET)
-    print(SHELL + u'$ ' + u' '.join(args) + u'\n' + RESET)
-    return subprocess.check_call(args)
+def call(msg, args, cwd=None):
+    if cwd:
+        msg += u' (in %s)' % cwd
+        cwd = os.path.abspath(os.path.join(os.path.dirname(__file__), cwd))
+    print(u'%s\n%s\n%s' % (INFO, msg, RESET))
+    print(u'%s$ %s\n%s' % (SHELL, u' '.join(args), RESET))
+    return subprocess.check_call(args, cwd=cwd)
 
 class JsonFile(object):
     def __init__(self, inputfile, outputfile=None):
@@ -314,6 +317,19 @@ def load_fixtures(configure):
 
     return res
 
+def create_or_sync_database(configure):
+    from django.db.utils import DatabaseError
+    from django.contrib.auth.models import User
+
+    # Create/synchronize DB. We assume that DB is already created iff it contains User model.
+    try:
+        User.objects.count()
+    except DatabaseError:
+        call(u'Create DB:', [u'env/bin/python', u'manage.py', u'migrate'])
+        call(u'Load DB fixtures:', [u'env/bin/python', u'manage.py', u'loaddata'] + load_fixtures(configure))
+    else:
+        call(u'Migrate DB:', [u'env/bin/python', u'manage.py', u'migrate'])
+
 def configure_site_domain(configure):
     from django.contrib.sites.models import Site
 
@@ -368,6 +384,11 @@ def configure_dummy_obligee_emails(configure):
             if mail != obligee.emails:
                 obligee.emails = mail
                 obligee.save()
+
+def compile_locales(configure):
+    for cwd in [u'poleno/attachments/', u'poleno/mail/', u'poleno/utils/', u'./']:
+        rel = os.path.relpath(u'.', cwd)
+        call(u'Compile locales:', [os.path.join(rel, u'env/bin/python'), os.path.join(rel, u'manage.py'), u'compilemessages'], cwd=cwd)
 
 def help_run_server(configure):
     server_mode = configure.get(u'server_mode')
@@ -444,27 +465,17 @@ def main():
         os.environ.setdefault(u'DJANGO_SETTINGS_MODULE', u'chcemvediet.settings')
         import django
         from django.db.transaction import atomic
-        from django.db.utils import DatabaseError
-        from django.contrib.auth.models import User
         django.setup()
 
-        # Create/synchronize DB. We assume that DB is already created iff it contains User model.
-        try:
-            User.objects.count()
-        except DatabaseError:
-            call(u'Create DB:', [u'env/bin/python', u'manage.py', u'migrate'])
-            call(u'Load DB fixtures:', [u'env/bin/python', u'manage.py', u'loaddata'] + load_fixtures(configure))
-        else:
-            call(u'Migrate DB:', [u'env/bin/python', u'manage.py', u'migrate'])
-
-        # Configure database content
+        # Configure database
+        create_or_sync_database(configure)
         with atomic():
             configure_site_domain(configure)
             configure_admin_password(configure)
             configure_social_accounts(configure)
             configure_dummy_obligee_emails(configure)
 
-        # The server is configured and ready
+        compile_locales(configure)
         help_run_server(configure)
 
 

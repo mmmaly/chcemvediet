@@ -263,8 +263,4 @@ lots of structure but short on text are translated via the localization file.
 Templates with their own translated versions can be edited directly. Editing templates with no in
 place translation is a bit more complicated. To change the translation of such template, open
 localization file `locale/{sk,en}/LC_MESSAGES/django.po`, find the translations, edit them and
-compile them:
-
-	$ cd chcemvediet/chcemvediet
-	$ ../env/bin/python ../manage.py compilemessages
-
+recompile them. To recompile translations rerun `setup.py`.

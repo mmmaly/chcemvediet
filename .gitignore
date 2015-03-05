@@ -1,5 +1,6 @@
 *.db
 *.pyc
+*.mo
 /.coverage
 /.instrumental.cov
 /setup.json
