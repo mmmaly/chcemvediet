@@ -10,6 +10,7 @@ from adminplus.sites import AdminSitePlus
 from . import views
 
 admin.site = AdminSitePlus()
+admin.site.disable_action('delete_selected')
 admin.autodiscover()
 
 urlpatterns = patterns(u'',
