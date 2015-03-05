@@ -1,8 +1,5 @@
 /** Various fixes and tweaks for Bootstrap **/
 
-/* Header margin */
-header { margin-bottom: 20px; }
-
 /* Large Bootstrap modals */
 @media (min-width: 768px) { .modal.modal-large { width: 660px; margin-left: -330px; } }
 @media (min-width: 980px) { .modal.modal-large { width: 870px; margin-left: -435px; } }
@@ -35,11 +32,20 @@ header { margin-bottom: 20px; }
 .table th.text-right, .table td.text-right { text-align: right; }
 
 /* Development bar above navbar */
-.devbar { padding-top: 10px; background-color: yellow; color: black; }
-@media (max-width: 979px) { .devbar .container { width: auto; padding: 10px 20px 0 20px; } }
+.devbar { padding-top: 10px; background-color: yellow; color: black; width 100%; padding: 10px 20px 0 20px; }
+@media (max-width: 979px) { .devbar .container { width: auto; padding: 0 5px 0 5px; } }
 @media (max-width: 767px) { .devbar { margin: 0 -20px; } }
 
-/* Fixed bars */
-.fixed { position: fixed; width: 100%; }
-.fixed.phantom { position: static; visibility: hidden; }
-@media (max-width: 979px) { .fixed { position: static;} .fixed.phantom { display: none; } }
+/* Fixed top bars */
+.fixed { position: fixed; width: 100%; top: 0; }
+
+/* Fix body padding for fixded top bars */
+body.push1 { padding-top: 40px; }
+body.push2 { padding-top: 80px; }
+@media (max-width: 979px) { .fixed { position: static;} body { padding-top: 0 !important; } }
+
+/* Fix anchor position for fixded top bars */
+.anchor:before { content: ''; display: block; position: relative; width: 0; }
+body.push1 .anchor:before { height: 40px; margin-top: -40px; }
+body.push2 .anchor:before { height: 80px; margin-top: -80px; }
+@media (max-width: 979px) { .anchor:before { height: 0 !important; margin-top: 0 !important; } }

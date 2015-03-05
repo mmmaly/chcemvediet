@@ -27,7 +27,7 @@
     <title>{% block title %}{% trans 'main:base:title' %}{% endblock %}</title>
     {% render_block "css" %}
   </head>
-  <body>
+  <body class="{% if DEVBAR_MESSAGE %}push2{% else %}push1{% endif %}">
     <header>
       {% include "main/snippets/header.html" %}
     </header>
