@@ -178,7 +178,7 @@ class ExtendDeadlineViewTest(
         url = self._create_url(scenario)
 
         self._login_user()
-        with mock.patch(u'chcemvediet.apps.inforequests.models.workdays.between', side_effect=lambda a,b: (b-a).days):
+        with mock.patch(u'chcemvediet.apps.inforequests.models.action.workdays.between', side_effect=lambda a,b: (b-a).days):
             response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
         # The action was created at 2014-10-01 and has 10 days deadline that ends at 2014-10-11.
@@ -196,7 +196,7 @@ class ExtendDeadlineViewTest(
         url = self._create_url(scenario)
 
         self._login_user()
-        with mock.patch(u'chcemvediet.apps.inforequests.models.workdays.between', side_effect=lambda a,b: (b-a).days):
+        with mock.patch(u'chcemvediet.apps.inforequests.models.action.workdays.between', side_effect=lambda a,b: (b-a).days):
             with patch_with_exception(u'chcemvediet.apps.inforequests.views.JsonResponse'):
                 response = self.client.post(url, data, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 

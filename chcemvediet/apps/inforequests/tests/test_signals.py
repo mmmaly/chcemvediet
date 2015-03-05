@@ -125,7 +125,7 @@ class AssignEmailOnMessageReceivedTest(InforequestsTestCaseMixin, TestCase):
 
     def test_recipient_address_is_matched_case_insensitive(self):
         with self.settings(INFOREQUEST_UNIQUE_EMAIL=u'{token}@eXAMplE.coM'):
-            with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string', return_value=u'aAAa'):
+            with mock.patch(u'chcemvediet.apps.inforequests.models.inforequest.random_readable_string', return_value=u'aAAa'):
                 inforequest = self._create_inforequest()
         msg = self._create_message(omit=[u'received_for'])
         self._create_recipient(message=msg, mail=u'AaAA@ExampLE.com')
@@ -136,7 +136,7 @@ class AssignEmailOnMessageReceivedTest(InforequestsTestCaseMixin, TestCase):
 
     def test_received_for_is_matched_case_insensitive(self):
         with self.settings(INFOREQUEST_UNIQUE_EMAIL=u'{token}@eXAMplE.coM'):
-            with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string', return_value=u'aAAa'):
+            with mock.patch(u'chcemvediet.apps.inforequests.models.inforequest.random_readable_string', return_value=u'aAAa'):
                 inforequest = self._create_inforequest()
         msg = self._create_message(received_for=u'AaAA@ExampLE.com')
 

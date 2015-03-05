@@ -289,7 +289,7 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
 
         self._login_user(user)
         with self.settings(INFOREQUEST_UNIQUE_EMAIL=u'{token}@example.com'):
-            with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string', return_value=u'aaaa'):
+            with mock.patch(u'chcemvediet.apps.inforequests.models.inforequest.random_readable_string', return_value=u'aaaa'):
                 with created_instances(Message.objects) as message_set:
                     with created_instances(Inforequest.objects) as inforequest_set:
                         response = self.client.post(reverse(u'inforequests:create'), data)

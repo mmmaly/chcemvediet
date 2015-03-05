@@ -101,7 +101,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
 
     def test_unique_email_field_handling_collisions(self):
         with self.settings(INFOREQUEST_UNIQUE_EMAIL=u'{token}@example.com'):
-            with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string') as mock_random:
+            with mock.patch(u'chcemvediet.apps.inforequests.models.inforequest.random_readable_string') as mock_random:
                 mock_random.side_effect = [u'bbbb', u'bbbb', u'bbbb', u'bbbb', u'cccc']
                 inforequest1 = self._create_inforequest()
                 inforequest2 = self._create_inforequest()
@@ -109,7 +109,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
                 self.assertEqual(inforequest2.unique_email, u'cccc@example.com')
 
     def test_unique_email_field_with_too_many_collisions(self):
-        with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string') as mock_random:
+        with mock.patch(u'chcemvediet.apps.inforequests.models.inforequest.random_readable_string') as mock_random:
             mock_random.return_value = u'bbbb'
             inforequest1 = self._create_inforequest()
             mock_random.reset_mock()

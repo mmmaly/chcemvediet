@@ -391,7 +391,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         branch = self._create_branch(inforequest=inforequest)
         action = self._create_action(branch=branch, effective_date=naive_date(u'2010-10-05'), **kwargs)
         timewarp.jump(local_datetime_from_local(u'2010-10-10 10:33:00'))
-        with mock.patch(u'chcemvediet.apps.inforequests.models.workdays.between', side_effect=lambda a,b: (b-a).days):
+        with mock.patch(u'chcemvediet.apps.inforequests.models.action.workdays.between', side_effect=lambda a,b: (b-a).days):
             yield action
 
     def test_days_passed_property_and_days_passed_at_method(self):
@@ -525,7 +525,7 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_send_by_email_from_name_and_from_mail(self):
         with self.settings(INFOREQUEST_UNIQUE_EMAIL=u'{token}@example.com'):
-            with mock.patch(u'chcemvediet.apps.inforequests.models.random_readable_string', return_value=u'aaaa'):
+            with mock.patch(u'chcemvediet.apps.inforequests.models.inforequest.random_readable_string', return_value=u'aaaa'):
                 user = self._create_user(first_name=u'John', last_name=u'Smith')
                 inforequest = self._create_inforequest(applicant=user)
                 branch = self._create_branch(inforequest=inforequest)
