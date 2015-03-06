@@ -63,8 +63,13 @@ class Obligee(models.Model):
     objects = ObligeeQuerySet.as_manager()
 
     class Meta:
-        # FIXME: We need to define full-text search index for "slug" manually, because Django does
-        # not support it. Ordinary indexes do not work for LIKE '%word%'.
+        # FIXME: Ordinary indexes do not work for LIKE '%word%'. So we don't declare any indexes
+        # for ``slug`` yet. Eventually, we need to define a fulltext index for "slug" or "name" and
+        # use ``__search`` instead of ``__contains`` in autocomplete view. However, SQLite does not
+        # support ``__contains`` and MySQL supports fulltext indexes for InnoDB tables only since
+        # version 5.6.4, but our server has only MySQL 5.5.x so far. We need to upgrate our
+        # production MySQL server and find a workaround for SQLite we use in development mode.
+        # Alternatively, we can use some complex fulltext search engine like ElasticSearch.
         index_together = [
                 [u'name', u'id'],
                 ]
