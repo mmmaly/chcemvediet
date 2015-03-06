@@ -47,7 +47,7 @@ def admin_obj_format(obj, format=u'{tag}', *args, **kwargs):
     res = format.format(obj=obj, tag=tag, *args, **kwargs)
     if link:
         try:
-            info = obj._meta.app_label, obj._meta.module_name
+            info = obj._meta.app_label, obj._meta.model_name
             url = reverse(u'admin:%s_%s_change' % info, args=[obj.pk])
             res = format_html(u'<a href="{0}">{1}</a>', url, res)
         except NoReverseMatch:

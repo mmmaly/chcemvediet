@@ -5,13 +5,12 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from adminplus.sites import AdminSitePlus
 
 from . import views
 
-admin.site = AdminSitePlus()
-admin.site.disable_action('delete_selected')
-admin.autodiscover()
+# Initializes the project
+from . import ready
+
 
 urlpatterns = patterns(u'',
     url(r'^sitemap[.]xml$', u'django.contrib.sitemaps.views.sitemap'),

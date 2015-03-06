@@ -459,7 +459,7 @@ class InforequestEmailAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                 new_action.save()
                 inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
                 inforequestemail.save(update_fields=[u'type'])
-                info = new_action._meta.app_label, new_action._meta.module_name
+                info = new_action._meta.app_label, new_action._meta.model_name
                 return HttpResponseRedirect(reverse(u'admin:%s_%s_change' % info, args=[new_action.pk]))
         else:
             form = InforequestEmailAdminDecideForm(instance=inforequestemail, attached_to=session)

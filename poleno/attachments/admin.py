@@ -39,7 +39,7 @@ class AttachmentInline(generic.GenericTabularInline):
 
     @decorate(short_description=u'File')
     def file_field(self, attachment):
-        info = attachment._meta.app_label, attachment._meta.module_name
+        info = attachment._meta.app_label, attachment._meta.model_name
         url = reverse(u'admin:%s_%s_download' % info, args=[attachment.pk])
         res = format_html(u'<a href="{0}">{1}</a>', url, attachment.file.name)
         return res
@@ -148,7 +148,7 @@ class AttachmentAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     @decorate(short_description=u'File')
     @decorate(admin_order_field=u'file')
     def file_column(self, attachment):
-        info = attachment._meta.app_label, attachment._meta.module_name
+        info = attachment._meta.app_label, attachment._meta.model_name
         url = reverse(u'admin:%s_%s_download' % info, args=[attachment.pk])
         res = format_html(u'<a href="{0}">{1}</a>', url, attachment.file.name)
         return res
