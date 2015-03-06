@@ -7,6 +7,7 @@ from django.utils.functional import cached_property
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
+from poleno import datacheck
 from poleno.utils.models import QuerySet
 from poleno.utils.date import utc_now
 from poleno.utils.misc import random_string, squeeze, decorate
@@ -108,3 +109,27 @@ class Attachment(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+    @classmethod
+    def datacheck(cls):
+        u"""
+        Checks that every ``Attachment`` instance has its file working.
+        """
+        # FIXME: Make sure it's not too slow with thousands of attachments. If it is slow, check
+        # for missing files some other way.
+        filtered = []
+        for attachment in Attachment.objects.all():
+            try:
+                attachment.file.open(u'rb')
+            except IOError:
+                filtered.append(attachment)
+                if len(filtered) > 10:
+                    break
+            finally:
+                attachment.file.close()
+
+        for idx, attachment in enumerate(filtered):
+            if idx < 10:
+                yield datacheck.Error(u'%r is missing its file: "%s".', attachment, attachment.file.name)
+            else:
+                yield datacheck.Error(u'More attachments are missing their files.')

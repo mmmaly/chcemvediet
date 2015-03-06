@@ -1,9 +1,10 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.db import models, connection
-from django.db.models import Prefetch
+from django.db.models import Q, F, Prefetch
 from django.utils.functional import cached_property
 
+from poleno import datacheck
 from poleno.utils.models import QuerySet, join_lookup
 from poleno.utils.date import local_today
 from poleno.utils.misc import squeeze, decorate
@@ -315,3 +316,21 @@ class Branch(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+    @classmethod
+    def datacheck(cls):
+        u"""
+        Checks that every advanced ``Branch`` instance is advanced by an action from the same
+        inforequest.
+        """
+        branches = (Branch.objects
+                .filter(advanced_by__isnull=False)
+                .filter(~Q(advanced_by__branch__inforequest=F(u'inforequest')))
+                .select_related('advanced_by__branch')
+                )[:10+1]
+        for idx, branch in enumerate(branches):
+            if idx < 10:
+                yield datacheck.Error(u'%r has inforequest_id = %s but advanced_by.branch.inforequest_id = %s',
+                        branch, branch.inforequest_id, branch.advanced_by.branch.inforequest_id)
+            else:
+                yield datacheck.Error(u'More branches have invalid advanced by references.')

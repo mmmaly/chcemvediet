@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from aggregate_if import Count
 
+from poleno import datacheck
 from poleno.mail.models import Message
 from poleno.utils.models import QuerySet, join_lookup
 from poleno.utils.mail import render_mail
@@ -466,3 +467,18 @@ class Inforequest(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+    @classmethod
+    def datacheck(cls):
+        u"""
+        Checks that every ``Inforequest`` instance has exactly one main branch.
+        """
+        inforequests = (Inforequest.objects
+                .annotate(Count(u'branch', only=Q(branch__advanced_by=None)))
+                .filter(~Q(branch__count=1))
+                )[:10+1]
+        for idx, inforequest in enumerate(inforequests):
+            if idx < 10:
+                yield datacheck.Error(u'%r has %d main branches.', inforequest, inforequest.branch__count)
+            else:
+                yield datacheck.Error(u'More inforequests have invalid number of main branches.')

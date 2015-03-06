@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
+    u'poleno.datacheck',
     u'poleno.cron',
     u'poleno.attachments',
     u'poleno.mail',
@@ -106,8 +107,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     )
 
 CRON_CLASSES = (
-    u'poleno.mail.cron.mail',
     u'poleno.cron.cron.clear_old_cronlogs',
+    u'poleno.datacheck.cron.datacheck',
+    u'poleno.mail.cron.mail',
     u'chcemvediet.apps.inforequests.cron.undecided_email_reminder',
     u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',

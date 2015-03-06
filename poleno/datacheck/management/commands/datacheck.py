@@ -1,0 +1,31 @@
+# vim: expandtab
+# -*- coding: utf-8 -*-
+from django.core.management.base import NoArgsCommand
+from django.core.management.color import color_style
+from django.utils.encoding import force_str
+
+from ... import datacheck
+
+class Command(NoArgsCommand):
+    help = u'Runs ``datacheck`` methods on all installed models and report any found issues.'
+
+    def handle_noargs(self, **options):
+        groups = [
+                (u'CRITICALS', datacheck.CRITICAL, float(u'inf'),      color_style().ERROR),
+                (u'ERRORS',    datacheck.ERROR,    datacheck.CRITICAL, color_style().ERROR),
+                (u'WARNINGS',  datacheck.WARNING,  datacheck.ERROR,    color_style().WARNING),
+                (u'INFOS',     datacheck.INFO,     datacheck.WARNING,  color_style().NOTICE),
+                (u'DEBUGS',    0,                  datacheck.INFO,     color_style().NOTICE),
+                ]
+
+        output = []
+        issues = datacheck.run_checks()
+        output.append(u'Data check identified %s issues.' % len(issues))
+        for group, level_min, level_max, style in groups:
+            filtered = [a for a in issues if level_min <= a.level < level_max]
+            if filtered:
+                output.append(u'')
+                output.append(u'%s:' % group)
+                output.extend(style(u'%s' % a) for a in filtered)
+
+        self.stdout.write(u'\n'.join(output))
