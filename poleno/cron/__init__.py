@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-import datetime
 import logging
 
 from django_cron import CronJobBase, Schedule
