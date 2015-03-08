@@ -1,0 +1,28 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+<h4>Mock Obligee Response</h4>
+<p>Simulate a response from the obligee. It will be processed in a minute or two after sending it.</p>
+<form action="{% url 'inforequests:devtools_mock_response' inforequest.pk %}" method="post">
+  {% csrf_token %}
+  <textarea name="content" class="input-block-level" placeholder="Response content"></textarea>
+  <div class="text-right">
+    <button type="submit" class="btn btn-primary">Send</button>
+  </div>
+</form>
+
+<h4>Push Inforequest in History</h4>
+<p>Make the inforequest and all its related objects older by the given number of days. Use it to test deadlines.</p>
+<form action="{% url 'inforequests:devtools_push_history' inforequest.pk %}" method="post">
+  {% csrf_token %}
+  <input type="number" name="days" class="input-block-level" placeholder="Days" min="1" max="200">
+  <div class="text-right">
+    <button type="submit" class="btn btn-primary">Push</button>
+  </div>
+</form>

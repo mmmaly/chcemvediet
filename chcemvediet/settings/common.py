@@ -103,7 +103,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     u'sekizai.context_processors.sekizai',
     u'allauth.account.context_processors.account',
     u'allauth.socialaccount.context_processors.socialaccount',
-    u'chcemvediet.context_processors.devbar',
+    u'chcemvediet.context_processors.settings',
     )
 
 CRON_CLASSES = (

@@ -1,6 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.conf import settings
+from django.conf import settings as django_settings
 
-def devbar(request):
-    return {u'DEVBAR_MESSAGE': settings.DEVBAR_MESSAGE}
+def settings(request):
+    return {
+        u'DEBUG': django_settings.DEBUG,
+        u'DEVBAR_MESSAGE': django_settings.DEVBAR_MESSAGE,
+        }

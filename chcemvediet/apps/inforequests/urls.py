@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.conf.urls import patterns, url
 from django.utils.translation import ugettext_lazy as _
 
@@ -34,3 +35,9 @@ urlpatterns = patterns(u'',
     url(_(r'^attachments/$'), views.upload_attachment, name=u'upload_attachment'),
     url(_(r'^attachments/(?P<attachment_pk>\d+)/$'), views.download_attachment, name=u'download_attachment'),
 )
+
+if settings.DEBUG: # pragma: no cover
+    urlpatterns += patterns(u'',
+        url(r'^devtools/mock-response/(?P<inforequest_pk>\d+)/$', views.devtools_mock_response, name=u'devtools_mock_response'),
+        url(r'^devtools/push_history/(?P<inforequest_pk>\d+)/$', views.devtools_push_history, name=u'devtools_push_history'),
+    )
