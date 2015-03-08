@@ -431,6 +431,9 @@ def help_run_server(configure):
 
                 Finally add a cron job running the following command every minute:
                     cd {path} && env/bin/python manage.py runcrons
+
+                To tell server to reload from new sources write:
+                    $ touch chcemvediet/wsgi.py
                 """) + RESET)
 
 def main():
