@@ -469,16 +469,21 @@ class Inforequest(models.Model):
         return u'%s' % self.pk
 
     @classmethod
-    def datacheck(cls):
+    def datacheck(cls, superficial=False):
         u"""
         Checks that every ``Inforequest`` instance has exactly one main branch.
         """
         inforequests = (Inforequest.objects
                 .annotate(Count(u'branch', only=Q(branch__advanced_by=None)))
                 .filter(~Q(branch__count=1))
-                )[:10+1]
-        for idx, inforequest in enumerate(inforequests):
-            if idx < 10:
-                yield datacheck.Error(u'%r has %d main branches.', inforequest, inforequest.branch__count)
-            else:
-                yield datacheck.Error(u'More inforequests have invalid number of main branches.')
+                )
+
+        if superficial:
+            inforequests = inforequests[:5+1]
+        issues = [u'%r has %d main branches' % (r, r.branch__count) for r in inforequests]
+        if superficial and issues:
+            if len(issues) > 5:
+                issues[-1] = u'More inforequests have invalid number of main branches'
+            issues = [u'; '.join(issues)]
+        for issue in issues:
+            yield datacheck.Error(issue + u'.')

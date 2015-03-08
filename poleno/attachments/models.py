@@ -1,5 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import logging
+
 from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models import Q
@@ -84,6 +86,9 @@ class Attachment(models.Model):
         try:
             self.file.open(u'rb')
             return self.file.read()
+        except IOError:
+            logging.getLogger(u'poleno.attachments').error(u"%r is missing its file: '%s'.", self, self.file.name)
+            raise
         finally:
             self.file.close()
 
@@ -111,25 +116,20 @@ class Attachment(models.Model):
         return u'%s' % self.pk
 
     @classmethod
-    def datacheck(cls):
+    def datacheck(cls, superficial=False):
         u"""
         Checks that every ``Attachment`` instance has its file working.
         """
-        # FIXME: Make sure it's not too slow with thousands of attachments. If it is slow, check
-        # for missing files some other way.
-        filtered = []
+        # This check is a bit slow. We skip it if running from cron or the user asked for
+        # superficial tests only.
+        if superficial:
+            return
+
         for attachment in Attachment.objects.all():
             try:
-                attachment.file.open(u'rb')
+                try:
+                    attachment.file.open(u'rb')
+                finally:
+                    attachment.file.close()
             except IOError:
-                filtered.append(attachment)
-                if len(filtered) > 10:
-                    break
-            finally:
-                attachment.file.close()
-
-        for idx, attachment in enumerate(filtered):
-            if idx < 10:
                 yield datacheck.Error(u'%r is missing its file: "%s".', attachment, attachment.file.name)
-            else:
-                yield datacheck.Error(u'More attachments are missing their files.')

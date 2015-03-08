@@ -45,16 +45,17 @@ class Critical(Issue):
         super(Critical, self).__init__(CRITICAL, *args, **kwargs)
 
 
-def run_checks():
+def run_checks(superficial=False):
     u"""
-    Calls ``datacheck`` methods on all installed models and collects any reported issues.
+    Calls ``datacheck`` methods on all installed models and collects any reported issues. Pass
+    ``superficial=True`` to run only siplified checks and skip any checks that may be slow.
     """
     issues = []
     for app in apps.get_app_configs():
         for model in app.get_models():
             if not hasattr(model, u'datacheck'):
                 continue
-            for issue in model.datacheck():
+            for issue in model.datacheck(superficial):
                 issue.model = model
                 issues.append(issue)
     return issues
