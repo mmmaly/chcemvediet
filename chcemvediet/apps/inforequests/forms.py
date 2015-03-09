@@ -498,23 +498,23 @@ class DecideEmailCommonForm(ActionAbstractForm):
 class ConfirmationEmailForm(DecideEmailCommonForm):
     pass
 
-class ExtensionEmailForm(DecideEmailCommonForm, DeadlineMixin):
+class ExtensionEmailForm(DeadlineMixin, DecideEmailCommonForm):
     pass
 
-class AdvancementEmailForm(DecideEmailCommonForm, DisclosureLevelMixin, AdvancedToMixin):
+class AdvancementEmailForm(DisclosureLevelMixin, AdvancedToMixin, DecideEmailCommonForm):
     pass
 
 class ClarificationRequestEmailForm(DecideEmailCommonForm):
     pass
 
-class DisclosureEmailForm(DecideEmailCommonForm, DisclosureLevelMixin):
+class DisclosureEmailForm(DisclosureLevelMixin, DecideEmailCommonForm):
     pass
 
-class RefusalEmailForm(DecideEmailCommonForm, RefusalReasonMixin):
+class RefusalEmailForm(RefusalReasonMixin, DecideEmailCommonForm):
     pass
 
 
-class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, AttachmentsMixin, ActionAbstractForm):
+class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, EffectiveDateMixin, ActionAbstractForm):
     def clean(self):
         cleaned_data = super(AddSmailCommonForm, self).clean()
 
@@ -530,32 +530,32 @@ class AddSmailCommonForm(EffectiveDateMixin, SubjectContentMixin, AttachmentsMix
 class ConfirmationSmailForm(AddSmailCommonForm):
     pass
 
-class ExtensionSmailForm(AddSmailCommonForm, DeadlineMixin):
+class ExtensionSmailForm(DeadlineMixin, AddSmailCommonForm):
     pass
 
-class AdvancementSmailForm(AddSmailCommonForm, DisclosureLevelMixin, AdvancedToMixin):
+class AdvancementSmailForm(DisclosureLevelMixin, AdvancedToMixin, AddSmailCommonForm):
     pass
 
 class ClarificationRequestSmailForm(AddSmailCommonForm):
     pass
 
-class DisclosureSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+class DisclosureSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
     pass
 
-class RefusalSmailForm(AddSmailCommonForm, RefusalReasonMixin):
+class RefusalSmailForm(RefusalReasonMixin, AddSmailCommonForm):
     pass
 
-class AffirmationSmailForm(AddSmailCommonForm, RefusalReasonMixin):
+class AffirmationSmailForm(RefusalReasonMixin, AddSmailCommonForm):
     pass
 
-class ReversionSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+class ReversionSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
     pass
 
-class RemandmentSmailForm(AddSmailCommonForm, DisclosureLevelMixin):
+class RemandmentSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
     pass
 
 
-class NewActionCommonForm(SubjectContentMixin, AttachmentsMixin, ActionAbstractForm):
+class NewActionCommonForm(AttachmentsMixin, SubjectContentMixin, ActionAbstractForm):
     def clean(self):
         cleaned_data = super(NewActionCommonForm, self).clean()
 
