@@ -158,9 +158,10 @@ class ActionAdminChangeForm(forms.ModelForm):
         cleaned_data = super(ActionAdminChangeForm, self).clean()
 
         if u'email' in cleaned_data:
-            action = try_except(lambda: cleaned_data[u'email'].action, None, Action.DoesNotExist)
-            if action is not None and action.pk != self.instance.pk:
-                self.add_error(u'email', u'This e-mail is already used with another action.')
+            if cleaned_data[u'email']:
+                action = try_except(lambda: cleaned_data[u'email'].action, None, Action.DoesNotExist)
+                if action is not None and action.pk != self.instance.pk:
+                    self.add_error(u'email', u'This e-mail is already used with another action.')
 
         return cleaned_data
 
@@ -422,6 +423,7 @@ class ActionAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
                 break
             except (ValueError, TypeError):
                 continue
+        else:
             return u'--'
 
         days_passed = workdays.between(effective_date, local_today())

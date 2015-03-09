@@ -62,12 +62,12 @@ ADMIN_MODEL_GROUPS = [
         dict(
             title=u'Inforequests',
             models=[
-                u'chcemvediet.apps.inforequests.models.InforequestDraft',
-                u'chcemvediet.apps.inforequests.models.Inforequest',
-                u'chcemvediet.apps.inforequests.models.InforequestEmail',
-                u'chcemvediet.apps.inforequests.models.Branch',
-                u'chcemvediet.apps.inforequests.models.Action',
-                u'chcemvediet.apps.inforequests.models.ActionDraft',
+                u'chcemvediet.apps.inforequests.models.inforequestdraft.InforequestDraft',
+                u'chcemvediet.apps.inforequests.models.inforequest.Inforequest',
+                u'chcemvediet.apps.inforequests.models.inforequestemail.InforequestEmail',
+                u'chcemvediet.apps.inforequests.models.branch.Branch',
+                u'chcemvediet.apps.inforequests.models.action.Action',
+                u'chcemvediet.apps.inforequests.models.actiondraft.ActionDraft',
                 ],
             ),
         # E-mail and attachment models

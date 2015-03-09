@@ -12,6 +12,7 @@ from django.utils.encoding import smart_text
 from django.utils.functional import lazy
 from django.utils.safestring import mark_safe
 from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
+from multiselectfield import MultiSelectFormField
 
 from poleno.attachments.forms import AttachmentsField
 from poleno.utils.models import after_saved
@@ -462,12 +463,10 @@ class DisclosureLevelMixin(ActionAbstractForm):
         self.initial[u'disclosure_level'] = draft.disclosure_level
 
 class RefusalReasonMixin(ActionAbstractForm):
-    refusal_reason = forms.TypedChoiceField(
+    refusal_reason = MultiSelectFormField(
             label=_(u'inforequests:RefusalReasonMixin:refusal_reason:label'),
-            choices=[(u'', u'')] + Action.REFUSAL_REASONS._choices,
-            coerce=int,
-            empty_value=None,
-            widget=forms.Select(attrs={
+            choices=Action.REFUSAL_REASONS._choices,
+            widget=forms.CheckboxSelectMultiple(attrs={
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',

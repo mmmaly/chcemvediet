@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.contrib.contenttypes import generic
 from aggregate_if import Count
+from multiselectfield import MultiSelectField
 
 from poleno import datacheck
 from poleno.attachments.models import Attachment
@@ -227,22 +228,22 @@ class Action(models.Model):
                 this action.
                 """))
 
-    # NOT NULL for REFUSAL, AFFIRMATION; NULL otherwise
+    # NOT NULL for REFUSAL and AFFIRMATION; NULL otherwise
     REFUSAL_REASONS = FieldChoices(
-            (u'DOES_NOT_HAVE',    3, _(u'inforequests:Action:refusal_reason:DOES_NOT_HAVE')),
-            (u'DOES_NOT_PROVIDE', 4, _(u'inforequests:Action:refusal_reason:DOES_NOT_PROVIDE')),
-            (u'DOES_NOT_CREATE',  5, _(u'inforequests:Action:refusal_reason:DOES_NOT_CREATE')),
-            (u'COPYRIGHT',        6, _(u'inforequests:Action:refusal_reason:COPYRIGHT')),
-            (u'BUSINESS_SECRET',  7, _(u'inforequests:Action:refusal_reason:BUSINESS_SECRET')),
-            (u'PERSONAL',         8, _(u'inforequests:Action:refusal_reason:PERSONAL')),
-            (u'CONFIDENTIAL',     9, _(u'inforequests:Action:refusal_reason:CONFIDENTIAL')),
-            (u'NO_REASON',       -1, _(u'inforequests:Action:refusal_reason:NO_REASON')),
-            (u'OTHER_REASON',    -2, _(u'inforequests:Action:refusal_reason:OTHER_REASON')),
+            (u'DOES_NOT_HAVE',    u'3', _(u'inforequests:Action:refusal_reason:DOES_NOT_HAVE')),
+            (u'DOES_NOT_PROVIDE', u'4', _(u'inforequests:Action:refusal_reason:DOES_NOT_PROVIDE')),
+            (u'DOES_NOT_CREATE',  u'5', _(u'inforequests:Action:refusal_reason:DOES_NOT_CREATE')),
+            (u'COPYRIGHT',        u'6', _(u'inforequests:Action:refusal_reason:COPYRIGHT')),
+            (u'BUSINESS_SECRET',  u'7', _(u'inforequests:Action:refusal_reason:BUSINESS_SECRET')),
+            (u'PERSONAL',         u'8', _(u'inforequests:Action:refusal_reason:PERSONAL')),
+            (u'CONFIDENTIAL',     u'9', _(u'inforequests:Action:refusal_reason:CONFIDENTIAL')),
+            (u'NO_REASON',       u'-1', _(u'inforequests:Action:refusal_reason:NO_REASON')),
+            (u'OTHER_REASON',    u'-2', _(u'inforequests:Action:refusal_reason:OTHER_REASON')),
             )
-    refusal_reason = models.SmallIntegerField(choices=REFUSAL_REASONS._choices, blank=True, null=True,
+    refusal_reason = MultiSelectField(choices=REFUSAL_REASONS._choices, blank=True,
             help_text=squeeze(u"""
-                Mandatory choice for refusal and affirmation actions, NULL otherwise. Specifies the
-                reason why the obligee refused to disclose the information.
+                Mandatory multichoice for refusal and affirmation actions, NULL otherwise.
+                Specifies the reason why the obligee refused to disclose the information.
                 """))
 
     # May be NULL; Used by ``cron.obligee_deadline_reminder`` and ``cron.applicant_deadline_reminder``
