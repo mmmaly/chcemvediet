@@ -4,11 +4,13 @@ from email.utils import formataddr
 
 from django.core.mail import EmailMessage
 from django.db import models
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q, F
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.contrib.contenttypes import generic
+from aggregate_if import Count
 
+from poleno import datacheck
 from poleno.attachments.models import Attachment
 from poleno.workdays import workdays
 from poleno.utils.models import FieldChoices, QuerySet, join_lookup
@@ -382,3 +384,24 @@ class Action(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+    @classmethod
+    def datacheck(cls, superficial=False):
+        u"""
+        Checks that every ``Action.email`` is assigned to ``Action.branch.inforequest``.
+        """
+        actions = (Action.objects
+                .filter(email__isnull=False)
+                .annotate(Count(u'branch__inforequest__email_set', only=Q(branch__inforequest__email_set=F(u'email'))))
+                .filter(branch__inforequest__email_set__count=0)
+                )
+
+        if superficial:
+            actions = actions[:5+1]
+        issues = [u'%r email is assigned to another inforequest' % a for a in actions]
+        if superficial and issues:
+            if len(issues) > 5:
+                issues[-1] = u'More action emails are assigned to other inforequests'
+            issues = [u'; '.join(issues)]
+        for issue in issues:
+            yield datacheck.Error(issue + u'.')
