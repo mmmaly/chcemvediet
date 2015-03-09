@@ -4,6 +4,7 @@
 /.coverage
 /.instrumental.cov
 /setup.json
+/shell.py
 /env/
 /cache/
 /static/

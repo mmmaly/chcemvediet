@@ -65,13 +65,6 @@ LOGGING = {
             u'filename': os.path.join(PROJECT_PATH, u'logs/mail_admins.log'),
             u'formatter': u'verbose',
             },
-        u'file_warnings': {
-            u'level': u'WARNING',
-            u'class': u'logging.handlers.TimedRotatingFileHandler',
-            u'filename': os.path.join(PROJECT_PATH, u'logs/warnings.log'),
-            u'when': u'w0', # Monday
-            u'formatter': u'verbose',
-            },
         u'file_request': {
             u'level': u'WARNING',
             u'class': u'logging.handlers.TimedRotatingFileHandler',
@@ -93,13 +86,15 @@ LOGGING = {
             u'when': u'w0', # Monday
             u'formatter': u'verbose',
             },
+        u'file_general': {
+            u'level': u'WARNING',
+            u'class': u'logging.handlers.TimedRotatingFileHandler',
+            u'filename': os.path.join(PROJECT_PATH, u'logs/general.log'),
+            u'when': u'w0', # Monday
+            u'formatter': u'verbose',
+            },
         },
     u'loggers': {
-        u'py.warnings': {
-            u'handlers': [u'file_warnings'],
-            u'level': u'WARNING',
-            u'propagate': False,
-            },
         u'django.request': {
             u'handlers': [u'mail_admins', u'file_request'],
             u'level': u'WARNING',
@@ -115,5 +110,9 @@ LOGGING = {
             u'level': u'INFO',
             u'propagate': False,
             },
+        },
+    u'root': {
+        u'handlers': [u'mail_admins', u'file_general'],
+        u'level': u'WARNING',
         },
     }

@@ -33,9 +33,9 @@ LOGGING = {
     u'handlers': {
         u'mail_admins': {
             u'level': u'ERROR',
-            u'class': u'django.utils.log.AdminEmailHandler',
-            # FIXME: Configure email backend for admin emails
-            u'email_backend': u'django.core.mail.backends.smtp.EmailBackend',
+            u'class': u'logging.handlers.WatchedFileHandler',
+            u'filename': os.path.join(PROJECT_PATH, u'logs/mail_admins.log'),
+            u'formatter': u'verbose',
             },
         u'file_request': {
             u'level': u'WARNING',
@@ -58,7 +58,14 @@ LOGGING = {
             u'when': u'w0', # Monday
             u'formatter': u'verbose',
             },
-    },
+        u'file_general': {
+            u'level': u'WARNING',
+            u'class': u'logging.handlers.TimedRotatingFileHandler',
+            u'filename': os.path.join(PROJECT_PATH, u'logs/general.log'),
+            u'when': u'w0', # Monday
+            u'formatter': u'verbose',
+            },
+        },
     u'loggers': {
         u'django.request': {
             u'handlers': [u'mail_admins', u'file_request'],
@@ -71,9 +78,13 @@ LOGGING = {
             u'propagate': False,
             },
         u'poleno.cron': {
-            u'handlers': [u'file_cron'],
+            u'handlers': [u'mail_admins', u'file_cron'],
             u'level': u'INFO',
             u'propagate': False,
             },
+        },
+    u'root': {
+        u'handlers': [u'mail_admins', u'file_general'],
+        u'level': u'WARNING',
         },
     }
