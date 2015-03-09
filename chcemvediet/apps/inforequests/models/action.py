@@ -74,11 +74,11 @@ class ActionQuerySet(QuerySet):
         return self.order_by(u'effective_date', u'pk')
 
 class Action(models.Model):
-    # May NOT be NULL; For index see index_together
-    branch = models.ForeignKey(u'Branch', db_index=False)
+    # May NOT be NULL
+    branch = models.ForeignKey(u'Branch')
 
-    # NOT NULL for actions sent or received by email; NULL otherwise; For index see index_together
-    email = models.OneToOneField(u'mail.Message', blank=True, null=True, db_index=False, on_delete=models.SET_NULL)
+    # NOT NULL for actions sent or received by email; NULL otherwise
+    email = models.OneToOneField(u'mail.Message', blank=True, null=True, on_delete=models.SET_NULL)
 
     # May NOT be NULL
     TYPES = FieldChoices(
@@ -266,9 +266,9 @@ class Action(models.Model):
 
     class Meta:
         index_together = [
-                [u'branch'],
-                [u'email'],
                 [u'effective_date', u'id'],
+                # [u'branch'] -- ForeignKey defines index by default
+                # [u'email'] -- OneToOneField defines index by default
                 ]
 
     @staticmethod

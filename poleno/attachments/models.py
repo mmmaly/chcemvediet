@@ -41,7 +41,7 @@ class AttachmentQuerySet(QuerySet):
         return self.order_by(u'pk')
 
 class Attachment(models.Model):
-    # May NOT be NULL; Generic relation; For index see index_together
+    # May NOT be NULL; Generic relation; Index is prefix of [generic_type, generic_id] index, see index_together
     generic_type = models.ForeignKey(ContentType, db_index=False)
     generic_id = models.CharField(max_length=255)
     generic_object = generic.GenericForeignKey(u'generic_type', u'generic_id')

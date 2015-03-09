@@ -205,8 +205,8 @@ class RecipientQuerySet(QuerySet):
         return self.order_by(u'pk')
 
 class Recipient(models.Model):
-    # May NOT be NULL; For index see index_together
-    message = models.ForeignKey(u'Message', db_index=False)
+    # May NOT be NULL
+    message = models.ForeignKey(u'Message')
 
     # May be empty
     name = models.CharField(blank=True, max_length=255,
@@ -266,8 +266,8 @@ class Recipient(models.Model):
                 sure.
                 """))
 
-    # May be empty; For index see index_together
-    remote_id = models.CharField(blank=True, max_length=255,
+    # May be empty
+    remote_id = models.CharField(blank=True, max_length=255, db_index=True,
             help_text=squeeze(u"""
                 Recipient reference ID set by e-mail transport. Leave blank if not sure.
                 """))
@@ -281,8 +281,8 @@ class Recipient(models.Model):
 
     class Meta:
         index_together = [
-                [u'message'],
-                [u'remote_id'],
+                # [u'message'] -- ForeignKey defines index by default
+                # [u'remote_id'] -- defined on field
                 ]
 
     @property

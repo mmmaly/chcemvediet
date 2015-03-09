@@ -43,8 +43,8 @@ class InforequestQuerySet(QuerySet):
         return self.order_by(u'submission_date', u'pk')
 
 class Inforequest(models.Model):
-    # May NOT be NULL; For index see index_together
-    applicant = models.ForeignKey(User, db_index=False,
+    # May NOT be NULL
+    applicant = models.ForeignKey(User,
             help_text=squeeze(u"""
                 The inforequest owner, the user who submitted it.
                 """))
@@ -67,7 +67,7 @@ class Inforequest(models.Model):
 
     # May NOT be empty; Unique; Read-only; Automaticly computed in save() when creating a new
     # instance.
-    unique_email = models.EmailField(max_length=255, unique=True,
+    unique_email = models.EmailField(max_length=255, unique=True, db_index=True,
             help_text=squeeze(u"""
                 Unique email address used to identify which obligee email belongs to which
                 inforequest. If the inforequest was advanced to other obligees, the same email
@@ -110,9 +110,9 @@ class Inforequest(models.Model):
 
     class Meta:
         index_together = [
-                [u'applicant'],
-                [u'unique_email'],
                 [u'submission_date', u'id'],
+                # [u'applicant'] -- ForeignKey defines index by default
+                # [u'unique_email'] -- defined on field
                 ]
 
     @staticmethod

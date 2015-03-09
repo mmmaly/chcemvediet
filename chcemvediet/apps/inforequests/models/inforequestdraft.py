@@ -18,14 +18,14 @@ class InforequestDraftQuerySet(QuerySet):
         return self.order_by(u'pk')
 
 class InforequestDraft(models.Model):
-    # May NOT be NULL; For index see index_together
-    applicant = models.ForeignKey(User, db_index=False,
+    # May NOT be NULL
+    applicant = models.ForeignKey(User,
             help_text=squeeze(u"""
                 The draft owner, the future inforequest applicant.
                 """))
 
-    # May be NULL; For index see index_together
-    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True, db_index=False,
+    # May be NULL
+    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True,
             help_text=squeeze(u"""
                 The obligee the inforequest will be sent to, if the user has already set it.
                 """))
@@ -49,8 +49,8 @@ class InforequestDraft(models.Model):
 
     class Meta:
         index_together = [
-                [u'applicant'],
-                [u'obligee'],
+                # [u'applicant'] -- ForeignKey defines index by default
+                # [u'obligee'] -- ForeignKey defines index by default
                 ]
 
     @staticmethod

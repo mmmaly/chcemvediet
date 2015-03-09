@@ -22,7 +22,8 @@ class InforequestEmailQuerySet(QuerySet):
         return self.order_by_email().reverse()[:1]
 
 class InforequestEmail(models.Model):
-    # May NOT be NULL; m2m ends; For index see index_together
+    # May NOT be NULL; m2m ends; Indexes are prefixes of [inforequest, email] and
+    # [email, inforequest] indexes, respectively, see index_together
     inforequest = models.ForeignKey(u'Inforequest', db_index=False)
     email = models.ForeignKey(u'mail.Message', db_index=False)
 

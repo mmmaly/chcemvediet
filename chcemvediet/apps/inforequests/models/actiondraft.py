@@ -18,11 +18,11 @@ class ActionDraftQuerySet(QuerySet):
         return self.order_by(u'pk')
 
 class ActionDraft(models.Model):
-    # May NOT be NULL; For index see index_together
-    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
+    # May NOT be NULL
+    inforequest = models.ForeignKey(u'Inforequest')
 
-    # May be NULL; Must be owned by the inforequest if set; For index see index_together
-    branch = models.ForeignKey(u'Branch', blank=True, null=True, db_index=False,
+    # May be NULL; Must be owned by the inforequest if set
+    branch = models.ForeignKey(u'Branch', blank=True, null=True,
             help_text=u'Must be owned by inforequest if set')
 
     # May NOT be NULL
@@ -69,8 +69,8 @@ class ActionDraft(models.Model):
 
     class Meta:
         index_together = [
-                [u'inforequest'],
-                [u'branch'],
+                # [u'inforequest'] -- ForeignKey defines index by default
+                # [u'branch'] -- ForeignKey defines index by default
                 ]
 
     @staticmethod

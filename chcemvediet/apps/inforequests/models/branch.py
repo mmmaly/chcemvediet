@@ -20,19 +20,20 @@ class BranchQuerySet(QuerySet):
         return self.order_by(u'pk')
 
 class Branch(models.Model):
-    # May NOT be NULL; For index see index_together
+    # May NOT be NULL; Index is prefix of [inforequest, advanced_by] index, see index_together
     inforequest = models.ForeignKey(u'Inforequest', db_index=False)
 
-    # May NOT be NULL; For index see index_together
-    obligee = models.ForeignKey(u'obligees.Obligee', db_index=False,
+    # May NOT be NULL
+    obligee = models.ForeignKey(u'obligees.Obligee',
             help_text=u'The obligee the inforequest was sent or advanced to.')
 
-    # May NOT be NULL; Automaticly frozen in save() when creating a new object; For index see index_together
-    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee', db_index=False,
+    # May NOT be NULL; Automaticly frozen in save() when creating a new object
+    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee',
             help_text=u'Frozen Obligee at the time the Inforequest was submitted or advanced to it.')
 
-    # Advancement action that advanced the inforequest to this obligee; None if it's inforequest; For index see index_together
-    # main branch. Inforequest must contain exactly one branch with ``advanced_by`` set to None.
+    # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
+    # main branch. Inforequest must contain exactly one branch with ``advanced_by`` set to None;
+    # Index is prefix of [advanced_by, inforequest] index, see index_together
     advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set', blank=True, null=True, db_index=False,
             help_text=squeeze(u"""
                 NULL for main branches. The advancement action the inforequest was advanced by for
@@ -68,9 +69,9 @@ class Branch(models.Model):
         verbose_name_plural = u'Branches'
         index_together = [
                 [u'inforequest', u'advanced_by'],
-                [u'obligee'],
-                [u'historicalobligee'],
                 [u'advanced_by', u'inforequest'],
+                # [u'obligee'] -- ForeignKey defines index by default
+                # [u'historicalobligee'] -- ForeignKey defines index by default
                 ]
 
     @cached_property
