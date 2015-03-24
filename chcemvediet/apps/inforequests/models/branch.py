@@ -318,25 +318,25 @@ class Branch(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-    @classmethod
-    def datacheck(cls, superficial=False):
-        u"""
-        Checks that every advanced ``Branch`` instance is advanced by an action from the same
-        inforequest.
-        """
-        branches = (Branch.objects
-                .filter(advanced_by__isnull=False)
-                .filter(~Q(advanced_by__branch__inforequest=F(u'inforequest')))
-                .select_related('advanced_by__branch')
-                )
+@datacheck.register
+def datachecks(superficial, autofix):
+    u"""
+    Checks that every advanced ``Branch`` instance is advanced by an action from the same
+    inforequest.
+    """
+    branches = (Branch.objects
+            .filter(advanced_by__isnull=False)
+            .filter(~Q(advanced_by__branch__inforequest=F(u'inforequest')))
+            .select_related('advanced_by__branch')
+            )
 
-        if superficial:
-            branches = branches[:5+1]
-        issues = [u'%r has inforequest_id = %s but advanced_by.branch.inforequest_id = %s' %
-                    (b, b.inforequest_id, b.advanced_by.branch.inforequest_id) for b in branches]
-        if superficial and issues:
-            if len(issues) > 5:
-                issues[-1] = u'More branches have invalid advanced by references'
-            issues = [u'; '.join(issues)]
-        for issue in issues:
-            yield datacheck.Error(issue + u'.')
+    if superficial:
+        branches = branches[:5+1]
+    issues = [u'%r has inforequest_id = %s but advanced_by.branch.inforequest_id = %s' %
+                (b, b.inforequest_id, b.advanced_by.branch.inforequest_id) for b in branches]
+    if superficial and issues:
+        if len(issues) > 5:
+            issues[-1] = u'More branches have invalid advanced by references'
+        issues = [u'; '.join(issues)]
+    for issue in issues:
+        yield datacheck.Error(issue + u'.')

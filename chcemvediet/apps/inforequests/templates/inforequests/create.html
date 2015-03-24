@@ -15,7 +15,7 @@
 {% block content %}
   <h1>{% trans 'inforequests:create:heding' %}</h1>
   {% include "inforequests/texts/create-text.html" %}
-  <form class="form-horizontal" method="post" action=".">
+  <form class="form-horizontal" method="post" action="">
     {% csrf_token %}
     <div class="control-group">
       <label class="control-label">{% trans 'inforequests:create:applicant_label' %}:</label>

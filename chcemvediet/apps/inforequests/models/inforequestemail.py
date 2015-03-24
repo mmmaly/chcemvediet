@@ -67,23 +67,23 @@ class InforequestEmail(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-    @classmethod
-    def datacheck(cls, superficial=False):
-        u"""
-        Checks that every ``Message`` has exactly one ``InforequestEmail`` relation to
-        ``Inforequest``.
-        """
-        emails = (Message.objects
-                .annotate(Count(u'inforequest'))
-                .filter(inforequest__count__gt=1)
-                )
+@datacheck.register
+def datachecks(superficial, autofix):
+    u"""
+    Checks that every ``Message`` has exactly one ``InforequestEmail`` relation to
+    ``Inforequest``.
+    """
+    emails = (Message.objects
+            .annotate(Count(u'inforequest'))
+            .filter(inforequest__count__gt=1)
+            )
 
-        if superficial:
-            emails = emails[:5+1]
-        issues = [u'%r is assigned to %d inforequests' % (m, m.inforequest__count) for m in emails]
-        if superficial and issues:
-            if len(issues) > 5:
-                issues[-1] = u'More messages are assigned to multiple inforequests'
-            issues = [u'; '.join(issues)]
-        for issue in issues:
-            yield datacheck.Error(issue + u'.')
+    if superficial:
+        emails = emails[:5+1]
+    issues = [u'%r is assigned to %d inforequests' % (m, m.inforequest__count) for m in emails]
+    if superficial and issues:
+        if len(issues) > 5:
+            issues[-1] = u'More messages are assigned to multiple inforequests'
+        issues = [u'; '.join(issues)]
+    for issue in issues:
+        yield datacheck.Error(issue + u'.')

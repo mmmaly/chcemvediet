@@ -127,10 +127,11 @@ class CustomMenu(Menu):
             res.extend(self._used_models(child))
         return res
 
-    def _create_link(self, title, viewname, urlargs=None, queryset=None):
+    def _create_link(self, title, viewname, viewargs=None, viewkwargs=None, urlargs=None, queryset=None):
         count = queryset.count() if queryset is not None else 0
         title = format_html(u'<b>{0} ({1})</b>', title, count) if count else title
-        url = u'%s?%s' % (reverse(viewname), urlencode(urlargs)) if urlargs else reverse(viewname)
+        url = reverse(viewname, args=(viewargs or ()), kwargs=(viewkwargs or {}))
+        url = u'%s?%s' % (url, urlencode(urlargs)) if urlargs else url
         return items.MenuItem(title, url=url)
 
     def init_with_context(self, context):
@@ -145,6 +146,9 @@ class CustomMenu(Menu):
         self.children.append(items.MenuItem(u'Models', children=[self._create_model_group(**g) for g in ADMIN_MODEL_GROUPS]))
         self.children[-1].children.append(items.AppList(u'Other Models', exclude=self._used_models()))
 
+        # Pages
+        self.children.append(items.MenuItem(u'Pages', children=[self._create_link(n, u'admin:pages_index', [l]) for l, n in settings.LANGUAGES]))
+
 class CustomIndexDashboard(Dashboard):
 
     def _create_model_group(self, title, models=None, children=None):
@@ -155,10 +159,11 @@ class CustomIndexDashboard(Dashboard):
         else:
             return modules.ModelList(title, models=models)
 
-    def _create_link(self, title, viewname, urlargs=None, queryset=None):
+    def _create_link(self, title, viewname, viewargs=None, viewkwargs=None, urlargs=None, queryset=None):
         count = queryset.count() if queryset is not None else 0
         title = format_html(u'<b>{0} ({1})</b>', title, count) if count else title
-        url = u'%s?%s' % (reverse(viewname), urlencode(urlargs)) if urlargs else reverse(viewname)
+        url = reverse(viewname, args=(viewargs or ()), kwargs=(viewkwargs or {}))
+        url = u'%s?%s' % (url, urlencode(urlargs)) if urlargs else url
         return dict(title=title, url=url)
 
     def init_with_context(self, context):
@@ -170,6 +175,9 @@ class CustomIndexDashboard(Dashboard):
 
         # Recent actions module
         self.children.append(modules.RecentActions('Recent Actions', limit=5))
+
+        # Pages
+        self.children.append(modules.LinkList(u'Pages', children=[self._create_link(n, u'admin:pages_index', [l]) for l, n in settings.LANGUAGES]))
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     title = ''

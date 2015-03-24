@@ -1,0 +1,31 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "admin/base_site.html" %}
+{% load static from admin_static %}
+
+{% block extrahead %}{{ block.super }}
+  <script type="text/javascript" src="{% url "admin:jsi18n" %}"></script>
+  <script type="text/javascript">
+    var django = django || {};
+    django.jQuery = jQuery;
+  </script>
+  <script type="text/javascript" src="{% static "admin/js/collapse.js" %}"></script>
+  <script type="text/javascript" src="{% static "pages/admin/js/jquery.splitter-0.14.0.js" %}"></script>
+  <script type="text/javascript" src="{% static "pages/admin/js/live_path.js" %}"></script>
+  <script type="text/javascript" src="{% static "pages/admin/js/popup_path.js" %}"></script>
+  <script type="text/javascript" src="{% static "pages/admin/js/template_widget.js" %}"></script>
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+  <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "pages/admin/css/jquery.splitter.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "pages/admin/css/template_widget.css" %}" />
+{% endblock %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a>
+    &rsaquo; <a href="{% url 'admin:pages_languages'  %}">Pages</a>
+    {% block addbreadcrumbs %}{% endblock %}
+  </div>
+{% endblock %}

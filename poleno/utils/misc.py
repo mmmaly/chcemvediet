@@ -83,6 +83,14 @@ def squeeze(s):
     """
     return u' '.join(s.split())
 
+def norm_new_lines(s):
+    u"""
+    Normalize new lines.
+    """
+    if s is None:
+        return None
+    return s.replace('\r\n','\n').replace('\r','\n')
+
 def flatten(l):
     u"""
     Recursively flattens list of lists of lists.

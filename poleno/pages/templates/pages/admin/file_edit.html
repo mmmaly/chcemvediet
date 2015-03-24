@@ -1,0 +1,39 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "pages/admin/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- title: string
+ %  -- create: boolean
+ %  -- lang: string
+ %  -- page: poleno.pages.pages.Page
+ %  -- file: poleno.pages.pages.File (if create is False) | None (if create is True)
+ %  -- form: poleno.pages.admin.forms.FileEditForm
+ %
+{% endcomment %}
+
+{% block addbreadcrumbs %}
+  &rsaquo; <a href="{% url "admin:pages_index" lang %}">{{ lang }}</a>
+  &rsaquo; {% include "pages/admin/snippets/ancestors.html" with page=page inclusive=True %}
+  &rsaquo; {% if create %}Add Attachment{% else %}{{ file.name }}{% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if not create %}
+    <ul class="object-tools">
+      <li><a href="{{ file.url }}">View</a></li>
+    </ul>
+  {% endif %}
+  <form id="site_form" method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include "pages/admin/snippets/form.html" with form=form %}
+    <div class="submit-row">
+      <button type="submit" class="button default" name="button" value="save" style="margin-left: 5px;">Save</button>
+      <button type="submit" class="button" name="button" value="save-and-continue">Save and continue editing</button>
+      {% if not create %}
+        <p class="deletelink-box"><a class="deletelink" href="{% url "admin:pages_file_delete" lang page.lpath file.name %}">Delete</a></p>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}

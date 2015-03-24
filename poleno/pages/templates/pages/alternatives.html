@@ -1,0 +1,22 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "main/base/single_column.html" %}
+{% load static from staticfiles %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- alternatives: [{lang: string, name: string, page: poleno.pages.pages.Page}]
+ %
+{% endcomment %}
+
+{% block title %}Not available in English | {{ block.super }}{% endblock %}
+
+{% block content %}
+  <h1>This page is not available in English</h1>
+  <p>It's available only in the following languages:</p>
+  <ul>
+    {% for alt in alternatives %}
+      <li><img src="{% static "main/images/languages/"|add:alt.lang|add:".png" %}"> {{ alt.name }}: <a href="{{ alt.page.url }}">{{ alt.page.title }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

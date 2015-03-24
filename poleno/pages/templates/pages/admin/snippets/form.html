@@ -1,0 +1,30 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: poleno.pages.admin.forms.PageEditForm | poleno.pages.admin.forms.FileEditForm
+ %
+{% endcomment %}
+
+{{ form.non_field_errors }}
+{% for fieldset in form.fieldsets %}
+  {% if fieldset.fields %}
+    <fieldset class="module aligned {% if fieldset.collapse %}collapse{% endif %}">
+      {% if fieldset.label %}
+        <h2>{{ fieldset.label }}</h2>
+      {% endif %}
+      {% for field in fieldset.fields %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% else %}
+          <div class="form-row {% if field.errors %}errors{% endif %}">
+            {% if field.label %}{{ field.label_tag }}{% endif %}
+            {{ field }}
+            {{ field.errors|join:" " }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </fieldset>
+  {% endif %}
+{% endfor %}

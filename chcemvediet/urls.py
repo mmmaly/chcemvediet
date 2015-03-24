@@ -15,6 +15,7 @@ from . import ready
 urlpatterns = patterns(u'',
     url(r'^sitemap[.]xml$', u'django.contrib.sitemaps.views.sitemap'),
     url(r'^mandrill/', include(u'poleno.mail.transports.mandrill.urls', namespace=u'mandrill')),
+    url(r'^i18n/', include(u'django.conf.urls.i18n')),
 )
 
 urlpatterns += i18n_patterns(u'',
@@ -26,7 +27,7 @@ urlpatterns += i18n_patterns(u'',
     url(r'^accounts/', include(u'chcemvediet.apps.accounts.urls', namespace=u'accounts')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin_tools/', include(u'admin_tools.urls')),
-    url(r'^i18n/', include(u'django.conf.urls.i18n')),
+    url(r'', include(u'poleno.pages.urls', namespace=u'pages')),
 )
 
 if settings.DEBUG: # pragma: no cover

@@ -49,7 +49,7 @@
 
   <h3>{% trans 'account:email:add:heading' %}</h3>
   {% include "account/texts/email-add.html" %}
-  <form class="form-horizontal" method="post" action=".">
+  <form class="form-horizontal" method="post" action="">
     {% csrf_token %}
     {% include "main/snippets/form_horizontal.html" with form=form %}
     <div class="form-actions">

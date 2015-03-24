@@ -386,23 +386,23 @@ class Action(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-    @classmethod
-    def datacheck(cls, superficial=False):
-        u"""
-        Checks that every ``Action.email`` is assigned to ``Action.branch.inforequest``.
-        """
-        actions = (Action.objects
-                .filter(email__isnull=False)
-                .annotate(Count(u'branch__inforequest__email_set', only=Q(branch__inforequest__email_set=F(u'email'))))
-                .filter(branch__inforequest__email_set__count=0)
-                )
+@datacheck.register
+def datachecks(superficial, autofix):
+    u"""
+    Checks that every ``Action.email`` is assigned to ``Action.branch.inforequest``.
+    """
+    actions = (Action.objects
+            .filter(email__isnull=False)
+            .annotate(Count(u'branch__inforequest__email_set', only=Q(branch__inforequest__email_set=F(u'email'))))
+            .filter(branch__inforequest__email_set__count=0)
+            )
 
-        if superficial:
-            actions = actions[:5+1]
-        issues = [u'%r email is assigned to another inforequest' % a for a in actions]
-        if superficial and issues:
-            if len(issues) > 5:
-                issues[-1] = u'More action emails are assigned to other inforequests'
-            issues = [u'; '.join(issues)]
-        for issue in issues:
-            yield datacheck.Error(issue + u'.')
+    if superficial:
+        actions = actions[:5+1]
+    issues = [u'%r email is assigned to another inforequest' % a for a in actions]
+    if superficial and issues:
+        if len(issues) > 5:
+            issues[-1] = u'More action emails are assigned to other inforequests'
+        issues = [u'; '.join(issues)]
+    for issue in issues:
+        yield datacheck.Error(issue + u'.')

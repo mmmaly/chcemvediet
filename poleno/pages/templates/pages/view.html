@@ -1,0 +1,36 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "main/base/single_column.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- page: poleno.pages.pages.Page
+ %
+{% endcomment %}
+
+{% block title %}{{ page.title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  {% if page.ancestors %}
+    <ul class="breadcrumb">
+      {% for ancestor in page.ancestors reversed %}
+        <li><a href="{{ ancestor.url }}">{{ ancestor.label }}</a> <span class="divider">/</span></li>
+      {% endfor %}
+      <li class="active">{{ page.label }}</li>
+    </ul>
+  {% endif %}
+  <div class="row">
+    <div class="span9">
+      {{ page.render }}
+    </div>
+    <div class="span3">
+      <ul class="nav nav-tabs nav-stacked" style="margin-top: 4em;">
+        {% for subpage in page.subpages %}
+          {% if not subpage.is_redirect and not subpage.is_disabled %}
+            <li><a href="{{ subpage.url }}"><i class="icon-chevron-right pull-right"></i>{{ subpage.label }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

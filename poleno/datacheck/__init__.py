@@ -4,5 +4,5 @@
 from .datacheck import (
         DEBUG, INFO, WARNING, ERROR, CRITICAL,
         Issue, Debug, Info, Warning, Error, Critical,
-        run_checks,
+        registry, register,
         )

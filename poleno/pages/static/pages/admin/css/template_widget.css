@@ -1,0 +1,17 @@
+.template-widget {
+	width: 100%;
+	min-height: 300px;
+}
+
+.template-widget > div {
+	overflow: hidden !important;
+}
+
+.template-widget textarea,
+.template-widget iframe {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	resize: none;
+	box-sizing: border-box;
+}

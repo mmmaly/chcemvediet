@@ -115,21 +115,21 @@ class Attachment(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-    @classmethod
-    def datacheck(cls, superficial=False):
-        u"""
-        Checks that every ``Attachment`` instance has its file working.
-        """
-        # This check is a bit slow. We skip it if running from cron or the user asked for
-        # superficial tests only.
-        if superficial:
-            return
+@datacheck.register
+def datachecks(superficial, autofix):
+    u"""
+    Checks that every ``Attachment`` instance has its file working.
+    """
+    # This check is a bit slow. We skip it if running from cron or the user asked for
+    # superficial tests only.
+    if superficial:
+        return
 
-        for attachment in Attachment.objects.all():
+    for attachment in Attachment.objects.all():
+        try:
             try:
-                try:
-                    attachment.file.open(u'rb')
-                finally:
-                    attachment.file.close()
-            except IOError:
-                yield datacheck.Error(u'%r is missing its file: "%s".', attachment, attachment.file.name)
+                attachment.file.open(u'rb')
+            finally:
+                attachment.file.close()
+        except IOError:
+            yield datacheck.Error(u'%r is missing its file: "%s".', attachment, attachment.file.name)

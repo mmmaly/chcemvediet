@@ -1,0 +1,116 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "pages/admin/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- title: string
+ %  -- create: boolean
+ %  -- lang: string
+ %  -- page: poleno.pages.pages.Page
+ %  -- form: poleno.pages.admin.forms.PageEditForm
+ %
+{% endcomment %}
+
+{% block addbreadcrumbs %}
+  &rsaquo; <a href="{% url "admin:pages_index" lang %}">{{ lang }}</a>
+  &rsaquo; {% include "pages/admin/snippets/ancestors.html" with page=page inclusive=create %}
+  {% if create %}&rsaquo; Add Subpage{% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if not create and not page.is_redirect and not page.is_disabled %}
+    <ul class="object-tools">
+      <li><a href="{{ page.url }}">View</a></li>
+    </ul>
+  {% endif %}
+  {% if page.is_disabled %}
+    <div style="background-color: orange;">
+      <strong>Warning:</strong> This page is disabled.
+    </div>
+  {% endif %}
+  <form id="site_form" method="post" action="">
+    {% csrf_token %}
+    {% include "pages/admin/snippets/form.html" with form=form %}
+    {% if not create and not page.is_redirect %}
+      <fieldset class="module">
+        <h2>Subpages</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th>URL</th>
+              <th>Title</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for subpage in page.subpages %}
+              <tr class="{% cycle 'row1' 'row2' %}">
+                <td>
+                  {% if subpage.is_disabled %}<del>{% endif %}
+                    <strong><a href="{% url "admin:pages_edit" lang subpage.lpath %}">{{ subpage.path }}</a></strong>
+                  {% if subpage.is_disabled %}</del>{% endif %}
+                  {% if subpage.is_redirect %} → {{ subpage.redirect_path }}{% endif %}
+                </td>
+                <td>
+                  {% if not subpage.is_redirect %}
+                    {% if subpage.is_disabled %}<del>{% endif %}
+                      {{ subpage.title }}
+                    {% if subpage.is_disabled %}</del>{% endif %}
+                  {% endif %}
+                </td>
+                <td>
+                  <ul class="object-tools" style="margin: 0;">
+                    <li><a href="{% url "admin:pages_edit" lang subpage.lpath %}">Edit</a></li>
+                    <li><a href="{{ subpage.url }}" {% if subpage.is_redirect or subpage.is_disabled %}style="visibility: hidden;"{% endif %}>View</a></li>
+                  </ul>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </fieldset>
+      <ul class="object-tools" style="margin: 0 0 1em 0;">
+        <li><a href="{% url "admin:pages_create" lang page.lpath %}">Add Subpage</a></li>
+      </ul>
+      <div style="clear: both;"></div>
+      <fieldset class="module">
+        <h2>Attached Files</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Content Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for file in page.files %}
+              <tr class="{% cycle 'row1' 'row2' %}">
+                <td><strong><a href="{% url "admin:pages_file_edit" lang page.lpath file.name %}">{{ file.name }}</a></strong></td>
+                <td>{{ file.content_type }}</td>
+                <td>
+                  <ul class="object-tools" style="margin: 0;">
+                    <li><a href="{% url "admin:pages_file_edit" lang page.lpath file.name %}">Edit</a></li>
+                    <li><a href="{{ file.url }}">View</a></li>
+                  </ul>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </fieldset>
+      <ul class="object-tools" style="margin: 0 0 1em 0;">
+        <li><a href="{% url "admin:pages_file_create" lang page.lpath %}">Add File</a></li>
+      </ul>
+      <div style="clear: both;"></div>
+    {% endif %}
+    <div class="submit-row">
+      <button type="submit" class="button default" name="button" value="save" style="margin-left: 5px;">Save</button>
+      <button type="submit" class="button" name="button" value="save-and-continue">Save and continue editing</button>
+      {% if not create and not page.is_root %}
+        <p class="deletelink-box"><a class="deletelink" href="{% url "admin:pages_delete" lang page.lpath %}">Delete</a></p>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}

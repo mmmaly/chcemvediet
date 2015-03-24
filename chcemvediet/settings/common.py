@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     u'poleno.cron',
     u'poleno.attachments',
     u'poleno.mail',
+    u'poleno.pages',
     # Local to the project
     u'chcemvediet.apps.accounts',
     u'chcemvediet.apps.obligees',

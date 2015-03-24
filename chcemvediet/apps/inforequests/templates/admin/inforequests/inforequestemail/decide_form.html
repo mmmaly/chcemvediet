@@ -24,7 +24,7 @@
 
 {% block content %}
   <div id="content-main">
-    <form action="." method="post" id="{{ opts.model_name }}_form">
+    <form action="" method="post" id="{{ opts.model_name }}_form">
       {% csrf_token %}
       <div>
         {% if adminform.form.errors %}

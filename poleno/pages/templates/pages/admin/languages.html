@@ -1,0 +1,17 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "pages/admin/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- title: string
+ %
+{% endcomment %}
+
+{% block content %}
+  <ul>
+    {% for lang in LANGUAGES %}
+      <li><a href="{% url "admin:pages_index" lang.0 %}">{{ lang.0 }}: {{ lang.1 }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

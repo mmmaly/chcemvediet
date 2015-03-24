@@ -15,7 +15,7 @@
   <h1>{% trans 'socialaccount:connections:heading' %}</h1>
   {% if form.accounts %}
     {% include "socialaccount/texts/connections-list.html" %}
-    <form class="form-horizontal" method="post" action=".">
+    <form class="form-horizontal" method="post" action="">
       {% csrf_token %}
       {% if form.non_field_errors %}
         <div class="control-group error">

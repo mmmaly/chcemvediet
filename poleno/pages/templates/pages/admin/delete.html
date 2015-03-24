@@ -1,0 +1,35 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "pages/admin/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- title: string
+ %  -- lang: string
+ %  -- page: poleno.pages.pages.Page
+ %
+{% endcomment %}
+
+{% block addbreadcrumbs %}
+  &rsaquo; <a href="{% url "admin:pages_index" lang %}">{{ lang }}</a>
+  &rsaquo; {% include "pages/admin/snippets/ancestors.html" with page=page inclusive=True %}
+  &rsaquo; Delete Page
+{% endblock %}
+
+{% block content %}
+  <p>Are you sure you want to delete the page "{{ page.path }}"? All of the following subpages will be deleted as well:</p>
+  <ul>
+    {% for subpage in page.walk %}
+      <li>
+        {% spaceless %}
+          <a href="{% url "admin:pages_edit" lang subpage.lpath %}">{{ subpage.path }}</a>
+          <span>{% if subpage.is_redirect %} → {{ subpage.redirect_path }}{% else %}: {{ subpage.title }}{% endif %}</span>
+        {% endspaceless %}
+      </li>
+    {% endfor %}
+  </ul>
+  <form method="post" action="">
+    {% csrf_token %}
+    <button type="submit" class="button" name="button" value="delete">Yes, I'm sure</button>
+  </form>
+{% endblock %}

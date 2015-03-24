@@ -1,0 +1,35 @@
+{# vim: set filetype=htmldjango :#}
+{% load addtoblock render_block from sekizai_tags %}
+{% load external_css external_js from poleno.utils %}
+{% load stylesheet javascript from pipeline %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- content: html
+ %
+{% endcomment %}
+
+{# External assets #}
+{% addtoblock "css" %}{% external_css %}{% endaddtoblock %}
+{% addtoblock "js" %}{% external_js %}{% endaddtoblock %}
+
+{# Local assets #}
+{% addtoblock "css" %}{% stylesheet 'main' %}{% endaddtoblock %}
+{% addtoblock "js" %}{% javascript 'main' %}{% endaddtoblock %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en" }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview</title>
+    {% render_block "css" %}
+  </head>
+  <body>
+    <div class="container">
+      {{ content }}
+    </div>
+    {% render_block "js" %}
+  </body>
+</html>

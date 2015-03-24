@@ -7,7 +7,7 @@ from django.http import HttpResponseNotModified, FileResponse
 from django.views.static import was_modified_since
 from django.utils.http import http_date, urlquote
 
-def send_file_response(request, path, name, content_type):
+def send_file_response(request, path, name, content_type, attachment=True):
     # Based on: django.views.static.serve
 
     # FIXME: If running on real Apache server, we should use "X-SENDFILE" header to let Apache
@@ -24,6 +24,7 @@ def send_file_response(request, path, name, content_type):
         return HttpResponseNotModified()
     response = FileResponse(open(path, u'rb'), content_type=content_type)
     response[u'Last-Modified'] = http_date(statobj.st_mtime)
-    response[u'Content-Disposition'] = "attachment; filename*=UTF-8''%s" % urlquote(name)
     response[u'Content-Length'] = statobj.st_size
+    if attachment:
+        response[u'Content-Disposition'] = "attachment; filename*=UTF-8''%s" % urlquote(name)
     return response

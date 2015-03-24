@@ -1,0 +1,61 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "pages/admin/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- is_popup: boolean
+ %  -- popup_target: string (only if is_popup is True)
+ %  -- title: string
+ %  -- lang: string
+ %  -- pages: [poleno.pages.pages.Page]
+ %
+{% endcomment %}
+
+{% block addbreadcrumbs %}
+  &rsaquo; {{ lang }}
+{% endblock %}
+
+{% block content %}
+  <table style="width: 100%;">
+    <thead>
+      <tr>
+        <th>URL</th>
+        <th>Title</th>
+        {% if not is_popup %}<th></th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for page in pages %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+          <td>
+            {% if page.is_disabled %}<del>{% endif %}
+              {% if is_popup %}
+                <strong><a class="popup-select" href="#" data-target="{{ popup_target }}" data-value="{{ page.path }}">{{ page.path }}</a></strong>
+              {% else %}
+                <strong><a href="{% url "admin:pages_edit" lang page.lpath %}">{{ page.path }}</a></strong>
+              {% endif %}
+              {% if page.is_redirect %} → {{ page.redirect_path }}{% endif %}
+            {% if page.is_disabled %}</del>{% endif %}
+          </td>
+          <td>
+            {% if not page.is_redirect %}
+              {% if page.is_disabled %}<del>{% endif %}
+                {{ page.title }}
+              {% if page.is_disabled %}</del>{% endif %}
+            {% endif %}
+          </td>
+          {% if not is_popup %}
+            <td>
+              <ul class="object-tools" style="margin: 0;">
+                <li><a href="{% url "admin:pages_edit" lang page.lpath %}">Edit</a></li>
+                <li><a href="{% url "admin:pages_create" lang page.lpath %}" {% if page.is_redirect %}style="visibility: hidden;"{% endif %}>Add Subpage</a></li>
+                <li><a href="{{ page.url }}" {% if page.is_redirect or page.is_disabled %}style="visibility: hidden;"{% endif %}>View</a></li>
+              </ul>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

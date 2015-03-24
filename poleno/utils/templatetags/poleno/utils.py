@@ -28,6 +28,17 @@ def subtract(value, arg):
     return value - arg
 
 @register.filter
+def times(value, arg):
+    u"""
+    Multiple variables in Django templates.
+
+    Example:
+        {{ value|times:arg }}
+        {{ "xxx"|times:10 }}
+    """
+    return value * arg
+
+@register.filter
 def negate(value):
     u"""
     Negating (i.e. multiplying by -1) variable in Django templates.
@@ -127,6 +138,10 @@ def generic_type(value):
     """
     return ContentType.objects.get_for_model(value)
 
+@register.filter(name=u'getattr')
+def getattr_(value, arg):
+    return getattr(value, arg)
+
 @register.filter
 def method(value, arg):
     u"""
@@ -168,7 +183,7 @@ def call(value):
         return u'[not callable]'
     return value()
 
-@register.filter(name="with")
+@register.filter(name=u'with')
 def with_(value, arg):
     u""" See ``method`` """
     if not callable(value):
@@ -219,9 +234,15 @@ def change_lang(context, lang=None):
     """
     path = context[u'request'].path
     url_parts = resolve(path)
+    view_name = url_parts.view_name
+    kwargs = url_parts.kwargs
+
+    # Ask the view what to show after changing language.
+    if hasattr(url_parts.func, u'change_lang'):
+        view_name, kwargs = url_parts.func.change_lang(lang, **kwargs)
 
     with translation(lang):
-        url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
+        url = reverse(view_name, kwargs=kwargs)
 
     return u'%s' % url
 
