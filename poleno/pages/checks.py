@@ -151,8 +151,6 @@ def check(superficial, autofix):
     basedir = os.path.realpath(default_storage.path(u'pages'))
     for lang, _ in settings.LANGUAGES:
         rootdir = os.path.join(basedir, lang)
-        if not os.path.isdir(rootdir) or os.path.islink(rootdir):
-            yield datacheck.Error(u'Root /%s is not a directory', lang)
-        else:
+        if os.path.isdir(rootdir):
             for issue in _check_rec(lang, basedir, rootdir, rootdir, autofix):
                 yield issue
