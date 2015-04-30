@@ -13,7 +13,7 @@
 {% block content %}
   {% if page.ancestors %}
     <ul class="breadcrumb">
-      {% for ancestor in page.ancestors reversed %}
+      {% for ancestor in page.ancestors %}
         <li><a href="{{ ancestor.url }}">{{ ancestor.label }}</a> <span class="divider">/</span></li>
       {% endfor %}
       <li class="active">{{ page.label }}</li>

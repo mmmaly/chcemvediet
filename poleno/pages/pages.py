@@ -564,7 +564,7 @@ class Page(object):
             return None
 
         try:
-            with open(os.path.join(self._pagedir, u'page.html'), u'rb') as f:
+            with codecs.open(os.path.join(self._pagedir, u'page.html'), u'rb', u'utf-8') as f:
                 return f.read()
         except IOError:
             return None
@@ -637,7 +637,7 @@ class Page(object):
         config.write(os.path.join(pagedir, u'page.conf'))
 
         if template is not None:
-            with open(os.path.join(pagedir, u'page.html'), u'wb') as f:
+            with codecs.open(os.path.join(pagedir, u'page.html'), u'wb', u'utf-8') as f:
                 f.write(template)
 
         return Page(path, self._lang)
@@ -705,7 +705,7 @@ class Page(object):
         else:
             tmp = htmlfile + u'.tmp'
             try:
-                with open(tmp, u'wb') as f:
+                with codecs.open(tmp, u'wb', u'utf-8') as f:
                     f.write(template)
                 os.rename(tmp, htmlfile)
             finally:
