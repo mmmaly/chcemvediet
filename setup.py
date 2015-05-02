@@ -391,7 +391,7 @@ def compile_locales(configure):
         call(u'Compiling locales:', [os.path.join(rel, u'env/bin/python'), os.path.join(rel, u'manage.py'), u'compilemessages'], cwd=cwd)
 
 def run_datachecks(configure):
-    call(u'Running datachecks:', [u'env/bin/python', u'manage.py', u'datacheck', u'--autofix'])
+    call(u'Running data checks:', [u'env/bin/python', u'manage.py', u'datacheck', u'--autofix'])
 
 def help_run_server(configure):
     server_mode = configure.get(u'server_mode')
