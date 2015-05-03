@@ -68,28 +68,6 @@ def _check_rec(lang, basedir, rootdir, curdir, autofix):
                     compiled = Template(template)
                 except TemplateSyntaxError as e:
                     yield datacheck.Error(u'Page template /%s parse error: %s', filerel, e)
-                else:
-                    # Check {% url "pages:view" "/path/" %} links
-                    token_regex = re.compile(r"""^(?:"([^"]+)"|'([^']+)')$""")
-                    for node in compiled.nodelist.get_nodes_by_type(URLNode):
-                        if node.view_name.token not in [u'"pages:view"', u"'pages:view'"]:
-                            continue
-                        match = None
-                        if len(node.args) == 1 and len(node.kwargs) == 0:
-                            match = token_regex.match(node.args[0].token)
-                        elif len(node.args) == 0 and len(node.kwargs) == 1 and u'path' in node.kwargs:
-                            match = token_regex.match(node.kwargs[u'path'].token)
-                        if match is None:
-                            continue
-                        path = match.group(1) or match.group(2)
-                        source = template[node.source[1][0]:node.source[1][1]]
-                        try:
-                            page = pages.Page(path, lang)
-                        except pages.InvalidPageError as e:
-                            yield datacheck.Error(u'Page template /%s contains invalid link %s: %s', filerel, source, e)
-                            continue
-                        if page.lpath != path:
-                            yield datacheck.Warning(u'Page template /%s contains link %s but its canonical form is %s', filerel, source, page.lpath)
 
     # Subpages and redirects
     for filename in list(filenames):
