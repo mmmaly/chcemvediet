@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-ADMIN_FIELD_INDENT = u'    • '
-
-
 class ForeignKeyRawIdWidgetWithUrlParams(admin.widgets.ForeignKeyRawIdWidget):
     def __init__(self, *args, **kwargs):
         super(ForeignKeyRawIdWidgetWithUrlParams, self).__init__(*args, **kwargs)

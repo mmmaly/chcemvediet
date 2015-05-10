@@ -11,13 +11,11 @@ from poleno.attachments.forms import AttachmentsField
 from poleno.utils.models import after_saved
 from poleno.utils.misc import try_except, decorate, squeeze
 from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format, live_field,
-        AdminLiveFieldsMixin)
+        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
 
 from chcemvediet.apps.inforequests.models import (Inforequest, InforequestEmail, Branch, Action,
         ActionDraft)
 from chcemvediet.apps.obligees.models import Obligee
-
-from .misc import ADMIN_FIELD_INDENT
 
 
 class InforequestAdminBranchInline(admin.TabularInline):

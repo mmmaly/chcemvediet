@@ -8,11 +8,9 @@ from django.contrib.admin.templatetags.admin_list import _boolean_icon
 from poleno.utils.models import after_saved
 from poleno.utils.misc import decorate
 from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format, live_field,
-        AdminLiveFieldsMixin)
+        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
 
 from chcemvediet.apps.inforequests.models import Branch, Action
-
-from .misc import ADMIN_FIELD_INDENT
 
 
 class BranchAdminActionInline(admin.TabularInline):

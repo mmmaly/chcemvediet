@@ -12,11 +12,10 @@ from poleno.attachments.forms import AttachmentsField
 from poleno.attachments.admin import AttachmentInline
 from poleno.utils.models import after_saved
 from poleno.utils.misc import decorate
-from poleno.utils.admin import admin_obj_format, live_field, AdminLiveFieldsMixin
+from poleno.utils.admin import (admin_obj_format, live_field, AdminLiveFieldsMixin,
+        ADMIN_FIELD_INDENT)
 
 from chcemvediet.apps.inforequests.models import InforequestDraft
-
-from .misc import ADMIN_FIELD_INDENT
 
 
 class InforequestDraftAdminAddForm(forms.ModelForm):

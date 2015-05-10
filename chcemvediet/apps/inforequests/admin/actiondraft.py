@@ -6,12 +6,12 @@ from django.contrib import admin
 from poleno.attachments.admin import AttachmentInline
 from poleno.utils.misc import decorate
 from poleno.utils.admin import (admin_obj_format, admin_obj_format_join, live_field,
-        AdminLiveFieldsMixin)
+        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
 
 from chcemvediet.apps.inforequests.models import Branch, Action, ActionDraft
 
 from .action import ActionAdmin
-from .misc import ADMIN_FIELD_INDENT, ForeignKeyRawIdWidgetWithUrlParams
+from .misc import ForeignKeyRawIdWidgetWithUrlParams
 
 
 class ActionDraftAdminChangeForm(forms.ModelForm):

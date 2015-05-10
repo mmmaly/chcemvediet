@@ -1,0 +1,6 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}{{ block.super }}
+  <li><a class="addlink" href="{% url "admin:invitations_invitation_bulk_add" %}">Bulk add</a></li>
+{% endblock %}

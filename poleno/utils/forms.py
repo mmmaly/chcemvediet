@@ -141,6 +141,24 @@ class PrefixedForm(forms.Form):
         super(PrefixedForm, self).__init__(*args, **kwargs)
         self.prefix = u'%s%s%s' % (self.prefix or u'', u'-' if self.prefix else u'', self.__class__.__name__.lower())
 
+class ValidatorChain(object):
+    u"""
+    By default every form field runs all its validators, even if some of them fail. Therefore it is
+    not possible to chain the validators and assume the value already passed any previous
+    validation.
+
+    ``ValidatorChain`` runs given validators in a sequencial order and stops validating after the
+    first validator raises an exception. Any further validators are run only if all previous
+    validators were successfull.
+    """
+
+    def __init__(self, *args):
+        self.validators = args
+
+    def __call__(self, value):
+        for validator in self.validators:
+            validator(value)
+
 def validate_formatted_email(value):
     name, address = parseaddr(value)
     try:
@@ -148,9 +166,9 @@ def validate_formatted_email(value):
     except ValidationError:
         raise ValidationError(_(u'utils:validate_formatted_email:invalid_error {0}').format(address))
 
-    formatted = formataddr((name, address))
-    if formatted != value:
-        raise ValidationError(_(u'utils:validate_formatted_email:parse_error {0}').format(formatted))
+    #formatted = formataddr((name, address))
+    #if formatted != value:
+    #    raise ValidationError(_(u'utils:validate_formatted_email:parse_error {0}').format(formatted))
 
 def validate_comma_separated_emails(value):
     parsed = getaddresses([value])
@@ -160,6 +178,6 @@ def validate_comma_separated_emails(value):
         except ValidationError:
             raise ValidationError(_(u'utils:validate_comma_separated_emails:invalid_error {0}').format(address))
 
-    formatted = u', '.join(formataddr((n, a)) for n, a in parsed)
-    if formatted != value:
-        raise ValidationError(_(u'utils:validate_comma_separated_emails:parse_error {0}').format(formatted))
+    #formatted = u', '.join(formataddr((n, a)) for n, a in parsed)
+    #if formatted != value:
+    #    raise ValidationError(_(u'utils:validate_comma_separated_emails:parse_error {0}').format(formatted))

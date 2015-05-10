@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     u'poleno.attachments',
     u'poleno.mail',
     u'poleno.pages',
+    u'poleno.invitations',
     # Local to the project
     u'chcemvediet.apps.accounts',
     u'chcemvediet.apps.obligees',
@@ -203,6 +204,7 @@ EXTERNAL_JS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.js')]
 EXTERNAL_CSS = [a for a in ASSETS if a.startswith(u'//') and a.endswith(u'.css')]
 
 # Django-allauth settings
+ACCOUNT_ADAPTER = u'poleno.invitations.adapters.InvitationsAdapter'
 ACCOUNT_AUTHENTICATION_METHOD = u'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = u'mandatory'
@@ -210,6 +212,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SIGNUP_FORM_CLASS = u'chcemvediet.apps.accounts.forms.SignupForm'
 SOCIALACCOUNT_EMAIL_VERIFICATION = u'none'
 SOCIALACCOUNT_AUTO_SIGNUP = False
+#INVITATIONS_INVITATION_ONLY = True
 
 # Django-admin-tools settings
 ADMIN_TOOLS_MENU = u'chcemvediet.admin.CustomMenu'

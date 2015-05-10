@@ -1,17 +1,16 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.core.urlresolvers import reverse
 from django.db import models, IntegrityError, transaction, connection
 from django.db.models import Q, Prefetch
 from django.conf import settings
 from django.utils.functional import cached_property
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from aggregate_if import Count
 
 from poleno import datacheck
 from poleno.mail.models import Message
 from poleno.utils.models import QuerySet, join_lookup
+from poleno.utils.views import absolute_reverse
 from poleno.utils.mail import render_mail
 from poleno.utils.date import utc_now
 from poleno.utils.misc import random_readable_string, squeeze, decorate
@@ -425,11 +424,9 @@ class Inforequest(models.Model):
         super(Inforequest, self).save(*args, **kwargs)
 
     def _send_notification(self, template, anchor, dictionary):
-        site = Site.objects.get_current()
-        url = u'http://{0}{1}#{2}'.format(site.domain, reverse(u'inforequests:detail', args=(self.pk,)), anchor)
         dictionary.update({
                 u'inforequest': self,
-                u'url': url,
+                u'url': absolute_reverse(u'inforequests:detail', args=[self.pk], anchor=anchor),
                 })
         msg = render_mail(template,
                 from_email=settings.DEFAULT_FROM_EMAIL,
