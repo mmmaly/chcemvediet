@@ -4,6 +4,7 @@ import string
 import datetime
 
 from django.db import models
+from django.db.models import F
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property
@@ -14,7 +15,7 @@ from poleno.utils.date import utc_now
 from poleno.utils.mail import render_mail
 from poleno.utils.misc import squeeze, decorate, random_string
 
-from . import app_settings
+from . import app_settings, UserMayNotInvite
 
 class InvitationQuerySet(QuerySet):
     def accepted(self):
@@ -151,6 +152,86 @@ class Invitation(models.Model):
 
         self.message = msg.instance
         self.save(update_fields=[u'message'])
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+
+class InvitationSupplyQuerySet(QuerySet):
+    pass
+
+class InvitationSupply(models.Model):
+    # May NOT be NULL
+    user = models.OneToOneField(User,
+            help_text=squeeze(u"""
+                The user to whom the invitation supply belongs.
+                """))
+
+    # May NOT be NULL
+    enabled = models.BooleanField(default=app_settings.NEW_USERS_MAY_INVITE,
+            help_text=squeeze(u"""
+                Whether the user may send invitations.
+                """))
+
+    # May NOT be NULL
+    unlimited = models.BooleanField(default=False,
+            help_text=squeeze(u"""
+                Whether the user may send an unlimited number of invitations.
+                """))
+
+    # May NOT be NULL
+    supply = models.IntegerField(default=0,
+            help_text=squeeze(u"""
+                The number of invitations the user may send.
+                """))
+
+    # Backward relations added to other models:
+    #
+    #  -- User.invitationsupply
+    #     May raise DoesNotExist
+
+    objects = InvitationSupplyQuerySet.as_manager()
+
+    class Meta:
+        verbose_name_plural = u'invitation supplies'
+        index_together = [
+                # [u'user'] -- ForeignKey defines index by default
+                ]
+
+    @cached_property
+    def can_use_invitations(self):
+        u"""
+        Whether the invitation system is enabled for this user.
+        """
+        return app_settings.USERS_MAY_INVITE and self.enabled
+
+    @cached_property
+    def can_invite(self):
+        u"""
+        Whether the invitation system is enabled for this user and he has at least one invitation
+        token available.
+        """
+        return self.can_use_invitations and (self.unlimited or self.supply > 0)
+
+    def invite(self, email):
+        u"""
+        Send an invitation and adjust the user token supply. Raises ``UserMayNotInvite`` if the
+        user is not allowed to invite or his token supply is depleted.
+        """
+        if not self.can_invite:
+            raise UserMayNotInvite()
+        if not self.unlimited:
+            self.supply = F(u'supply') - 1
+            self.save()
+        invitation = Invitation.create(email, self.user)
+        invitation.save()
+
+    def add(self, supply):
+        u"""
+        Increments the user invitation supply by the given number.
+        """
+        self.supply = F(u'supply') + supply
+        self.save()
 
     def __unicode__(self):
         return u'%s' % self.pk

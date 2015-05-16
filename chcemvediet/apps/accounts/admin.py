@@ -48,7 +48,6 @@ class ProfileAdmin(admin.ModelAdmin):
             u'user_details_field',
             ]
     raw_id_fields = [
-            u'user',
             ]
     inlines = [
             ]

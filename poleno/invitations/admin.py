@@ -1,23 +1,27 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from functools import partial
 from email.utils import getaddresses
 
 from django import forms
 from django.core.validators import validate_email
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db import transaction
 from django.conf.urls import patterns, url
 from django.shortcuts import render
 from django.utils.encoding import force_text
+from django.utils.html import format_html
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 from poleno.utils.forms import ValidatorChain, validate_comma_separated_emails
 from poleno.utils.misc import decorate, squeeze
-from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format, live_field,
-        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
+from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format, extend_model_admin,
+        live_field, AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
 
 from . import app_settings
-from .models import Invitation
+from .models import Invitation, InvitationSupply
 from .validators import validate_unused_emails
 
 class InvitationAdminAddForm(forms.ModelForm):
@@ -329,4 +333,103 @@ class InvitationAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
             return []
         return super(InvitationAdmin, self).get_formsets(request, obj)
 
+
+class InvitationSupplyAdmin(admin.ModelAdmin):
+    list_display = [
+            u'invitationsupply_column',
+            u'user_column',
+            u'enabled',
+            u'unlimited',
+            u'supply',
+            ]
+    list_filter = [
+            u'enabled',
+            u'unlimited',
+            ]
+    search_fields = [
+            u'=id',
+            u'=supply',
+            u'user__first_name',
+            u'user__last_name',
+            u'user__email',
+            ]
+    ordering = [u'-pk']
+
+    @decorate(short_description=u'Invitation Supply')
+    @decorate(admin_order_field=u'pk')
+    def invitationsupply_column(self, invitationsupply):
+        return admin_obj_format(invitationsupply, link=False)
+
+    @decorate(short_description=u'User')
+    @decorate(admin_order_field=u'user__email')
+    def user_column(self, profile):
+        user = profile.user
+        return admin_obj_format(user, u'{obj.first_name} {obj.last_name} <{obj.email}>')
+
+    fields = [
+            u'user_details_field',
+            u'enabled',
+            u'unlimited',
+            u'supply',
+            u'sent_invitations',
+            ]
+    readonly_fields = [
+            u'user_details_field',
+            u'sent_invitations',
+            ]
+    raw_id_fields = [
+            ]
+    inlines = [
+            ]
+
+    @decorate(short_description=u'User')
+    def user_details_field(self, invitationsupply):
+        user = invitationsupply.user
+        return admin_obj_format(user, u'{tag}\n{obj.first_name} {obj.last_name} <{obj.email}>')
+
+    @decorate(short_description=u'Sent invitations')
+    def sent_invitations(self, invitationsupply):
+        res = invitationsupply.user.invitation_set.count()
+        if res > 0:
+            try:
+                info = Invitation._meta.app_label, Invitation._meta.model_name
+                url = reverse(u'admin:%s_%s_changelist' % info)
+                url = u'{0}?invitor={1}'.format(url, invitationsupply.user.pk)
+                res = format_html(u'<a href="{0}">{1}</a>', url, res)
+            except NoReverseMatch:
+                pass
+        return res
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_queryset(self, request):
+        queryset = super(InvitationSupplyAdmin, self).get_queryset(request)
+        queryset = queryset.select_related(u'user')
+        return queryset
+
+class InvitationSupplyUserAdminMixin(admin.ModelAdmin):
+    def __init__(self, *args, **kwargs):
+        # We don't want to change predecessor internal objects
+        self.fieldsets = deepcopy(self.fieldsets)
+
+        self.fieldsets[0][1][u'fields'] = list(self.fieldsets[0][1][u'fields']) + [
+                u'invitationsupply_field',
+                ]
+        self.readonly_fields = list(self.readonly_fields) + [
+                u'invitationsupply_field',
+                ]
+        super(InvitationSupplyUserAdminMixin, self).__init__(*args, **kwargs)
+
+    @decorate(short_description=u'Invitation supply')
+    def invitationsupply_field(self, user):
+        invitationsupply = user.invitationsupply
+        return admin_obj_format(invitationsupply)
+
+
 admin.site.register(Invitation, InvitationAdmin)
+admin.site.register(InvitationSupply, InvitationSupplyAdmin)
+extend_model_admin(User, InvitationSupplyUserAdminMixin)

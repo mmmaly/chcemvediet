@@ -1,0 +1,34 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "main/base/single_column.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: poleno.invitations.forms.InviteForm
+ %
+{% endcomment %}
+
+{% block title %}{% trans 'invitations:invite:title' %} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  <h1>{% trans 'invitations:invite:heading' %}</h1>
+  {% if user.invitationsupply.can_invite %}
+    {% include "invitations/texts/invite-text.html" %}
+    <form class="form-horizontal" method="post" action="">
+      {% csrf_token %}
+      <div class="control-group">
+        <label class="control-label">{% trans 'invitations:invite:supply' %}:</label>
+        <div class="controls">
+          <span class="suppressed-control">{% if user.invitationsupply.unlimited %}{% trans 'invitations:invite:unlimited' %}{% else %}{{ user.invitationsupply.supply }}{% endif %}</span>
+        </div>
+      </div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{% trans 'invitations:invite:submit' %}</button>
+      </div>
+    </form>
+  {% else %}
+    {% include "invitations/texts/invite-depleted.html" %}
+  {% endif %}
+{% endblock %}

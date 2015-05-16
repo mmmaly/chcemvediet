@@ -1,0 +1,11 @@
+{# vim: set filetype=django :#}
+{% load lorem from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- email: string
+ %
+{% endcomment %}
+
+Pozvane: {{ email }}. {% lorem %}

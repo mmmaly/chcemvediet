@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from itertools import chain
-from email.utils import formataddr, parseaddr, getaddresses
+from email.utils import parseaddr, getaddresses
 
 from django import forms
 from django.core.validators import validate_email
@@ -9,7 +9,6 @@ from django.core.exceptions import ValidationError
 from django.forms.util import flatatt
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 
@@ -166,10 +165,6 @@ def validate_formatted_email(value):
     except ValidationError:
         raise ValidationError(_(u'utils:validate_formatted_email:invalid_error {0}').format(address))
 
-    #formatted = formataddr((name, address))
-    #if formatted != value:
-    #    raise ValidationError(_(u'utils:validate_formatted_email:parse_error {0}').format(formatted))
-
 def validate_comma_separated_emails(value):
     parsed = getaddresses([value])
     for name, address in parsed:
@@ -177,7 +172,3 @@ def validate_comma_separated_emails(value):
             validate_email(address)
         except ValidationError:
             raise ValidationError(_(u'utils:validate_comma_separated_emails:invalid_error {0}').format(address))
-
-    #formatted = u', '.join(formataddr((n, a)) for n, a in parsed)
-    #if formatted != value:
-    #    raise ValidationError(_(u'utils:validate_comma_separated_emails:parse_error {0}').format(formatted))

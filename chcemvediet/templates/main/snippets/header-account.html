@@ -17,6 +17,10 @@
       <li><a href="{% url 'account_change_password' %}">{% trans 'main:menu:account:password' %}</a></li>
       <li><a href="{% url 'account_email' %}">{% trans 'main:menu:account:email' %}</a></li>
       <li><a href="{% url 'socialaccount_connections' %}">{% trans 'main:menu:account:connections' %}</a></li>
+      {% if user.invitationsupply.can_use_invitations %}
+        <li class="divider"></li>
+        <li><a href="{% url 'invitations:invite' %}">{% trans 'main:menu:account:invite' %}</a></li>
+      {% endif %}
       <li class="divider"></li>
       <li><a href="{% url 'account_logout' %}" class="post" data-post-csrfmiddlewaretoken="{{ csrf_token }}">{% trans 'main:menu:account:logout' %}</a></li>
     </ul>

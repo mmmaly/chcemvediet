@@ -6,4 +6,4 @@ class InvitationsConfig(AppConfig):
     name = u'poleno.invitations'
 
     def ready(self):
-        pass
+        from . import signals
