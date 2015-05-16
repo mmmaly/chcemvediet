@@ -140,6 +140,8 @@ def datachecks(superficial, autofix):
             yield datacheck.Error(u'%r is missing its file: "%s".', attachment, attachment.file.name)
 
     field = Attachment._meta.get_field(u'file')
+    if not field.storage.exists(field.upload_to):
+        return
     for file_name in field.storage.listdir(field.upload_to)[1]:
         attachment_name = u'%s/%s' % (field.upload_to, file_name)
         timedelta = utc_now() - utc_datetime_from_local(field.storage.modified_time(attachment_name))
