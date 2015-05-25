@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Invited: {{ email }}. {% lorem %}
+You have invited: {{ email }}. The mail was sent. It is up to the user, if he/she accepts the invite. We are looking forward to see a new user! 

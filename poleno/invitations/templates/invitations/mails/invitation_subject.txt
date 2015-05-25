@@ -8,5 +8,5 @@
 {% endcomment %}
 
 {% autoescape off %}
-Invitation
+Pozvanka / Invitation
 {% endautoescape %}

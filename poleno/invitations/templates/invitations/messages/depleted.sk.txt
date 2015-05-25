@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Vycerpane. {% lorem %}
+Vyčerpané pozvánky. 

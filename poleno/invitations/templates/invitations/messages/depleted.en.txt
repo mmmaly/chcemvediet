@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Depleted. {% lorem %}
+No free invitiations available. 
