@@ -3,6 +3,7 @@
 *.mo
 /.coverage
 /.instrumental.cov
+/.htpasswd
 /setup.json
 /shell.py
 /env/
