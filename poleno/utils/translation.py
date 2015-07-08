@@ -22,7 +22,9 @@ class translation(object):
 
     def __enter__(self):
         self.previous_code = get_language()
-        activate(self.language_code)
+        if self.language_code != self.previous_code:
+            activate(self.language_code)
 
     def __exit__(self, type, value, traceback):
-        activate(self.previous_code)
+        if self.language_code != self.previous_code:
+            activate(self.previous_code)
