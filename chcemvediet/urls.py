@@ -11,7 +11,6 @@ from . import ready
 
 
 urlpatterns = patterns(u'',
-    url(r'^sitemap[.]xml$', u'django.contrib.sitemaps.views.sitemap'),
     url(r'^mandrill/', include(u'poleno.mail.transports.mandrill.urls', namespace=u'mandrill')),
     url(r'^i18n/', include(u'django.conf.urls.i18n')),
 )
