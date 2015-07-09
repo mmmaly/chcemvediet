@@ -1,6 +1,7 @@
 {# vim: set filetype=htmldjango :#}
 {% load trans from i18n %}
 {% load active from poleno.utils %}
+{% load page page_active from poleno.pages %}
 
 {% comment %}
  %
@@ -9,6 +10,12 @@
  %
 {% endcomment %}
 
-<li {% if request|active:'about' %}class="active"{% endif %}><a href="{% url 'about' %}">{% trans 'main:menu:about' %}</a></li>
-<li {% if request|active:'inforequests' %}class="active"{% endif %}><a href="{% url 'inforequests:index' %}">{% trans 'main:menu:inforequests' %}</a></li>
-<li {% if request|active:'obligees' %}class="active"{% endif %}><a href="{% url 'obligees:index' %}">{% trans 'main:menu:obligees' %}</a></li>
+<li {% if request|page_active:'/o-projekte' or request|page_active:'/about' %}class="active"{% endif %}>
+  <a href="{% page 'sk:/o-projekte' 'en:/about' %}">{% trans 'main:menu:about' %}</a>
+</li>
+<li {% if request|active:'inforequests' %}class="active"{% endif %}>
+  <a href="{% url 'inforequests:index' %}">{% trans 'main:menu:inforequests' %}</a>
+</li>
+<li {% if request|active:'obligees' %}class="active"{% endif %}>
+  <a href="{% url 'obligees:index' %}">{% trans 'main:menu:obligees' %}</a>
+</li>

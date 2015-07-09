@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 import os
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, resolve
 from django.template import Library
 from django.utils.translation import get_language
 
 from poleno.utils.translation import translation
+from poleno.pages.pages import File, Page
 
 register = Library()
 
@@ -65,3 +66,39 @@ def page(context, *args):
         if not path.endswith(u'/'):
             path += u'/'
         return reverse(u'pages:view', args=[path.lstrip(u'/')])
+
+@register.filter
+def page_active(request, path):
+    try:
+        resolved = resolve(request.path)
+    except Exception as e:
+        return False
+    if resolved.view_name != u'pages:view':
+        return False
+    if not resolved.kwargs.get(u'path', u'').startswith(path.lstrip(u'/')):
+        return False
+    return True
+
+@register.assignment_tag(takes_context=True)
+def get_page(context, *args):
+    try:
+        page = context[u'page']
+        lang = page.lang
+        path = page.path
+    except (KeyError, AttributeError):
+        lang = get_language()
+        path = u'/'
+
+    for arg in args:
+        if u':' in arg:
+            prefix, arg = arg.split(u':', 1)
+            if prefix != lang:
+                continue
+        path = os.path.normpath(os.path.join(path, arg))
+        break
+
+    ppath, name = path.rsplit(u'/', 1)
+    if u'.' in name:
+        return File(Page(ppath, lang), name)
+    else:
+        return Page(path, lang)

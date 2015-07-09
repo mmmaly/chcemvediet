@@ -590,6 +590,7 @@ class Page(object):
         if page.path != path:
             logging.getLogger(u'poleno.pages').warning(u'Page /%s%s has redirected translation: /%s%s -> /%s%s',
                     self._lang, self._path, lang, fix_slashes(path), page.lang, page.path)
+        return page
 
     def render(self):
         if self.template:

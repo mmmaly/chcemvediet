@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% load trans from i18n %}
-{% load active from poleno.utils %}
+{% load page from poleno.pages %}
 
 {% comment %}
  %
@@ -25,7 +25,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="brand {% if request|active:'index' %}active{% endif %}" href="{% url 'index' %}">{% trans 'main:menu:brand' %}</a>
+        <a class="brand" href="{% page '/' %}">{% trans 'main:menu:brand' %}</a>
         <div class="nav-collapse collapse">
           <ul class="nav">
             {% include "main/snippets/header-menu.html" %}

@@ -386,7 +386,7 @@ def configure_dummy_obligee_emails(configure):
                 obligee.save()
 
 def compile_locales(configure):
-    for cwd in [u'poleno/attachments/', u'poleno/mail/', u'poleno/utils/', u'./']:
+    for cwd in [u'poleno/attachments/', u'poleno/mail/', u'poleno/utils/', u'poleno/pages/', u'./']:
         rel = os.path.relpath(u'.', cwd)
         call(u'Compiling locales:', [os.path.join(rel, u'env/bin/python'), os.path.join(rel, u'manage.py'), u'compilemessages'], cwd=cwd)
 

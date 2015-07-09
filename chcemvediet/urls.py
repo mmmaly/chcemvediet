@@ -6,8 +6,6 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from . import views
-
 # Initializes the project
 from . import ready
 
@@ -19,8 +17,6 @@ urlpatterns = patterns(u'',
 )
 
 urlpatterns += i18n_patterns(u'',
-    url(r'^$', views.index, name=u'index'),
-    url(_(r'^about/'), views.about, name=u'about'),
     url(_(r'^obligees/'), include(u'chcemvediet.apps.obligees.urls', namespace=u'obligees')),
     url(_(r'^inforequests/'), include(u'chcemvediet.apps.inforequests.urls', namespace=u'inforequests')),
     url(r'^accounts/', include(u'allauth.urls')),

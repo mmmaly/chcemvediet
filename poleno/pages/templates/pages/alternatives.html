@@ -1,6 +1,7 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "main/base/single_column.html" %}
 {% load static from staticfiles %}
+{% load trans from i18n %}
 
 {% comment %}
  %
@@ -9,11 +10,11 @@
  %
 {% endcomment %}
 
-{% block title %}Not available in English | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'pages:alternatives:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <h1>This page is not available in English</h1>
-  <p>It's available only in the following languages:</p>
+  <h1>{% trans 'pages:alternatives:heading' %}</h1>
+  {% include "pages/texts/alternatives-text.html" %}
   <ul>
     {% for alt in alternatives %}
       <li><img src="{% static "main/images/languages/"|add:alt.lang|add:".png" %}"> {{ alt.name }}: <a href="{{ alt.page.url }}">{{ alt.page.title }}</a></li>
