@@ -371,7 +371,7 @@ msgstr "Odoslať žiadosť"
 
 #: apps/inforequests/templates/inforequests/create.html:36
 msgid "inforequests:create:draft"
-msgstr "Uložť ako rozpracované"
+msgstr "Uložiť ako rozpracované"
 
 #: apps/inforequests/templates/inforequests/create.html:40
 msgid "inforequests:create:cancel"
