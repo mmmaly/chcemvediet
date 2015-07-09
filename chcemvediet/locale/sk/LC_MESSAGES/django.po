@@ -119,7 +119,7 @@ msgstr "Žiadosť"
 
 #: apps/inforequests/forms.py:54
 msgid "inforequests:InforequestForm:content:placeholder"
-msgstr "Žiadosť"
+msgstr "Uveďte čo najkonkrétnejšie, o aké informácie máte záujem."
 
 #: apps/inforequests/forms.py:64
 msgid "inforequests:InforequestForm:attachments:label"
