@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import sys
 import subprocess
 import string
@@ -211,8 +212,8 @@ def configure_secret_key(configure, settings):
     settings.setting(u'SECRET_KEY', secret_key)
 
 def configure_email_addresses(configure, settings):
-    server_domain = configure.input(u'server_domain', u'Server domain (with www if used)', default=u'www.chcemvediet.sk', required=True)
-    mail_domain = server_domain[4:] if server_domain.startswith(u'www.') else server_domain
+    server_domain = configure.input(u'server_domain', u'Server domain (with www and/or port number if used, eg. localhost:8000)', default=u'www.chcemvediet.sk', required=True)
+    mail_domain = re.sub(r'^(?:www[.])?([^:]*)(?:[:]\d+)?$', r'\1', server_domain)
 
     print(INFO + textwrap.dedent(u"""
             Set admin e-mail. It will be used for lowlevel error reporting and
