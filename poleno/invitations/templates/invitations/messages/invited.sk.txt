@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Pozvane: {{ email }}. {% lorem %}
+Pozvali ste: {{ email }}. Mail bol užívateľovi/ke odoslaný, je na ňom/nej, či Vaše pozvanie príjme, alebo nie. Tešíme sa na nového užívateľa/užívateľku! 

@@ -9,13 +9,23 @@
 {% endcomment %}
 
 {% autoescape off %}
+Dobry den, [EN below]
+{% filter squeeze %}
+{{ invitation.invitor.get_full_name }} Vas pozval na pouzivanie portalu chcemvediet.sk.
+Ak akceptujete pozvanku, kliknite sem: {{ invitation.accept_url }}
+{% endfilter %}
+
+{% filter squeeze %}
+Chcemvediet.sk je portal na pohodlne podavanie ziadosti o informacie. Osahuje šablóny zabezpečujúce formálnu správnosť žiadostí, zabudovaný mechanizmus na ich odosielanie jednotlivým inštitúciám a notifikovanie o ich odpovediach.
+{% endfilter %}
+
 {% filter squeeze %}
 {{ invitation.invitor.get_full_name }} invited you to chcemvediet.sk.
 To accept the invitation click: {{ invitation.accept_url }}
 {% endfilter %}
 
 {% filter squeeze %}
-{% lorem %}
+Chcemvediet.sk is a portal for FOIA requests. The aim of the project is to guide people through the process of requesting the information from state institutions according to the Freedom of information Act.
 {% endfilter %}
 
 {% filter squeeze %}
