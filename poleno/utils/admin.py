@@ -14,6 +14,8 @@ from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
 from django.contrib import admin
 
+ADMIN_FIELD_INDENT = u'    • '
+
 def extend_model_admin(model, mixin):
     klass = admin.site._registry[model].__class__
 

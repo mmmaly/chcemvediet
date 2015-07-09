@@ -18,12 +18,12 @@ from poleno.utils.models import after_saved
 from poleno.utils.date import local_today
 from poleno.utils.misc import try_except, decorate, squeeze
 from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format,
-        admin_obj_format_join, live_field, AdminLiveFieldsMixin)
+        admin_obj_format_join, live_field, AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
 
 from chcemvediet.apps.inforequests.models import Branch, Action, ActionDraft
 from chcemvediet.apps.obligees.models import Obligee
 
-from .misc import ADMIN_FIELD_INDENT, ForeignKeyRawIdWidgetWithUrlParams
+from .misc import ForeignKeyRawIdWidgetWithUrlParams
 
 
 class ActionAdminAdvancedToInline(admin.TabularInline):

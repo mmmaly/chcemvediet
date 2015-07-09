@@ -101,6 +101,12 @@ ADMIN_MODEL_GROUPS = [
                         u'allauth.socialaccount.*',
                         ],
                     ),
+                dict(
+                    title=u'Invitations',
+                    models=[
+                        u'poleno.invitations.*',
+                        ],
+                    ),
                 ],
             ),
         ]

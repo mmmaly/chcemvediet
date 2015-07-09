@@ -18,13 +18,13 @@ from poleno.utils.models import after_saved
 from poleno.utils.date import local_date
 from poleno.utils.misc import try_except, decorate
 from poleno.utils.admin import (admin_obj_format, admin_obj_format_join, live_field,
-        AdminLiveFieldsMixin)
+        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
 
 from chcemvediet.apps.inforequests.models import InforequestEmail, Branch, Action, ActionDraft
 from chcemvediet.apps.obligees.models import Obligee
 
 from .action import ActionAdmin
-from .misc import ADMIN_FIELD_INDENT, ForeignKeyRawIdWidgetWithUrlParams
+from .misc import ForeignKeyRawIdWidgetWithUrlParams
 
 
 class InforequestEmailAdminAddForm(forms.ModelForm):

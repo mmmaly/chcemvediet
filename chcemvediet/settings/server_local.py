@@ -35,8 +35,19 @@ LOGGING = {
             u'class': u'logging.StreamHandler',
             u'formatter': u'verbose',
             },
+        #u'file_db': {
+        #    u'level': u'DEBUG',
+        #    u'class': u'logging.FileHandler',
+        #    u'filename': os.path.join(PROJECT_PATH, u'logs/db.log'),
+        #    u'formatter': u'verbose',
+        #    },
         },
     u'loggers': {
+        #u'django.db.backends': {
+        #    u'handlers': [u'file_db'],
+        #    u'level': u'DEBUG',
+        #    u'propagate': False,
+        #    },
         },
     u'root': {
         u'handlers': [u'console'],

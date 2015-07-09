@@ -1,0 +1,24 @@
+{# vim: set filetype=django :#}
+{% load lorem squeeze from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- invitation: poleno.invitations.models.Invitation
+ %
+{% endcomment %}
+
+{% autoescape off %}
+{% filter squeeze %}
+{{ invitation.invitor.get_full_name }} invited you to chcemvediet.sk.
+To accept the invitation click: {{ invitation.accept_url }}
+{% endfilter %}
+
+{% filter squeeze %}
+{% lorem %}
+{% endfilter %}
+
+{% filter squeeze %}
+The invitation is valid until {{ invitation.valid_to }}.
+{% endfilter %}
+{% endautoescape %}

@@ -10,8 +10,6 @@ from poleno.utils.admin import admin_obj_format, extend_model_admin
 
 from .models import Profile
 
-ADMIN_FIELD_INDENT = u'    • '
-
 class ProfileAdmin(admin.ModelAdmin):
     list_display = [
             u'profile_column',
@@ -50,7 +48,6 @@ class ProfileAdmin(admin.ModelAdmin):
             u'user_details_field',
             ]
     raw_id_fields = [
-            u'user',
             ]
     inlines = [
             ]
