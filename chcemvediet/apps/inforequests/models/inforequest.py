@@ -40,6 +40,19 @@ class InforequestQuerySet(QuerySet):
         return self.order_by(u'pk')
     def order_by_submission_date(self):
         return self.order_by(u'submission_date', u'pk')
+    def prefetch_detail(self):
+        u"""
+        Prefetches various relations to use with views.inforequest.detail view.
+        """
+        return (self
+            .prefetch_related(Inforequest.prefetch_branches(None, Branch.objects.select_related(u'historicalobligee')))
+            .prefetch_related(Branch.prefetch_actions(u'branches', Action.objects.select_related(u'email')))
+            .prefetch_related(Message.prefetch_recipients(u'branches__actions__email'))
+            .prefetch_related(Action.prefetch_attachments(u'branches__actions'))
+            .prefetch_related(Inforequest.prefetch_undecided_emails())
+            .prefetch_related(Message.prefetch_recipients(u'undecided_emails'))
+            .prefetch_related(Message.prefetch_attachments(u'undecided_emails'))
+            )
 
 class Inforequest(models.Model):
     # May NOT be NULL
