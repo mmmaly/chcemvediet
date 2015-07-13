@@ -1,0 +1,16 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- effective_date: date
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %
+{% endcomment %}
+
+{% if rozklad %}Rozklad{% else %}Odvolanie{% endif %} voči {% if fiktivne %}fiktívnemu{% endif %} rozhodnutiu o neposkytnutí informácie

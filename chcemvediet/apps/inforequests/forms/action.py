@@ -6,127 +6,18 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_text
 from django.utils.functional import lazy
-from django.utils.safestring import mark_safe
-from django.contrib.webdesign.lorem_ipsum import paragraphs as lorem
 from multiselectfield import MultiSelectFormField
 
 from poleno.attachments.forms import AttachmentsField
 from poleno.utils.models import after_saved
-from poleno.utils.forms import AutoSuppressedSelect, CompositeTextField, PrefixedForm
+from poleno.utils.forms import AutoSuppressedSelect, PrefixedForm
 from poleno.utils.misc import squeeze
 from poleno.utils.date import local_today
 from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
-
-from .models import Branch, Action
-
-
-class InforequestForm(PrefixedForm):
-    obligee = ObligeeAutocompleteField(
-            label=_(u'inforequests:InforequestForm:obligee:label'),
-            widget=ObligeeWithAddressInput(attrs={
-                u'placeholder': _(u'inforequests:InforequestForm:obligee:placeholder'),
-                u'class': u'with-tooltip span5',
-                u'data-toggle': u'tooltip',
-                u'data-placement': u'right',
-                u'data-container': u'body',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/tooltips/create-obligee.txt'),
-                }),
-            )
-    subject = CompositeTextField(
-            label=_(u'inforequests:InforequestForm:subject:label'),
-            template=u'inforequests/forms/create-subject.txt',
-            fields=[
-                forms.CharField(max_length=50, widget=forms.TextInput(attrs={
-                    u'placeholder': _(u'inforequests:InforequestForm:subject:placeholder'),
-                    u'class': u'span3',
-                    })),
-                ],
-            )
-    content = CompositeTextField(
-            label=_(u'inforequests:InforequestForm:content:label'),
-            template=u'inforequests/forms/create-content.txt',
-            fields=[
-                forms.CharField(widget=forms.Textarea(attrs={
-                    u'placeholder': _(u'inforequests:InforequestForm:content:placeholder'),
-                    u'class': u'autosize',
-                    u'cols': u'', u'rows': u'',
-                    })),
-                ],
-            composite_attrs={
-                u'class': u'input-block-level',
-                },
-            )
-    attachments = AttachmentsField(
-            label=_(u'inforequests:InforequestForm:attachments:label'),
-            required=False,
-            upload_url_func=(lambda: reverse(u'inforequests:upload_attachment')),
-            download_url_func=(lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,))),
-            )
-
-    def __init__(self, *args, **kwargs):
-        self.draft = kwargs.pop(u'draft', False)
-        self.attached_to = kwargs.pop(u'attached_to')
-        self.user = kwargs.pop(u'user')
-        super(InforequestForm, self).__init__(*args, **kwargs)
-
-        unique_email = settings.INFOREQUEST_UNIQUE_EMAIL.format(token=u'xxxx')
-        unique_email = mark_safe(render_to_string(u'inforequests/create-content-unique-email.html', dict(unique_email=unique_email)).strip())
-        self.fields[u'content'].widget.context[u'user'] = self.user
-        self.fields[u'content'].widget.context[u'unique_email'] = unique_email
-        self.fields[u'attachments'].attached_to = self.attached_to
-
-        if self.draft:
-            self.fields[u'obligee'].required = False
-            self.fields[u'subject'].required = False
-            self.fields[u'content'].required = False
-
-    def save(self, inforequest):
-        assert self.is_valid()
-
-        @after_saved(inforequest)
-        def deferred(inforequest):
-            branch = Branch(
-                    obligee=self.cleaned_data[u'obligee'],
-                    inforequest=inforequest,
-                    )
-            branch.save()
-
-            subject = self.fields[u'subject'].finalize(self.cleaned_data[u'subject'])
-            content = self.fields[u'content'].finalize(self.cleaned_data[u'content'], dict(
-                unique_email=inforequest.unique_email,
-                obligee=self.cleaned_data[u'obligee'],
-                ))
-            action = Action(
-                    branch=branch,
-                    subject=subject,
-                    content=content,
-                    effective_date=inforequest.submission_date,
-                    type=Action.TYPES.REQUEST,
-                    )
-            action.save()
-
-            action.attachment_set = self.cleaned_data[u'attachments']
-
-    def save_to_draft(self, draft):
-        assert self.is_valid()
-
-        draft.obligee = self.cleaned_data[u'obligee']
-        draft.subject = self.cleaned_data[u'subject']
-        draft.content = self.cleaned_data[u'content']
-
-        @after_saved(draft)
-        def deferred(draft):
-            draft.attachment_set = self.cleaned_data[u'attachments']
-
-    def load_from_draft(self, draft):
-        self.initial[u'obligee'] = draft.obligee
-        self.initial[u'subject'] = draft.subject
-        self.initial[u'content'] = draft.content
-        self.initial[u'attachments'] = draft.attachments
+from chcemvediet.apps.inforequests.models import Branch, Action
 
 
 class ActionAbstractForm(PrefixedForm):
@@ -147,7 +38,6 @@ class ActionAbstractForm(PrefixedForm):
 
     def __init__(self, *args, **kwargs):
         self.inforequest = kwargs.pop(u'inforequest')
-        self.action_type = kwargs.pop(u'action_type')
         self.draft = kwargs.pop(u'draft', False)
         super(ActionAbstractForm, self).__init__(*args, **kwargs)
 
@@ -496,22 +386,28 @@ class DecideEmailCommonForm(ActionAbstractForm):
     pass
 
 class ConfirmationEmailForm(DecideEmailCommonForm):
-    pass
+    template = u'inforequests/modals/confirmation-email.html'
+    action_type = Action.TYPES.CONFIRMATION
 
 class ExtensionEmailForm(DeadlineMixin, DecideEmailCommonForm):
-    pass
+    template = u'inforequests/modals/extension-email.html'
+    action_type = Action.TYPES.EXTENSION
 
 class AdvancementEmailForm(DisclosureLevelMixin, AdvancedToMixin, DecideEmailCommonForm):
-    pass
+    template = u'inforequests/modals/advancement-email.html'
+    action_type = Action.TYPES.ADVANCEMENT
 
 class ClarificationRequestEmailForm(DecideEmailCommonForm):
-    pass
+    template = u'inforequests/modals/clarification_request-email.html'
+    action_type = Action.TYPES.CLARIFICATION_REQUEST
 
 class DisclosureEmailForm(DisclosureLevelMixin, DecideEmailCommonForm):
-    pass
+    template = u'inforequests/modals/disclosure-email.html'
+    action_type = Action.TYPES.DISCLOSURE
 
 class RefusalEmailForm(RefusalReasonMixin, DecideEmailCommonForm):
-    pass
+    template = u'inforequests/modals/refusal-email.html'
+    action_type = Action.TYPES.REFUSAL
 
 
 class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, EffectiveDateMixin, ActionAbstractForm):
@@ -528,31 +424,40 @@ class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, EffectiveDateMix
         return cleaned_data
 
 class ConfirmationSmailForm(AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/confirmation-smail.html'
+    action_type = Action.TYPES.CONFIRMATION
 
 class ExtensionSmailForm(DeadlineMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/extension-smail.html'
+    action_type = Action.TYPES.EXTENSION
 
 class AdvancementSmailForm(DisclosureLevelMixin, AdvancedToMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/advancement-smail.html'
+    action_type = Action.TYPES.ADVANCEMENT
 
 class ClarificationRequestSmailForm(AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/clarification_request-smail.html'
+    action_type = Action.TYPES.CLARIFICATION_REQUEST
 
 class DisclosureSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/disclosure-smail.html'
+    action_type = Action.TYPES.DISCLOSURE
 
 class RefusalSmailForm(RefusalReasonMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/refusal-smail.html'
+    action_type = Action.TYPES.REFUSAL
 
 class AffirmationSmailForm(RefusalReasonMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/affirmation-smail.html'
+    action_type = Action.TYPES.AFFIRMATION
 
 class ReversionSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/reversion-smail.html'
+    action_type = Action.TYPES.REVERSION
 
 class RemandmentSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
-    pass
+    template = u'inforequests/modals/remandment-smail.html'
+    action_type = Action.TYPES.REMANDMENT
 
 
 class NewActionCommonForm(AttachmentsMixin, SubjectContentMixin, ActionAbstractForm):
@@ -569,13 +474,17 @@ class NewActionCommonForm(AttachmentsMixin, SubjectContentMixin, ActionAbstractF
         return cleaned_data
 
 class ClarificationResponseForm(NewActionCommonForm):
-    pass
+    template = u'inforequests/modals/clarification_response.html'
+    action_type = Action.TYPES.CLARIFICATION_RESPONSE
 
 class AppealForm(NewActionCommonForm):
-    pass
+    template = u'inforequests/modals/appeal.html'
+    action_type = Action.TYPES.APPEAL
 
 
 class ExtendDeadlineForm(PrefixedForm):
+    template = u'inforequests/modals/extend-deadline.html'
+
     extension = forms.IntegerField(
             label=_(u'inforequests:ExtendDeadlineForm:extension:label'),
             initial=5,

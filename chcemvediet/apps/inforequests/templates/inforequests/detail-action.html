@@ -80,15 +80,30 @@
     </div>
   {% endif %}
   {% if action.content %}
-    <div class="row-fluid">
-      <p class="span12" style="white-space: pre-line;">{{ action.content }}</p>
+    <div class="action-content">
+      <div id="print-area-action-{{ action.pk }}">
+        {% if action.content_type == action.CONTENT_TYPES.PLAIN_TEXT %}
+          <p style="white-space: pre-line;">{{ action.content }}</p>
+        {% elif action.content_type == action.CONTENT_TYPES.HTML %}
+          {{ action.content|safe }}
+        {% endif %}
+      </div>
     </div>
+    <button type="button" class="btn print" data-target="#print-area-action-{{ action.pk }}">
+      <i class="icon-print icon-white"></i> {% trans 'inforequests:detail:action:print' %}
+    </button>
   {% endif %}
   {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_emails %}
-    <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:extend_deadline' inforequest.pk branch.pk action.pk %}"
-            data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
+    <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:action_extend_deadline' inforequest.pk branch.pk action.pk %}"
+            data-type="html" data-target="#action-extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
             title="{% spaceless %}{% include "inforequests/tooltips/detail-action-extend_deadline.txt" %}{% endspaceless %}">{% trans 'inforequests:detail:action:extend_deadline' %}</button>
-    <span id="extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
+    <span id="action-extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
+  {% endif %}
+  {% if forloop.last and not inforequest.closed and branch.can_add_appeal and not inforequest.has_undecided_emails %}
+    <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}"
+            data-type="html" data-target="#appeal2-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
+            title="{% spaceless %}{% include "inforequests/tooltips/detail-action-appeal.txt" %}{% endspaceless %}">{% trans 'inforequests:detail:action:appeal' %}</button>
+    <span id="appeal2-{{ action.pk }}-modal" class="modal inforequest-ajax-modal modal-large hide fade"></span>
   {% endif %}
   {% for sub_branch in inforequest|method:'branches_advanced_by'|call_with:action %}
     <div class="well well-inverse">

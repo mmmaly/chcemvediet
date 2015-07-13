@@ -738,11 +738,11 @@ msgid "inforequests:modals:disclosure:add_smail"
 msgstr "Add an Information Disclosure"
 
 #: apps/inforequests/templates/inforequests/modals/extend-deadline.html:19
-msgid "inforequests:modals:extend-deadline:heading"
+msgid "inforequests:modals:action-extend-deadline:heading"
 msgstr "Deadline Extension"
 
 #: apps/inforequests/templates/inforequests/modals/extend-deadline.html:28
-msgid "inforequests:modals:extend-deadline:extend"
+msgid "inforequests:modals:action-extend-deadline:extend"
 msgstr "Extend Deadline"
 
 #: apps/inforequests/templates/inforequests/modals/extension-email.html:18

@@ -1,0 +1,72 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- effective_date: date
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %
+{% endcomment %}
+
+<div>
+  <div style="border-bottom: solid 1px black; text-align: center;">
+    {{ inforequest.applicant_name }}, {{ inforequest.applicant_street }},
+    {{ inforequest.applicant_zip }} {{ inforequest.applicant_city }}
+  </div>
+  <div style="margin: 10ex 0 0 50%;">
+    {{ branch.obligee.name }}<br>
+    {{ branch.obligee.street }}<br>
+    {{ branch.obligee.zip }} {{ branch.obligee.city }}
+  </div>
+  <div style="margin: 10ex 0 0 0; text-align: right;">
+    {{ inforequest.applicant_city }}, {{ effective_date|date:"d.m.Y" }}
+  </div>
+  <div style="margin: 2ex 0 0 0; text-align: center;">
+    <strong>{% if rozklad %}Rozklad{% else %}Odvolanie{% endif %}</strong>
+  </div>
+  <div style="margin: 0 0 0 0; text-align: center;">
+    {% if fiktivne %}
+      <small>voči fiktívnemu rozhodnutiu o neposkytnutí informácie (§ 18 ods. 3 zák. 211/2000 Z. z.)</small>
+    {% else %}
+      <small>voči rozhodnutiu o neposkytnutí informácie</small>
+    {% endif %}
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len „zákon”) podávam
+    {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
+    voči {% if fiktivne %}fiktívnemu{% endif %} rozhodnutiu
+    {{ branch.obligee.name }}<span style="color: red;">(FIXME: Genitiv)</span>,
+    ku ktorému došlo
+    {% if not_at_all %}nesprístupnením{% else %}len čiastočným sprístupnením{% endif%}
+    informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }}.
+  </div>
+  <div style="margin: 2ex 0 0 0; text-align: center;">
+    <strong>Odôvodnenie:</strong>
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    Dňa {{ inforequest.submission_date|date:"d.m.Y" }} som formou emailu požiadal
+    {{ branch.historicalobligee.name }}<span style="color: red;">(FIXME: Akuzativ)</span>
+    (ďalej len „povinná osoba”) o poskytnutie nasledovnej informácie:
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    <span style="color: red;">(FIXME: Iba samotne znenie)</span>
+    <div style="white-space: pre-wrap;"><em>{{ inforequest.main_branch.actions.0.content }}</em></div>
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    <span style="color: red;">(FIXME: Retrospektiva)</span>
+  </div>
+  {% block "odovodnenie" %}
+  {% endblock %}
+  <div style="margin: 2ex 0 0 0;">
+    Z uvedených dôvodov žiadam o zrušenie {% if fiktivne %}fiktívneho{% endif %} rozhodnutia
+    o neposkytnutí informácie a sprístupnenie informácií v plnom rozsahu.
+  </div>
+  <div style="margin: 10ex 10ex 10ex 0; text-align: right;">
+    {{ inforequest.applicant_name }}
+  </div>
+</div>

@@ -140,6 +140,18 @@ class Action(models.Model):
     subject = models.CharField(blank=True, max_length=255)
     content = models.TextField(blank=True)
 
+    # NOT NULL
+    CONTENT_TYPES = FieldChoices(
+            (u'PLAIN_TEXT', 1, u'Plain Text'),
+            (u'HTML',       2, u'HTML'),
+            )
+    content_type = models.SmallIntegerField(choices=CONTENT_TYPES._choices, default=CONTENT_TYPES.PLAIN_TEXT,
+            help_text=squeeze(u"""
+                Mandatory choice action content type. Supported formats are plain text and html
+                code. The html code is assumed to be safe. It is passed to the client without
+                sanitizing. It must be sanitized before saving it here.
+                """))
+
     # May be empty
     attachment_set = generic.GenericRelation(u'attachments.Attachment', content_type_field=u'generic_type', object_id_field=u'generic_id')
 

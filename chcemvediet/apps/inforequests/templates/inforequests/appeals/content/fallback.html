@@ -1,0 +1,22 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/content/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- effective_date: date
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %  -- reason: string
+ %
+{% endcomment %}
+
+{% block "odovodnenie" %}
+  <div style="margin: 2ex 0 0 0;">
+    <div style="white-space: pre-wrap;">{{ reason }}</div>
+  </div>
+{% endblock %}

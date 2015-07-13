@@ -1,0 +1,28 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/base.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealFinalStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- appeal_subject: text
+ %  -- appeal_content: html
+ %
+{% endcomment %}
+
+{% block "header" %}
+  {{ block.super }}
+  <h3>{% trans "inforequests:appeals:final:heading" %}</h3>
+{% endblock %}
+
+{% block "body" %}
+  {% include "inforequests/appeals/texts/final-text.html" %}
+  {{ block.super }}
+  <div class="action-content">
+    {{ appeal_content }}
+  </div>
+{% endblock %}

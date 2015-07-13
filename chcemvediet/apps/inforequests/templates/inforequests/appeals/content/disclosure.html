@@ -1,0 +1,51 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/content/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- effective_date: date
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %  -- reason: string
+ %
+{% endcomment %}
+
+{% block "odovodnenie" %}
+  <div style="margin: 2ex 0 0 0;">
+    Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
+    o sprístupnení informácie číslo <span style="color: red;">(FIXME: Cislo rozhodnutia)</span>, ktoré však nebolo
+    {% if not_at_all %}ani len čiastočným{% else %}úplným{% endif%}
+    sprístupnením žiadaných informácií, z nasledovných dôvodov:
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    <div style="white-space: pre-wrap;">{{ reason }}</div>
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    Napriek tomu, že rozhodnutie bolo označené ako sprístupnenie informácie, k skutočnému
+    sprístupneniu mnou požadovaných informácií nedošlo. Povinná osoba v takomto prípade nie
+    je oprávnená použiť postup podľa § 18 ods. 1. a teda podľa § 18 ods. 3 zákona došlo
+    v zákonom stanovenej lehote k vydaniu fiktívneho rozhodnutia, ktorým odmietla informáciu
+    poskytnúť.
+  </div>
+  <div style="margin: 2ex 0 0 0;">
+    Podľa rozsudku Krajského súdu v Bratislave sp. zn. 19 S 31/02 zo dňa 16. mája 2002 (Rs
+    37/2003) <em>„Ustanovenie § 19 ods. 3 zákona o slobode informácií (a rovnako aj ust. § 18
+    ods. 3 zákona o slobode informácií) treba vykladať tak, že nezbavuje správny orgán
+    povinnosti riadne vykonať odvolacie (prvostupňové) konanie a následne vydať riadne
+    rozhodnutie. Účelom zavedenia inštitútu fiktívneho rozhodnutia určite nebolo
+    „legalizovať“ nečinnosť povinných osôb pri rozhodovaní o žiadostiach podľa zákona
+    o slobodnom prístupe k informáciám. Práve naopak, jeho účelom bolo poskytnúť ochranu
+    tomu, kto sa obrátil so žiadosťou na povinnú osobu o sprístupnenie informácie, pred jej
+    nečinnosťou. ... Súd dospel k záveru, že rozhodnutie žalovaného v zmysle § 19 ods. 3 ZSI
+    treba považovať za nezákonné z dôvodu, že neobsahuje zákonom predpísané náležitosti.
+    Predovšetkým neobsahuje odôvodnenie, z ktorého dôvodu je nepreskúmateľné, čo samo osebe
+    je dôvodom pre zrušenie takéhoto rozhodnutia (§ 250j ods. 2 veta druhá O.s.p.). Nakoľko
+    aj prvostupňové rozhodnutie povinnej osoby trpí nedostatkom dôvodov, bolo potrebné aj
+    toto rozhodnutie považovať za nepreskúmateľné.“</em>
+  </div>
+{% endblock %}

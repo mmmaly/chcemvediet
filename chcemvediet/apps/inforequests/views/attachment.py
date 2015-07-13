@@ -19,14 +19,14 @@ from chcemvediet.apps.inforequests.models import InforequestDraft, Action, Actio
 @require_ajax
 @transaction.atomic
 @login_required(raise_exception=True)
-def upload(request):
+def attachment_upload(request):
     session = Session.objects.get(session_key=request.session.session_key)
     download_url_func = (lambda a: reverse(u'inforequests:download_attachment', args=(a.pk,)))
     return attachments_views.upload(request, session, download_url_func)
 
 @require_http_methods([u'HEAD', u'GET'])
 @login_required(raise_exception=True)
-def download(request, attachment_pk):
+def attachment_download(request, attachment_pk):
     permitted = {
             Session: Q(session_key=request.session.session_key),
             Message: Q(inforequest__applicant=request.user),

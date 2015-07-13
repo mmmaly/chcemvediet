@@ -19,6 +19,9 @@
 .btn-file { position: relative; overflow: hidden; }
 .btn-file input[type=file] { position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; filter: alpha(opacity=0); opacity: 0; cursor: inherit; display: block; }
 
+/* Box for action content  */
+.action-content { margin: 5%; padding: 5%; border: solid 1px black; background: white; }
+
 /* Highlight active navbar brand */
 .brand.active { color: white; }
 

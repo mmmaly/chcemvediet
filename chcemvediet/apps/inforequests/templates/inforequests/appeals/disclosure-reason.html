@@ -1,0 +1,23 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/base.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.disclosure.DisclosureAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.disclosure.DisclosureAppealReasonStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %
+{% endcomment %}
+
+{% block "header" %}
+  {{ block.super }}
+  <h3>{% trans "inforequests:appeals:disclosure-reason:heading" %}</h3>
+{% endblock %}
+
+{% block "body" %}
+  {% include "inforequests/appeals/texts/disclosure-reason-text.html" %}
+  {{ block.super }}
+{% endblock %}

@@ -1,0 +1,23 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/base.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.fallback.FallbackAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.fallback.FallbackAppealReasonStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %
+{% endcomment %}
+
+{% block "header" %}
+  {{ block.super }}
+  <h3>{% trans "inforequests:appeals:fallback-reason:heading" %}</h3>
+{% endblock %}
+
+{% block "body" %}
+  {% include "inforequests/appeals/texts/fallback-reason-text.html" %}
+  {{ block.super }}
+{% endblock %}

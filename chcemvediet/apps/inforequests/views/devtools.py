@@ -18,7 +18,7 @@ from chcemvediet.apps.inforequests.models import Inforequest, Action
 @require_http_methods([u'POST'])
 @transaction.atomic
 @login_required
-def mock_response(request, inforequest_pk):
+def devtools_mock_response(request, inforequest_pk):
     assert settings.DEBUG
 
     inforequest = (Inforequest.objects
@@ -54,7 +54,7 @@ def mock_response(request, inforequest_pk):
 @require_http_methods([u'POST'])
 @transaction.atomic
 @login_required
-def push_history(request, inforequest_pk):
+def devtools_push_history(request, inforequest_pk):
     assert settings.DEBUG
 
     inforequest = (Inforequest.objects
