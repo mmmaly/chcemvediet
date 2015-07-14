@@ -39,6 +39,10 @@ class ActionDraft(models.Model):
     # May be NULL
     effective_date = models.DateField(blank=True, null=True)
 
+    # May be empty for obligee actions; Should be empty for other actions
+    file_number = models.CharField(blank=True, max_length=255,
+            help_text=u'Optional for obligee actions. Should be empty for other actions.')
+
     # May be NULL for EXTENSION; Must be NULL otherwise
     deadline = models.IntegerField(blank=True, null=True,
             help_text=u'Optional for extension actions. Must be NULL for all other actions.')

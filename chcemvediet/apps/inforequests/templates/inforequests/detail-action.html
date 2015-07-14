@@ -25,6 +25,12 @@
       {% endif %}
     </p>
   </div>
+  {% if action.file_number %}
+    <div class="row-fluid">
+      <p class="span2 text-right">{% trans 'inforequests:detail:action:file_number' %}:</p>
+      <p class="span10">{{ action.file_number }}</p>
+    </div>
+  {% endif %}
   {% if action.email %}
     <div class="row-fluid">
       <p class="span2 text-right">{% trans 'inforequests:detail:action:email_from' %}:</p>

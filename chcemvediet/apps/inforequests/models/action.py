@@ -163,6 +163,14 @@ class Action(models.Model):
                 the applicant.
                 """))
 
+    # May be empty for obligee actions; Should be empty for other actions
+    file_number = models.CharField(blank=True, max_length=255,
+            help_text=squeeze(u"""
+                A file number assigned to the action by the obligee. Usually only obligee actions
+                have it. However, if we know tha obligee assigned a file number to an applicant
+                action, we should keep it here as well. The file number is not mandatory.
+                """))
+
     # May NOT be NULL for actions that set deadline; Must be NULL otherwise. Default value is
     # determined and automaticly set in save() when creating a new object. All actions that set
     # deadlines except CLARIFICATION_REQUEST, DISCLOSURE and REFUSAL set the deadline for the

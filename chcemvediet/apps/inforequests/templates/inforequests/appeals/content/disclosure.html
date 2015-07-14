@@ -18,7 +18,8 @@
 {% block "odovodnenie" %}
   <div style="margin: 2ex 0 0 0;">
     Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
-    o sprístupnení informácie číslo <span style="color: red;">(FIXME: Cislo rozhodnutia)</span>, ktoré však nebolo
+    o sprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%},
+    ktoré však nebolo
     {% if not_at_all %}ani len čiastočným{% else %}úplným{% endif%}
     sprístupnením žiadaných informácií, z nasledovných dôvodov:
   </div>

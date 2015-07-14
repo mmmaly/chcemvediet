@@ -119,6 +119,29 @@ class EffectiveDateMixin(ActionAbstractForm):
         super(EffectiveDateMixin, self).load_from_draft(draft)
         self.initial[u'effective_date'] = draft.effective_date
 
+class FileNumberMixin(ActionAbstractForm):
+    file_number = forms.CharField(
+            label=_(u'inforequests:FileNumberMixin:file_number:label'),
+            max_length=255,
+            required=False,
+            widget=forms.TextInput(attrs={
+                u'placeholder': _(u'inforequests:FileNumberMixin:file_number:placeholder'),
+                u'class': u'span5',
+                }),
+            )
+
+    def save(self, action):
+        super(FileNumberMixin, self).save(action)
+        action.file_number = self.cleaned_data[u'file_number']
+
+    def save_to_draft(self, draft):
+        super(FileNumberMixin, self).save_to_draft(draft)
+        draft.file_number = self.cleaned_data[u'file_number']
+
+    def load_from_draft(self, draft):
+        super(FileNumberMixin, self).load_from_draft(draft)
+        self.initial[u'file_number'] = draft.file_number
+
 class SubjectContentMixin(ActionAbstractForm):
     subject = forms.CharField(
             label=_(u'inforequests:SubjectContentMixin:subject:label'),
@@ -382,7 +405,7 @@ class RefusalReasonMixin(ActionAbstractForm):
         self.initial[u'refusal_reason'] = draft.refusal_reason
 
 
-class DecideEmailCommonForm(ActionAbstractForm):
+class DecideEmailCommonForm(FileNumberMixin, ActionAbstractForm):
     pass
 
 class ConfirmationEmailForm(DecideEmailCommonForm):
@@ -410,7 +433,7 @@ class RefusalEmailForm(RefusalReasonMixin, DecideEmailCommonForm):
     action_type = Action.TYPES.REFUSAL
 
 
-class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, EffectiveDateMixin, ActionAbstractForm):
+class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, FileNumberMixin, EffectiveDateMixin, ActionAbstractForm):
     def clean(self):
         cleaned_data = super(AddSmailCommonForm, self).clean()
 
