@@ -21,11 +21,7 @@ from chcemvediet.apps.inforequests.models import Inforequest, Action
 def devtools_mock_response(request, inforequest_pk):
     assert settings.DEBUG
 
-    inforequest = (Inforequest.objects
-            .owned_by(request.user)
-            .get_or_404(pk=inforequest_pk)
-            )
-
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_pk)
     outbound = inforequest.email_set.outbound().order_by_processed().last()
     sender = outbound.recipient_set.first() if outbound else None
     address = (sender.name, sender.mail) if sender else inforequest.main_branch.obligee.emails_parsed[0]
@@ -54,13 +50,30 @@ def devtools_mock_response(request, inforequest_pk):
 @require_http_methods([u'POST'])
 @transaction.atomic
 @login_required
+def devtools_undo_last_action(request, inforequest_pk):
+    assert settings.DEBUG
+
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_pk)
+    branch = inforequest.branch_set.get_or_404(pk=request.POST.get(u'branch'))
+
+    if branch.last_action.type == Action.TYPES.REQUEST:
+        messages.error(request, u'Nothing deleted, the branch contains only a request.')
+    elif branch.last_action.type == Action.TYPES.ADVANCED_REQUEST:
+        messages.error(request, u'Nothing deleted, the branch contains only an advanced request.')
+    else:
+        branch.last_action.delete()
+        messages.success(request, u'The last action, {0}, of branch {1} to {2} was deleted.'.format(
+            branch.last_action.get_type_display(), branch.pk, branch.historicalobligee.name))
+
+    return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+
+@require_http_methods([u'POST'])
+@transaction.atomic
+@login_required
 def devtools_push_history(request, inforequest_pk):
     assert settings.DEBUG
 
-    inforequest = (Inforequest.objects
-            .owned_by(request.user)
-            .get_or_404(pk=inforequest_pk)
-            )
+    inforequest = Inforequest.objects.owned_by(request.user).get_or_404(pk=inforequest_pk)
 
     try:
         days = int(request.POST[u'days'])

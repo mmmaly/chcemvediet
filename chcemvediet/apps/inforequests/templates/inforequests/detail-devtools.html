@@ -17,6 +17,28 @@
   </div>
 </form>
 
+{% if inforequest.main_branch.last_action.type != inforequest.main_branch.last_action.TYPES.REQUEST %}
+  <h4>Undo the last action</h4>
+  <p>Select a branch to delete its last action. Notice that if you delete an advancement, all it's
+  sub-branches will be deleted as well. All actions except requests and advanced requests may be
+  deleted.</p>
+  <form action="{% url 'inforequests:devtools_undo_last_action' inforequest.pk %}" method="post">
+    {% csrf_token %}
+    <select name="branch" class="input-block-level">
+      {% for branch in inforequest.branches %}
+        {% if branch.last_action.type == branch.last_action.TYPES.REQUEST or branch.last_action.type == branch.last_action.TYPES.ADVANCED_REQUEST %}
+          <option value="{{ branch.pk }}" disabled="disabled">{{ branch.historicalobligee.name }} &mdash; {{ branch.last_action.get_type_display }}</option>
+        {% else %}
+          <option value="{{ branch.pk }}">{{ branch.historicalobligee.name }} &mdash; {{ branch.last_action.get_type_display }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    <div class="text-right">
+      <button type="submit" class="btn btn-primary">Undo</button>
+    </div>
+  </form>
+{% endif %}
+
 <h4>Push Inforequest in History</h4>
 <p>Make the inforequest and all its related objects older by the given number of days. Use it to test deadlines.</p>
 <form action="{% url 'inforequests:devtools_push_history' inforequest.pk %}" method="post">

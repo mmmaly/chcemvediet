@@ -40,5 +40,6 @@ urlpatterns = patterns(u'',
 if settings.DEBUG: # pragma: no cover
     urlpatterns += patterns(u'',
         url(r'^devtools/mock-response/(?P<inforequest_pk>\d+)/$', views.devtools_mock_response, name=u'devtools_mock_response'),
-        url(r'^devtools/push_history/(?P<inforequest_pk>\d+)/$', views.devtools_push_history, name=u'devtools_push_history'),
+        url(r'^devtools/undo-last-action/(?P<inforequest_pk>\d+)/$', views.devtools_undo_last_action, name=u'devtools_undo_last_action'),
+        url(r'^devtools/push-history/(?P<inforequest_pk>\d+)/$', views.devtools_push_history, name=u'devtools_push_history'),
     )
