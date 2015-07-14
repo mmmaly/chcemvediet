@@ -32,3 +32,11 @@
   <p class="span2 text-right">{% trans 'inforequests:detail:request:submission_date' %}:</p>
   <p class="span10">{{ inforequest.submission_date }}</p>
 </div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:subject' %}:</p>
+  <p class="span10">{{ inforequest.subject }}</p>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:content' %}:</p>
+  <p class="span10" style="white-space: pre-wrap;">{{ inforequest.content }}</p>
+</div>

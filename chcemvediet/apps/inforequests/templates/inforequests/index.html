@@ -20,15 +20,17 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="span7">{% trans 'inforequests:index:obligee' %}</th>
+          <th class="span4">{% trans 'inforequests:index:obligee' %}</th>
+          <th class="span4">{% trans 'inforequests:index:subject' %}</th>
           <th class="span2"></th>
-          <th class="span3">{% trans 'inforequests:index:submission_date' %}</th>
+          <th class="span2">{% trans 'inforequests:index:submission_date' %}</th>
         </tr>
       </thead>
       <tbody>
         {% for inforequest in inforequests %}
           <tr>
             <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.main_branch.historicalobligee.name }}</a></td>
+            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.subject }}</a></td>
             <td>
               {% if inforequest.has_undecided_emails %}
                 <span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/index-new_mail.txt" %}{% endspaceless %}">
@@ -81,14 +83,16 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="span9">{% trans 'inforequests:index:closed:obligee' %}</th>
-          <th class="span3">{% trans 'inforequests:index:closed:submission_date' %}</th>
+          <th class="span4">{% trans 'inforequests:index:closed:obligee' %}</th>
+          <th class="span6">{% trans 'inforequests:index:closed:subject' %}</th>
+          <th class="span2">{% trans 'inforequests:index:closed:submission_date' %}</th>
         </tr>
       </thead>
       <tbody>
         {% for inforequest in closed_inforequests %}
           <tr>
             <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.main_branch.historicalobligee.name }}</a></td>
+            <td><a href="{% url 'inforequests:detail' inforequest.pk %}">{{ inforequest.subject }}</a></td>
             <td>{{ inforequest.submission_date }}</td>
           </tr>
         {% endfor %}

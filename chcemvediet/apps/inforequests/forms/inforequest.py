@@ -77,6 +77,8 @@ class InforequestForm(PrefixedForm):
 
     def save(self, inforequest):
         assert self.is_valid()
+        inforequest.subject = self.cleaned_data[u'subject'][0]
+        inforequest.content = self.cleaned_data[u'content'][0]
 
         @after_saved(inforequest)
         def deferred(inforequest):

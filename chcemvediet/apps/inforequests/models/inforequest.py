@@ -87,6 +87,21 @@ class Inforequest(models.Model):
                 tell them to send their response to a different email address.
                 """))
 
+    # Should NOT be empty
+    subject = models.CharField(blank=True, max_length=255,
+            help_text=squeeze(u"""
+                Part of the inforequest subject written by the applicant. It does not include
+                formal prefix added by us. It should only contain a short (few words) definition of
+                the requested information.
+                """))
+    content = models.TextField(blank=True,
+            help_text=squeeze(u"""
+                Part of the inforequest content written by the applicant. It does not include
+                formal texts added by us. It should only contain an exact definition of the
+                requested information. It may be formatted into multiple paragraphs using line
+                feeds.
+                """))
+
     # May NOT be NULL; Automaticly computed by Django when creating a new instance.
     submission_date = models.DateField(auto_now_add=True)
 
