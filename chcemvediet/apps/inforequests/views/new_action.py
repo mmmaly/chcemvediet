@@ -8,10 +8,10 @@ from django.contrib.sessions.models import Session
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_today
+from chcemvediet.apps.wizards import WizzardRollback
 from chcemvediet.apps.inforequests import forms
 from chcemvediet.apps.inforequests.models import Inforequest, Branch, Action, ActionDraft
 from chcemvediet.apps.inforequests.forms import AppealWizards
-from chcemvediet.apps.inforequests.forms.wizard import WizzardRollback
 
 from .shortcuts import render_form, render_step, json_form, json_step, json_draft, json_success
 

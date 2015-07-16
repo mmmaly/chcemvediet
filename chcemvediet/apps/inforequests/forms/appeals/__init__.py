@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.date import local_today
 from poleno.utils.misc import squeeze
+from chcemvediet.apps.wizards import WizardStep, Wizard, WizardGroup
 from chcemvediet.apps.inforequests.models import Action
-from chcemvediet.apps.inforequests.forms.wizard import WizardStep, Wizard, WizardGroup
 
 
 class AppealPaperStep(WizardStep):
@@ -71,6 +71,8 @@ class AppealWizard(Wizard):
 
     def __init__(self, branch):
         super(AppealWizard, self).__init__()
+        self.instance_id = u'{0}-{1}-{2}-{3}'.format(self.__class__.__name__,
+                branch.inforequest.pk, branch.pk, branch.last_action.pk)
         self.branch = branch
 
     def context(self, extra=None):
@@ -87,9 +89,6 @@ class AppealWizard(Wizard):
 
     def extra_state(self):
         return self.branch.pk
-
-    def unique_name(self):
-        return u'{0}-{1}'.format(self.__class__.__name__, self.branch.pk)
 
     def finalize_subject(self):
         step = self.steps[u'paper']

@@ -5,7 +5,7 @@ from collections import OrderedDict
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from chcemvediet.apps.inforequests.forms.wizard import WizardStep
+from chcemvediet.apps.wizards import WizardStep
 
 from . import AppealPaperStep, AppealFinalStep, AppealWizard
 

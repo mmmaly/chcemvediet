@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     u'poleno.pages',
     u'poleno.invitations',
     # Local to the project
+    u'chcemvediet.apps.wizards',
     u'chcemvediet.apps.accounts',
     u'chcemvediet.apps.obligees',
     u'chcemvediet.apps.inforequests',

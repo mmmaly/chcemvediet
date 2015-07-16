@@ -10,7 +10,7 @@
 {% if DEBUG and devtools %}
   <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i> <b class="caret"></b></a>
-    <div class="dropdown-menu dropdown-panel">
+    <div class="dropdown-menu dropdown-panel" style="max-height: 300px; overflow-y: scroll;">
       <div class="span4">
         <p class="alert"><strong>Note:</strong> You see these tools because development mode is enabled.</p>
         {% include devtools %}

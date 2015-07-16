@@ -62,6 +62,7 @@ class Wizard(object):
         raise NotImplementedError
 
     def __init__(self):
+        self.instance_id = None
         self.current_step = None
         self.steps = None
         self.data = None
@@ -81,8 +82,7 @@ class Wizard(object):
     def step(self, post):
         try:
             state = signing.loads(post[u'state'])
-            assert state[u'wizard'] == self.__class__.__name__
-            assert state[u'extra_state'] == self.extra_state()
+            assert state[u'instance_id'] == self.instance_id
 
             current_key = state[u'step_key']
             assert current_key in self.step_classes
@@ -149,20 +149,13 @@ class Wizard(object):
 
     def state_field(self, step):
         state = {}
-        state[u'wizard'] = self.__class__.__name__
-        state[u'extra_state'] = self.extra_state()
+        state[u'instance_id'] = self.instance_id
         state[u'step_key'] = step.key
         state[u'data'] = self.data.items()
         return format_html(u'<input type="hidden" name="state" value="{0}" />', signing.dumps(state))
 
     def context(self, extra=None):
         return dict(extra or {}, wizard=self)
-
-    def extra_state(self):
-        return None
-
-    def unique_name(self):
-        return self.__class__.__name__
 
 
 class WizardGroup(object):
