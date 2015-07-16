@@ -96,7 +96,7 @@
       </div>
     </div>
     <button type="button" class="btn print" data-target="#print-area-action-{{ action.pk }}">
-      <i class="icon-print icon-white"></i> {% trans 'inforequests:detail:action:print' %}
+      <i class="icon-print"></i> {% trans 'inforequests:detail:action:print' %}
     </button>
   {% endif %}
   {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_emails %}

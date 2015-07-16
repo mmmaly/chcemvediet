@@ -1,0 +1,30 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/base.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealPaperStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- subject_template: string (template name)
+ %  -- content_template: string (template name)
+ %
+{% endcomment %}
+
+{% block "header" %}
+  {{ block.super }}
+  <h3>{% trans "inforequests:appeals:paper:heading" %}</h3>
+{% endblock %}
+
+{% block "body" %}
+  {% include "inforequests/appeals/texts/paper-text.html" %}
+  <div class="control-group error">
+    <span class="help-block">{{ tepnon_field_errors|join:" " }}<span>
+  </div>
+  <div class="action-content">
+    {% include content_template %}
+  </div>
+{% endblock %}

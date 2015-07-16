@@ -3,10 +3,11 @@
 {% comment %}
  %
  % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.disclosure.DisclosureAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.disclosure.DisclosureAppealPaperStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- effective_date: date
  %  -- rozklad: boolean
  %  -- fiktivne: boolean
  %  -- not_at_all: boolean

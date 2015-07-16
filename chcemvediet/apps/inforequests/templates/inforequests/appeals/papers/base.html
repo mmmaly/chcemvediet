@@ -3,13 +3,15 @@
 {% comment %}
  %
  % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.wizard.WizardStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- effective_date: date
  %  -- rozklad: boolean
  %  -- fiktivne: boolean
  %  -- not_at_all: boolean
+ %  -- finalize: boolean
  %
 {% endcomment %}
 
@@ -24,7 +26,12 @@
     {{ branch.obligee.zip }} {{ branch.obligee.city }}
   </div>
   <div style="margin: 10ex 0 0 0; text-align: right;">
-    {{ inforequest.applicant_city }}, {{ effective_date|date:"d.m.Y" }}
+    {{ inforequest.applicant_city }},
+    {% if finalize %}
+      {{ step.cleaned_data.effective_date|date:"d.m.Y" }}
+    {% else %}
+      {% include "inforequests/appeals/snippets/field.html" with field=step.effective_date %}
+    {% endif %}
   </div>
   <div style="margin: 2ex 0 0 0; text-align: center;">
     <strong>{% if rozklad %}Rozklad{% else %}Odvolanie{% endif %}</strong>
@@ -59,8 +66,10 @@
   <div style="margin: 2ex 0 0 0;">
     <span style="color: red;">(FIXME: Retrospektiva)</span>
   </div>
+
   {% block "odovodnenie" %}
   {% endblock %}
+
   <div style="margin: 2ex 0 0 0;">
     Z uvedených dôvodov žiadam o zrušenie {% if fiktivne %}fiktívneho{% endif %} rozhodnutia
     o neposkytnutí informácie a sprístupnenie informácií v plnom rozsahu.

@@ -17,6 +17,7 @@ $(function(){
 		$('textarea.autosize').each(autosize);
 	};
 	$(document).on('input', 'textarea.autosize', autosize);
+	$(document).on('dom-changed', autosizeAll); // Triggered by: poleno/js/ajax.js
 	$(window).on('resize', autosizeAll);
 	autosizeAll();
 });

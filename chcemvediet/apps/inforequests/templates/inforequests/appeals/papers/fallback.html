@@ -1,0 +1,27 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/papers/base.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.disclosure.FallbackAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.disclosure.FallbackAppealPaperStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %  -- finalize: boolean
+ %
+{% endcomment %}
+
+{% block "odovodnenie" %}
+  <div style="margin: 2ex 0 0 0;">
+    {% if finalize %}
+      <div style="white-space: pre-wrap;">{{ step.cleaned_data.reason }}</div>
+    {% else %}
+      {% include "inforequests/appeals/snippets/field.html" with field=step.reason %}
+    {% endif %}
+  </div>
+{% endblock %}

@@ -9,7 +9,7 @@
  %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealFinalStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
- %  -- appeal_subject: text
+ %  -- appeal_subject: string
  %  -- appeal_content: html
  %
 {% endcomment %}
@@ -21,8 +21,16 @@
 
 {% block "body" %}
   {% include "inforequests/appeals/texts/final-text.html" %}
-  {{ block.super }}
   <div class="action-content">
-    {{ appeal_content }}
+    <div id="print-area-{{ wizard.unique_name }}">
+      {{ appeal_content }}
+    </div>
   </div>
+{% endblock %}
+
+{% block "footer" %}
+  <button type="button" class="btn print" data-target="#print-area-{{ wizard.unique_name }}">
+    <i class="icon-print"></i> {% trans 'inforequests:appeals:print' %}
+  </button>
+  {{ block.super }}
 {% endblock %}

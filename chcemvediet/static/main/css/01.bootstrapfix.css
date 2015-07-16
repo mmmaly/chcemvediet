@@ -55,3 +55,10 @@ body.push2 .anchor:before { height: 100px; margin-top: -100px; }
 
 /* Fix dropdown panel */
 .dropdown-panel { padding: 20px 30px 0 0; }
+
+/* Colors for tooltips */
+.tooltip-error + .tooltip > .tooltip-inner { background-color: #BD362F; }
+.tooltip-error + .tooltip.top > .tooltip-arrow { border-top-color: #BD362F; }
+.tooltip-error + .tooltip.bottom > .tooltip-arrow { border-bottom-color: #BD362F; }
+.tooltip-error + .tooltip.left > .tooltip-arrow { border-left-color: #BD362F; }
+.tooltip-error + .tooltip.right > .tooltip-arrow { border-right-color: #BD362F; }
