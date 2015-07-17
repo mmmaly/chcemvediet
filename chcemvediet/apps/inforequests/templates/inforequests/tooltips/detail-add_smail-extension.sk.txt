@@ -8,6 +8,5 @@
  %
 {% endcomment %}
 
-Dostla som list, v ktorom mi inštitúcia oznamuje, že predlžuje lehotu na vybavenie mojej infožiadosti. 
-
+Prišiel mi list, v ktorom inštitúcia oznamuje, že predlžuje lehotu na vybavenie mojej žiadosti.  
 

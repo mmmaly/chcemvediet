@@ -8,5 +8,5 @@
  %
 {% endcomment %}
 
-Prišiel mi list - potvrdenie o tom, že inštitúcia žiadosť dostala.
+Prišiel mi list, v ktorom inštitúcia potvrdila prijatie mojej žiadosti.  
 

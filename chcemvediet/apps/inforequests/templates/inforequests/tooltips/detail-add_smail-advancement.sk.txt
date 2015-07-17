@@ -8,5 +8,5 @@
  %
 {% endcomment %}
 
-Dostal som list o tom, že inštitúcia sa rozhodla moju žiadosť postúpiť inému úradu, lebo požadovanú informáciu nemá.
-
+Prišiel mi list, v ktorom inštitúcia oznamuje, že moju žiadosť postúpila inej inštitúcii, 
+lebo požadovanú informáciu nemá. 

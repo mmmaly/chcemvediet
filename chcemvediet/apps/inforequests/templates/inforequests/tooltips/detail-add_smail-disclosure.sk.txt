@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Prišla mi poštou odpoveď, v ktorej mi sprístupňujú aspoň časť informácií.
+Prišiel mi list, v ktorom inštitúcia sprístupňuje aspoň časť požadovaných informácií.   
