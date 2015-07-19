@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Prišlo mi poštou rozhodnutie, v ktorom mi uznávajú moje odvolanie a sprístupňujú mi, aspoň sčasti, požadované informácie.
+Prišlo mi poštou rozhodnutie, v ktorom mi uznávajú moje odvolanie a sprístupňujú mi požadované informácie aspoň sčasti.

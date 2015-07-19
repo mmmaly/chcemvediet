@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Prišlo mi poštou rozhodnutie, v ktorom mi zamietajú sprístupnenie informácie.
+Prišlo mi rozhodnutie, v ktorom inštitúcia zamieta sprístupniť požadované informácie. 
