@@ -8,4 +8,4 @@
  %
 {% endcomment %}
 
-Dostal som list, v ktorom som bol požiadaný o doplnenie žiadosti.
+Prišiel mi list, v ktorom inštitúcia žiada, aby som moju žiadosť spresnil alebo doplnil. 
