@@ -80,7 +80,7 @@ def devtools_push_history(request, inforequest_pk):
     except (KeyError, ValueError):
         days = 0
 
-    if days >= 1 and days <= 200:
+    if days >= -200 and days <= 200:
         delta = datetime.timedelta(days=days)
         Inforequest.objects.filter(pk=inforequest.pk).update(
                 submission_date=F(u'submission_date') - delta,

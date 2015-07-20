@@ -34,16 +34,9 @@ class DisclosureAppealPaperStep(AppealPaperStep):
                 }),
             )
 
-    def __init__(self, *args, **kwargs):
-        super(DisclosureAppealPaperStep, self).__init__(*args, **kwargs)
-        self.initial[u'reason'] = self.wizard.steps[u'reason'].get_cleaned_data(u'reason')
-
 class DisclosureAppealWizard(AppealWizard):
     u"""
-    Appeal wizard for branches that:
-     -- are not advanced;
-     -- has no previous appeal action; and
-     -- end with a non-full disclosure action.
+    Appeal wizard for branches that end with a non-full disclosure action.
     """
     step_classes = OrderedDict([
             (u'reason', DisclosureAppealReasonStep),
@@ -53,20 +46,8 @@ class DisclosureAppealWizard(AppealWizard):
 
     @classmethod
     def applicable(cls, branch):
-        if not branch.is_main:
-            return False
-        for action in branch.actions:
-            if action.type == Action.TYPES.APPEAL:
-                return False
         if branch.last_action.type != Action.TYPES.DISCLOSURE:
             return False
         if branch.last_action.disclosure_level == Action.DISCLOSURE_LEVELS.FULL:
             return False
         return True
-
-    def context(self, extra=None):
-        res = super(DisclosureAppealWizard, self).context(extra)
-        res.update({
-                u'not_at_all': self.branch.last_action.disclosure_level == Action.DISCLOSURE_LEVELS.NONE,
-                })
-        return res

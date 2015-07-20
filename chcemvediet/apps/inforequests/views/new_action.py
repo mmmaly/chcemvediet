@@ -112,7 +112,11 @@ def new_action_appeal2(request, inforequest_pk, branch_pk):
     except WizzardRollback as e:
         return json_step(request, e.step)
 
-    button = clean_button(request.POST, [u'prev', u'next'])
+    button = clean_button(request.POST, [u'save', u'prev', u'next'])
+
+    if button == u'save':
+        wizard.commit()
+        return json_step(request, wizard.current_step)
 
     if button == u'prev':
         return json_step(request, wizard.prev_step())

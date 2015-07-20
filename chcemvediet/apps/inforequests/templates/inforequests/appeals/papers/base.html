@@ -44,21 +44,35 @@
     {% endif %}
   </div>
   <div style="margin: 2ex 0 0 0;">
-    V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len „zákon”) podávam
-    {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
-    voči {% if fiktivne %}fiktívnemu{% endif %} rozhodnutiu
-    {{ branch.obligee.name }}<span style="color: red;">(FIXME: Genitiv)</span>,
-    ku ktorému došlo
-    {% if not_at_all %}nesprístupnením{% else %}len čiastočným sprístupnením{% endif%}
-    informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }}.
+    {% if fiktivne %}
+      V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len „zákon”) podávam
+      {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
+      voči fiktívnemu rozhodnutiu
+      {{ branch.obligee.name }}<span style="color: red;">(FIXME: Genitiv)</span> (ďalej len „povinná osoba”),
+      ku ktorému došlo
+      {% if not_at_all %}nesprístupnením{% else %}len čiastočným sprístupnením{% endif%}
+      informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }}.
+    {% else %}
+      V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len „zákon”) podávam
+      {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
+      voči rozhodnutiu
+      {{ branch.obligee.name }}<span style="color: red;">(FIXME: Genitiv)</span> (ďalej len „povinná osoba”),
+      ktorým došlo k
+      {% if not_at_all %}nesprístupneniu{% else %}len čiastočnému sprístupneniu{% endif%}
+      informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }}.
+    {% endif %}
   </div>
   <div style="margin: 2ex 0 0 0; text-align: center;">
     <strong>Odôvodnenie:</strong>
   </div>
   <div style="margin: 2ex 0 0 0;">
     Dňa {{ inforequest.submission_date|date:"d.m.Y" }} som formou emailu požiadal
-    {{ branch.historicalobligee.name }}<span style="color: red;">(FIXME: Akuzativ)</span>
-    (ďalej len „povinná osoba”) o poskytnutie nasledovnej informácie:
+    {% if inforequest.main_branch.historicalobligee.name == branch.obligee.name %}
+      povinnú osobu
+    {% else %}
+      {{ inforequest.main_branch.historicalobligee.name }}<span style="color: red;">(FIXME: Akuzativ)</span>
+    {% endif %}
+    o poskytnutie nasledovnej informácie:
   </div>
   <div style="margin: 2ex 0 0 0;">
     <div style="white-space: pre-wrap;"><em>{{ inforequest.content }}</em></div>

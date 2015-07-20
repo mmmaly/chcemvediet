@@ -9,6 +9,7 @@
  %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealPaperStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
  %  -- subject_template: string (template name)
  %  -- content_template: string (template name)
  %
@@ -22,7 +23,7 @@
 {% block "body" %}
   {% include "inforequests/appeals/texts/paper-text.html" %}
   <div class="control-group error">
-    <span class="help-block">{{ tepnon_field_errors|join:" " }}<span>
+    <span class="help-block">{{ step.non_field_errors|join:" " }}<span>
   </div>
   <div class="action-content">
     {% include content_template %}

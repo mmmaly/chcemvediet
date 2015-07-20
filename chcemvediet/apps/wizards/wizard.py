@@ -6,9 +6,8 @@ from django import forms
 from django.core import signing
 from django.core.exceptions import SuspiciousOperation
 from django.utils.html import format_html
-from django.utils.functional import cached_property
 
-from poleno.utils.forms import PrefixedForm
+from .models import WizardDraft
 
 
 class WizzardRollback(Exception):
@@ -16,7 +15,7 @@ class WizzardRollback(Exception):
         self.step = step
 
 
-class WizardStep(PrefixedForm):
+class WizardStep(forms.Form):
     template = None
 
     @classmethod
@@ -24,10 +23,13 @@ class WizardStep(PrefixedForm):
         return True
 
     def __init__(self, wizard, index, key, *args, **kwargs):
+        super(WizardStep, self).__init__(*args, **kwargs)
         self.wizard = wizard
         self.index = index
         self.key = key
-        super(WizardStep, self).__init__(*args, **kwargs)
+
+    def add_prefix(self, field_name):
+        return self.wizard.add_prefix(field_name)
 
     def next(self):
         return self.wizard.next_step(self)
@@ -68,62 +70,83 @@ class Wizard(object):
         self.data = None
 
     def start(self):
-        self.current_step = None
+        try:
+            draft = WizardDraft.objects.get(pk=self.instance_id)
+            self.data = draft.data
+        except WizardDraft.DoesNotExist:
+            self.data = {}
+
         self.steps = OrderedDict([(k, None) for k in self.step_classes])
-        self.data = OrderedDict([(k, None) for k in self.step_classes])
+        self.current_step = None
 
         for step_index, (step_key, step_class) in enumerate(self.step_classes.items()):
             if step_class.applicable(self):
-                self.steps[step_key] = step_class(self, step_index, step_key)
+                self.steps[step_key] = step_class(self, step_index, step_key, initial=dict(self.data))
                 if self.current_step is None:
                     self.current_step = self.steps[step_key]
         assert self.current_step is not None
 
     def step(self, post):
         try:
-            state = signing.loads(post[u'state'])
-            assert state[u'instance_id'] == self.instance_id
-
-            current_key = state[u'step_key']
+            state = signing.loads(post.get(u'state', u''))
+            current_key = state.get(u'step_key')
+            state_data = state.get(u'data')
+            assert state.get(u'instance_id') == self.instance_id
             assert current_key in self.step_classes
-
-            state_data = OrderedDict([(k, v) for k, v in state[u'data']])
-            assert state_data.keys() == self.step_classes.keys()
-
-        except (TypeError, KeyError, ValueError, AssertionError, signing.BadSignature):
+            assert type(state_data) is dict
+        except (AssertionError, signing.BadSignature):
             raise SuspiciousOperation
 
-        self.current_step = None
-        self.steps = OrderedDict([(k, None) for k in self.step_classes])
         self.data = state_data
+        self.steps = OrderedDict([(k, None) for k in self.step_classes])
+        self.current_step = None
 
+        prefixed_data = {self.add_prefix(f): v for f, v in self.data.items()}
         current_index = self.step_classes.keys().index(current_key)
         for step_index, (step_key, step_class) in enumerate(self.step_classes.items()):
             if step_index < current_index:
                 if not step_class.applicable(self):
                     continue
-                step = step_class(self, step_index, step_key, self.data[step_key])
+                step = step_class(self, step_index, step_key, data=dict(prefixed_data))
                 self.steps[step_key] = step
                 if not step.is_valid():
                     raise WizzardRollback(step)
             elif step_index == current_index:
                 if not step_class.applicable(self):
                     raise SuspiciousOperation
-                step = step_class(self, step_index, step_key, post)
+                step = step_class(self, step_index, step_key, data=post)
                 self.steps[step_key] = step
                 self.current_step = step
             else:
                 if not step_class.applicable(self):
                     continue
-                step = step_class(self, step_index, step_key, self.data[step_key])
+                step = step_class(self, step_index, step_key, initial=dict(self.data))
                 self.steps[step_key] = step
+        assert self.current_step is not None
 
     def commit(self):
-        assert self.current_step.is_valid()
-        step_data = {}
         for field_name in self.current_step.fields:
-            step_data[self.current_step.add_prefix(field_name)] = self.current_step._raw_value(field_name)
-        self.data[self.current_step.key] = step_data
+            self.data[field_name] = self.current_step._raw_value(field_name)
+
+        data_update = {self.add_prefix(f): self.data[f] for f in self.current_step.fields}
+        initial_update = {f: self.data[f] for f in self.current_step.fields}
+        for step in self.steps.values():
+            if step is None or step is self.current_step:
+                continue
+            if step.is_bound:
+                step.data.update(data_update)
+            else:
+                step.initial.update(initial_update)
+
+        draft = WizardDraft(
+                id=self.instance_id,
+                step=self.current_step.key,
+                data=self.data,
+                )
+        draft.save()
+
+    def add_prefix(self, field_name):
+        return u'%s-%s' % (self.instance_id, field_name)
 
     def next_step(self, step=None):
         if step is None:
@@ -151,7 +174,7 @@ class Wizard(object):
         state = {}
         state[u'instance_id'] = self.instance_id
         state[u'step_key'] = step.key
-        state[u'data'] = self.data.items()
+        state[u'data'] = self.data
         return format_html(u'<input type="hidden" name="state" value="{0}" />', signing.dumps(state))
 
     def context(self, extra=None):

@@ -33,10 +33,6 @@ class FallbackAppealPaperStep(AppealPaperStep):
                 }),
             )
 
-    def __init__(self, *args, **kwargs):
-        super(FallbackAppealPaperStep, self).__init__(*args, **kwargs)
-        self.initial[u'reason'] = self.wizard.steps[u'reason'].get_cleaned_data(u'reason')
-
 
 class FallbackAppealWizard(AppealWizard):
     u"""

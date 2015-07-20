@@ -9,8 +9,12 @@
  %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealFinalStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
  %  -- appeal_subject: string
  %  -- appeal_content: html
+ %  -- effective_date: datetime.date
+ %  -- deadline_missed_at_effective_date: bool
+ %  -- deadline_remaining_at_effective_date: int
  %
 {% endcomment %}
 
@@ -21,6 +25,15 @@
 
 {% block "body" %}
   {% include "inforequests/appeals/texts/final-text.html" %}
+  {% if last_action.deadline_missed %}
+    <div class="alert alert-block">
+      {% include "inforequests/appeals/texts/final-deadline-missed.html" %}
+    </div>
+  {% elif deadline_missed_at_effective_date %}
+    <div class="alert alert-block">
+      {% include "inforequests/appeals/texts/final-deadline-missed-at-date.html" %}
+    </div>
+  {% endif %}
   <div class="action-content">
     <div id="print-area-{{ wizard.instance_id }}">
       {{ appeal_content }}

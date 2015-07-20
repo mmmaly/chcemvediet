@@ -1,0 +1,12 @@
+{# vim: set filetype=htmldjango :#}
+{% load negate from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+<h4>Missed deadline</h4>
+<p>Appeal deadline missed {{ last_action.deadline_remaining|negate }} working days ago.</p>

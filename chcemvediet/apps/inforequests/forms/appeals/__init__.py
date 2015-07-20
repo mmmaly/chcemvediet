@@ -20,15 +20,12 @@ class AppealPaperStep(WizardStep):
 
     effective_date = forms.DateField(
             localize=True,
+            initial=local_today,
             widget=forms.DateInput(attrs={
                 u'placeholder': _('inforequests:AppealPaperStep:effective_date:placeholder'),
                 u'class': u'datepicker',
                 }),
             )
-
-    def __init__(self, *args, **kwargs):
-        super(AppealPaperStep, self).__init__(*args, **kwargs)
-        self.initial[u'effective_date'] = local_today()
 
     def clean(self):
         cleaned_data = super(AppealPaperStep, self).clean()
@@ -61,9 +58,13 @@ class AppealFinalStep(WizardStep):
 
     def context(self, extra=None):
         res = super(AppealFinalStep, self).context(extra)
+        effective_date = self.wizard.steps[u'paper'].get_cleaned_data(u'effective_date')
         res.update({
                 u'appeal_subject': self.wizard.finalize_subject(),
                 u'appeal_content': self.wizard.finalize_content(),
+                u'effective_date': effective_date,
+                u'deadline_missed_at_effective_date': self.wizard.branch.last_action.deadline_missed_at(effective_date),
+                u'deadline_remaining_at_effective_date': self.wizard.branch.last_action.deadline_remaining_at(effective_date),
                 })
         return res
 
@@ -71,8 +72,7 @@ class AppealWizard(Wizard):
 
     def __init__(self, branch):
         super(AppealWizard, self).__init__()
-        self.instance_id = u'{0}-{1}-{2}-{3}'.format(self.__class__.__name__,
-                branch.inforequest.pk, branch.pk, branch.last_action.pk)
+        self.instance_id = u'%s-%s' % (self.__class__.__name__, branch.last_action.pk)
         self.branch = branch
 
     def context(self, extra=None):
@@ -83,12 +83,10 @@ class AppealWizard(Wizard):
                 u'last_action': self.branch.last_action,
                 u'rozklad': u'ministerstvo' in self.branch.obligee.name.lower(),
                 u'fiktivne': self.branch.last_action.type != Action.TYPES.REFUSAL,
-                u'not_at_all': True,
+                u'not_at_all': self.branch.last_action.disclosure_level not in [
+                    Action.DISCLOSURE_LEVELS.PARTIAL, Action.DISCLOSURE_LEVELS.FULL],
                 })
         return res
-
-    def extra_state(self):
-        return self.branch.pk
 
     def finalize_subject(self):
         step = self.steps[u'paper']

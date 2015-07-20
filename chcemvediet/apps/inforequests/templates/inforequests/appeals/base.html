@@ -8,6 +8,7 @@
  %  -- step: chcemvediet.apps.wizards.WizardStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
  %
 {% endcomment %}
 
@@ -29,6 +30,9 @@
   </div>
   <div class="modal-footer">
     {% block "footer" %}
+      <button type="submit" class="btn" name="button" value="save">
+        <i class="icon-file"></i> {% trans 'inforequests:appeals:save' %}
+      </button>
       {% if not step.is_first %}
         <button type="submit" class="btn" name="button" value="prev">
           <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
