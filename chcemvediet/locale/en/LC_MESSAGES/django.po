@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-16 15:39+0200\n"
+"POT-Creation-Date: 2015-07-23 19:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,133 +97,181 @@ msgstr "Manage Connections"
 msgid "^profile/$"
 msgstr ""
 
-#: apps/inforequests/forms.py:29
-msgid "inforequests:InforequestForm:obligee:label"
-msgstr "Obligee"
-
-#: apps/inforequests/forms.py:31
-msgid "inforequests:InforequestForm:obligee:placeholder"
-msgstr "Search Obligee"
-
-#: apps/inforequests/forms.py:40
-msgid "inforequests:InforequestForm:subject:label"
-msgstr "Subject"
-
-#: apps/inforequests/forms.py:44
-msgid "inforequests:InforequestForm:subject:placeholder"
-msgstr "Subject"
-
-#: apps/inforequests/forms.py:50
-msgid "inforequests:InforequestForm:content:label"
-msgstr "Request"
-
-#: apps/inforequests/forms.py:54
-msgid "inforequests:InforequestForm:content:placeholder"
-msgstr "Request"
-
-#: apps/inforequests/forms.py:64
-msgid "inforequests:InforequestForm:attachments:label"
-msgstr "Attachments"
-
-#: apps/inforequests/forms.py:134
+#: apps/inforequests/forms/action.py:25
 msgid "inforequests:ActionAbstractForm:branch:label"
 msgstr "Obligee"
 
-#: apps/inforequests/forms.py:185
+#: apps/inforequests/forms/action.py:75
 msgid "inforequests:EffectiveDateMixin:effective_date:label"
 msgstr "Effective Date"
 
-#: apps/inforequests/forms.py:188
+#: apps/inforequests/forms/action.py:78
 msgid "inforequests:EffectiveDateMixin:effective_date:placeholder"
 msgstr "mm/dd/yyyy"
 
-#: apps/inforequests/forms.py:210
+#: apps/inforequests/forms/action.py:100
 msgid "inforequests:EffectiveDateMixin:older_than_previous_error"
 msgstr "May not be older than previous action."
 
-#: apps/inforequests/forms.py:212
+#: apps/inforequests/forms/action.py:102
 msgid "inforequests:EffectiveDateMixin:from_future_error"
 msgstr "May not be from future."
 
-#: apps/inforequests/forms.py:214
+#: apps/inforequests/forms/action.py:104
 msgid "inforequests:EffectiveDateMixin:older_than_month_error"
 msgstr "May not be older than one month."
 
-#: apps/inforequests/forms.py:234
+#: apps/inforequests/forms/action.py:124
+msgid "inforequests:FileNumberMixin:file_number:label"
+msgstr "File Number"
+
+#: apps/inforequests/forms/action.py:128
+msgid "inforequests:FileNumberMixin:file_number:placeholder"
+msgstr "File Number"
+
+#: apps/inforequests/forms/action.py:147
 msgid "inforequests:SubjectContentMixin:subject:label"
 msgstr "Subject"
 
-#: apps/inforequests/forms.py:237
+#: apps/inforequests/forms/action.py:150
 msgid "inforequests:SubjectContentMixin:subject:placeholder"
 msgstr "Subject"
 
-#: apps/inforequests/forms.py:242
+#: apps/inforequests/forms/action.py:155
 msgid "inforequests:SubjectContentMixin:content:label"
 msgstr "Content"
 
-#: apps/inforequests/forms.py:244
+#: apps/inforequests/forms/action.py:157
 msgid "inforequests:SubjectContentMixin:content:placeholder"
 msgstr "Content"
 
-#: apps/inforequests/forms.py:272
+#: apps/inforequests/forms/action.py:185
 msgid "inforequests:AttachmentsMixin:attachments:label"
 msgstr "Attachments"
 
-#: apps/inforequests/forms.py:304
+#: apps/inforequests/forms/action.py:217
 msgid "inforequests:DeadlineMixin:deadline:label"
 msgstr "New Deadline"
 
-#: apps/inforequests/forms.py:309
+#: apps/inforequests/forms/action.py:222
 msgid "inforequests:DeadlineMixin:deadline:placeholder"
 msgstr "Deadline"
 
-#: apps/inforequests/forms.py:336
+#: apps/inforequests/forms/action.py:249
 msgid "inforequests:AdvancedToMixin:advanced_to_1:label"
 msgstr "Advanced To"
 
-#: apps/inforequests/forms.py:338
+#: apps/inforequests/forms/action.py:251
 msgid "inforequests:AdvancedToMixin:advanced_to_1:placeholder"
 msgstr "Obligee"
 
-#: apps/inforequests/forms.py:347
+#: apps/inforequests/forms/action.py:260
 msgid "inforequests:AdvancedToMixin:advanced_to_2:label"
 msgstr " "
 
-#: apps/inforequests/forms.py:350
+#: apps/inforequests/forms/action.py:263
 msgid "inforequests:AdvancedToMixin:advanced_to_2:placeholder"
 msgstr "Obligee"
 
-#: apps/inforequests/forms.py:359
+#: apps/inforequests/forms/action.py:272
 msgid "inforequests:AdvancedToMixin:advanced_to_3:label"
 msgstr " "
 
-#: apps/inforequests/forms.py:362
+#: apps/inforequests/forms/action.py:275
 msgid "inforequests:AdvancedToMixin:advanced_to_3:placeholder"
 msgstr "Obligee"
 
-#: apps/inforequests/forms.py:388
+#: apps/inforequests/forms/action.py:301
 msgid "inforequests:AdvancedToMixin:same_obligee_error"
 msgstr "May not advance to the same obligee."
 
-#: apps/inforequests/forms.py:392
+#: apps/inforequests/forms/action.py:305
 msgid "inforequests:AdvancedToMixin:duplicate_obligee_error"
 msgstr "May not advance twice to the same obligee."
 
-#: apps/inforequests/forms.py:436
+#: apps/inforequests/forms/action.py:349
 msgid "inforequests:DisclosureLevelMixin:disclosure_level:label"
 msgstr "Disclosure Level"
 
-#: apps/inforequests/forms.py:467
+#: apps/inforequests/forms/action.py:380
 msgid "inforequests:RefusalReasonMixin:refusal_reason:label"
 msgstr "Refusal Reason"
 
-#: apps/inforequests/forms.py:580
+#: apps/inforequests/forms/action.py:512
 msgid "inforequests:ExtendDeadlineForm:extension:label"
 msgstr "Deadline Extension"
 
-#: apps/inforequests/forms.py:585
+#: apps/inforequests/forms/action.py:517
 msgid "inforequests:ExtendDeadlineForm:extension:placeholder"
 msgstr "Working Days"
+
+#: apps/inforequests/forms/appeals/__init__.py:25
+msgid "inforequests:AppealPaperStep:effective_date:placeholder"
+msgstr "mm/dd/yyyy"
+
+#: apps/inforequests/forms/appeals/__init__.py:38
+msgid "inforequests:AppealPaperStep:effective_date:older_than_last_action_error"
+msgstr "May not be older than the previous action."
+
+#: apps/inforequests/forms/appeals/__init__.py:40
+msgid "inforequests:AppealPaperStep:effective_date:from_past_error"
+msgstr "May not be from the past."
+
+#: apps/inforequests/forms/appeals/__init__.py:42
+msgid "inforequests:AppealPaperStep:effective_date:too_far_from_future_error"
+msgstr "May not be more than 5 days from the future."
+
+#: apps/inforequests/forms/appeals/disclosure.py:18
+msgid "inforequests:DisclosureAppealReasonStep:reason:label"
+msgstr "Reason"
+
+#: apps/inforequests/forms/appeals/disclosure.py:20
+msgid "inforequests:DisclosureAppealReasonStep:reason:placeholder"
+msgstr "Reason"
+
+#: apps/inforequests/forms/appeals/disclosure.py:31
+msgid "inforequests:DisclosureAppealPaperStep:reason:placeholder"
+msgstr "Reason"
+
+#: apps/inforequests/forms/appeals/fallback.py:17
+msgid "inforequests:FallbackAppealReasonStep:reason:label"
+msgstr "Reason"
+
+#: apps/inforequests/forms/appeals/fallback.py:19
+msgid "inforequests:FallbackAppealReasonStep:reason:placeholder"
+msgstr "Reason"
+
+#: apps/inforequests/forms/appeals/fallback.py:30
+msgid "inforequests:FallbackAppealPaperStep:reason:placeholder"
+msgstr "Reason"
+
+#: apps/inforequests/forms/inforequest.py:20
+msgid "inforequests:InforequestForm:obligee:label"
+msgstr "Obligee"
+
+#: apps/inforequests/forms/inforequest.py:22
+msgid "inforequests:InforequestForm:obligee:placeholder"
+msgstr "Search Obligee"
+
+#: apps/inforequests/forms/inforequest.py:31
+msgid "inforequests:InforequestForm:subject:label"
+msgstr "Subject"
+
+#: apps/inforequests/forms/inforequest.py:35
+msgid "inforequests:InforequestForm:subject:placeholder"
+msgstr "Subject"
+
+#: apps/inforequests/forms/inforequest.py:41
+msgid "inforequests:InforequestForm:content:label"
+msgstr "Request"
+
+#: apps/inforequests/forms/inforequest.py:45
+msgid "inforequests:InforequestForm:content:placeholder"
+msgstr "Request"
+
+#: apps/inforequests/forms/inforequest.py:55
+msgid "inforequests:InforequestForm:attachments:label"
+msgstr "Attachments"
 
 #: apps/inforequests/models/action.py:86
 msgid "inforequests:Action:type:REQUEST"
@@ -285,51 +333,51 @@ msgstr "Expiration"
 msgid "inforequests:Action:type:APPEAL_EXPIRATION"
 msgstr "Appeal Expiration"
 
-#: apps/inforequests/models/action.py:220
+#: apps/inforequests/models/action.py:240
 msgid "inforequests:Action:disclosure_level:NONE"
 msgstr "No Disclosure at All"
 
-#: apps/inforequests/models/action.py:221
+#: apps/inforequests/models/action.py:241
 msgid "inforequests:Action:disclosure_level:PARTIAL"
 msgstr "Partial Disclosure"
 
-#: apps/inforequests/models/action.py:222
+#: apps/inforequests/models/action.py:242
 msgid "inforequests:Action:disclosure_level:FULL"
 msgstr "Full Disclosure"
 
-#: apps/inforequests/models/action.py:233
+#: apps/inforequests/models/action.py:253
 msgid "inforequests:Action:refusal_reason:DOES_NOT_HAVE"
 msgstr "Does not Have Information"
 
-#: apps/inforequests/models/action.py:234
+#: apps/inforequests/models/action.py:254
 msgid "inforequests:Action:refusal_reason:DOES_NOT_PROVIDE"
 msgstr "Does not Provide Information"
 
-#: apps/inforequests/models/action.py:235
+#: apps/inforequests/models/action.py:255
 msgid "inforequests:Action:refusal_reason:DOES_NOT_CREATE"
 msgstr "Does not Create Information"
 
-#: apps/inforequests/models/action.py:236
+#: apps/inforequests/models/action.py:256
 msgid "inforequests:Action:refusal_reason:COPYRIGHT"
 msgstr "Copyright Restriction"
 
-#: apps/inforequests/models/action.py:237
+#: apps/inforequests/models/action.py:257
 msgid "inforequests:Action:refusal_reason:BUSINESS_SECRET"
 msgstr "Business Secret"
 
-#: apps/inforequests/models/action.py:238
+#: apps/inforequests/models/action.py:258
 msgid "inforequests:Action:refusal_reason:PERSONAL"
 msgstr "Personal Information"
 
-#: apps/inforequests/models/action.py:239
+#: apps/inforequests/models/action.py:259
 msgid "inforequests:Action:refusal_reason:CONFIDENTIAL"
 msgstr "Confidential Information"
 
-#: apps/inforequests/models/action.py:240
+#: apps/inforequests/models/action.py:260
 msgid "inforequests:Action:refusal_reason:NO_REASON"
 msgstr "No Reason Specified"
 
-#: apps/inforequests/models/action.py:241
+#: apps/inforequests/models/action.py:261
 msgid "inforequests:Action:refusal_reason:OTHER_REASON"
 msgstr "Other Reason"
 
@@ -352,6 +400,46 @@ msgstr "Unrelated"
 #: apps/inforequests/models/inforequestemail.py:38
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
 msgstr "Unknown"
+
+#: apps/inforequests/templates/inforequests/appeals/base.html:34
+msgid "inforequests:appeals:save"
+msgstr "Save"
+
+#: apps/inforequests/templates/inforequests/appeals/base.html:38
+msgid "inforequests:appeals:prev"
+msgstr "Back"
+
+#: apps/inforequests/templates/inforequests/appeals/base.html:43
+msgid "inforequests:appeals:next"
+msgstr "Next"
+
+#: apps/inforequests/templates/inforequests/appeals/base.html:47
+msgid "inforequests:appeals:finish"
+msgstr "Finish"
+
+#: apps/inforequests/templates/inforequests/appeals/base.html:51
+msgid "inforequests:appeals:close"
+msgstr "Close"
+
+#: apps/inforequests/templates/inforequests/appeals/disclosure-reason.html:18
+msgid "inforequests:appeals:disclosure-reason:heading"
+msgstr "Appeal: Reason"
+
+#: apps/inforequests/templates/inforequests/appeals/fallback-reason.html:18
+msgid "inforequests:appeals:fallback-reason:heading"
+msgstr "Appeal: Reason"
+
+#: apps/inforequests/templates/inforequests/appeals/final.html:23
+msgid "inforequests:appeals:final:heading"
+msgstr "Appeal: Check"
+
+#: apps/inforequests/templates/inforequests/appeals/final.html:46
+msgid "inforequests:appeals:print"
+msgstr "Print"
+
+#: apps/inforequests/templates/inforequests/appeals/paper.html:20
+msgid "inforequests:appeals:paper:heading"
+msgstr "Appeal: Content"
 
 #: apps/inforequests/templates/inforequests/create.html:13
 msgid "inforequests:create:title"
@@ -382,34 +470,46 @@ msgid "inforequests:detail:action:effective_date"
 msgstr "Effective Date"
 
 #: apps/inforequests/templates/inforequests/detail-action.html:30
+msgid "inforequests:detail:action:file_number"
+msgstr "File Number"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:36
 msgid "inforequests:detail:action:email_from"
 msgstr "From"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:34
+#: apps/inforequests/templates/inforequests/detail-action.html:40
 msgid "inforequests:detail:action:email_to"
 msgstr "To"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:56
+#: apps/inforequests/templates/inforequests/detail-action.html:62
 msgid "inforequests:detail:action:subject"
 msgstr "Subject"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:62
+#: apps/inforequests/templates/inforequests/detail-action.html:68
 msgid "inforequests:detail:action:disclosure_level"
 msgstr "Disclosure Level"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:68
+#: apps/inforequests/templates/inforequests/detail-action.html:74
 msgid "inforequests:detail:action:refusal_reason"
 msgstr "Refusal Reason"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:74
+#: apps/inforequests/templates/inforequests/detail-action.html:80
 msgid "inforequests:detail:action:attachments"
 msgstr "Attachments"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:90
+#: apps/inforequests/templates/inforequests/detail-action.html:99
+msgid "inforequests:detail:action:print"
+msgstr "Print"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:105
 msgid "inforequests:detail:action:extend_deadline"
 msgstr "Deadline is Missed, Extend it"
 
-#: apps/inforequests/templates/inforequests/detail-action.html:96
+#: apps/inforequests/templates/inforequests/detail-action.html:111
+msgid "inforequests:detail:action:appeal"
+msgstr "Appeal"
+
+#: apps/inforequests/templates/inforequests/detail-action.html:117
 msgid "inforequests:detail:action:advanced_to"
 msgstr "New Obligee"
 
@@ -545,6 +645,14 @@ msgstr "Unique E-mail"
 msgid "inforequests:detail:request:submission_date"
 msgstr "Submission Date"
 
+#: apps/inforequests/templates/inforequests/detail-request.html:36
+msgid "inforequests:detail:request:subject"
+msgstr "Subject"
+
+#: apps/inforequests/templates/inforequests/detail-request.html:40
+msgid "inforequests:detail:request:content"
+msgstr "Content"
+
 #: apps/inforequests/templates/inforequests/detail-undecided.html:14
 msgid "inforequests:detail:undecided:show"
 msgstr "Show them"
@@ -565,51 +673,59 @@ msgstr "Submitted Inforequests"
 msgid "inforequests:index:obligee"
 msgstr "Obligee"
 
-#: apps/inforequests/templates/inforequests/index.html:25
+#: apps/inforequests/templates/inforequests/index.html:24
+msgid "inforequests:index:subject"
+msgstr "Subject"
+
+#: apps/inforequests/templates/inforequests/index.html:26
 msgid "inforequests:index:submission_date"
 msgstr "Submission Date"
 
-#: apps/inforequests/templates/inforequests/index.html:35
+#: apps/inforequests/templates/inforequests/index.html:37
 msgid "inforequests:index:new_mail"
 msgstr "New E-mail"
 
-#: apps/inforequests/templates/inforequests/index.html:48
+#: apps/inforequests/templates/inforequests/index.html:50
 msgid "inforequests:index:create"
 msgstr "New Inforequest"
 
-#: apps/inforequests/templates/inforequests/index.html:51
+#: apps/inforequests/templates/inforequests/index.html:53
 msgid "inforequests:index:drafts:heading"
 msgstr "Inforequest Drafts"
 
-#: apps/inforequests/templates/inforequests/index.html:56
+#: apps/inforequests/templates/inforequests/index.html:58
 msgid "inforequests:index:drafts:obligee"
 msgstr "Obligee"
 
-#: apps/inforequests/templates/inforequests/index.html:66
+#: apps/inforequests/templates/inforequests/index.html:68
 msgid "inforequests:index:drafts:empty_obligee"
 msgstr "(no obligee selected)"
 
-#: apps/inforequests/templates/inforequests/index.html:69
+#: apps/inforequests/templates/inforequests/index.html:71
 msgid "inforequests:index:drafts:create_from_draft"
 msgstr "Edit and Submit"
 
-#: apps/inforequests/templates/inforequests/index.html:71
+#: apps/inforequests/templates/inforequests/index.html:73
 msgid "inforequests:index:draft:delete:confirm"
 msgstr "Are you sure you want to delete this draft?"
 
-#: apps/inforequests/templates/inforequests/index.html:71
+#: apps/inforequests/templates/inforequests/index.html:73
 msgid "inforequests:index:draft:delete"
 msgstr "Delete"
 
-#: apps/inforequests/templates/inforequests/index.html:79
+#: apps/inforequests/templates/inforequests/index.html:81
 msgid "inforequests:index:closed:heading"
 msgstr "Closed Inforequests"
 
-#: apps/inforequests/templates/inforequests/index.html:84
+#: apps/inforequests/templates/inforequests/index.html:86
 msgid "inforequests:index:closed:obligee"
 msgstr "Obligee"
 
-#: apps/inforequests/templates/inforequests/index.html:85
+#: apps/inforequests/templates/inforequests/index.html:87
+msgid "inforequests:index:closed:subject"
+msgstr "Subject"
+
+#: apps/inforequests/templates/inforequests/index.html:88
 msgid "inforequests:index:closed:submission_date"
 msgstr "Submission Date"
 
@@ -905,14 +1021,18 @@ msgid "^new-action/appeal/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 #: apps/inforequests/urls.py:34
-msgid "^extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"
+msgid "^new-action/appeal2/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/$"
 msgstr ""
 
 #: apps/inforequests/urls.py:35
-msgid "^attachments/$"
+msgid "^action/extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"
 msgstr ""
 
 #: apps/inforequests/urls.py:36
+msgid "^attachments/$"
+msgstr ""
+
+#: apps/inforequests/urls.py:37
 msgid "^attachments/(?P<attachment_pk>\\d+)/$"
 msgstr ""
 
@@ -1224,15 +1344,15 @@ msgstr "Sign In"
 msgid "main:menu:account:signup"
 msgstr "Sign Up"
 
-#: templates/main/snippets/header-menu.html:12
+#: templates/main/snippets/header-menu.html:14
 msgid "main:menu:about"
 msgstr "About Project"
 
-#: templates/main/snippets/header-menu.html:13
+#: templates/main/snippets/header-menu.html:17
 msgid "main:menu:inforequests"
 msgstr "Requests"
 
-#: templates/main/snippets/header-menu.html:14
+#: templates/main/snippets/header-menu.html:20
 msgid "main:menu:obligees"
 msgstr "Obligees"
 
@@ -1288,14 +1408,10 @@ msgstr "Sign Up"
 msgid "socialaccount:signup:submit"
 msgstr "Sign Up"
 
-#: urls.py:23
-msgid "^about/"
-msgstr ""
-
-#: urls.py:24
+#: urls.py:19
 msgid "^obligees/"
 msgstr ""
 
-#: urls.py:25
+#: urls.py:20
 msgid "^inforequests/"
 msgstr ""
