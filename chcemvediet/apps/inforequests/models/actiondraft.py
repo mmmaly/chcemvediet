@@ -55,7 +55,7 @@ class ActionDraft(models.Model):
     # May be NULL for REFUSAL and AFFIRMATION; Must be NULL otherwise
     REFUSAL_REASONS = Action.REFUSAL_REASONS
     refusal_reason = MultiSelectField(choices=REFUSAL_REASONS._choices, blank=True,
-            help_text=u'Optional for refusal and affirmation actions. Must be NULL for all other actions.')
+            help_text=u'Optional multichoice for refusal and affirmation actions. Must be NULL for all other actions.')
 
     # May be empty for ADVANCEMENT; Must be empty otherwise
     obligee_set = models.ManyToManyField(u'obligees.Obligee', blank=True,

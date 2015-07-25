@@ -257,13 +257,13 @@ class Action(models.Model):
             (u'BUSINESS_SECRET',  u'7', _(u'inforequests:Action:refusal_reason:BUSINESS_SECRET')),
             (u'PERSONAL',         u'8', _(u'inforequests:Action:refusal_reason:PERSONAL')),
             (u'CONFIDENTIAL',     u'9', _(u'inforequests:Action:refusal_reason:CONFIDENTIAL')),
-            (u'NO_REASON',       u'-1', _(u'inforequests:Action:refusal_reason:NO_REASON')),
             (u'OTHER_REASON',    u'-2', _(u'inforequests:Action:refusal_reason:OTHER_REASON')),
             )
     refusal_reason = MultiSelectField(choices=REFUSAL_REASONS._choices, blank=True,
             help_text=squeeze(u"""
-                Mandatory multichoice for refusal and affirmation actions, NULL otherwise.
-                Specifies the reason why the obligee refused to disclose the information.
+                Optional multichoice for refusal and affirmation actions, NULL otherwise. Specifies
+                the reason why the obligee refused to disclose the information. Empty value
+                means that the obligee refused to disclose it with no reason.
                 """))
 
     # May be NULL; Used by ``cron.obligee_deadline_reminder`` and ``cron.applicant_deadline_reminder``

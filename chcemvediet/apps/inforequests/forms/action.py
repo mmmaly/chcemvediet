@@ -379,6 +379,7 @@ class RefusalReasonMixin(ActionAbstractForm):
     refusal_reason = MultiSelectFormField(
             label=_(u'inforequests:RefusalReasonMixin:refusal_reason:label'),
             choices=Action.REFUSAL_REASONS._choices,
+            required=False, # Allow for no reason
             widget=forms.CheckboxSelectMultiple(attrs={
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
