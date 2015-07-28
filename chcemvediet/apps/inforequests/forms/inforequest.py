@@ -120,4 +120,3 @@ class InforequestForm(PrefixedForm):
         self.initial[u'subject'] = draft.subject
         self.initial[u'content'] = draft.content
         self.initial[u'attachments'] = draft.attachments
-
