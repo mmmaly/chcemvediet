@@ -8,13 +8,15 @@ from django.utils.translation import ugettext_lazy as _
 from chcemvediet.apps.wizards import WizardStep
 from chcemvediet.apps.inforequests.models import Action
 
+from . import PaperCharField
 from . import AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class DisclosureAppealReasonStep(WizardStep):
-    template = u'inforequests/appeals/disclosure-reason.html'
+    text_template = u'inforequests/appeals/texts/disclosure-reason-text.html'
+    form_template = u'main/snippets/form_horizontal.html'
 
-    reason = forms.CharField(
+    reason = PaperCharField(
             label=_(u'inforequests:DisclosureAppealReasonStep:reason:label'),
             widget=forms.Textarea(attrs={
                 u'placeholder': _(u'inforequests:DisclosureAppealReasonStep:reason:placeholder'),
@@ -26,7 +28,7 @@ class DisclosureAppealPaperStep(AppealPaperStep):
     subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/disclosure.html'
 
-    reason = forms.CharField(
+    reason = PaperCharField(
             widget=forms.Textarea(attrs={
                 u'placeholder': _(u'inforequests:DisclosureAppealPaperStep:reason:placeholder'),
                 u'class': u'input-block-level autosize',

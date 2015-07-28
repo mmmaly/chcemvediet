@@ -7,13 +7,15 @@ from django.utils.translation import ugettext_lazy as _
 
 from chcemvediet.apps.wizards import WizardStep
 
+from . import PaperCharField
 from . import AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class FallbackAppealReasonStep(WizardStep):
-    template = u'inforequests/appeals/fallback-reason.html'
+    text_template = u'inforequests/appeals/texts/fallback-reason-text.html'
+    form_template = u'main/snippets/form_horizontal.html'
 
-    reason = forms.CharField(
+    reason = PaperCharField(
             label=_(u'inforequests:FallbackAppealReasonStep:reason:label'),
             widget=forms.Textarea(attrs={
                 u'placeholder': _(u'inforequests:FallbackAppealReasonStep:reason:placeholder'),
@@ -25,7 +27,7 @@ class FallbackAppealPaperStep(AppealPaperStep):
     subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/fallback.html'
 
-    reason = forms.CharField(
+    reason = PaperCharField(
             widget=forms.Textarea(attrs={
                 u'placeholder': _(u'inforequests:FallbackAppealPaperStep:reason:placeholder'),
                 u'class': u'input-block-level autosize',

@@ -1,0 +1,20 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealCopyrightStep
+ %  -- first_reason: boolean
+ %
+{% endcomment %}
+
+
+<h4>Autorské právo</h4>
+<div class="alert">
+  Ak povinná osoba dôverihodne odôvodnila, že informácia naozaj podlieha ochrane podľa autorského
+  práva, odvolanie nemá zmysel podávať.
+</div>
+<p>
+  Ako {% if not first_reason %}ďalší{% endif %} dôvod nesprístupnenia informácie bolo uvedené, že
+  žiadaná informácia podlieha ochrane podľa autorského práva.
+</p>

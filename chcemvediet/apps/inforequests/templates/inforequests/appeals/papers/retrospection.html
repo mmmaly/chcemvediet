@@ -1,0 +1,153 @@
+{# vim: set filetype=htmldjango :#}
+{% load paragraph obligee_declension obligee_gender from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- retrospection: See chcemvediet.apps.inforequests.forms.appeals.AppealWizard.retrospection_data
+ %
+{% endcomment %}
+
+{% for clause in retrospection %}
+  {% if clause.key == "request" %}
+    {% paragraph before=2 %}
+      Dňa {{ clause.inforequest.submission_date|date:"d.m.Y" }} som formou emailu požiadal
+      {% obligee_declension clause.obligee "accusative" "povinnú osobu" %}
+      o poskytnutie nasledovnej informácie:
+    {% endparagraph %}
+    {% paragraph before=2 after=2 %}
+      <em style="white-space: pre-wrap;">{{ clause.inforequest.content }}</em>
+    {% endparagraph %}
+  {% elif clause.key == "confirmation" %}
+    {% paragraph before=0 after=0 %}
+      Dňa {{ clause.confirmation.effective_date|date:"d.m.Y" }} mi
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "doručil" "doručila" "doručilo" "doručili" %}
+      potvrdenie o prijati žiadosti.
+    {% endparagraph %}
+  {% elif clause.key == "clarification" %}
+    {% paragraph before=0 after=0 %}
+      Dňa
+      {% for clarification_request in clause.clarification_requests %}
+        {% if forloop.revcounter == 1 %}
+          {{ clarification_request.effective_date|date:"d.m.Y" }}
+        {% elif forloop.counter == 1 %}
+          {{ clarification_request.effective_date|date:"d.m.Y" }} a opätovne dňa
+        {% elif forloop.revcounter == 2 %}
+          {{ clarification_request.effective_date|date:"d.m.Y" }} a
+        {% else %}
+          {{ clarification_request.effective_date|date:"d.m.Y" }},
+        {% endif %}
+      {% endfor %}
+      ma
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "vyzval" "vyzvala" "vyzvalo" "vyzvali" %}
+      na doplnenie žiadosti, ktorú som dňa
+      {% for clarification_response in clause.clarification_responses %}
+        {% if forloop.revcounter == 1 %}
+          {{ clarification_response.effective_date|date:"d.m.Y" }}
+        {% elif forloop.counter == 1 %}
+          {{ clarification_response.effective_date|date:"d.m.Y" }} a opätovne dňa
+        {% elif forloop.revcounter == 2 %}
+          {{ clarification_response.effective_date|date:"d.m.Y" }} a
+        {% else %}
+          {{ clarification_response.effective_date|date:"d.m.Y" }},
+        {% endif %}
+      {% endfor %}
+      doplnil.
+    {% endparagraph %}
+  {% elif clause.key == "extension" %}
+    {% paragraph before=0 after=0 %}
+      Dňa
+      {% for extension in clause.extensions %}
+        {% if forloop.revcounter == 1 %}
+          {{ extension.effective_date|date:"d.m.Y" }}
+        {% elif forloop.counter == 1 %}
+          {{ extension.effective_date|date:"d.m.Y" }} a opätovne dňa
+        {% elif forloop.revcounter == 2 %}
+          {{ extension.effective_date|date:"d.m.Y" }} a
+        {% else %}
+          {{ extension.effective_date|date:"d.m.Y" }},
+        {% endif %}
+      {% endfor %}
+      mi
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "doručil" "doručila" "doručilo" "doručili" %}
+      oznámenie o predĺžení lehoty na vybavenie žiadosti.
+    {% endparagraph %}
+  {% elif clause.key == "advancement-appeal" %}
+    {% paragraph before=0 after=0 %}
+      Dňa {{ clause.advancement.effective_date|date:"d.m.Y" }} mi
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "doručil" "doručila" "doručilo" "doručili" %}
+      oznámenie o postúpeni žiadosti
+      {% for subbranch in clause.advancement.advanced_to_set.all %}
+        {% if forloop.revcounter == 1 %}
+          {% obligee_declension subbranch.historicalobligee "dative" %}.
+        {% elif forloop.revcounter == 2 %}
+          {% obligee_declension subbranch.historicalobligee "dative" %} a
+        {% else %}
+          {% obligee_declension subbranch.historicalobligee "dative" %},
+        {% endif %}
+      {% endfor %}
+      Oznámenie
+      {% if clause.not_at_all %}neobsahovalo ani len{% else %}iba{% endif%}
+      čiastočné sprístupnenie žiadanej informácie. Voči
+      {% if clause.not_at_all %}nesprístupneniu{% else %}čiastočnému sprístupneniu{% endif%}
+      žiadanej informácie som sa dňa {{ clause.appeal.effective_date|date:"d.m.Y" }} odvolal.
+    {% endparagraph %}
+  {% elif clause.key == "disclosure-appeal" %}
+    {% paragraph before=0 after=0 %}
+      Dňa {{ clause.disclosure.effective_date|date:"d.m.Y" }} mi
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "doručil" "doručila" "doručilo" "doručili" %}
+      rozhodnutie o sprístupnení informácie, ktoré však nebolo
+      {% if clause.not_at_all %}ani len čiastočným{% else %}úplným{% endif%}
+      sprístupnením žiadanej informácie. Voči
+      {% if clause.not_at_all %}nesprístupneniu{% else %}čiastočnému sprístupneniu{% endif%}
+      žiadanej informácie som sa dňa {{ clause.appeal.effective_date|date:"d.m.Y" }} odvolal.
+    {% endparagraph %}
+  {% elif clause.key == "refusal-appeal" %}
+    {% paragraph before=0 after=0 %}
+      Dňa {{ clause.refusal.effective_date|date:"d.m.Y" }} mi
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "doručil" "doručila" "doručilo" "doručili" %}
+      rozhodnutie o nesprístupnení informácie, voči ktorému som sa dňa
+      {{ clause.appeal.effective_date|date:"d.m.Y" }} odvolal.
+    {% endparagraph %}
+  {% elif clause.key == "expiration-appeal" %}
+    {% paragraph before=0 after=0 %}
+      Dňa {{ clause.expiration.effective_date|date:"d.m.Y" }} uplynula lehota na vybavenie
+      žiadosti. Voči nesprístupneniu žiadanej informácie som sa dňa
+      {{ clause.appeal.effective_date|date:"d.m.Y" }} odvolal.
+    {% endparagraph %}
+  {% elif clause.key == "wild-appeal" %}
+    {% paragraph before=0 after=0 %}
+      Dňa {{ clause.appeal.effective_date|date:"d.m.Y" }} som sa voči nesprístupneniu žiadanej
+      informácie odvolal.
+    {% endparagraph %}
+  {% elif clause.key == "remandment" %}
+    {% paragraph before=0 after=1 %}
+      Odvolací orgán
+      {% obligee_declension clause.obligee "genitive" "povinnej osoby" %}
+      dňa {{ clause.remandment.effective_date|date:"d.m.Y" }}
+      odvolaniu vyhovel a vec vrátil na opätovné konanie.
+    {% endparagraph %}
+  {% elif clause.key == "advancement" %}
+    {% paragraph before=0 after=1 %}
+      Dňa {{ clause.advancement.effective_date|date:"d.m.Y" }} mi
+      {% obligee_declension clause.obligee "nominative" "povinná osoba" %}
+      {% obligee_gender clause.obligee "doručil" "doručila" "doručilo" "doručili" %}
+      oznámenie o postúpení žiadosti
+      {% for subbranch in clause.advancement.advanced_to_set.all %}
+        {% if forloop.revcounter == 1 %}
+          {% obligee_declension subbranch.historicalobligee "dative" %}.
+        {% elif forloop.revcounter == 2 %}
+          {% obligee_declension subbranch.historicalobligee "dative" %} a
+        {% else %}
+          {% obligee_declension subbranch.historicalobligee "dative" %},
+        {% endif %}
+      {% endfor %}
+    {% endparagraph %}
+  {% endif %}
+{% endfor %}

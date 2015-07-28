@@ -5,21 +5,20 @@
  %
  % Context:
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
- %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealPaperStep
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealSectionStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- subject_template: string (template name)
- %  -- content_template: string (template name)
+ %  -- text_template: string (template path)
+ %  -- section_template: string (template path)
  %
 {% endcomment %}
 
 {% block "body" %}
-  {% include "inforequests/appeals/texts/paper-text.html" %}
-  <div class="control-group error">
-    <span class="help-block">{{ step.non_field_errors|join:" " }}</span>
-  </div>
-  <div class="action-content">
-    {% include content_template %}
-  </div>
+  {% if text_template %}{% include text_template %}{% endif %}
+  {% if section_template %}
+    <div class="well">
+      {% include section_template %}
+    </div>
+  {% endif %}
 {% endblock %}

@@ -1,0 +1,16 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealOtherReasonStep
+ %  -- first_reason: boolean
+ %
+{% endcomment %}
+
+
+{% paragraph before=0 after=2 %}
+  Ako {% if not first_reason %}ďalší{% endif %} dôvod nesprístupnenia informácie bolo uvedené,
+  že{% paper_field step.other_reason_reason %}
+{% endparagraph %}

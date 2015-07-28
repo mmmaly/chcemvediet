@@ -1,0 +1,19 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotCreateStep
+ %  -- first_reason: boolean
+ %
+{% endcomment %}
+
+
+<h4>Informáciu nevytvára</h4>
+<div class="alert">
+  Ak povinná osoba dôverihodne odôvodnila, že informáciu by musela vytvoriť, odvolanie nemá zmysel podávať.
+</div>
+<p>
+  Ako {% if not first_reason %}ďalší{% endif %} dôvod nesprístupnenia informácie bolo uvedené, že
+  povinná osoba žiadanú informáciu nevytvára.
+</p>

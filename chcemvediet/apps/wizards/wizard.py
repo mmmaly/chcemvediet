@@ -16,7 +16,10 @@ class WizzardRollback(Exception):
 
 
 class WizardStep(forms.Form):
-    template = None
+    template = u'inforequests/appeals/base.html'
+    text_template = None
+    form_template = None
+    counted_step = True
 
     @classmethod
     def applicable(cls, wizard):
@@ -43,17 +46,18 @@ class WizardStep(forms.Form):
     def is_first(self):
         return self.wizard.is_first_step(self)
 
+    def step_number(self):
+        return self.wizard.step_number(self)
+
     def state_field(self):
         return self.wizard.state_field(self)
 
-    def get_cleaned_data(self, field):
-        if self.is_valid():
-            return self.cleaned_data[field]
-        else:
-            return None
-
     def context(self, extra=None):
-        return dict(self.wizard.context(extra), step=self)
+        return dict(self.wizard.context(extra),
+                step=self,
+                text_template=self.text_template,
+                form_template=self.form_template,
+                )
 
 
 class Wizard(object):
@@ -68,6 +72,7 @@ class Wizard(object):
         self.current_step = None
         self.steps = None
         self.data = None
+        self.values = None
 
     def start(self):
         try:
@@ -77,6 +82,7 @@ class Wizard(object):
             self.data = {}
 
         self.steps = OrderedDict([(k, None) for k in self.step_classes])
+        self.values = {}
         self.current_step = None
 
         for step_index, (step_key, step_class) in enumerate(self.step_classes.items()):
@@ -99,6 +105,7 @@ class Wizard(object):
 
         self.data = state_data
         self.steps = OrderedDict([(k, None) for k in self.step_classes])
+        self.values = {}
         self.current_step = None
 
         prefixed_data = {self.add_prefix(f): v for f, v in self.data.items()}
@@ -111,12 +118,18 @@ class Wizard(object):
                 self.steps[step_key] = step
                 if not step.is_valid():
                     raise WizzardRollback(step)
+                for field_name in step.fields:
+                    self.values[field_name] = step.cleaned_data[field_name]
             elif step_index == current_index:
                 if not step_class.applicable(self):
                     raise SuspiciousOperation
                 step = step_class(self, step_index, step_key, data=post)
                 self.steps[step_key] = step
                 self.current_step = step
+                if not step.is_valid():
+                    continue
+                for field_name in step.fields:
+                    self.values[field_name] = step.cleaned_data[field_name]
             else:
                 if not step_class.applicable(self):
                     continue
@@ -169,6 +182,14 @@ class Wizard(object):
 
     def is_first_step(self, step=None):
         return self.prev_step(step) is None
+
+    def number_of_steps(self):
+        return sum(1 for x in self.steps.values() if x and x.counted_step)
+
+    def step_number(self, step=None):
+        if step is None:
+            step = self.current_step
+        return sum(1 for x in self.steps.values()[:step.index] if x and x.counted_step) + 1
 
     def state_field(self, step):
         state = {}

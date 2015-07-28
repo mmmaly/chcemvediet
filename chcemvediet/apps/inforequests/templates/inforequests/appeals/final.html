@@ -18,11 +18,6 @@
  %
 {% endcomment %}
 
-{% block "header" %}
-  {{ block.super }}
-  <h3>{% trans "inforequests:appeals:final:heading" %}</h3>
-{% endblock %}
-
 {% block "body" %}
   {% include "inforequests/appeals/texts/final-text.html" %}
   {% if last_action.deadline_missed %}

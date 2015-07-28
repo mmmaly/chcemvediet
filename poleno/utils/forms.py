@@ -10,6 +10,7 @@ from django.forms.util import flatatt
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
+from django.utils.encoding import force_text
 from django.utils.html import format_html
 
 from poleno.utils.html import merge_html_attrs
@@ -157,6 +158,15 @@ class ValidatorChain(object):
     def __call__(self, value):
         for validator in self.validators:
             validator(value)
+
+class EditableSpan(forms.Widget):
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = u''
+        span_attrs = merge_html_attrs(self.attrs, attrs, contenteditable=u'true', class_=u'editable-span')
+        input_attrs = dict(type=u'hidden', name=name, value=force_text(value))
+        return format_html(u'<span{0}>{1}</span><input{2} />',
+                flatatt(span_attrs), force_text(value), flatatt(input_attrs))
 
 def validate_formatted_email(value):
     name, address = parseaddr(value)

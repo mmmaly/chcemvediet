@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-23 19:13+0200\n"
+"POT-Creation-Date: 2015-07-27 05:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -197,53 +197,81 @@ msgstr "Disclosure Level"
 msgid "inforequests:RefusalReasonMixin:refusal_reason:label"
 msgstr "Refusal Reason"
 
-#: apps/inforequests/forms/action.py:512
+#: apps/inforequests/forms/action.py:513
 msgid "inforequests:ExtendDeadlineForm:extension:label"
 msgstr "Deadline Extension"
 
-#: apps/inforequests/forms/action.py:517
+#: apps/inforequests/forms/action.py:518
 msgid "inforequests:ExtendDeadlineForm:extension:placeholder"
 msgstr "Working Days"
 
-#: apps/inforequests/forms/appeals/__init__.py:25
+#: apps/inforequests/forms/appeals/__init__.py:78
 msgid "inforequests:AppealPaperStep:effective_date:placeholder"
 msgstr "mm/dd/yyyy"
 
-#: apps/inforequests/forms/appeals/__init__.py:38
+#: apps/inforequests/forms/appeals/__init__.py:91
 msgid "inforequests:AppealPaperStep:effective_date:older_than_last_action_error"
 msgstr "May not be older than the previous action."
 
-#: apps/inforequests/forms/appeals/__init__.py:40
+#: apps/inforequests/forms/appeals/__init__.py:93
 msgid "inforequests:AppealPaperStep:effective_date:from_past_error"
 msgstr "May not be from the past."
 
-#: apps/inforequests/forms/appeals/__init__.py:42
+#: apps/inforequests/forms/appeals/__init__.py:95
 msgid "inforequests:AppealPaperStep:effective_date:too_far_from_future_error"
 msgstr "May not be more than 5 days from the future."
 
-#: apps/inforequests/forms/appeals/disclosure.py:18
+#: apps/inforequests/forms/appeals/disclosure.py:20
 msgid "inforequests:DisclosureAppealReasonStep:reason:label"
 msgstr "Reason"
 
-#: apps/inforequests/forms/appeals/disclosure.py:20
+#: apps/inforequests/forms/appeals/disclosure.py:22
 msgid "inforequests:DisclosureAppealReasonStep:reason:placeholder"
 msgstr "Reason"
 
-#: apps/inforequests/forms/appeals/disclosure.py:31
+#: apps/inforequests/forms/appeals/disclosure.py:33
 msgid "inforequests:DisclosureAppealPaperStep:reason:placeholder"
 msgstr "Reason"
 
-#: apps/inforequests/forms/appeals/fallback.py:17
+#: apps/inforequests/forms/appeals/fallback.py:19
 msgid "inforequests:FallbackAppealReasonStep:reason:label"
 msgstr "Reason"
 
-#: apps/inforequests/forms/appeals/fallback.py:19
+#: apps/inforequests/forms/appeals/fallback.py:21
 msgid "inforequests:FallbackAppealReasonStep:reason:placeholder"
 msgstr "Reason"
 
-#: apps/inforequests/forms/appeals/fallback.py:30
+#: apps/inforequests/forms/appeals/fallback.py:32
 msgid "inforequests:FallbackAppealPaperStep:reason:placeholder"
 msgstr "Reason"
+
+#: apps/inforequests/forms/appeals/refusal.py:73
+msgid "inforequests:RefusalAppealBusinessSecretPublicFundsStep:yes"
+msgstr "Yes"
+
+#: apps/inforequests/forms/appeals/refusal.py:74
+msgid "inforequests:RefusalAppealBusinessSecretPublicFundsStep:no"
+msgstr "No"
+
+#: apps/inforequests/forms/appeals/refusal.py:87
+msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:comercial"
+msgstr "Nie je skutočnosť obchodnej, výrobnej alebo technickej povahy súvisiacu s podnikom,"
+
+#: apps/inforequests/forms/appeals/refusal.py:88
+msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:value"
+msgstr "Nemá skutočnú alebo aspoň potenciálnu materiálnu alebo nemateriálnu hodnotu,"
+
+#: apps/inforequests/forms/appeals/refusal.py:89
+msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:common"
+msgstr "Je v príslušných obchodných kruhoch bežne dostupná,"
+
+#: apps/inforequests/forms/appeals/refusal.py:90
+msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:will"
+msgstr "Nie je podľa vôle podnikateľa utajená,"
+
+#: apps/inforequests/forms/appeals/refusal.py:91
+msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:ensured"
+msgstr "Podnikateľ zodpovedajúcim spôsobom jej utajenie nezabezpečuje."
 
 #: apps/inforequests/forms/inforequest.py:20
 msgid "inforequests:InforequestForm:obligee:label"
@@ -374,10 +402,6 @@ msgid "inforequests:Action:refusal_reason:CONFIDENTIAL"
 msgstr "Confidential Information"
 
 #: apps/inforequests/models/action.py:260
-msgid "inforequests:Action:refusal_reason:NO_REASON"
-msgstr "No Reason Specified"
-
-#: apps/inforequests/models/action.py:261
 msgid "inforequests:Action:refusal_reason:OTHER_REASON"
 msgstr "Other Reason"
 
@@ -401,45 +425,29 @@ msgstr "Unrelated"
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
 msgstr "Unknown"
 
-#: apps/inforequests/templates/inforequests/appeals/base.html:34
+#: apps/inforequests/templates/inforequests/appeals/base.html:48
 msgid "inforequests:appeals:save"
 msgstr "Save"
 
-#: apps/inforequests/templates/inforequests/appeals/base.html:38
+#: apps/inforequests/templates/inforequests/appeals/base.html:54
 msgid "inforequests:appeals:prev"
 msgstr "Back"
 
-#: apps/inforequests/templates/inforequests/appeals/base.html:43
+#: apps/inforequests/templates/inforequests/appeals/base.html:61
 msgid "inforequests:appeals:next"
 msgstr "Next"
 
-#: apps/inforequests/templates/inforequests/appeals/base.html:47
+#: apps/inforequests/templates/inforequests/appeals/base.html:65
 msgid "inforequests:appeals:finish"
 msgstr "Finish"
 
-#: apps/inforequests/templates/inforequests/appeals/base.html:51
+#: apps/inforequests/templates/inforequests/appeals/base.html:71
 msgid "inforequests:appeals:close"
 msgstr "Close"
 
-#: apps/inforequests/templates/inforequests/appeals/disclosure-reason.html:18
-msgid "inforequests:appeals:disclosure-reason:heading"
-msgstr "Appeal: Reason"
-
-#: apps/inforequests/templates/inforequests/appeals/fallback-reason.html:18
-msgid "inforequests:appeals:fallback-reason:heading"
-msgstr "Appeal: Reason"
-
-#: apps/inforequests/templates/inforequests/appeals/final.html:23
-msgid "inforequests:appeals:final:heading"
-msgstr "Appeal: Check"
-
-#: apps/inforequests/templates/inforequests/appeals/final.html:46
+#: apps/inforequests/templates/inforequests/appeals/final.html:41
 msgid "inforequests:appeals:print"
 msgstr "Print"
-
-#: apps/inforequests/templates/inforequests/appeals/paper.html:20
-msgid "inforequests:appeals:paper:heading"
-msgstr "Appeal: Content"
 
 #: apps/inforequests/templates/inforequests/create.html:13
 msgid "inforequests:create:title"

@@ -1,5 +1,4 @@
 {# vim: set filetype=htmldjango :#}
-{% load lorem from poleno.utils %}
 
 {% comment %}
  %
@@ -8,5 +7,4 @@
  %
 {% endcomment %}
 
-<p>Check, print and finish the appeal.</p>
-<p>{% lorem %}</p>
+Odvolanie voči rozhodnutiu o nesprístupnení informácie

@@ -1,0 +1,19 @@
+{# vim: set filetype=htmldjango :#}
+{% load paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotProvideStep
+ %  -- first_reason: boolean
+ %
+{% endcomment %}
+
+
+{% paragraph before=0 %}
+  Ako {% if not first_reason %}ďalší{% endif %} dôvod nesprístupnenia informácie bolo uvedené,
+  že povinná osoba žiadanú informáciu neposkytuje.
+{% endparagraph %}
+{% paragraph after=2 %}
+  <span style="color: red;">FIXME</span>
+{% endparagraph %}

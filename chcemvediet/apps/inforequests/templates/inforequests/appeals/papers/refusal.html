@@ -1,0 +1,29 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/papers/base.html" %}
+{% load paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %  -- finalize: boolean
+ %
+{% endcomment %}
+
+{% block "reasoning" %}
+  {% paragraph before=2 after=0 %}
+    Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
+    o nesprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}.
+  {% endparagraph %}
+
+  {% for reason_step in wizard.applicable_reason_steps %}
+    {% include reason_step.section_template with first_reason=forloop.first %}
+  {% endfor %}
+{% endblock %}

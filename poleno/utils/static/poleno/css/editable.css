@@ -1,0 +1,31 @@
+/* Required for ``poleno.utils.forms.EditableSpan`` form widget.
+ */
+
+.editable-span {
+	background: yellow;
+	white-space: pre-wrap;
+	/* override bootstrap conflict */
+	float: none;
+	margin: 0;
+}
+
+.editable-span:focus {
+	outline: 0px none;
+}
+
+.editable-span:after {
+	content: attr(data-padding);
+	visibility: hidden;
+}
+
+.editable-container {
+	border: 1px solid transparent;
+	margin: -1px 0 0 -1px;
+}
+
+.editable-container.focus {
+	border: 1px solid rgba(82, 168, 236, 0.8);
+	border-radius: 4px;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(82, 168, 236, 0.6);
+	transition: border 0.2s linear 0s, margin 0.2s linear 0s, box-shadow 0.2s linear 0s;
+}

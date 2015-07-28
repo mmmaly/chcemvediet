@@ -1,5 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "inforequests/appeals/papers/base.html" %}
+{% load paper_field from chcemvediet.inforequests %}
 
 {% comment %}
  %
@@ -16,7 +17,7 @@
  %
 {% endcomment %}
 
-{% block "odovodnenie" %}
+{% block "reasoning" %}
   <div style="margin: 2ex 0 0 0;">
     Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
     o sprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%},
@@ -25,11 +26,7 @@
     sprístupnením žiadaných informácií, z nasledovných dôvodov:
   </div>
   <div style="margin: 2ex 0 0 0;">
-    {% if finalize %}
-      <div style="white-space: pre-wrap;">{{ step.cleaned_data.reason }}</div>
-    {% else %}
-      {% include "inforequests/appeals/snippets/field.html" with field=step.reason %}
-    {% endif %}
+    {% paper_field step.reason %}
   </div>
   <div style="margin: 2ex 0 0 0;">
     Napriek tomu, že rozhodnutie bolo označené ako sprístupnenie informácie, k skutočnému

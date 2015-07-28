@@ -1,17 +1,18 @@
 {# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/base.html" %}
 
 {% comment %}
  %
  % Context:
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
- %  -- step: chcemvediet.apps.wizards.WizardStep
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealDeadEndStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- rozklad: boolean
- %  -- fiktivne: boolean
- %  -- not_at_all: boolean
+ %  -- text_template: string (template path)
  %
 {% endcomment %}
 
-{% if rozklad %}Rozklad{% else %}Odvolanie{% endif %} voči {% if fiktivne %}fiktívnemu{% endif %} rozhodnutiu o neposkytnutí informácie
+{% block "header-step" %}{% endblock %}
+{% block "footer-save" %}{% endblock %}
+{% block "footer-next" %}{% endblock %}

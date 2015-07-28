@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from django.utils.html import format_html, format_html_join
 
 def merge_html_attrs(*args, **kwargs):
     u"""
@@ -21,9 +22,15 @@ def merge_html_attrs(*args, **kwargs):
             continue
         for key, val in arg.items():
             if key in [u'class', u'class_']:
-                attrs.setdefault(u'class', {}).update(dict.fromkeys(val.split()))
+                if not isinstance(val, list):
+                    val = [val]
+                for v in val:
+                    attrs.setdefault(u'class', {}).update(dict.fromkeys(v.split()))
             elif key == u'style':
-                attrs.setdefault(u'style', []).append(val)
+                if isinstance(val, list):
+                    attrs.setdefault(u'style', []).extend(val)
+                else:
+                    attrs.setdefault(u'style', []).append(val)
             elif key in attrs:
                 raise ValueError(u'Duplicate attribute "%s".' % key)
             else:
@@ -33,3 +40,10 @@ def merge_html_attrs(*args, **kwargs):
     if u'style' in attrs:
         attrs[u'style'] = u' '.join(attrs[u'style'])
     return attrs
+
+def format_html_tag(tag, *args, **kwargs):
+    closed = kwargs.pop(u'closed', False)
+    attrs = merge_html_attrs(*args, **kwargs)
+    attrs = format_html_join(u'', u' {0}="{1}"', attrs.items())
+    html = format_html(u'<{0}{1}{2}>', tag, attrs, u' /' if closed else u'')
+    return html

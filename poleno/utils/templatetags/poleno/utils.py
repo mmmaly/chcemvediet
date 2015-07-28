@@ -143,6 +143,10 @@ def getattr_(value, arg):
     return getattr(value, arg)
 
 @register.filter
+def getkey(value, key):
+    return value.get(key)
+
+@register.filter
 def method(value, arg):
     u"""
     Tool to call object methods in templates.
@@ -221,6 +225,12 @@ def lorem(randseed=None, count=1, method=None):
     if method == u'p':
         res = [u'<p>%s</p>' % p for p in res]
     return u'\n'.join(res)
+
+@register.simple_tag(takes_context=True)
+def assign(context, **kwargs):
+    for key, val in kwargs.items():
+        context[key] = val
+    return u''
 
 @register.simple_tag(takes_context=True)
 def change_lang(context, lang=None):

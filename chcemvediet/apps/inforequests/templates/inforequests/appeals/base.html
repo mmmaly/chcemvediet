@@ -9,6 +9,8 @@
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- text_template: string (template path)
+ %  -- form_template: string (template path)
  %
 {% endcomment %}
 
@@ -19,37 +21,56 @@
   <div class="modal-header">
     {% block "header" %}
       <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h3>
+        {% block "header-heading" %}
+          {% include "inforequests/appeals/texts/base-heading.txt" %}
+        {% endblock %}
+        {% block "header-step" %}
+          ({{ step.step_number }}/{{ wizard.number_of_steps }})
+        {% endblock %}
+      </h3>
     {% endblock %}
   </div>
   <div class="modal-body">
     {% block "body" %}
-      <div>
-        {% include "main/snippets/form_horizontal.html" with form=step %}
-      </div>
+      {% block "body-text" %}
+        {% if text_template %}{% include text_template %}{% endif %}
+      {% endblock %}
+      {% block "body-form" %}
+        {% if form_template %}<div>{% include form_template with form=step %}</div>{% endif %}
+      {% endblock %}
     {% endblock %}
   </div>
   <div class="modal-footer">
     {% block "footer" %}
-      <button type="submit" class="btn" name="button" value="save">
-        <i class="icon-file"></i> {% trans 'inforequests:appeals:save' %}
-      </button>
-      {% if not step.is_first %}
-        <button type="submit" class="btn" name="button" value="prev">
-          <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
+      {% block "footer-save" %}
+        <button type="submit" class="btn" name="button" value="save">
+          <i class="icon-file"></i> {% trans 'inforequests:appeals:save' %}
         </button>
-      {% endif %}
-      {% if not step.is_last %}
-        <button type="submit" class="btn btn-primary" name="button" value="next">
-          <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
+      {% endblock %}
+      {% block "footer-prev" %}
+        {% if not step.is_first %}
+          <button type="submit" class="btn" name="button" value="prev">
+            <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
+          </button>
+        {% endif %}
+      {% endblock %}
+      {% block "footer-next" %}
+        {% if not step.is_last %}
+          <button type="submit" class="btn btn-primary" name="button" value="next">
+            <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
+          </button>
+        {% else %}
+          <button type="submit" class="btn btn-primary" name="button" value="next">
+            <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:finish' %}
+          </button>
+        {% endif %}
+      {% endblock %}
+      {% block "footer-close" %}
+        <button type="button" class="btn" data-dismiss="modal">
+          <i class="icon-remove"></i> {% trans 'inforequests:appeals:close' %}
         </button>
-      {% else %}
-        <button type="submit" class="btn btn-primary" name="button" value="next">
-          <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:finish' %}
-        </button>
-      {% endif %}
-      <button type="button" class="btn" data-dismiss="modal">
-        <i class="icon-remove"></i> {% trans 'inforequests:appeals:close' %}
-      </button>
+      {% endblock %}
     {% endblock %}
   </div>
 </form>
