@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-16 15:40+0200\n"
+"POT-Creation-Date: 2015-07-30 06:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forms.py:13
 msgid "invitations:InviteForm:email:label"
 msgstr "Invite"
 
-#: forms.py:19
 msgid "invitations:InviteForm:email:placeholder"
 msgstr "E-mail"
 
-#: templates/invitations/invite.html:12
 msgid "invitations:invite:title"
 msgstr "Invitation"
 
-#: templates/invitations/invite.html:15
 msgid "invitations:invite:heading"
 msgstr "Send an invitation"
 
-#: templates/invitations/invite.html:21
 msgid "invitations:invite:supply"
 msgstr "Available invitations"
 
-#: templates/invitations/invite.html:23
 msgid "invitations:invite:unlimited"
 msgstr "Unlimited"
 
-#: templates/invitations/invite.html:28
 msgid "invitations:invite:submit"
 msgstr "Invite"
 
-#: validators.py:24
+#, python-brace-format
 msgid "invitations:validate_unused_emails:one {0}"
 msgstr "E-mail {0} is already registered."
 
-#: validators.py:26
+#, python-brace-format
 msgid "invitations:validate_unused_emails:few {0} {1}"
 msgstr "E-mails {0} and {1} are already registered."
 
-#: validators.py:28
+#, python-brace-format
 msgid "invitations:validate_unused_emails:many {0}"
 msgstr "E-mails {0} and some other e-mails are already registered."

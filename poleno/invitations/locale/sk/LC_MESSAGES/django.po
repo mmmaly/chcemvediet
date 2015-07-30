@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-16 15:40+0200\n"
+"POT-Creation-Date: 2015-07-30 06:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,42 +18,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: forms.py:13
 msgid "invitations:InviteForm:email:label"
 msgstr "Pozvi"
 
-#: forms.py:19
 msgid "invitations:InviteForm:email:placeholder"
 msgstr "E-mail"
 
-#: templates/invitations/invite.html:12
 msgid "invitations:invite:title"
 msgstr "Pozvánky"
 
-#: templates/invitations/invite.html:15
 msgid "invitations:invite:heading"
 msgstr "Pošli pozvánku"
 
-#: templates/invitations/invite.html:21
 msgid "invitations:invite:supply"
 msgstr "Počet voľných pozvánok"
 
-#: templates/invitations/invite.html:23
 msgid "invitations:invite:unlimited"
 msgstr "Neobmedzene"
 
-#: templates/invitations/invite.html:28
 msgid "invitations:invite:submit"
 msgstr "Pozvi"
 
-#: validators.py:24
+#, python-brace-format
 msgid "invitations:validate_unused_emails:one {0}"
 msgstr "E-mail {0} je už zaregistrovaný."
 
-#: validators.py:26
+#, python-brace-format
 msgid "invitations:validate_unused_emails:few {0} {1}"
 msgstr "E-maily {0} a {1} sú už zaregistrované."
 
-#: validators.py:28
+#, python-brace-format
 msgid "invitations:validate_unused_emails:many {0}"
 msgstr "E-maily {0} a niektoré ďalie e-maily sú už zaregistrované."

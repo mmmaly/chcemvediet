@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-16 15:24+0200\n"
+"POT-Creation-Date: 2015-07-30 06:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,54 +17,41 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: models.py:35
 msgid "mail:Message:type:INBOUND"
 msgstr "Inbound"
 
-#: models.py:36
 msgid "mail:Message:type:OUTBOUND"
 msgstr "Outbound"
 
-#: models.py:224
 msgid "mail:Recipient:type:TO"
 msgstr "To"
 
-#: models.py:225
 msgid "mail:Recipient:type:CC"
 msgstr "Cc"
 
-#: models.py:226
 msgid "mail:Recipient:type:BCC"
 msgstr "Bcc"
 
-#: models.py:234
 msgid "mail:Recipient:status:INBOUND"
 msgstr "Inbound"
 
-#: models.py:236
 msgid "mail:Recipient:status:UNDEFINED"
 msgstr "Undefined"
 
-#: models.py:237
 msgid "mail:Recipient:status:QUEUED"
 msgstr "Queued"
 
-#: models.py:238
 msgid "mail:Recipient:status:REJECTED"
 msgstr "Rejected"
 
-#: models.py:239
 msgid "mail:Recipient:status:INVALID"
 msgstr "Invalid"
 
-#: models.py:240
 msgid "mail:Recipient:status:SENT"
 msgstr "Sent"
 
-#: models.py:241
 msgid "mail:Recipient:status:DELIVERED"
 msgstr "Delivered"
 
-#: models.py:242
 msgid "mail:Recipient:status:OPENED"
 msgstr "Opened"
