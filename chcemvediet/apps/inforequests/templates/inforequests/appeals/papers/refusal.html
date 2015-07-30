@@ -14,6 +14,7 @@
  %  -- fiktivne: boolean
  %  -- not_at_all: boolean
  %  -- finalize: boolean
+ %  -- number_of_reasons: int
  %
 {% endcomment %}
 
@@ -23,7 +24,9 @@
     o nesprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}.
   {% endparagraph %}
 
-  {% for reason_step in wizard.applicable_reason_steps %}
-    {% include reason_step.section_template with first_reason=forloop.first %}
+  {% for substep in wizard.steps.values %}
+    {% if substep and substep.section_template %}
+      {% include substep.section_template with reason_number_on_paper=substep.reason_number_on_paper %}
+    {% endif %}
   {% endfor %}
 {% endblock %}

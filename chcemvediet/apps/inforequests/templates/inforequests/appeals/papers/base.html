@@ -56,24 +56,20 @@
   {% endblock %}
   {% block "appeal" %}
     {% paragraph before=2 %}
+      V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len
+      „zákon o slobode inforácií” alebo len „zákon”) podávam
+      {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
+      voči {% if fiktivne %}fiktívnemu{% endif %} rozhodnutiu
+      {% obligee_declension branch.obligee "genitive" %}
+      (ďalej len „povinná osoba”){% if not fiktivne and last_action.file_number %} číslo {{ last_action.file_number}}{% endif%},
       {% if fiktivne %}
-        V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len „zákon”) podávam
-        {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
-        voči fiktívnemu rozhodnutiu
-        {% obligee_declension branch.obligee "genitive" %}
-        (ďalej len „povinná osoba”), ku ktorému došlo
+        ku ktorému došlo
         {% if not_at_all %}nesprístupnením{% else %}len čiastočným sprístupnením{% endif%}
-        informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }} (ďalej len „žiadosť”).
       {% else %}
-        V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len „zákon”) podávam
-        {% if rozklad %}rozklad{% else %}odvolanie{% endif %}
-        voči rozhodnutiu
-        {% obligee_declension branch.obligee "genitive" %}
-        (ďalej len „povinná osoba”){% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%},
         ktorým došlo k
         {% if not_at_all %}nesprístupneniu{% else %}len čiastočnému sprístupneniu{% endif%}
-        informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }} (ďalej len „žiadosť”).
       {% endif %}
+      informácie v zmysle mojej žiadosti o informácie zo dňa {{ inforequest.submission_date|date:"d.m.Y" }} (ďalej len „žiadosť”).
     {% endparagraph %}
   {% endblock %}
 

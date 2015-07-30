@@ -1,0 +1,21 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealConfidentialFallbackReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- reason_number_on_paper: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+{% if step.key == "confidential_fallback_reason" or wizard.values.confidential_fallback %}
+  {% paragraph before=0 after=2 editable=True %}
+    Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
+    informácie bolo uvedené, že žiadaná informácia je utajovanou skutočnosťou.
+    {% paper_field step.confidential_fallback_reason %}
+  {% endparagraph %}
+{% endif %}

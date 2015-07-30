@@ -1,4 +1,5 @@
 {# vim: set filetype=django :#}
+{% load squeeze from poleno.utils %}
 
 {% comment %}
  %

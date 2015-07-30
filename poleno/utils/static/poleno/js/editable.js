@@ -22,7 +22,7 @@ $(function(){
 	}
 	function update(element) {
 		var content = getContent(element);
-		element.attr('data-padding', repeat('. ', content.length < 10 ? 47 : 5));
+		element.attr('data-padding', repeat('. ', content.match(/\n\s*$/) ? 0 : content.length < 10 ? 47 : 5));
 		element.next().val(content);
 		element.html(content);
 	}

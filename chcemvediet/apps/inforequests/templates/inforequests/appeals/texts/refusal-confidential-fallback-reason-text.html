@@ -1,0 +1,32 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealConfidentialFallbackReasonStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+<h4>Utajovaná skutočnosť</h4>
+<div class="alert">
+  Ak inštitúcia dôveryhodne odôvodnila, že informácia je naozaj utajovanou skutočnosťou, odvolanie
+  nemá zmysel podávať.
+</div>
+<p>
+  Označili ste, že žiadaná informácia sa nedá zaradiť do žiadnej z uvedených kategórií. Je možné,
+  že inštitúcia má zákonný dôvod, prečo žiadanú informáciu označila ako utajovanú skutočnosť. Ziaľ,
+  expertný systém nášho portálu zatiaľ nedokáže pokryť všetky alternatívy. Na záver odvolania
+  inštitúciu požiadame, aby informáciu sprístupnila s vyčiernenou utajovanou skutočnosťou.
+</p>
+<p>
+  Ak si myslíte, že napriek tomu je nesprístupnenie neoprávnené, skúste zdôvodniť, prečo by
+  inštitúcia mala žiadanú informáciu sprístupniť v plnej nevyčiernenej podobe. Konzultácia
+  s právnikom alebo nahliadnutie do príručky a zákona môže pomôcť.
+</p>
+<p>
+  <label>{% paper_field step.confidential_fallback %} Chcem doplniť vlastné zdôvodnenie</label>
+</p>

@@ -42,6 +42,16 @@ class PaperCharField(PaperField, forms.CharField):
             value = u''
         return format_html(u'<span style="white-space: pre-wrap;">{0}</span>', value)
 
+class OptionalReasonCheckboxField(forms.BooleanField):
+    def __init__(self, *args, **kwargs):
+        kwargs[u'widget'] = forms.CheckboxInput(attrs={
+                u'class': u'toggle-checkbox',
+                u'data-container': u'.modal',
+                u'data-target': u'button[value="next"], .paper-section'
+                    if kwargs.get(u'required', True) else u'.paper-section',
+                })
+        super(OptionalReasonCheckboxField, self).__init__(*args, **kwargs)
+
 
 class AppealSectionStep(WizardStep):
     template = u'inforequests/appeals/section.html'
@@ -53,6 +63,15 @@ class AppealSectionStep(WizardStep):
                 u'section_template': self.section_template,
                 })
         return res
+
+    def paper_fields(self, step):
+        pass
+
+    def paper_context(self, extra=None):
+        return dict(extra or {})
+
+    def section_is_empty(self):
+        return False
 
 class AppealDeadEndStep(WizardStep):
     template = u'inforequests/appeals/dead-end.html'
@@ -78,6 +97,12 @@ class AppealPaperStep(WizardStep):
                 }),
             )
 
+    def __init__(self, *args, **kwargs):
+        super(AppealPaperStep, self).__init__(*args, **kwargs)
+        for step in self.wizard.steps.values():
+            if isinstance(step, AppealSectionStep):
+                step.paper_fields(self)
+
     def clean(self):
         cleaned_data = super(AppealPaperStep, self).clean()
 
@@ -102,6 +127,9 @@ class AppealPaperStep(WizardStep):
                 u'subject_template': self.subject_template,
                 u'content_template': self.content_template,
                 })
+        for step in self.wizard.steps.values():
+            if isinstance(step, AppealSectionStep):
+                res.update(step.paper_context())
         return res
 
 class AppealFinalStep(WizardStep):

@@ -1,0 +1,63 @@
+{# vim: set filetype=htmldjango :#}
+{% load squeeze from poleno.utils %}
+{% load paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealSanitizationStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- number_of_reasons: int
+ %  -- sanitizable.all: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable.covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable.not_covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %
+{% endcomment %}
+
+
+{% paragraph before=0 after=2 %}
+  {% if sanitizable.not_covered %}
+    Ako
+    {% if sanitizable.not_covered|length == 1 %}
+      {% if sanitizable.not_covered|length < number_of_reasons %}
+        ďalší dôvod
+      {% else %}
+        dôvod
+      {% endif %}
+    {% else %}
+      {% if sanitizable.not_covered|length < number_of_reasons %}
+        ďalšie dôvody
+      {% else %}
+        dôvody
+      {% endif %}
+    {% endif %}
+    nesprístupnenia informácie bolo uvedené, že žiadaná informácia
+    {% for reason in sanitizable.not_covered %}
+      {% filter squeeze %}
+        {% if reason == last_action.REFUSAL_REASONS.BUSINESS_SECRET %}
+          je obchodným tajomstvom
+        {% elif reason == last_action.REFUSAL_REASONS.PERSONAL %}
+          podlieha ochrane osobných údajov
+        {% elif reason == last_action.REFUSAL_REASONS.CONFIDENTIAL %}
+          je utajovanou skutočnosťou
+        {% endif %}
+      {% endfilter squeeze %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}.{% endif %}
+    {% endfor %}
+  {% endif %}
+  Povinná osoba ma informáciu zverejniť tak, že
+  {% for reason in sanitizable.all %}
+    {% filter squeeze %}
+      {% if reason == last_action.REFUSAL_REASONS.BUSINESS_SECRET %}
+        obchodné tajomstvo
+      {% elif reason == last_action.REFUSAL_REASONS.PERSONAL %}
+        osobné údaje podliehajúce ochrane
+      {% elif reason == last_action.REFUSAL_REASONS.CONFIDENTIAL %}
+        utajované skutočnosťi
+      {% endif %}
+    {% endfilter squeeze %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}{% endif %}
+  {% endfor %}
+  začierni.
+  <span style="color: red;">FIXME</span>
+{% endparagraph %}

@@ -9,8 +9,8 @@ from poleno.utils.forms import EditableSpan
 from chcemvediet.apps.wizards import WizardStep
 from chcemvediet.apps.inforequests.models import Action
 
-from . import PaperCharField
-from . import AppealSectionStep, AppealDeadEndStep, AppealPaperStep, AppealFinalStep, AppealWizard
+from . import PaperCharField, OptionalReasonCheckboxField
+from . import AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
 
 class ReasonStep(WizardStep):
     covered_reason = None
@@ -22,44 +22,102 @@ class ReasonStep(WizardStep):
     def context(self, extra=None):
         res = super(ReasonStep, self).context(extra)
         res.update({
-                u'first_reason': self.is_first_reason(),
+                u'reason_number_in_wizard': self.reason_number_in_wizard(),
+                u'reason_number_on_paper': self.reason_number_on_paper(),
                 })
         return res
 
-    def is_first_reason(self):
-        for step in self.wizard.steps.values()[:self.index]:
-            if isinstance(step, ReasonSectionStep):
-                return False
-        return True
+    def reason_number_in_wizard(self):
+        return len(set(step.covered_reason
+                for step in self.wizard.steps.values()[:self.index+1]
+                if step and isinstance(step, ReasonStep)
+                ))
+
+    def reason_number_on_paper(self):
+        return len(set(step.covered_reason
+                for step in self.wizard.steps.values()[:self.index+1]
+                if step and isinstance(step, ReasonSectionStep) and not step.section_is_empty()
+                ))
 
 class ReasonSectionStep(AppealSectionStep, ReasonStep):
     pass
 
-class ReasonDeadEndStep(AppealDeadEndStep, ReasonStep):
-    pass
 
-
-class RefusalAppealDoesNotHaveStep(ReasonSectionStep):
+class RefusalAppealDoesNotHaveReasonStep(ReasonSectionStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_HAVE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-have-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-does-not-have.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-have-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-does-not-have-reason.html'
 
     does_not_have_reason = PaperCharField(widget=EditableSpan())
 
-class RefusalAppealDoesNotProvideStep(ReasonSectionStep):
+    def paper_fields(self, step):
+        step.fields[u'does_not_have_reason'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealDoesNotProvidePublicFundsStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_PROVIDE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-does-not-provide.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-public-funds-text.html'
 
-class RefusalAppealDoesNotCreateStep(ReasonSectionStep):
+    does_not_provide_public_funds = forms.TypedChoiceField(
+            coerce=int,
+            choices=(
+                (None, u''),
+                (1, _(u'inforequests:RefusalAppealDoesNotProvidePublicFundsStep:yes')),
+                (0, _(u'inforequests:RefusalAppealDoesNotProvidePublicFundsStep:no')),
+                ),
+            )
+
+class RefusalAppealDoesNotProvidePublicFundsReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.DOES_NOT_PROVIDE
+    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-public-funds-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-does-not-provide-public-funds-reason.html'
+
+    does_not_provide_public_funds_reason = PaperCharField(widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealDoesNotProvidePublicFundsReasonStep, cls).applicable(wizard):
+            return False
+        return wizard.values.get(u'does_not_provide_public_funds', True)
+
+    def paper_fields(self, step):
+        step.fields[u'does_not_provide_public_funds_reason'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealDoesNotProvideFallbackReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.DOES_NOT_PROVIDE
+    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-fallback-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-does-not-provide-fallback-reason.html'
+
+    does_not_provide_fallback = OptionalReasonCheckboxField()
+    does_not_provide_fallback_reason = PaperCharField(widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealDoesNotProvideFallbackReasonStep, cls).applicable(wizard):
+            return False
+        return not wizard.values.get(u'does_not_provide_public_funds', True)
+
+    def paper_fields(self, step):
+        step.fields[u'does_not_provide_fallback_reason'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealDoesNotCreateReasonStep(ReasonSectionStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_CREATE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-create-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-does-not-create.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-create-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-does-not-create-reason.html'
 
-class RefusalAppealCopyrightStep(ReasonSectionStep):
+    does_not_create_reason = PaperCharField(widget=EditableSpan())
+
+    def paper_fields(self, step):
+        step.fields[u'does_not_create_reason'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealCopyrightReasonStep(ReasonSectionStep):
     covered_reason = Action.REFUSAL_REASONS.COPYRIGHT
-    text_template = u'inforequests/appeals/texts/refusal-copyright-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-copyright.html'
+    text_template = u'inforequests/appeals/texts/refusal-copyright-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-copyright-reason.html'
+
+    copyright_reason = PaperCharField(widget=EditableSpan())
+
+    def paper_fields(self, step):
+        step.fields[u'copyright_reason'] = PaperCharField(widget=EditableSpan())
 
 class RefusalAppealBusinessSecretPublicFundsStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
@@ -92,62 +150,248 @@ class RefusalAppealBusinessSecretDefinitionStep(ReasonStep):
             widget=forms.CheckboxSelectMultiple(),
             )
 
-class RefusalAppealBusinessSecretDeadEndStep(ReasonDeadEndStep):
+class RefusalAppealBusinessSecretDefinitionReasonStep(ReasonSectionStep):
     covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
-    text_template = u'inforequests/appeals/texts/refusal-business-secret-dead-end-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-business-secret-definition-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-business-secret-definition-reason.html'
+
+    def __init__(self, *args, **kwargs):
+        super(RefusalAppealBusinessSecretDefinitionReasonStep, self).__init__(*args, **kwargs)
+        choices = self.wizard.values.get(u'business_secret_definition', [])
+        for choice in choices:
+            self.fields[u'business_secret_definition_reason_' + choice] = PaperCharField(widget=EditableSpan())
 
     @classmethod
     def applicable(cls, wizard):
-        if not super(RefusalAppealBusinessSecretDeadEndStep, cls).applicable(wizard):
+        if not super(RefusalAppealBusinessSecretDefinitionReasonStep, cls).applicable(wizard):
             return False
-        if wizard.values.get(u'business_secret_public_funds', True):
-            return False
-        if wizard.values.get(u'business_secret_definition', True):
-            return False
-        return True
+        return wizard.values.get(u'business_secret_public_funds', True) or wizard.values.get(u'business_secret_definition', True)
 
-class RefusalAppealBusinessSecretStep(ReasonSectionStep):
-    covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
-    text_template = u'inforequests/appeals/texts/refusal-business-secret-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-business-secret.html'
-
-    def __init__(self, *args, **kwargs):
-        super(RefusalAppealBusinessSecretStep, self).__init__(*args, **kwargs)
+    def paper_fields(self, step):
         choices = self.wizard.values.get(u'business_secret_definition', [])
         for choice in choices:
-            self.fields[u'business_secret_definition_' + choice] = PaperCharField(widget=EditableSpan())
+            step.fields[u'business_secret_definition_reason_' + choice] = PaperCharField(widget=EditableSpan())
 
-class RefusalAppealPersonalStep(ReasonSectionStep):
+class RefusalAppealBusinessSecretFallbackReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
+    text_template = u'inforequests/appeals/texts/refusal-business-secret-fallback-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-business-secret-fallback-reason.html'
+
+    business_secret_fallback = OptionalReasonCheckboxField(required=False)
+    business_secret_fallback_reason = PaperCharField(required=False, widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealBusinessSecretFallbackReasonStep, cls).applicable(wizard):
+            return False
+        return not wizard.values.get(u'business_secret_public_funds', True) and not wizard.values.get(u'business_secret_definition', True)
+
+    def paper_fields(self, step):
+        if self.wizard.values.get(u'business_secret_fallback', True):
+            step.fields[u'business_secret_fallback_reason'] = PaperCharField(widget=EditableSpan())
+
+    def section_is_empty(self):
+        return not self.wizard.values.get(u'business_secret_fallback', True)
+
+    def clean(self):
+        cleaned_data = super(RefusalAppealBusinessSecretFallbackReasonStep, self).clean()
+        fallback = cleaned_data.get(u'business_secret_fallback', None)
+        fallback_reason = cleaned_data.get(u'business_secret_fallback_reason', None)
+        if fallback and not fallback_reason:
+            msg = self.fields[u'business_secret_fallback_reason'].error_messages[u'required']
+            self.add_error(u'business_secret_fallback_reason', msg)
+        return cleaned_data
+
+class RefusalAppealPersonalOfficerStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.PERSONAL
-    text_template = u'inforequests/appeals/texts/refusal-personal-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-personal.html'
+    text_template = u'inforequests/appeals/texts/refusal-personal-officer-text.html'
 
-class RefusalAppealConfidentialStep(ReasonSectionStep):
+    personal_officer = forms.TypedChoiceField(
+            coerce=int,
+            choices=(
+                (None, u''),
+                (1, _(u'inforequests:RefusalAppealPersonalOfficerStep:yes')),
+                (0, _(u'inforequests:RefusalAppealPersonalOfficerStep:no')),
+                ),
+            )
+
+class RefusalAppealPersonalOfficerReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.PERSONAL
+    text_template = u'inforequests/appeals/texts/refusal-personal-officer-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-personal-officer-reason.html'
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealPersonalOfficerReasonStep, cls).applicable(wizard):
+            return False
+        return wizard.values.get(u'personal_officer', True)
+
+class RefusalAppealPersonalFallbackReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.PERSONAL
+    text_template = u'inforequests/appeals/texts/refusal-personal-fallback-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-personal-fallback-reason.html'
+
+    personal_fallback = OptionalReasonCheckboxField(required=False)
+    personal_fallback_reason = PaperCharField(required=False, widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealPersonalFallbackReasonStep, cls).applicable(wizard):
+            return False
+        return not wizard.values.get(u'personal_officer', True)
+
+    def paper_fields(self, step):
+        if self.wizard.values.get(u'personal_fallback', True):
+            step.fields[u'personal_fallback_reason'] = PaperCharField(widget=EditableSpan())
+
+    def section_is_empty(self):
+        return not self.wizard.values.get(u'personal_fallback', True)
+
+    def clean(self):
+        cleaned_data = super(RefusalAppealPersonalFallbackReasonStep, self).clean()
+        fallback = cleaned_data.get(u'personal_fallback', None)
+        fallback_reason = cleaned_data.get(u'personal_fallback_reason', None)
+        if fallback and not fallback_reason:
+            msg = self.fields[u'personal_fallback_reason'].error_messages[u'required']
+            self.add_error(u'personal_fallback_reason', msg)
+        return cleaned_data
+
+class RefusalAppealConfidentialNotConfidentialStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.CONFIDENTIAL
-    text_template = u'inforequests/appeals/texts/refusal-confidential-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-confidential.html'
+    text_template = u'inforequests/appeals/texts/refusal-confidential-not-confidential-text.html'
 
-class RefusalAppealOtherReasonStep(ReasonSectionStep):
+    confidential_not_confidential = forms.TypedChoiceField(
+            coerce=int,
+            choices=(
+                (None, u''),
+                (1, _(u'inforequests:RefusalAppealConfidentialNotConfidentialStep:yes')),
+                (0, _(u'inforequests:RefusalAppealConfidentialNotConfidentialStep:no')),
+                ),
+            )
+
+class RefusalAppealConfidentialNotConfidentialReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.CONFIDENTIAL
+    text_template = u'inforequests/appeals/texts/refusal-confidential-not-confidential-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-confidential-not-confidential-reason.html'
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealConfidentialNotConfidentialReasonStep, cls).applicable(wizard):
+            return False
+        return wizard.values.get(u'confidential_not_confidential', True)
+
+class RefusalAppealConfidentialFallbackReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.CONFIDENTIAL
+    text_template = u'inforequests/appeals/texts/refusal-confidential-fallback-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-confidential-fallback-reason.html'
+
+    confidential_fallback = OptionalReasonCheckboxField(required=False)
+    confidential_fallback_reason = PaperCharField(required=False, widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealConfidentialFallbackReasonStep, cls).applicable(wizard):
+            return False
+        return not wizard.values.get(u'confidential_not_confidential', True)
+
+    def paper_fields(self, step):
+        if self.wizard.values.get(u'confidential_fallback', True):
+            step.fields[u'confidential_fallback_reason'] = PaperCharField(widget=EditableSpan())
+
+    def section_is_empty(self):
+        return not self.wizard.values.get(u'confidential_fallback', True)
+
+    def clean(self):
+        cleaned_data = super(RefusalAppealConfidentialFallbackReasonStep, self).clean()
+        fallback = cleaned_data.get(u'confidential_fallback', None)
+        fallback_reason = cleaned_data.get(u'confidential_fallback_reason', None)
+        if fallback and not fallback_reason:
+            msg = self.fields[u'confidential_fallback_reason'].error_messages[u'required']
+            self.add_error(u'confidential_fallback_reason', msg)
+        return cleaned_data
+
+class RefusalAppealOtherReasonValidStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.OTHER_REASON
-    text_template = u'inforequests/appeals/texts/refusal-other-reason-text.html'
-    section_template = u'inforequests/appeals/papers/refusal-other-reason.html'
+    text_template = u'inforequests/appeals/texts/refusal-other-reason-valid-text.html'
 
-    other_reason_reason = PaperCharField(widget=EditableSpan())
+    other_reason_valid = forms.TypedChoiceField(
+            coerce=int,
+            choices=(
+                (None, u''),
+                (1, _(u'inforequests:RefusalAppealOtherReasonValidStep:yes')),
+                (0, _(u'inforequests:RefusalAppealOtherReasonValidStep:no')),
+                ),
+            )
+
+class RefusalAppealOtherReasonValidReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.OTHER_REASON
+    text_template = u'inforequests/appeals/texts/refusal-other-reason-valid-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-other-reason-valid-reason.html'
+
+    other_reason_valid_reason = PaperCharField(widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealOtherReasonValidReasonStep, cls).applicable(wizard):
+            return False
+        return wizard.values.get(u'other_reason_valid', True)
+
+    def paper_fields(self, step):
+        step.fields[u'other_reason_valid_reason'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealOtherReasonInvalidReasonStep(ReasonSectionStep):
+    covered_reason = Action.REFUSAL_REASONS.OTHER_REASON
+    text_template = u'inforequests/appeals/texts/refusal-other-reason-invalid-reason-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-other-reason-invalid-reason.html'
+
+    other_reason_invalid_reason = PaperCharField(widget=EditableSpan())
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealOtherReasonInvalidReasonStep, cls).applicable(wizard):
+            return False
+        return not wizard.values.get(u'other_reason_valid', True)
+
+    def paper_fields(self, step):
+        step.fields[u'other_reason_invalid_reason'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealSanitizationStep(AppealSectionStep):
+    text_template = u'inforequests/appeals/texts/refusal-sanitization-text.html'
+    section_template = u'inforequests/appeals/papers/refusal-sanitization.html'
+
+    def context(self, extra=None):
+        res = super(RefusalAppealSanitizationStep, self).context(extra)
+        res.update({
+                u'sanitizable': self.sanitizable(),
+                })
+        return res
+
+    def paper_context(self, extra=None):
+        res = super(RefusalAppealSanitizationStep, self).paper_context(extra)
+        res.update({
+                u'sanitizable': self.sanitizable(),
+                })
+        return res
+
+    def sanitizable(self):
+        covered = set(step.covered_reason
+                for step in self.wizard.steps.values()
+                if step and isinstance(step, ReasonSectionStep) and not step.section_is_empty()
+                )
+        sanitizable = set(self.wizard.branch.last_action.refusal_reason) & set([
+                Action.REFUSAL_REASONS.BUSINESS_SECRET,
+                Action.REFUSAL_REASONS.PERSONAL,
+                Action.REFUSAL_REASONS.CONFIDENTIAL,
+                ])
+        return {
+                u'all': sanitizable,
+                u'covered': sanitizable & covered,
+                u'not_covered': sanitizable - covered,
+                }
 
 class RefusalAppealPaperStep(AppealPaperStep):
     subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/refusal.html'
-
-    def __init__(self, *args, **kwargs):
-        super(RefusalAppealPaperStep, self).__init__(*args, **kwargs)
-        if self.wizard.steps[u'does_not_have']:
-            self.fields[u'does_not_have_reason'] = PaperCharField(widget=EditableSpan())
-        if self.wizard.steps[u'business_secret']:
-            choices = self.wizard.values.get(u'business_secret_definition', [])
-            for choice in choices:
-                self.fields[u'business_secret_definition_' + choice] = PaperCharField(widget=EditableSpan())
-        if self.wizard.steps[u'other_reason']:
-            self.fields[u'other_reason_reason'] = PaperCharField(widget=EditableSpan())
 
 class RefusalAppealWizard(AppealWizard):
     u"""
@@ -156,17 +400,26 @@ class RefusalAppealWizard(AppealWizard):
     the wizard does not apply.
     """
     step_classes = OrderedDict([
-            (u'does_not_have', RefusalAppealDoesNotHaveStep),
-            (u'does_not_provide', RefusalAppealDoesNotProvideStep),
-            (u'does_not_create', RefusalAppealDoesNotCreateStep),
-            (u'copyright', RefusalAppealCopyrightStep),
+            (u'does_not_have_reason', RefusalAppealDoesNotHaveReasonStep),
+            (u'does_not_provide_public_funds', RefusalAppealDoesNotProvidePublicFundsStep),
+            (u'does_not_provide_public_funds_reason', RefusalAppealDoesNotProvidePublicFundsReasonStep),
+            (u'does_not_provide_fallback_reason', RefusalAppealDoesNotProvideFallbackReasonStep),
+            (u'does_not_create_reason', RefusalAppealDoesNotCreateReasonStep),
+            (u'copyright_reason', RefusalAppealCopyrightReasonStep),
             (u'business_secret_public_funds', RefusalAppealBusinessSecretPublicFundsStep),
             (u'business_secret_definition', RefusalAppealBusinessSecretDefinitionStep),
-            (u'business_secret_dead_end', RefusalAppealBusinessSecretDeadEndStep),
-            (u'business_secret', RefusalAppealBusinessSecretStep),
-            (u'personal', RefusalAppealPersonalStep),
-            (u'confidential', RefusalAppealConfidentialStep),
-            (u'other_reason', RefusalAppealOtherReasonStep),
+            (u'business_secret_definition_reason', RefusalAppealBusinessSecretDefinitionReasonStep),
+            (u'business_secret_fallback_reason', RefusalAppealBusinessSecretFallbackReasonStep),
+            (u'personal_officer', RefusalAppealPersonalOfficerStep),
+            (u'personal_officer_reason', RefusalAppealPersonalOfficerReasonStep),
+            (u'personal_fallback_reason', RefusalAppealPersonalFallbackReasonStep),
+            (u'confidential_not_confidential', RefusalAppealConfidentialNotConfidentialStep),
+            (u'confidential_not_confidential_reason', RefusalAppealConfidentialNotConfidentialReasonStep),
+            (u'confidential_fallback_reason', RefusalAppealConfidentialFallbackReasonStep),
+            (u'other_reason_valid', RefusalAppealOtherReasonValidStep),
+            (u'other_reason_valid_reason', RefusalAppealOtherReasonValidReasonStep),
+            (u'other_reason_invalid_reason', RefusalAppealOtherReasonInvalidReasonStep),
+            (u'sanitization', RefusalAppealSanitizationStep),
             (u'paper', RefusalAppealPaperStep),
             (u'final', AppealFinalStep),
             ])
@@ -178,14 +431,14 @@ class RefusalAppealWizard(AppealWizard):
         if not branch.last_action.refusal_reason: # Without reason
             return False
         supported_reasons = set(s.covered_reason
-                for s in cls.step_classes.values() if issubclass(s, ReasonSectionStep))
+                for s in cls.step_classes.values() if issubclass(s, ReasonStep))
         if set(branch.last_action.refusal_reason) - supported_reasons: # Unsupported reason
             return False
         return True
 
-    def applicable_reason_steps(self):
-        res = []
-        for step in self.steps.values():
-            if isinstance(step, ReasonSectionStep):
-                res.append(step)
+    def context(self, extra=None):
+        res = super(RefusalAppealWizard, self).context(extra)
+        res.update({
+                u'number_of_reasons': len(self.branch.last_action.refusal_reason),
+                })
         return res

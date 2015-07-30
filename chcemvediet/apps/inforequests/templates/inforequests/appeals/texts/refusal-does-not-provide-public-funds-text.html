@@ -1,0 +1,25 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotProvidePublicFundsStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+<h4>Informáciu neposkytuje</h4>
+<p>
+  Ako {% include "inforequests/appeals/texts/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
+  informácie bolo uvedené, že inštitúcia žiadanú informáciu neposkytuje.
+</p>
+<p>
+  Niektoré inštitúcie majú povinnosť sprístupňovať len niektoré informácie. Týka sa žiadaná
+  informácia hospodárenia s verejnými prostriedkami, nakladaní s majetkom štátu, majetkom vyššieho
+  územného celku alebo majetkom obce?
+  {% paper_field step.does_not_provide_public_funds %}
+</p>

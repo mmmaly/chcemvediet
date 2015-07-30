@@ -1,0 +1,23 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+{% if number_of_reasons == 1 %}
+  {# empty #}
+{% elif reason_number_in_wizard == 1 %}
+  prvý
+{% elif reason_number_in_wizard == 2 %}
+  druhý
+{% elif reason_number_in_wizard == 3 %}
+  tretí
+{% elif reason_number_in_wizard == number_of_reasons %}
+  posledný
+{% else %}
+  ďalší
+{% endif %}

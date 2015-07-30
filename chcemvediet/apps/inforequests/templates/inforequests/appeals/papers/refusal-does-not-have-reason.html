@@ -4,15 +4,18 @@
 {% comment %}
  %
  % Context:
- %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotHaveStep
- %  -- first_reason: boolean
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotHaveReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- reason_number_on_paper: int
+ %  -- number_of_reasons: int
  %
 {% endcomment %}
 
 
 {% paragraph before=0 %}
-  Ako {% if not first_reason %}ďalší{% endif %} dôvod nesprístupnenia informácie bolo uvedené,
-  že povinná osoba žiadanú informáciu nemá.
+  Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
+  informácie bolo uvedené, že povinná osoba žiadanú informáciu nemá.
 {% endparagraph %}
 {% paragraph %}
   Podľa Rozsudku Krajského súdu v Bratislave sp. zn. 19 S 31/02 zo dňa 16. mája 2002 (Rs 37/2003)
@@ -22,13 +25,13 @@
   k dispozícii len organizačná zložka (súčasť) povinnej osoby alebo len odkaz na to, že táto nie
   je podľa vnútorných predpisov povinná požadované informácie uschovávať.“</em>
 {% endparagraph %}
-{% paragraph %}
+{% paragraph editable=True %}
+  Podľa uvedeného mám teda dôvod sa domnievať, že povinná osoba uvedenú informáciu má alebo mala
+  k dispozícii, nakoľko{% paper_field step.does_not_have_reason %}
+{% endparagraph %}
+{% paragraph after=2 %}
   Podľa správneho poriadku rozhodnutie musí vychádzať zo zisteného stavu veci a obsahovať
   odôvodnenie. Povinná osoba teda mala povinnosť zistiť, či danú informáciu má, a príslušne aj
   odôvodniť, ak informáciu nemá. Za takéto odôvodnenie by bolo možné považovať napr. referenciu
   na záznam o skartovaní podľa príslušného registratúrneho poriadku.
-{% endparagraph %}
-{% paragraph after=2 editable=True %}
-  Podľa uvedeného mám teda dôvod sa domnievať, že povinná osoba uvedenú informáciu má,
-  nakoľko{% paper_field step.does_not_have_reason %}
 {% endparagraph %}

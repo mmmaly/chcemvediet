@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-27 05:05+0200\n"
+"POT-Creation-Date: 2015-07-29 22:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -205,19 +205,19 @@ msgstr "Predĺženie lehoty"
 msgid "inforequests:ExtendDeadlineForm:extension:placeholder"
 msgstr "pracovných dní"
 
-#: apps/inforequests/forms/appeals/__init__.py:78
+#: apps/inforequests/forms/appeals/__init__.py:86
 msgid "inforequests:AppealPaperStep:effective_date:placeholder"
 msgstr "dd.mm.yyyy"
 
-#: apps/inforequests/forms/appeals/__init__.py:91
+#: apps/inforequests/forms/appeals/__init__.py:99
 msgid "inforequests:AppealPaperStep:effective_date:older_than_last_action_error"
 msgstr "Nesmie byť starší ako dátum poslenej akcie."
 
-#: apps/inforequests/forms/appeals/__init__.py:93
+#: apps/inforequests/forms/appeals/__init__.py:101
 msgid "inforequests:AppealPaperStep:effective_date:from_past_error"
 msgstr "Nesmie byť z minulosti."
 
-#: apps/inforequests/forms/appeals/__init__.py:95
+#: apps/inforequests/forms/appeals/__init__.py:103
 msgid "inforequests:AppealPaperStep:effective_date:too_far_from_future_error"
 msgstr "Nesmie byť viac ako 5 dní z budúcnosti."
 
@@ -245,33 +245,65 @@ msgstr "Dôvod"
 msgid "inforequests:FallbackAppealPaperStep:reason:placeholder"
 msgstr "Dôvod"
 
-#: apps/inforequests/forms/appeals/refusal.py:73
+#: apps/inforequests/forms/appeals/refusal.py:57
+msgid "inforequests:RefusalAppealDoesNotProvidePublicFundsStep:yes"
+msgstr "Áno, týka sa"
+
+#: apps/inforequests/forms/appeals/refusal.py:58
+msgid "inforequests:RefusalAppealDoesNotProvidePublicFundsStep:no"
+msgstr "Nie, netýka sa"
+
+#: apps/inforequests/forms/appeals/refusal.py:115
 msgid "inforequests:RefusalAppealBusinessSecretPublicFundsStep:yes"
 msgstr "Áno, týka sa"
 
-#: apps/inforequests/forms/appeals/refusal.py:74
+#: apps/inforequests/forms/appeals/refusal.py:116
 msgid "inforequests:RefusalAppealBusinessSecretPublicFundsStep:no"
 msgstr "Nie, netýka sa"
 
-#: apps/inforequests/forms/appeals/refusal.py:87
+#: apps/inforequests/forms/appeals/refusal.py:129
 msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:comercial"
 msgstr "Nie je skutočnosť obchodnej, výrobnej alebo technickej povahy súvisiacu s podnikom,"
 
-#: apps/inforequests/forms/appeals/refusal.py:88
+#: apps/inforequests/forms/appeals/refusal.py:130
 msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:value"
 msgstr "Nemá skutočnú alebo aspoň potenciálnu materiálnu alebo nemateriálnu hodnotu,"
 
-#: apps/inforequests/forms/appeals/refusal.py:89
+#: apps/inforequests/forms/appeals/refusal.py:131
 msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:common"
 msgstr "Je v príslušných obchodných kruhoch bežne dostupná,"
 
-#: apps/inforequests/forms/appeals/refusal.py:90
+#: apps/inforequests/forms/appeals/refusal.py:132
 msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:will"
 msgstr "Nie je podľa vôle podnikateľa utajená,"
 
-#: apps/inforequests/forms/appeals/refusal.py:91
+#: apps/inforequests/forms/appeals/refusal.py:133
 msgid "inforequests:RefusalAppealBusinessSecretDefinitionStep:ensured"
 msgstr "Podnikateľ zodpovedajúcim spôsobom jej utajenie nezabezpečuje."
+
+#: apps/inforequests/forms/appeals/refusal.py:192
+msgid "inforequests:RefusalAppealPersonalOfficerStep:yes"
+msgstr "Áno, týkajú sa verejných zamestnancov"
+
+#: apps/inforequests/forms/appeals/refusal.py:193
+msgid "inforequests:RefusalAppealPersonalOfficerStep:no"
+msgstr "Nie, týkajú sa iných osôb"
+
+#: apps/inforequests/forms/appeals/refusal.py:222
+msgid "inforequests:RefusalAppealConfidentialNotConfidentialStep:yes"
+msgstr "Áno, dá sa zaradiť"
+
+#: apps/inforequests/forms/appeals/refusal.py:223
+msgid "inforequests:RefusalAppealConfidentialNotConfidentialStep:no"
+msgstr "Nie, nedá sa zaradiť "
+
+#: apps/inforequests/forms/appeals/refusal.py:252
+msgid "inforequests:RefusalAppealOtherReasonValidStep:yes"
+msgstr "Áno, ide o dôvod uvedený v zákone"
+
+#: apps/inforequests/forms/appeals/refusal.py:253
+msgid "inforequests:RefusalAppealOtherReasonValidStep:no"
+msgstr "Nie, ide o haluz"
 
 #: apps/inforequests/forms/inforequest.py:20
 msgid "inforequests:InforequestForm:obligee:label"
@@ -449,27 +481,27 @@ msgstr "Zavrieť"
 msgid "inforequests:appeals:print"
 msgstr "Vytlačiť"
 
-#: apps/inforequests/templates/inforequests/create.html:13
+#: apps/inforequests/templates/inforequests/create.html:12
 msgid "inforequests:create:title"
 msgstr "Nová infožiadosť"
 
-#: apps/inforequests/templates/inforequests/create.html:16
+#: apps/inforequests/templates/inforequests/create.html:15
 msgid "inforequests:create:heding"
 msgstr "Nová infožiadosť"
 
-#: apps/inforequests/templates/inforequests/create.html:21
+#: apps/inforequests/templates/inforequests/create.html:20
 msgid "inforequests:create:applicant_label"
 msgstr "Žiadateľ"
 
-#: apps/inforequests/templates/inforequests/create.html:32
+#: apps/inforequests/templates/inforequests/create.html:31
 msgid "inforequests:create:submit"
 msgstr "Odoslať žiadosť"
 
-#: apps/inforequests/templates/inforequests/create.html:36
+#: apps/inforequests/templates/inforequests/create.html:35
 msgid "inforequests:create:draft"
 msgstr "Uložiť ako rozpracované"
 
-#: apps/inforequests/templates/inforequests/create.html:40
+#: apps/inforequests/templates/inforequests/create.html:39
 msgid "inforequests:create:cancel"
 msgstr "Zrušiť"
 
@@ -521,79 +553,79 @@ msgstr "Odvolanie"
 msgid "inforequests:detail:action:advanced_to"
 msgstr "Nová povinná osoba"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:12
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:11
 msgid "inforequests:detail:add_smail:heading"
 msgstr "Pridajte list, ktorý prišiel poštou"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:17
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:16
 msgid "inforequests:detail:add_smail:confirmation"
 msgstr "Potvrdenie prijatia"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:18
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:17
 msgid "inforequests:detail:add_smail:extension"
 msgstr "Predĺženie lehoty"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:19
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:18
 msgid "inforequests:detail:add_smail:advancement"
 msgstr "Postúpenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:20
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:19
 msgid "inforequests:detail:add_smail:clarification_request"
 msgstr "Výzva na doplnenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:21
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:20
 msgid "inforequests:detail:add_smail:disclosure"
 msgstr "Sprístupnenie"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:22
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:21
 msgid "inforequests:detail:add_smail:refusal"
 msgstr "Rozhodnutie o odmietnutí"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:23
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:22
 msgid "inforequests:detail:add_smail:affirmation"
 msgstr "Potvrdenie rozhodnutia o odmietnutí"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:24
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:23
 msgid "inforequests:detail:add_smail:reversion"
 msgstr "Zrušenie rozhodnutia o odmietnutí"
 
-#: apps/inforequests/templates/inforequests/detail-add_smail.html:25
+#: apps/inforequests/templates/inforequests/detail-add_smail.html:24
 msgid "inforequests:detail:add_smail:remandment"
 msgstr "Vrátenie rozhodnutia o odmietnutí"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:13
+#: apps/inforequests/templates/inforequests/detail-decide.html:12
 msgid "inforequests:detail:decide:title"
 msgstr "Došlé nerozhodnuté e-maily"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:22
+#: apps/inforequests/templates/inforequests/detail-decide.html:21
 msgid "inforequests:detail:decide:confirmation"
 msgstr "Potvrdenie prijatia"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:23
+#: apps/inforequests/templates/inforequests/detail-decide.html:22
 msgid "inforequests:detail:decide:extension"
 msgstr "Predĺženie"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:24
+#: apps/inforequests/templates/inforequests/detail-decide.html:23
 msgid "inforequests:detail:decide:advancement"
 msgstr "Postúpenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:25
+#: apps/inforequests/templates/inforequests/detail-decide.html:24
 msgid "inforequests:detail:decide:clarification_request"
 msgstr "Výzva na doplnenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:26
+#: apps/inforequests/templates/inforequests/detail-decide.html:25
 msgid "inforequests:detail:decide:disclosure"
 msgstr "Sprístupnenie"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:27
+#: apps/inforequests/templates/inforequests/detail-decide.html:26
 msgid "inforequests:detail:decide:refusal"
 msgstr "Rozhodnutie o odmietnutí"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:28
+#: apps/inforequests/templates/inforequests/detail-decide.html:27
 msgid "inforequests:detail:decide:unrelated"
 msgstr "Nesúvisiaci email alebo spam"
 
-#: apps/inforequests/templates/inforequests/detail-decide.html:29
+#: apps/inforequests/templates/inforequests/detail-decide.html:28
 msgid "inforequests:detail:decide:unknown"
 msgstr "Neviem sa rozhodnúť"
 
@@ -625,17 +657,13 @@ msgstr "Detail žiadosti"
 msgid "inforequests:detail:history:heading"
 msgstr "Detail žiadosti"
 
-#: apps/inforequests/templates/inforequests/detail-new_action.html:12
+#: apps/inforequests/templates/inforequests/detail-new_action.html:11
 msgid "inforequests:detail:new_action:title"
 msgstr "Čo môžete vykonať"
 
-#: apps/inforequests/templates/inforequests/detail-new_action.html:17
+#: apps/inforequests/templates/inforequests/detail-new_action.html:16
 msgid "inforequests:detail:new_action:clarification_response"
 msgstr "Odpoveď na výzvu na doplnenie žiadosti"
-
-#: apps/inforequests/templates/inforequests/detail-new_action.html:18
-msgid "inforequests:detail:new_action:appeal"
-msgstr "Odvolanie"
 
 #: apps/inforequests/templates/inforequests/detail-request.html:12
 msgid "inforequests:detail:request:applicant"
@@ -737,202 +765,202 @@ msgstr "Subjekt"
 msgid "inforequests:index:closed:submission_date"
 msgstr "Dátum odoslania"
 
-#: apps/inforequests/templates/inforequests/modals/advancement-email.html:18
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/advancement-email.html:17
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:16
 msgid "inforequests:modals:advancement:heading"
 msgstr "Postúpenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/advancement-email.html:27
+#: apps/inforequests/templates/inforequests/modals/advancement-email.html:26
 msgid "inforequests:modals:advancement:decide_email"
 msgstr "Označ ako postúpenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/advancement-email.html:28
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:21
-#: apps/inforequests/templates/inforequests/modals/appeal.html:28
-#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:28
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:29
-#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:28
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:28
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:29
-#: apps/inforequests/templates/inforequests/modals/extension-email.html:28
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/print.html:46
-#: apps/inforequests/templates/inforequests/modals/refusal-email.html:28
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:28
-#: apps/inforequests/templates/inforequests/modals/unknown-email.html:24
-#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:24
-msgid "inforequests:modals:close"
-msgstr "Zavrieť"
-
-#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:26
-msgid "inforequests:modals:advancement:add_smail"
-msgstr "Pridať postúpenie"
-
+#: apps/inforequests/templates/inforequests/modals/advancement-email.html:27
 #: apps/inforequests/templates/inforequests/modals/advancement-smail.html:27
 #: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:20
 #: apps/inforequests/templates/inforequests/modals/appeal.html:27
+#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:27
 #: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:27
 #: apps/inforequests/templates/inforequests/modals/clarification_response.html:28
+#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:27
 #: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:27
 #: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:28
+#: apps/inforequests/templates/inforequests/modals/extension-email.html:27
 #: apps/inforequests/templates/inforequests/modals/extension-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/print.html:45
+#: apps/inforequests/templates/inforequests/modals/refusal-email.html:27
 #: apps/inforequests/templates/inforequests/modals/refusal-smail.html:27
 #: apps/inforequests/templates/inforequests/modals/remandment-smail.html:27
 #: apps/inforequests/templates/inforequests/modals/reversion-smail.html:27
+#: apps/inforequests/templates/inforequests/modals/unknown-email.html:23
+#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:23
+msgid "inforequests:modals:close"
+msgstr "Zavrieť"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:25
+msgid "inforequests:modals:advancement:add_smail"
+msgstr "Pridať postúpenie"
+
+#: apps/inforequests/templates/inforequests/modals/advancement-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/appeal.html:26
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:27
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:26
 msgid "inforequests:modals:draft"
 msgstr "Uložiť ako rozpracované"
 
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:16
 msgid "inforequests:modals:affirmation:heading"
 msgstr "Potvrdenie rozhodnutia"
 
-#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/affirmation-smail.html:25
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Pridať potvrdenie rozhodnutia"
 
-#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:14
+#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:13
 msgid "inforequests:modals:ajax_fail:heading"
 msgstr "Niečo sa pokazilo"
 
-#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:20
+#: apps/inforequests/templates/inforequests/modals/ajax_fail.html:19
 msgid "inforequests:modals:ajax_fail:reload"
 msgstr "Obnoviť stránku"
 
-#: apps/inforequests/templates/inforequests/modals/appeal.html:17
+#: apps/inforequests/templates/inforequests/modals/appeal.html:16
 msgid "inforequests:modals:appeal:heading"
 msgstr "Odvolanie"
 
-#: apps/inforequests/templates/inforequests/modals/appeal.html:26
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:27
+#: apps/inforequests/templates/inforequests/modals/appeal.html:25
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:26
 msgid "inforequests:modals:print"
 msgstr "Vytlačiť a poslať obyčajným listom"
 
-#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:18
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:17
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:16
 msgid "inforequests:modals:clarification_request:heading"
 msgstr "Výzva na doplnenie žiadosti "
 
-#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:27
+#: apps/inforequests/templates/inforequests/modals/clarification_request-email.html:26
 msgid "inforequests:modals:clarification_request:decide_email"
 msgstr "Označiť ako výzva na doplnenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/clarification_request-smail.html:25
 msgid "inforequests:modals:clarification_request:add_smail"
 msgstr "Pridať výzvu na doplnenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:17
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:16
 msgid "inforequests:modals:clarification_response:heading"
 msgstr "Odpoveď na výzvu na doplnenie žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/clarification_response.html:26
+#: apps/inforequests/templates/inforequests/modals/clarification_response.html:25
 msgid "inforequests:modals:email"
 msgstr "Poslať e-mailom"
 
-#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:18
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:17
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:16
 msgid "inforequests:modals:confirmation:heading"
 msgstr "Potvrdenie prijatia"
 
-#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:27
+#: apps/inforequests/templates/inforequests/modals/confirmation-email.html:26
 msgid "inforequests:modals:confirmation:decide_email"
 msgstr "Označiť ako potvrdenie prijatia žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/confirmation-smail.html:25
 msgid "inforequests:modals:confirmation:add_smail"
 msgstr "Pridať potvrdenie prijatia žiadosti"
 
-#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:18
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:17
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:16
 msgid "inforequests:modals:disclosure:heading"
 msgstr "Sprístupnenie informácie"
 
-#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:27
+#: apps/inforequests/templates/inforequests/modals/disclosure-email.html:26
 msgid "inforequests:modals:disclosure:decide_email"
 msgstr "Označiť ako sprístupnenie informácie"
 
-#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/disclosure-smail.html:25
 msgid "inforequests:modals:disclosure:add_smail"
 msgstr "Pridať sprístupnenie informácie"
 
-#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:19
+#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:18
 msgid "inforequests:modals:action-extend-deadline:heading"
 msgstr "Oznámenie o predĺžení lehoty"
 
-#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:28
+#: apps/inforequests/templates/inforequests/modals/extend-deadline.html:27
 msgid "inforequests:modals:action-extend-deadline:extend"
 msgstr "Oznámenie o predĺžení lehoty"
 
-#: apps/inforequests/templates/inforequests/modals/extension-email.html:18
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/extension-email.html:17
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:16
 msgid "inforequests:modals:extension:heading"
 msgstr "Oznámenie o predĺžení lehoty"
 
-#: apps/inforequests/templates/inforequests/modals/extension-email.html:27
+#: apps/inforequests/templates/inforequests/modals/extension-email.html:26
 msgid "inforequests:modals:extension:decide_email"
 msgstr "Označiť ako oznámenie o predĺžení lehoty"
 
-#: apps/inforequests/templates/inforequests/modals/extension-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/extension-smail.html:25
 msgid "inforequests:modals:extension:add_smail"
 msgstr "Pridať oznámenie o predĺžení lehoty"
 
-#: apps/inforequests/templates/inforequests/modals/print.html:15
+#: apps/inforequests/templates/inforequests/modals/print.html:14
 #, python-format
 msgid "inforequests:modals:print:heading %(action_name)s"
 msgstr "Vytlačiť %(action_name)s"
 
-#: apps/inforequests/templates/inforequests/modals/print.html:45
+#: apps/inforequests/templates/inforequests/modals/print.html:44
 msgid "inforequests:modals:print:print"
 msgstr "Tlačiť"
 
-#: apps/inforequests/templates/inforequests/modals/refusal-email.html:18
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/refusal-email.html:17
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:16
 msgid "inforequests:modals:refusal:heading"
 msgstr "Rozhodnutie o nesprístupnení informácie"
 
-#: apps/inforequests/templates/inforequests/modals/refusal-email.html:27
+#: apps/inforequests/templates/inforequests/modals/refusal-email.html:26
 msgid "inforequests:modals:refusal:decide_email"
 msgstr "Označiť ako rozhodnutie o nesprístupnení informácie"
 
-#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/refusal-smail.html:25
 msgid "inforequests:modals:refusal:add_smail"
 msgstr "Pridať rozhodnutie o nesprístupnení informácie"
 
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:16
 msgid "inforequests:modals:remandment:heading"
 msgstr "Pridať rozhodnutie, ktorým sa ruší predošlé rozhodnutie"
 
-#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/remandment-smail.html:25
 msgid "inforequests:modals:remandment:add_smail"
 msgstr "Pridať rozhodnutie, ktorým sa ruší predošlé rozhodnutie"
 
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:17
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:16
 msgid "inforequests:modals:reversion:heading"
 msgstr "Pridať rozhodnutie, ktorým sa vec vracia na ďalšie konanie"
 
-#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:26
+#: apps/inforequests/templates/inforequests/modals/reversion-smail.html:25
 msgid "inforequests:modals:reversion:add_smail"
 msgstr "Pridať rozhodnutie, ktorým sa vec vracia na ďalšie konanie"
 
-#: apps/inforequests/templates/inforequests/modals/unknown-email.html:17
+#: apps/inforequests/templates/inforequests/modals/unknown-email.html:16
 msgid "inforequests:modals:unknown:heading"
 msgstr "Neviem, čo znamená tento email"
 
-#: apps/inforequests/templates/inforequests/modals/unknown-email.html:23
+#: apps/inforequests/templates/inforequests/modals/unknown-email.html:22
 msgid "inforequests:modals:unknown:decide_email"
 msgstr "Požiadať o pomoc administrátora"
 
-#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:17
+#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:16
 msgid "inforequests:modals:unrelated:heading"
 msgstr "Nesúvisiaci e-mail"
 
-#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:23
+#: apps/inforequests/templates/inforequests/modals/unrelated-email.html:22
 msgid "inforequests:modals:unrelated:decide_email"
 msgstr "Označiť ako Nesúvisiaci email"
 

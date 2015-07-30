@@ -1,0 +1,32 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPersonalFallbackReasonStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+<h4>Osobné údaje</h4>
+<div class="alert">
+  Ak inštitúcia dôveryhodne odôvodnila, že informácia naozaj podlieha ochrane osobných údajov,
+  odvolanie nemá zmysel podávať.
+</div>
+<p>
+  Označili ste, že žiadané osobné údaje sa týkaju iných osôb než verejných zamestnancov. Inštitúcia
+  má pravdepodobne pravdu a žiadané osobné údaje sprístupneniť nemôže. Na záver odvolania
+  inštitúciu požiadame, aby informáciu sprístupnila s vyčiernenými osobnými údajmi, ktoré
+  podliehajú ochrane.
+</p>
+<p>
+  Ak si myslíte, že napriek tomu je nesprístupnenie neoprávnené, skúste zdôvodniť, prečo by
+  inštitúcia mala žiadanú informáciu sprístupniť v plnej nevyčiernenej podobe. Konzultácia
+  s právnikom alebo nahliadnutie do príručky a zákona môže pomôcť.
+</p>
+<p>
+  <label>{% paper_field step.personal_fallback %} Chcem doplniť vlastné zdôvodnenie</label>
+</p>

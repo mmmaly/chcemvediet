@@ -1,0 +1,27 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotProvideFallbackReasonStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+<h4>Informáciu neposkytuje</h4>
+<div class="alert">
+  Ak inštitúcia dôveryhodne odôvodnila, že informáciu naozaj neposkytuje, odvolanie nemá zmysel podávať.
+</div>
+<p>
+  Označili ste, že žiadaná informácia sa netýka sa používania verejných prostriedkov. Inštitúcia má
+  pravdepodobne pravdu a žiadanú informáciu sprístupniť nemôže. Ak si myslíte, že napriek tomu je
+  nesprístupnenie neoprávnené, skúste zdôvodniť, prečo by inštitúcia mala žiadanú informáciu
+  sprístupniť.
+</p>
+<p>
+  <label>{% paper_field step.does_not_provide_fallback %} Chcem doplniť vlastné zdôvodnenie</label>
+</p>

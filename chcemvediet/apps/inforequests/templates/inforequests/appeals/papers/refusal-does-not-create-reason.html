@@ -1,0 +1,31 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotCreateReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- reason_number_on_paper: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+{% paragraph before=0 %}
+  Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
+  informácie bolo uvedené, že povinná osoba žiadanú informáciu nevytvára.
+{% endparagraph %}
+{% paragraph %}
+  Podľa Rozsudku Krajského súdu v Bratislave sp. zn. 19 S 31/02 zo dňa 16. mája 2002 (Rs 37/2003)
+  <em>„Povinná osoba disponuje požadovanými informáciami, okrem iného, aj vtedy, ak s požadovanými
+  informáciami pri svojej činnosti pracuje, resp. ak sú predmetom jej činnosti. Dostatočným dôvodom
+  na odmietnutie poskytnutia informácií nebude skutočnosť, že požadovanú informáciu má k dispozícii
+  len organizačná zložka (súčasť) povinnej osoby alebo len odkaz na to, že táto nie je podľa
+  vnútorných predpisov povinná požadované informácie uschovávať.“</em>
+{% endparagraph %}
+{% paragraph after=2 editable=True %}
+  Podľa uvedeného mám teda dôvod sa domnievať, že povinná osoba uvedenú informáciu má alebo mala
+  k dispozícii, nakoľko {% paper_field step.does_not_create_reason %}
+{% endparagraph %}

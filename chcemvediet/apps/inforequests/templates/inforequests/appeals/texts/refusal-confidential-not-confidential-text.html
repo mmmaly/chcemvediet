@@ -1,0 +1,31 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealConfidentialNotConfidentialStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+<h4>Utajovaná skutočnosť</h4>
+<p>
+  Ako {% include "inforequests/appeals/texts/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
+  informácie bolo uvedené, že žiadaná informácia je utajovanou skutočnosťou. Zákon stanovuje, že
+  niektoré informácie nesmú byť utajované. Sú nimi informácie o:
+</p>
+<ol>
+  <li>nezákonnom alebo nesprávnom postupe alebo nezákonnom rozhodnutí verejných činiteľov a orgánov verejnej moci,</li>
+  <li>trestnej činnosti verejných činiteľov,</li>
+  <li>nehospodárnom, neefektívnom a neúčelnom nakladaní s verejnými prostriedkami,</li>
+  <li>závažnom ohrození alebo poškodení životného prostredia, života a zdravia,</li>
+  <li>platových náležitostiach, hmotnom zabezpečení a hmotných výhodách verejných činiteľov.</li>
+</ol>
+<p>
+  Dá sa žiadaná informácia zaradiť do niektorej z týchto kategórií?
+  {% paper_field step.confidential_not_confidential %}
+</p>
