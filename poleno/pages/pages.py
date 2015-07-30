@@ -586,7 +586,12 @@ class Page(object):
         path = self.translation_path(lang)
         if not path:
             return None
-        page = Page(path, lang)
+        try:
+            page = Page(path, lang)
+        except PageError as e:
+            logging.getLogger(u'poleno.pages').error(u'Page /%s%s has broken translation: /%s%s: %s',
+                    self._lang, self._path, lang, fix_slashes(path), e.message)
+            return None
         if page.path != path:
             logging.getLogger(u'poleno.pages').warning(u'Page /%s%s has redirected translation: /%s%s -> /%s%s',
                     self._lang, self._path, lang, fix_slashes(path), page.lang, page.path)
