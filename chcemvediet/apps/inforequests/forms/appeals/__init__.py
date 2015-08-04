@@ -251,6 +251,7 @@ from .disclosure import DisclosureAppealWizard
 from .refusal import RefusalAppealWizard
 from .refusal_no_reason import RefusalNoReasonAppealWizard
 from .advancement import AdvancementAppealWizard
+from .expiration import ExpirationAppealWizard
 from .fallback import FallbackAppealWizard
 
 class AppealWizards(WizardGroup):
@@ -259,5 +260,6 @@ class AppealWizards(WizardGroup):
             RefusalAppealWizard,
             RefusalNoReasonAppealWizard,
             AdvancementAppealWizard,
+            ExpirationAppealWizard,
             FallbackAppealWizard,
             ]

@@ -1,0 +1,24 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/papers/base.html" %}
+{% load paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.expiration.ExpirationAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.expiration.ExpirationAppealPaperStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %  -- finalize: boolean
+ %
+{% endcomment %}
+
+{% block "reasoning" %}
+  {% paragraph before=0 after=2 %}
+    <span style="color: red;">FIXME</span>
+  {% endparagraph %}
+{% endblock %}
