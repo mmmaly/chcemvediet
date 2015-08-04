@@ -1,0 +1,35 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph obligee_declension from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.advancement.AdvancementAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.advancement.AdvancementAppealReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.AppealPaperStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- not_at_all: boolean
+ %
+{% endcomment %}
+
+{% paragraph before=2 after=2 editable=True %}
+  Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila oznámenie
+  {% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}
+  o postúpeni žiadosti
+  {% for subbranch in last_action.advanced_to_set.all %}
+    {% if forloop.revcounter == 1 %}
+      {% obligee_declension subbranch.historicalobligee "dative" %}.
+    {% elif forloop.revcounter == 2 %}
+      {% obligee_declension subbranch.historicalobligee "dative" %} a
+    {% else %}
+      {% obligee_declension subbranch.historicalobligee "dative" %},
+    {% endif %}
+  {% endfor %}
+  Oznámenie
+  {% if not_at_all %}neobsahovalo ani len{% else %}obsahovalo iba{% endif%}
+  čiastočné sprístupnenie žiadanej informácie.
+  <span style="color: red;">FIXME</span>
+  {% paper_field step.reason %}
+{% endparagraph %}

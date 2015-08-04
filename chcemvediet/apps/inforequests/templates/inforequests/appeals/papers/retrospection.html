@@ -91,7 +91,7 @@
         {% endif %}
       {% endfor %}
       Oznámenie
-      {% if clause.not_at_all %}neobsahovalo ani len{% else %}iba{% endif%}
+      {% if clause.not_at_all %}neobsahovalo ani len{% else %}obsahovalo iba{% endif%}
       čiastočné sprístupnenie žiadanej informácie. Voči
       {% if clause.not_at_all %}nesprístupneniu{% else %}čiastočnému sprístupneniu{% endif%}
       žiadanej informácie som sa dňa {{ clause.appeal.effective_date|date:"d.m.Y" }} odvolal.
