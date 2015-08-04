@@ -84,8 +84,9 @@ class AppealDeadEndStep(WizardStep):
 
 class AppealPaperStep(WizardStep):
     template = u'inforequests/appeals/paper.html'
-    subject_template = None
-    content_template = None
+    text_template = u'inforequests/appeals/texts/paper-text.html'
+    subject_template = u'inforequests/appeals/papers/subject.txt'
+    content_template = u'inforequests/appeals/papers/base.html'
 
     effective_date = PaperDateField(
             localize=True,

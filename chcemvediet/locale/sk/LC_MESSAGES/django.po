@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-30 06:23+0200\n"
+"POT-Creation-Date: 2015-08-04 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,24 +169,6 @@ msgstr "Nesmie byť z minulosti."
 
 msgid "inforequests:AppealPaperStep:effective_date:too_far_from_future_error"
 msgstr "Nesmie byť viac ako 5 dní z budúcnosti."
-
-msgid "inforequests:DisclosureAppealReasonStep:reason:label"
-msgstr "Dôvod"
-
-msgid "inforequests:DisclosureAppealReasonStep:reason:placeholder"
-msgstr "Dôvod"
-
-msgid "inforequests:DisclosureAppealPaperStep:reason:placeholder"
-msgstr "Dôvod"
-
-msgid "inforequests:FallbackAppealReasonStep:reason:label"
-msgstr "Dôvod"
-
-msgid "inforequests:FallbackAppealReasonStep:reason:placeholder"
-msgstr "Dôvod"
-
-msgid "inforequests:FallbackAppealPaperStep:reason:placeholder"
-msgstr "Dôvod"
 
 msgid "inforequests:RefusalAppealDoesNotProvidePublicFundsStep:yes"
 msgstr "Áno, týka sa"

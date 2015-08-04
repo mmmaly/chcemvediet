@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-30 06:23+0200\n"
+"POT-Creation-Date: 2015-08-04 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,24 +169,6 @@ msgstr "May not be from the past."
 
 msgid "inforequests:AppealPaperStep:effective_date:too_far_from_future_error"
 msgstr "May not be more than 5 days from the future."
-
-msgid "inforequests:DisclosureAppealReasonStep:reason:label"
-msgstr "Reason"
-
-msgid "inforequests:DisclosureAppealReasonStep:reason:placeholder"
-msgstr "Reason"
-
-msgid "inforequests:DisclosureAppealPaperStep:reason:placeholder"
-msgstr "Reason"
-
-msgid "inforequests:FallbackAppealReasonStep:reason:label"
-msgstr "Reason"
-
-msgid "inforequests:FallbackAppealReasonStep:reason:placeholder"
-msgstr "Reason"
-
-msgid "inforequests:FallbackAppealPaperStep:reason:placeholder"
-msgstr "Reason"
 
 msgid "inforequests:RefusalAppealDoesNotProvidePublicFundsStep:yes"
 msgstr "Yes"

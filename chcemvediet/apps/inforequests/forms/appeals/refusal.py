@@ -390,14 +390,13 @@ class RefusalAppealSanitizationStep(AppealSectionStep):
                 }
 
 class RefusalAppealPaperStep(AppealPaperStep):
-    subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/refusal.html'
 
 class RefusalAppealWizard(AppealWizard):
     u"""
     Appeal wizard for branches that end with a refusal action with a reason. The wizard supports
-    only the reasons listed in ``supported_reasons``. If the last action contains any other reason,
-    the wizard does not apply.
+    only reasons covered by its reason steps. If the last action contains any other reason, the
+    wizard does not apply.
     """
     step_classes = OrderedDict([
             (u'does_not_have_reason', RefusalAppealDoesNotHaveReasonStep),

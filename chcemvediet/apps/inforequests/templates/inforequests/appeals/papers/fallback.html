@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "inforequests/appeals/papers/base.html" %}
-{% load paper_field from chcemvediet.inforequests %}
+{% load paper_field paragraph from chcemvediet.inforequests %}
 
 {% comment %}
  %
@@ -18,7 +18,7 @@
 {% endcomment %}
 
 {% block "reasoning" %}
-  <div style="margin: 2ex 0 0 0;">
+  {% paragraph before=0 after=2 %}
     {% paper_field step.reason %}
-  </div>
+  {% endparagraph %}
 {% endblock %}

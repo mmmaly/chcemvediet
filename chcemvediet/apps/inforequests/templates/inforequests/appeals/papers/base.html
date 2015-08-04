@@ -5,7 +5,7 @@
  %
  % Context:
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
- %  -- step: chcemvediet.apps.wizards.WizardStep
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealPaperStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
@@ -82,6 +82,11 @@
     {% include "inforequests/appeals/papers/retrospection.html" %}
   {% endblock %}
   {% block "reasoning" %}
+    {% for substep in wizard.steps.values %}
+      {% if substep and substep.section_template %}
+        {% include substep.section_template with reason_number_on_paper=substep.reason_number_on_paper %}
+      {% endif %}
+    {% endfor %}
   {% endblock %}
   {% block "request" %}
     {% paragraph before=2 %}

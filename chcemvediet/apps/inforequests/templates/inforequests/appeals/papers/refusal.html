@@ -23,10 +23,5 @@
     Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
     o nesprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}.
   {% endparagraph %}
-
-  {% for substep in wizard.steps.values %}
-    {% if substep and substep.section_template %}
-      {% include substep.section_template with reason_number_on_paper=substep.reason_number_on_paper %}
-    {% endif %}
-  {% endfor %}
+  {{ block.super }}
 {% endblock %}

@@ -15,7 +15,7 @@
 {% endcomment %}
 
 {% block "body" %}
-  {% include "inforequests/appeals/texts/paper-text.html" %}
+  {{ block.super }}
   <div class="control-group error">
     <span class="help-block">{{ step.non_field_errors|join:" " }}</span>
   </div>
