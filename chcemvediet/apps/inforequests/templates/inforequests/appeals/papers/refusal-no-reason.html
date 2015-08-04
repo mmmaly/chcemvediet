@@ -1,0 +1,26 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/appeals/papers/base.html" %}
+{% load paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.fallback.FallbackAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.fallback.FallbackAppealPaperStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- rozklad: boolean
+ %  -- fiktivne: boolean
+ %  -- not_at_all: boolean
+ %  -- finalize: boolean
+ %
+{% endcomment %}
+
+{% block "reasoning" %}
+  {% paragraph before=0 after=2 %}
+    Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
+    o nesprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}.
+    <span style="color: red;">FIXME</span>
+  {% endparagraph %}
+{% endblock %}

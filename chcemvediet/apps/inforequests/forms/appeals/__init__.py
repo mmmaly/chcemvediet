@@ -247,13 +247,15 @@ class AppealWizard(Wizard):
 
 
 # Must be after ``AppealWizard`` to break cyclic dependency
-from .fallback import FallbackAppealWizard
 from .disclosure import DisclosureAppealWizard
 from .refusal import RefusalAppealWizard
+from .refusal_no_reason import RefusalNoReasonAppealWizard
+from .fallback import FallbackAppealWizard
 
 class AppealWizards(WizardGroup):
     wizard_classes = [
             DisclosureAppealWizard,
             RefusalAppealWizard,
+            RefusalNoReasonAppealWizard,
             FallbackAppealWizard,
             ]
