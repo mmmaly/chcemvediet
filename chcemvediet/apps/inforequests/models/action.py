@@ -184,7 +184,7 @@ class Action(models.Model):
             # Obligee actions
             CONFIRMATION=8,
             EXTENSION=10,
-            ADVANCEMENT=None,
+            ADVANCEMENT=60,
             CLARIFICATION_REQUEST=7, # Deadline for the applicant
             DISCLOSURE=(lambda a: 15 # Deadline for the applicant if not full disclosure
                     if a.disclosure_level != a.DISCLOSURE_LEVELS.FULL
@@ -195,16 +195,18 @@ class Action(models.Model):
             REMANDMENT=13,
             # Implicit actions
             ADVANCED_REQUEST=13,
-            EXPIRATION=None,
+            EXPIRATION=60,
             APPEAL_EXPIRATION=None,
             )
     SETTING_APPLICANT_DEADLINE_TYPES = (
             # Applicant actions
             # Obligee actions
+            TYPES.ADVANCEMENT,
             TYPES.CLARIFICATION_REQUEST,
             TYPES.DISCLOSURE,
             TYPES.REFUSAL,
             # Implicit actions
+            TYPES.EXPIRATION,
             )
     SETTING_OBLIGEE_DEADLINE_TYPES = (
             # Applicant actions

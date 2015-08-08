@@ -138,16 +138,23 @@ class AppealFinalStep(WizardStep):
 
     def context(self, extra=None):
         res = super(AppealFinalStep, self).context(extra)
+        last_action = self.wizard.branch.last_action
         effective_date = self.wizard.values[u'effective_date']
-        deadline_missed = self.wizard.branch.last_action.deadline_missed_at(effective_date)
-        deadline_remaining = self.wizard.branch.last_action.deadline_remaining_at(effective_date)
+
         res.update({
                 u'appeal_subject': self.wizard.finalize_subject(),
                 u'appeal_content': self.wizard.finalize_content(),
                 u'effective_date': effective_date,
-                u'deadline_missed_at_effective_date': deadline_missed,
-                u'deadline_remaining_at_effective_date': deadline_remaining,
                 })
+
+        if last_action.has_applicant_deadline:
+            res.update({
+                    u'deadline_missed_at_today': last_action.deadline_missed,
+                    u'deadline_remaining_at_today': last_action.deadline_remaining,
+                    u'deadline_missed_at_effective_date': last_action.deadline_missed_at(effective_date),
+                    u'deadline_remaining_at_effective_date': last_action.deadline_remaining_at(effective_date),
+                    })
+
         return res
 
 class AppealWizard(Wizard):

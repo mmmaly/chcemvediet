@@ -6,7 +6,6 @@ from django.utils.functional import cached_property
 
 from poleno import datacheck
 from poleno.utils.models import QuerySet, join_lookup
-from poleno.utils.date import local_today
 from poleno.utils.misc import squeeze, decorate
 
 from .action import Action

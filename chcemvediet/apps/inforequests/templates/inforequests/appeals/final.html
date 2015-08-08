@@ -13,14 +13,16 @@
  %  -- appeal_subject: string
  %  -- appeal_content: html
  %  -- effective_date: datetime.date
- %  -- deadline_missed_at_effective_date: bool
- %  -- deadline_remaining_at_effective_date: int
+ %  -- deadline_missed_at_today: bool | undefined
+ %  -- deadline_remaining_at_today: int | undefined
+ %  -- deadline_missed_at_effective_date: bool | undefined
+ %  -- deadline_remaining_at_effective_date: int | undefined
  %
 {% endcomment %}
 
 {% block "body" %}
   {% include "inforequests/appeals/texts/final-text.html" %}
-  {% if last_action.deadline_missed %}
+  {% if deadline_missed_at_today %}
     <div class="alert alert-block">
       {% include "inforequests/appeals/texts/final-deadline-missed.html" %}
     </div>
