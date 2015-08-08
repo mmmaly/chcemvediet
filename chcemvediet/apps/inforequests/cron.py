@@ -16,9 +16,10 @@ from .models import Inforequest, Branch
 # All these jobs do all their work the first time they are run in a day. Any later runs in the same
 # day should do nothing. However, we run them multiple times in a day in case something was broken
 # at the morning and the jobs failed.
-RUN_AT_TIMES = [u'09:00', u'10:00', u'11:00', u'12:00', u'13:00', u'14:00']
+REMINDER_TIMES = [u'09:00', u'10:00', u'11:00', u'12:00', u'13:00', u'14:00']
+MAINTENANCE_TIMES = [u'02:00', u'03:00', u'04:00', u'05:00']
 
-@cron_job(run_at_times=RUN_AT_TIMES)
+@cron_job(run_at_times=REMINDER_TIMES)
 @transaction.atomic
 def undecided_email_reminder():
     with translation(settings.LANGUAGE_CODE):
@@ -62,7 +63,7 @@ def undecided_email_reminder():
             except Exception:
                 cron_logger.error(u'Sending undecided email reminder failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))
 
-@cron_job(run_at_times=RUN_AT_TIMES)
+@cron_job(run_at_times=REMINDER_TIMES)
 @transaction.atomic
 def obligee_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
@@ -112,7 +113,7 @@ def obligee_deadline_reminder():
             except Exception:
                 cron_logger.error(u'Sending obligee deadline reminder failed: %s\n%s' % (repr(branch.last_action), traceback.format_exc()))
 
-@cron_job(run_at_times=RUN_AT_TIMES)
+@cron_job(run_at_times=REMINDER_TIMES)
 @transaction.atomic
 def applicant_deadline_reminder():
     with translation(settings.LANGUAGE_CODE):
@@ -158,7 +159,7 @@ def applicant_deadline_reminder():
             except Exception:
                 cron_logger.error(u'Sending applicant deadline reminder failed: %s\n%s' % (repr(branch.last_action), traceback.format_exc()))
 
-@cron_job(run_at_times=RUN_AT_TIMES)
+@cron_job(run_at_times=MAINTENANCE_TIMES)
 @transaction.atomic
 def close_inforequests():
     inforequests = (Inforequest.objects
@@ -190,3 +191,37 @@ def close_inforequests():
                 cron_logger.info(u'Closed inforequest: %s' % repr(inforequest)) # pragma: no branch
         except Exception:
             cron_logger.error(u'Closing inforequest failed: %s\n%s' % (repr(inforequest), traceback.format_exc()))
+
+@cron_job(run_at_times=MAINTENANCE_TIMES)
+@transaction.atomic
+def add_expirations():
+    inforequests = (Inforequest.objects
+            .not_closed()
+            .without_undecided_email()
+            .prefetch_related(Inforequest.prefetch_branches())
+            .prefetch_related(Branch.prefetch_last_action(u'branches'))
+            )
+
+    filtered = []
+    for inforequest in inforequests:
+        for branch in inforequest.branches:
+            try:
+                if not branch.last_action.has_obligee_deadline:
+                    continue
+                if not branch.last_action.deadline_missed:
+                    continue
+                if workdays.between(branch.last_action.deadline_date, local_today()) < 30:
+                    continue
+                # Last action obligee deadline was missed at least 30 workdays ago. 30 workdays is
+                # half of EXPIRATION deadline.
+                filtered.append(branch)
+            except Exception:
+                cron_logger.error(u'Checking if expiration action should be added failed: %s\n%s' % (repr(branch), traceback.format_exc()))
+
+    for branch in filtered:
+        try:
+            with transaction.atomic():
+                branch.add_expiration_if_expired()
+                cron_logger.info(u'Added expiration action: %s' % repr(branch))
+        except Exception:
+            cron_logger.error(u'Adding expiration action failed: %s\n%s' % (repr(branch), traceback.format_exc()))

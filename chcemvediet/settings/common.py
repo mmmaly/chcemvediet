@@ -117,6 +117,7 @@ CRON_CLASSES = (
     u'chcemvediet.apps.inforequests.cron.obligee_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.applicant_deadline_reminder',
     u'chcemvediet.apps.inforequests.cron.close_inforequests',
+    u'chcemvediet.apps.inforequests.cron.add_expirations',
     u'chcemvediet.cron.clear_expired_sessions',
     u'chcemvediet.cron.send_admin_error_logs',
     )

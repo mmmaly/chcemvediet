@@ -343,7 +343,8 @@ class Action(models.Model):
     def deadline_date(self):
         if self.deadline is None:
             return None
-        return workdays.advance(self.effective_date, self.deadline)
+        deadline = self.deadline + (self.extension or 0)
+        return workdays.advance(self.effective_date, deadline)
 
     @cached_property
     def has_deadline(self):
