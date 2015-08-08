@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-04 22:41+0200\n"
+"POT-Creation-Date: 2015-08-08 04:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,6 +214,18 @@ msgstr "Yes"
 
 msgid "inforequests:RefusalAppealOtherReasonValidStep:no"
 msgstr "No"
+
+msgid "inforequests:RefusalAppealSanitizationLevelStep:OverlySanitized"
+msgstr "Áno, bolo vyčiernené viac."
+
+msgid "inforequests:RefusalAppealSanitizationLevelStep:MissingDocument"
+msgstr "Áno, dokument úplne chýbal."
+
+msgid "inforequests:RefusalAppealSanitizationLevelStep:ProperlySanitized"
+msgstr "Nie, vyčiernenie bolo korektné."
+
+msgid "inforequests:RefusalAppealSanitizationLevelStep:NotSanitized"
+msgstr "Nie, vyčiernené nebolo nič."
 
 msgid "inforequests:InforequestForm:obligee:label"
 msgstr "Obligee"

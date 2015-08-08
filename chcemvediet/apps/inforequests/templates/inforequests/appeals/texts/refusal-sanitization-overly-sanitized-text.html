@@ -1,0 +1,24 @@
+{# vim: set filetype=htmldjango :#}
+{% load squeeze from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealSanitizationOverlySanitizedStep
+ %  -- number_of_reasons: int
+ %  -- sanitizable.all: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable.covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable.not_covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %
+{% endcomment %}
+
+
+<h4>Začiernenie citlivých informácií</h4>
+<p>
+  Označili ste, že inštitúcia vyčiernila viac, ako by bolo nutné.
+</p>
+<p>
+  Do odvolania uveďte, čo vám nebolo sprístupnené. Ak napríklad chýbal celý odsek, uveďte, že
+  vyčiernenie bolo urobené nesprávne.
+</p>

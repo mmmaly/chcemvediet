@@ -11,5 +11,13 @@
 
 <h4>{% if not_at_all %}Ani len čiastočné{% else %}Neúplné{% endif %} sprístupnenie</h4>
 <p>
-  <span style="color: red;">FIXME</span>
+  {% if not_at_all %}
+    Inštitúcia síce niečo poslala, ale nebola to informácia, ktorú ste žiadali. Rozhodnutie
+    o nesprístupnení informácie chýbalo, čo je porušenie zákona. Doplňte do odvolania, čo ste
+    dostali a prečo to nie je to, čo ste žiadali.
+  {% else %}
+    Inštitúcia síce niečo poslala, ale nebolo to všetko, čo ste žiadali. Rozhodnutie o čiastočnom
+    sprístupnení informácie chýbalo, čo je porušenie zákona. Doplňte do odvolania, čo ste dostali
+    a čo chýba.
+  {% endif %}
 </p>

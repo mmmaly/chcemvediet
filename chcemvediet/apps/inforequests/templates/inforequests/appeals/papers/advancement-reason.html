@@ -14,7 +14,7 @@
  %
 {% endcomment %}
 
-{% paragraph before=2 after=2 editable=True %}
+{% paragraph before=2 %}
   Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila oznámenie
   {% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}
   o postúpeni žiadosti
@@ -30,6 +30,25 @@
   Oznámenie
   {% if not_at_all %}neobsahovalo ani len{% else %}obsahovalo iba{% endif%}
   čiastočné sprístupnenie žiadanej informácie.
-  <span style="color: red;">FIXME</span>
+  Postúpenie v zmysle § 15 zákona je možné len vtedy, keď povinná osoba požadovanú informáciu nemá.
+{% endparagraph %}
+{% paragraph %}
+  Podľa Rozsudku Krajského súdu v Bratislave sp. zn. 19 S 31/02 zo dňa 16. mája 2002 (Rs 37/2003)
+  <em>„Povinná osoba disponuje požadovanými informáciami, okrem iného, aj vtedy, ak s požadovanými
+  informáciami pri svojej činnosti pracuje, resp. ak sú predmetom jej činnosti. Dostatočným dôvodom
+  na odmietnutie poskytnutia informácií nebude skutočnosť, že požadovanú informáciu má k dispozícii
+  len organizačná zložka (súčasť) povinnej osoby alebo len odkaz na to, že táto nie je podľa
+  vnútorných predpisov povinná požadované informácie uschovávať.“ </em>
+{% endparagraph %}
+{% paragraph editable=True %}
   {% paper_field step.reason %}
+{% endparagraph %}
+{% paragraph %}
+  Podľa uvedeného mám teda dôvod sa domnievať, že povinná osoba uvedenú informáciu má alebo mala
+  k dispozícii a teda moju žiadosť nemala postupovať. 
+{% endparagraph %}
+{% paragraph %}
+  V zmysle uvedeneho rozsudku aj list povinnej osoby je potrebné považovať za rozhodnutie, ak jeho
+  obsahom bola žiadosť o informáciu odmietnutá. Preto list o postúpení považujem za formu
+  rozhodnutia.
 {% endparagraph %}

@@ -18,9 +18,44 @@
 {% endcomment %}
 
 {% block "reasoning" %}
-  {% paragraph before=0 after=2 %}
+  {% paragraph before=0 %}
     Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
     o nesprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}.
-    <span style="color: red;">FIXME</span>
+    V rozhodnutí nebolo uvedené riadne odôvodnenie. Podľa § 18 ods. 2 a 3 zákona o slobode
+    informácií, <em>„ak povinná osoba žiadosti nevyhovie hoci len sčasti, vydá o tom v zákonom
+    stanovenej lehote písomné rozhodnutie. Ak povinná osoba v lehote na vybavenie žiadosti
+    neposkytla informácie či nevydala rozhodnutie a ani informáciu nesprístupnila, predpokladá sa,
+    že vydala rozhodnutie, ktorým odmietla poskytnúť informáciu. Za deň doručenia rozhodnutia sa
+    v tomto prípade považuje tretí deň od uplynutia lehoty na vybavenie žiadosti.“</em>
+  {% endparagraph %}
+  {% paragraph %}
+    Náležitosti rozhodnutia sú stanovené v § 47 ods. 1 až 5 správneho poriadku:
+  {% endparagraph %}
+  {% paragraph %}
+    <em>„(1) Rozhodnutie musí obsahovať výrok, odôvodnenie a poučenie o odvolaní (rozklade). Odôvodnenie nie
+    je potrebné, ak sa všetkým účastníkom konania vyhovuje v plnom rozsahu.</em>
+  {% endparagraph %}
+  {% paragraph %}
+    <em>(2) Výrok obsahuje rozhodnutie vo veci s uvedením ustanovenia právneho predpisu, podľa ktorého sa
+    rozhodlo, prípadne aj rozhodnutie o povinnosti nahradiť trovy konania. Pokiaľ sa v rozhodnutí
+    ukladá účastníkovi konania povinnosť na plnenie, správny orgán určí pre ňu lehotu; lehota nesmie
+    byť kratšia, než ustanovuje osobitný zákon.</em>
+  {% endparagraph %}
+  {% paragraph %}
+    <em>(3) V odôvodnení rozhodnutia správny orgán uvedie, ktoré skutočnosti boli podkladom na rozhodnutie,
+    akými úvahami bol vedený pri hodnotení dôkazov, ako použil správnu úvahu pri použití právnych
+    predpisov, na základe ktorých rozhodoval, a ako sa vyrovnal s návrhmi a námietkami účastníkov
+    konania a s ich vyjadreniami k podkladom rozhodnutia.</em>
+  {% endparagraph %}
+  {% paragraph %}
+    <em>(4) Poučenie o odvolaní (rozklade) obsahuje údaj, či je rozhodnutie konečné alebo či sa možno proti
+    nemu odvolať (podať rozklad), v akej lehote, na ktorý orgán a kde možno odvolanie podať. Poučenie
+    obsahuje aj údaj, či rozhodnutie možno preskúmať súdom.</em>
+  {% endparagraph %}
+  {% paragraph %}
+    <em>(5) V písomnom vyhotovení rozhodnutia sa uvedie aj orgán, ktorý rozhodnutie vydal, dátum vydania
+    rozhodnutia, meno a priezvisko fyzickej osoby a názov právnickej osoby. Rozhodnutie musí mať úradnú
+    pečiatku a podpis s uvedením mena, priezviska a funkcie oprávnenej osoby. Osobitné právne predpisy
+    môžu ustanoviť ďalšie náležitosti rozhodnutia.“</em>
   {% endparagraph %}
 {% endblock %}

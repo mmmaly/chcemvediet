@@ -1,0 +1,27 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealSanitizationMissingDocumentStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %  -- number_of_reasons: int
+ %  -- sanitizable.all: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable.covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable.not_covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %
+{% endcomment %}
+
+
+{% paragraph editable=True %}
+  {% paper_field step.sanitization_missing_document %}
+{% endparagraph %}
+{% paragraph after=2 %}
+  V zmysle § 12 zákona, všetky obmedzenia práva na informácie vykonáva povinná osoba tak, že
+  sprístupní požadované informácie vrátane sprievodných informácií po vylúčení tých informácií, pri
+  ktorých to ustanovuje zákon. Oprávnenie odmietnuť sprístupnenie informácie trvá iba dovtedy, kým
+  trvá dôvod nesprístupnenia. 
+{% endparagraph %}

@@ -1,11 +1,12 @@
 {# vim: set filetype=htmldjango :#}
 {% load squeeze from poleno.utils %}
+{% load paper_field from chcemvediet.inforequests %}
 
 {% comment %}
  %
  % Context:
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
- %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealSanitizationStep
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealSanitizationLevelStep
  %  -- number_of_reasons: int
  %  -- sanitizable.all: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
  %  -- sanitizable.covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
@@ -16,7 +17,8 @@
 
 <h4>Začiernenie citlivých informácií</h4>
 <p>
-  Inštitúcia ma informáciu zverejniť tak, že
+  Aj keby platilo, že časť žiadanej informácie nemôže inštitúcia sprístupniť, stále máte právo na
+  zvyšok informácie. Znamená to, že inštitúcia ma informáciu zverejniť tak, že
   {% for reason in sanitizable.all %}
     {% filter squeeze %}
       {% if reason == last_action.REFUSAL_REASONS.BUSINESS_SECRET %}
@@ -24,11 +26,14 @@
       {% elif reason == last_action.REFUSAL_REASONS.PERSONAL %}
         osobné údaje podliehajúce ochrane
       {% elif reason == last_action.REFUSAL_REASONS.CONFIDENTIAL %}
-        utajované skutočnosťi
+        utajované skutočnosti
       {% endif %}
     {% endfilter squeeze %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}{% endif %}
   {% endfor %}
-  začierni.
-  <span style="color: red;">FIXME</span>
-  Do odvolania sa doplní nasledujúci odsek:
+  vyčierni a sprístupni aspoň dokument, v ktorom sú čitateľné všetky ostatné informácie. Stáva sa
+  však, že inštitúcia nesprístupní dokument vôbec, alebo v ňom vyčierni viac, ako by bolo nutné.
+</p>
+<p>
+  Stalo sa tak?
+  {% paper_field step.sanitization_level %}
 </p>

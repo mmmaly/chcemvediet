@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load paragraph from chcemvediet.inforequests %}
+{% load paper_field paragraph from chcemvediet.inforequests %}
 
 {% comment %}
  %
@@ -17,11 +17,12 @@
   Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
   informácie bolo uvedené, že žiadaná informácia je utajovanou skutočnosťou.
 {% endparagraph %}
-{% paragraph after=2 %}
+{% paragraph after=2 editable=True %}
   Požadovaná informácia nemôže byť utajovanou skutočnosťou, keďže v zmysle § 4 ods. 1 zákona č.
   215/2004 Z. z., <em>„utajovanou skutočnosťou nemôže byť informácia o nezákonnom alebo nesprávnom
   postupe alebo nezákonnom rozhodnutí verejných činiteľov a orgánov verejnej moci, trestnej
   činnosti verejných činiteľov, nehospodárnom, neefektívnom a neúčelnom nakladaní s verejnými
   prostriedkami, závažnom ohrození alebo poškodení životného prostredia, života a zdravia,
   platových náležitostiach, hmotnom zabezpečení a hmotných výhodách verejných činiteľov.“</em>
+  {% paper_field step.confidential_not_confidential_reason %}
 {% endparagraph %}

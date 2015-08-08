@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% load paragraph from chcemvediet.inforequests %}
+{% load paper_field paragraph from chcemvediet.inforequests %}
 
 {% comment %}
  %
@@ -17,7 +17,7 @@
   Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
   informácie bolo uvedené, že žiadaná informácia podlieha ochrane osobných údajov.
 {% endparagraph %}
-{% paragraph after=2 %}
+{% paragraph after=2 editable=True %}
   Na žiadanú informáciu sa vzťahuje § 9 ods. 3 zákona, podľa ktorého <em>„povinná osoba sprístupní
   osobné údaje fyzickej osoby, ktorá je verejným funkcionárom, poslancom obecného zastupiteľstva,
   predstaveným v štátnej službe, odborníkom plniacim úlohy pre člena vlády Slovenskej republiky,
@@ -31,4 +31,5 @@
   alebo činnosť vykonáva, mzda, plat alebo platové pomery a ďalšie finančné náležitosti priznané za
   výkon funkcie alebo za výkon pracovnej činnosti, ak sú uhrádzané zo štátneho rozpočtu alebo
   z iného verejného rozpočtu.“</em>
+  {% paper_field step.personal_officer_reason %}
 {% endparagraph %}
