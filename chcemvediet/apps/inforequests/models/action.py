@@ -338,6 +338,12 @@ class Action(models.Model):
         return self.deadline_missed_at(local_today())
 
     @cached_property
+    def deadline_date(self):
+        if self.deadline is None:
+            return None
+        return workdays.advance(self.effective_date, self.deadline)
+
+    @cached_property
     def has_deadline(self):
         return self.deadline is not None
 

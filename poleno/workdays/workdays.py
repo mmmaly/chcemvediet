@@ -115,3 +115,26 @@ def between(after, before, holiday_set=None):
                   if d.weekday() not in WEEKEND])
     return res
 
+def advance(day, delta, holiday_set=None):
+    u"""
+    Advances the given ``date`` by ``delta`` working days. The function time complexity is
+    O(d log d), where d is ``delta``. It may be fixed to be O(d), but I'm too lazy to do it now.
+    The complexity may not be better than Ω(d) because there are Ω(d) holidays.
+
+    The following invariants hold:
+        advance(a, 0) == a
+        advance(a, x+y) == advance(advance(a, x), y)
+        advance(a, 1) == a+1 iff a+1 is workday; advance(a+1, 1) otherwise
+        between(a, advance(a, x)) == x
+    """
+    if delta == 0:
+        return day
+
+    if not holiday_set:
+        holiday_set = _holidays()
+    if not holiday_set:
+        raise ImproperlyConfigured(SPECIFY_HOLIDAY_SET_ERROR)
+
+    res = day + datetime.timedelta(days=delta)
+    working = between(day, res, holiday_set)
+    return advance(res, delta - working, holiday_set)

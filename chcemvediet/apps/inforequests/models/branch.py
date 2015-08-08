@@ -299,7 +299,7 @@ class Branch(models.Model):
             expiration = Action(
                     branch=self,
                     type=(Action.TYPES.APPEAL_EXPIRATION if self.last_action.type == Action.TYPES.APPEAL else Action.TYPES.EXPIRATION),
-                    effective_date=local_today(),
+                    effective_date=self.last_action.deadline_date,
                     )
             expiration.save()
 
