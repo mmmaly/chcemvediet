@@ -10,18 +10,22 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.sites.models import Site
 from django.utils.decorators import available_attrs
 
-def absolute_reverse(viewname, *args, **kwargs):
+def complete_url(path, secure=False):
     u"""
-    Returns absolute path using django ``reverse`` function and current site instance.
+    Returns complete url using given path and current site instance.
     """
-    secure = kwargs.pop(u'secure', False)
-    anchor = kwargs.pop(u'anchor', None)
-
     protocol = u'https' if secure else u'http'
     domain = Site.objects.get_current().domain
-    path = reverse(viewname, *args, **kwargs)
-    anchor = u'#' + anchor if anchor else u''
-    return u'{0}://{1}{2}{3}'.format(protocol, domain, path, anchor)
+    return u'{0}://{1}{2}'.format(protocol, domain, path)
+
+def complete_reverse(viewname, *args, **kwargs):
+    u"""
+    Returns complete url using django ``reverse`` function and current site instance.
+    """
+    secure = kwargs.pop(u'secure', False)
+    anchor = kwargs.pop(u'anchor', u'')
+    path = reverse(viewname, *args, **kwargs) + anchor
+    return complete_url(path, secure)
 
 def require_ajax(view):
     u"""

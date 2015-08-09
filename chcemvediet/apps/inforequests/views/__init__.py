@@ -25,7 +25,7 @@ from .decide_email import decide_email_unrelated
 from .decide_email import decide_email_unknown
 from .new_action import new_action_clarification_response
 from .new_action import new_action_appeal
-from .new_action import new_action_appeal2
+from .new_action import appeal
 from .attachment import attachment_upload
 from .attachment import attachment_download
 from .devtools import devtools_mock_response

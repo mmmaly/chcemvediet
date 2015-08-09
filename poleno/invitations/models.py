@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.utils.functional import cached_property
 
 from poleno.utils.models import QuerySet, after_saved
-from poleno.utils.views import absolute_reverse
+from poleno.utils.views import complete_reverse
 from poleno.utils.date import utc_now
 from poleno.utils.mail import render_mail
 from poleno.utils.misc import squeeze, decorate, random_string
@@ -114,7 +114,7 @@ class Invitation(models.Model):
 
     @cached_property
     def accept_url(self):
-        return absolute_reverse(u'invitations:accept', args=[self.key])
+        return complete_reverse(u'invitations:accept', args=[self.key])
 
     @decorate(prevent_bulk_create=True)
     def save(self, *args, **kwargs):

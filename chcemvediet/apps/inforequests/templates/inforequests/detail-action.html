@@ -106,7 +106,7 @@
     <span id="action-extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
   {% endif %}
   {% if forloop.last and not inforequest.closed and branch.can_add_appeal and not inforequest.has_undecided_emails %}
-    <a class="btn btn-primary with-tooltip" href="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}"
+    <a class="btn btn-primary with-tooltip" href="{% url 'inforequests:appeal' inforequest.pk branch.pk %}"
        data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-appeal.txt" %}{% endspaceless %}">
       {% trans 'inforequests:detail:action:appeal' %}
     </a>

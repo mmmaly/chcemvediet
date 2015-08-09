@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
@@ -9,7 +8,6 @@ from django.contrib.sessions.models import Session
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_today
-from poleno.utils.http import JsonOperations, JsonContent, JsonRedirect
 from chcemvediet.apps.wizards import WizzardRollback
 from chcemvediet.apps.inforequests import forms
 from chcemvediet.apps.inforequests.models import Inforequest, Branch, Action, ActionDraft
@@ -93,7 +91,7 @@ def new_action_appeal(request, inforequest_pk):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @transaction.atomic
 @login_required(raise_exception=True)
-def new_action_appeal2(request, inforequest_pk, branch_pk):
+def appeal(request, inforequest_pk, branch_pk, step_idx=None):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
     branch = inforequest.branch_set.get_or_404(pk=branch_pk)
 
@@ -102,36 +100,32 @@ def new_action_appeal2(request, inforequest_pk, branch_pk):
     if inforequest.has_undecided_emails:
         return HttpResponseNotFound()
 
-    wizard = AppealWizards.find_applicable(branch)
+    try:
+        wizard = AppealWizards.find_applicable(branch)
+        wizard.step(request, step_idx)
+    except WizzardRollback as e:
+        return HttpResponseRedirect(e.step.get_url())
 
     if request.method != u'POST':
-        wizard.start()
         return wizard.current_step.render(request)
 
-    try:
-        wizard.step(request.POST)
-    except WizzardRollback as e:
-        return JsonOperations(JsonContent(e.step.render_to_string(request)))
-
-    button = clean_button(request.POST, [u'save', u'prev', u'next'])
+    button = clean_button(request.POST, [u'save', u'next'])
 
     if button == u'save':
         wizard.commit()
-        return JsonOperations()
-
-    if button == u'prev':
-        return JsonOperations(JsonContent(wizard.prev_step().render_to_string(request)))
+        return HttpResponseRedirect(wizard.current_step.get_url())
 
     if button == u'next':
         if not wizard.current_step.is_valid():
-            return JsonOperations(JsonContent(wizard.current_step.render_to_string(request)))
+            return wizard.current_step.render(request)
         wizard.commit()
         if not wizard.current_step.is_last():
-            return JsonOperations(JsonContent(wizard.next_step().render_to_string(request)))
+            return HttpResponseRedirect(wizard.next_step().get_url())
         branch.add_expiration_if_expired()
         action = Action(type=Action.TYPES.APPEAL)
         wizard.save(action)
         action.save()
-        return JsonOperations(JsonRedirect(action.get_absolute_url()))
+        wizard.reset()
+        return HttpResponseRedirect(action.get_absolute_url())
 
     return HttpResponseBadRequest()

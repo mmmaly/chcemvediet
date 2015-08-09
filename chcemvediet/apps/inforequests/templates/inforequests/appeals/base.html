@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% extends request.is_ajax|yesno:"main/base/ajax.html,main/base/single_column.html" %}
+{% extends "main/base/single_column.html" %}
 {% load trans from i18n %}
 
 {% comment %}
@@ -18,10 +18,8 @@
 {% block title %}{% trans 'inforequests:appeals:title' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-  <form class="form-horizontal ajax ajax-operations" method="post" data-fail-target="#ajax-fail-modal"
-        action="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}">
+  <form class="form-horizontal" method="post" action="{{ step.get_url }}">
     {% csrf_token %}
-    {{ step.state_field }}
     {% block "header" %}
       <h1>
         {% block "header-heading" %}
@@ -49,24 +47,22 @@
         {% endblock %}
         {% block "footer-prev" %}
           {% if not step.is_first %}
-            <button type="submit" class="btn" name="button" value="prev">
+            <a class="btn" href="{{ step.prev.get_url }}">
               <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
-            </button>
+            </a>
           {% endif %}
         {% endblock %}
         {% block "footer-next" %}
-          {% if not step.is_last %}
-            <button type="submit" class="btn btn-primary" name="button" value="next">
-              <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
-            </button>
-          {% else %}
-            <button type="submit" class="btn btn-primary" name="button" value="next">
+          <button type="submit" class="btn btn-primary" name="button" value="next">
+            {% if step.is_last %}
               <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:finish' %}
-            </button>
-          {% endif %}
+            {% else %}
+              <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
+            {% endif %}
+          </button>
         {% endblock %}
         {% block "footer-cancel" %}
-          <a class="btn pull-right" href="{% url 'inforequests:detail' inforequest.pk %}">
+          <a class="btn pull-right" href="{{ inforequest.get_absolute_url }}">
             <i class="icon-remove"></i> {% trans 'inforequests:appeals:cancel' %}
           </a>
         {% endblock %}

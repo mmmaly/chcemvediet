@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-09 05:47+0200\n"
+"POT-Creation-Date: 2015-08-09 22:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -350,11 +350,11 @@ msgstr "Uložiť"
 msgid "inforequests:appeals:prev"
 msgstr "Späť"
 
-msgid "inforequests:appeals:next"
-msgstr "Ďalej"
-
 msgid "inforequests:appeals:finish"
 msgstr "Dokončiť"
+
+msgid "inforequests:appeals:next"
+msgstr "Ďalej"
 
 msgid "inforequests:appeals:cancel"
 msgstr "Zrušiť"
@@ -757,9 +757,6 @@ msgid "^new-action/clarification-response/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^new-action/appeal/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^new-action/appeal2/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/$"
 msgstr ""
 
 msgid "^action/extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"

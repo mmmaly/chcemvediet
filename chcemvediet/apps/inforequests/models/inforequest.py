@@ -11,7 +11,7 @@ from aggregate_if import Count
 from poleno import datacheck
 from poleno.mail.models import Message
 from poleno.utils.models import QuerySet, join_lookup
-from poleno.utils.views import absolute_reverse
+from poleno.utils.views import complete_url
 from poleno.utils.mail import render_mail
 from poleno.utils.date import utc_now
 from poleno.utils.misc import random_readable_string, squeeze, decorate
@@ -452,13 +452,13 @@ class Inforequest(models.Model):
 
         super(Inforequest, self).save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse(u'inforequests:detail', args=[self.pk])
+    def get_absolute_url(self, anchor=u''):
+        return reverse(u'inforequests:detail', args=[self.pk]) + anchor
 
     def _send_notification(self, template, anchor, dictionary):
         dictionary.update({
                 u'inforequest': self,
-                u'url': absolute_reverse(u'inforequests:detail', args=[self.pk], anchor=anchor),
+                u'url': complete_url(self.get_absolute_url(anchor)),
                 })
         msg = render_mail(template,
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -467,19 +467,19 @@ class Inforequest(models.Model):
         msg.send()
 
     def send_received_email_notification(self, email):
-        self._send_notification(u'inforequests/mails/received_email_notification', u'decide', {
+        self._send_notification(u'inforequests/mails/received_email_notification', u'#decide', {
                 u'email': email,
                 })
 
     def send_undecided_email_reminder(self):
-        self._send_notification(u'inforequests/mails/undecided_email_reminder', u'decide', {
+        self._send_notification(u'inforequests/mails/undecided_email_reminder', u'#decide', {
                 })
 
         self.last_undecided_email_reminder = utc_now()
         self.save(update_fields=[u'last_undecided_email_reminder'])
 
     def send_obligee_deadline_reminder(self, action):
-        self._send_notification(u'inforequests/mails/obligee_deadline_reminder', u'action-%s' % action.pk, {
+        self._send_notification(u'inforequests/mails/obligee_deadline_reminder', u'#action-%s' % action.pk, {
                 u'action': action,
                 })
 
@@ -487,7 +487,7 @@ class Inforequest(models.Model):
         action.save(update_fields=[u'last_deadline_reminder'])
 
     def send_applicant_deadline_reminder(self, action):
-        self._send_notification(u'inforequests/mails/applicant_deadline_reminder', u'action-%s' % action.pk, {
+        self._send_notification(u'inforequests/mails/applicant_deadline_reminder', u'#action-%s' % action.pk, {
                 u'action': action,
                 })
 

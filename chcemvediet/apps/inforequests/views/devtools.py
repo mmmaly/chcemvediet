@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import transaction
 from django.db.models import F
@@ -45,7 +44,7 @@ def devtools_mock_response(request, inforequest_pk):
             )
 
     messages.success(request, u'Mock obligee response queued. It will be processed in a minute or two.')
-    return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+    return HttpResponseRedirect(inforequest.get_absolute_url())
 
 @require_http_methods([u'POST'])
 @transaction.atomic
@@ -65,7 +64,7 @@ def devtools_undo_last_action(request, inforequest_pk):
         messages.success(request, u'The last action, {0}, of branch {1} to {2} was deleted.'.format(
             branch.last_action.get_type_display(), branch.pk, branch.historicalobligee.name))
 
-    return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+    return HttpResponseRedirect(inforequest.get_absolute_url())
 
 @require_http_methods([u'POST'])
 @transaction.atomic
@@ -97,4 +96,4 @@ def devtools_push_history(request, inforequest_pk):
     else:
         messages.error(request, u'Invalid number of days.')
 
-    return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+    return HttpResponseRedirect(inforequest.get_absolute_url())

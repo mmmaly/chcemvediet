@@ -3,6 +3,7 @@
 from dateutil.relativedelta import relativedelta
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -163,6 +164,9 @@ class AppealWizard(Wizard):
         super(AppealWizard, self).__init__()
         self.instance_id = u'%s-%s' % (self.__class__.__name__, branch.last_action.pk)
         self.branch = branch
+
+    def get_step_url(self, step, anchor=u''):
+        return reverse(u'inforequests:appeal_step', args=[self.branch.inforequest.pk, self.branch.pk, step.index]) + anchor
 
     def context(self, extra=None):
         res = super(AppealWizard, self).context(extra)

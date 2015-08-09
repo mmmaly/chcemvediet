@@ -79,7 +79,7 @@ def inforequest_create(request, draft_pk=None):
         inforequest.main_branch.last_action.send_by_email()
         if draft:
             draft.delete()
-        return HttpResponseRedirect(reverse(u'inforequests:detail', args=(inforequest.pk,)))
+        return HttpResponseRedirect(inforequest.get_absolute_url())
 
     return HttpResponseBadRequest()
 
