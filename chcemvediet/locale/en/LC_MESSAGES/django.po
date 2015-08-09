@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-08 04:31+0200\n"
+"POT-Creation-Date: 2015-08-09 05:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -341,6 +341,9 @@ msgstr "Unrelated"
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
 msgstr "Unknown"
 
+msgid "inforequests:appeals:title"
+msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
+
 msgid "inforequests:appeals:save"
 msgstr "Save"
 
@@ -353,8 +356,8 @@ msgstr "Next"
 msgid "inforequests:appeals:finish"
 msgstr "Finish"
 
-msgid "inforequests:appeals:close"
-msgstr "Close"
+msgid "inforequests:appeals:cancel"
+msgstr "Cancel"
 
 msgid "inforequests:appeals:print"
 msgstr "Print"
@@ -485,12 +488,6 @@ msgstr "Received"
 msgid "inforequests:detail:email:attachments"
 msgstr "Attachments"
 
-msgid "inforequests:detail:heading"
-msgstr "Inforequest Detail"
-
-msgid "inforequests:detail:history:heading"
-msgstr "Inforequest Detail"
-
 msgid "inforequests:detail:new_action:title"
 msgstr "What You Can Do"
 
@@ -519,6 +516,12 @@ msgid "inforequests:detail:undecided:show"
 msgstr "Show them"
 
 msgid "inforequests:detail:title"
+msgstr "Inforequest Detail"
+
+msgid "inforequests:detail:heading"
+msgstr "Inforequest Detail"
+
+msgid "inforequests:detail:history:heading"
 msgstr "Inforequest Detail"
 
 msgid "inforequests:index:title"
@@ -592,12 +595,6 @@ msgstr "Affirmation"
 
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Add an Affirmation"
-
-msgid "inforequests:modals:ajax_fail:heading"
-msgstr "Something Went Wrong"
-
-msgid "inforequests:modals:ajax_fail:reload"
-msgstr "Reload Page"
 
 msgid "inforequests:modals:appeal:heading"
 msgstr "Appeal"
@@ -980,6 +977,15 @@ msgstr "Verify Your E-mail Address"
 
 msgid "main:base:title"
 msgstr "Chcem Vedieť"
+
+msgid "main:ajax-fail:heading"
+msgstr "Something Went Wrong"
+
+msgid "main:ajax-fail:reload"
+msgstr "Reload Page"
+
+msgid "main:ajax-fail:close"
+msgstr "Close"
 
 msgid "main:menu:account:profile"
 msgstr "User Profile"

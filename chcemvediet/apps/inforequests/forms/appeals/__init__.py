@@ -46,7 +46,7 @@ class OptionalReasonCheckboxField(forms.BooleanField):
     def __init__(self, *args, **kwargs):
         kwargs[u'widget'] = forms.CheckboxInput(attrs={
                 u'class': u'toggle-checkbox',
-                u'data-container': u'.modal',
+                u'data-container': u'form',
                 u'data-target': u'button[value="next"], .paper-section'
                     if kwargs.get(u'required', True) else u'.paper-section',
                 })

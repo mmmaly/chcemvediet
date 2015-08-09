@@ -5,6 +5,9 @@ from collections import OrderedDict
 from django import forms
 from django.core import signing
 from django.core.exceptions import SuspiciousOperation
+from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.shortcuts import render
 from django.utils.html import format_html
 
 from .models import WizardDraft
@@ -58,6 +61,12 @@ class WizardStep(forms.Form):
                 text_template=self.text_template,
                 form_template=self.form_template,
                 )
+
+    def render(self, request):
+        return render(request, self.template, self.context())
+
+    def render_to_string(self, request):
+        return render_to_string(self.template, context_instance=RequestContext(request), dictionary=self.context())
 
 
 class Wizard(object):

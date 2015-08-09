@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from email.utils import formataddr
 
+from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.db import models
 from django.db.models import Prefetch, Q, F
@@ -369,6 +370,9 @@ class Action(models.Model):
                 self.deadline = deadline(self) if callable(deadline) else deadline
 
         super(Action, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse(u'inforequests:detail', args=[self.branch.inforequest.pk]) + u'#action-%d' % self.pk
 
     def days_passed_at(self, at):
         return workdays.between(self.effective_date, at)

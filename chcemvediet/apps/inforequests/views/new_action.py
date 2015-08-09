@@ -1,19 +1,21 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.sessions.models import Session
 
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_today
+from poleno.utils.http import JsonOperations, JsonContent, JsonRedirect
 from chcemvediet.apps.wizards import WizzardRollback
 from chcemvediet.apps.inforequests import forms
 from chcemvediet.apps.inforequests.models import Inforequest, Branch, Action, ActionDraft
 from chcemvediet.apps.inforequests.forms import AppealWizards
 
-from .shortcuts import render_form, render_step, json_form, json_step, json_draft, json_success
+from .shortcuts import render_form, json_form, json_draft, json_success
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @require_ajax
@@ -89,7 +91,6 @@ def new_action_appeal(request, inforequest_pk):
 
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
-@require_ajax
 @transaction.atomic
 @login_required(raise_exception=True)
 def new_action_appeal2(request, inforequest_pk, branch_pk):
@@ -105,34 +106,32 @@ def new_action_appeal2(request, inforequest_pk, branch_pk):
 
     if request.method != u'POST':
         wizard.start()
-        return render_step(request, wizard.current_step)
+        return wizard.current_step.render(request)
 
     try:
         wizard.step(request.POST)
     except WizzardRollback as e:
-        return json_step(request, e.step)
+        return JsonOperations(JsonContent(e.step.render_to_string(request)))
 
     button = clean_button(request.POST, [u'save', u'prev', u'next'])
 
     if button == u'save':
         wizard.commit()
-        return json_step(request, wizard.current_step)
+        return JsonOperations()
 
     if button == u'prev':
-        return json_step(request, wizard.prev_step())
+        return JsonOperations(JsonContent(wizard.prev_step().render_to_string(request)))
 
     if button == u'next':
         if not wizard.current_step.is_valid():
-            return json_step(request, wizard.current_step)
+            return JsonOperations(JsonContent(wizard.current_step.render_to_string(request)))
         wizard.commit()
         if not wizard.current_step.is_last():
-            return json_step(request, wizard.next_step())
+            return JsonOperations(JsonContent(wizard.next_step().render_to_string(request)))
         branch.add_expiration_if_expired()
         action = Action(type=Action.TYPES.APPEAL)
         wizard.save(action)
         action.save()
-        # The inforequest was changed, we need to refetch it.
-        inforequest = Inforequest.objects.prefetch_detail().get(pk=inforequest.pk)
-        return json_success(request, inforequest, action)
+        return JsonOperations(JsonRedirect(action.get_absolute_url()))
 
     return HttpResponseBadRequest()

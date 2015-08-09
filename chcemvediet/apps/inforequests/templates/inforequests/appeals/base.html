@@ -1,4 +1,5 @@
 {# vim: set filetype=htmldjango :#}
+{% extends request.is_ajax|yesno:"main/base/ajax.html,main/base/single_column.html" %}
 {% load trans from i18n %}
 
 {% comment %}
@@ -14,24 +15,23 @@
  %
 {% endcomment %}
 
-<form class="form-horizontal ajax" method="post" 
-      action="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}">
-  {% csrf_token %}
-  {{ step.state_field }}
-  <div class="modal-header">
+{% block title %}{% trans 'inforequests:appeals:title' %} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  <form class="form-horizontal ajax ajax-operations" method="post" data-fail-target="#ajax-fail-modal"
+        action="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}">
+    {% csrf_token %}
+    {{ step.state_field }}
     {% block "header" %}
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
-      <h3>
+      <h1>
         {% block "header-heading" %}
           {% include "inforequests/appeals/texts/base-heading.txt" %}
         {% endblock %}
         {% block "header-step" %}
           ({{ step.step_number }}/{{ wizard.number_of_steps }})
         {% endblock %}
-      </h3>
+      </h1>
     {% endblock %}
-  </div>
-  <div class="modal-body">
     {% block "body" %}
       {% block "body-text" %}
         {% if text_template %}{% include text_template %}{% endif %}
@@ -40,37 +40,37 @@
         {% if form_template %}<div>{% include form_template with form=step %}</div>{% endif %}
       {% endblock %}
     {% endblock %}
-  </div>
-  <div class="modal-footer">
-    {% block "footer" %}
-      {% block "footer-save" %}
-        <button type="submit" class="btn" name="button" value="save">
-          <i class="icon-file"></i> {% trans 'inforequests:appeals:save' %}
-        </button>
-      {% endblock %}
-      {% block "footer-prev" %}
-        {% if not step.is_first %}
-          <button type="submit" class="btn" name="button" value="prev">
-            <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
+    <div class="form-actions">
+      {% block "footer" %}
+        {% block "footer-save" %}
+          <button type="submit" class="btn" name="button" value="save">
+            <i class="icon-file"></i> {% trans 'inforequests:appeals:save' %}
           </button>
-        {% endif %}
+        {% endblock %}
+        {% block "footer-prev" %}
+          {% if not step.is_first %}
+            <button type="submit" class="btn" name="button" value="prev">
+              <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
+            </button>
+          {% endif %}
+        {% endblock %}
+        {% block "footer-next" %}
+          {% if not step.is_last %}
+            <button type="submit" class="btn btn-primary" name="button" value="next">
+              <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
+            </button>
+          {% else %}
+            <button type="submit" class="btn btn-primary" name="button" value="next">
+              <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:finish' %}
+            </button>
+          {% endif %}
+        {% endblock %}
+        {% block "footer-cancel" %}
+          <a class="btn pull-right" href="{% url 'inforequests:detail' inforequest.pk %}">
+            <i class="icon-remove"></i> {% trans 'inforequests:appeals:cancel' %}
+          </a>
+        {% endblock %}
       {% endblock %}
-      {% block "footer-next" %}
-        {% if not step.is_last %}
-          <button type="submit" class="btn btn-primary" name="button" value="next">
-            <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
-          </button>
-        {% else %}
-          <button type="submit" class="btn btn-primary" name="button" value="next">
-            <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:finish' %}
-          </button>
-        {% endif %}
-      {% endblock %}
-      {% block "footer-close" %}
-        <button type="button" class="btn" data-dismiss="modal">
-          <i class="icon-remove"></i> {% trans 'inforequests:appeals:close' %}
-        </button>
-      {% endblock %}
-    {% endblock %}
-  </div>
-</form>
+    </div>
+  </form>
+{% endblock %}

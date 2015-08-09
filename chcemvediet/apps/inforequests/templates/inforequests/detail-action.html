@@ -106,10 +106,10 @@
     <span id="action-extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
   {% endif %}
   {% if forloop.last and not inforequest.closed and branch.can_add_appeal and not inforequest.has_undecided_emails %}
-    <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}"
-            data-type="html" data-target="#appeal2-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
-            title="{% spaceless %}{% include "inforequests/tooltips/detail-action-appeal.txt" %}{% endspaceless %}">{% trans 'inforequests:detail:action:appeal' %}</button>
-    <span id="appeal2-{{ action.pk }}-modal" class="modal inforequest-ajax-modal modal-large hide fade"></span>
+    <a class="btn btn-primary with-tooltip" href="{% url 'inforequests:new_action_appeal2' inforequest.pk branch.pk %}"
+       data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-appeal.txt" %}{% endspaceless %}">
+      {% trans 'inforequests:detail:action:appeal' %}
+    </a>
   {% endif %}
   {% for sub_branch in inforequest|method:'branches_advanced_by'|call_with:action %}
     <div class="well well-inverse">

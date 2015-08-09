@@ -3,7 +3,7 @@
 import os
 import stat
 
-from django.http import HttpResponseNotModified, FileResponse
+from django.http import HttpResponseNotModified, FileResponse, JsonResponse
 from django.views.static import was_modified_since
 from django.utils.http import http_date, urlquote
 
@@ -28,3 +28,26 @@ def send_file_response(request, path, name, content_type, attachment=True):
     if attachment:
         response[u'Content-Disposition'] = "attachment; filename*=UTF-8''%s" % urlquote(name)
     return response
+
+
+class JsonOperations(JsonResponse):
+    def __init__(self, *args):
+        super(JsonOperations, self).__init__({
+            u'result': u'operations',
+            u'operations': [a.to_dict() for a in args],
+            })
+
+class JsonOperation(object):
+    def __init__(self, operation, **kwargs):
+        self.operation = operation
+        self.kwargs = kwargs
+    def to_dict(self):
+        return dict(operation=self.operation, **self.kwargs)
+
+class JsonContent(JsonOperation):
+    def __init__(self, content):
+        super(JsonContent, self).__init__(u'content', content=content)
+
+class JsonRedirect(JsonOperation):
+    def __init__(self, location):
+        super(JsonRedirect, self).__init__(u'redirect', location=location)

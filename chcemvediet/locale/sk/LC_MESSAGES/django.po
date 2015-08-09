@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-08 04:31+0200\n"
+"POT-Creation-Date: 2015-08-09 05:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -341,6 +341,9 @@ msgstr "Nesúvisiace"
 msgid "inforequests:InforequestEmail:type:UNKNOWN"
 msgstr "Neznáme"
 
+msgid "inforequests:appeals:title"
+msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
+
 msgid "inforequests:appeals:save"
 msgstr "Uložiť"
 
@@ -353,8 +356,8 @@ msgstr "Ďalej"
 msgid "inforequests:appeals:finish"
 msgstr "Dokončiť"
 
-msgid "inforequests:appeals:close"
-msgstr "Zavrieť"
+msgid "inforequests:appeals:cancel"
+msgstr "Zrušiť"
 
 msgid "inforequests:appeals:print"
 msgstr "Vytlačiť"
@@ -485,12 +488,6 @@ msgstr "Prijaté"
 msgid "inforequests:detail:email:attachments"
 msgstr "Prílohy"
 
-msgid "inforequests:detail:heading"
-msgstr "Detail žiadosti"
-
-msgid "inforequests:detail:history:heading"
-msgstr "Detail žiadosti"
-
 msgid "inforequests:detail:new_action:title"
 msgstr "Čo môžete vykonať"
 
@@ -519,6 +516,12 @@ msgid "inforequests:detail:undecided:show"
 msgstr "Ukázať"
 
 msgid "inforequests:detail:title"
+msgstr "Detail žiadosti"
+
+msgid "inforequests:detail:heading"
+msgstr "Detail žiadosti"
+
+msgid "inforequests:detail:history:heading"
 msgstr "Detail žiadosti"
 
 msgid "inforequests:index:title"
@@ -592,12 +595,6 @@ msgstr "Potvrdenie rozhodnutia"
 
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Pridať potvrdenie rozhodnutia"
-
-msgid "inforequests:modals:ajax_fail:heading"
-msgstr "Niečo sa pokazilo"
-
-msgid "inforequests:modals:ajax_fail:reload"
-msgstr "Obnoviť stránku"
 
 msgid "inforequests:modals:appeal:heading"
 msgstr "Odvolanie"
@@ -980,6 +977,15 @@ msgstr "Je potrebné overenie e-mailovej adresy"
 
 msgid "main:base:title"
 msgstr "Chcemvediet.sk"
+
+msgid "main:ajax-fail:heading"
+msgstr "Niečo sa pokazilo"
+
+msgid "main:ajax-fail:reload"
+msgstr "Obnoviť stránku"
+
+msgid "main:ajax-fail:close"
+msgstr "Zavrieť"
 
 msgid "main:menu:account:profile"
 msgstr "Profil užívateľa"

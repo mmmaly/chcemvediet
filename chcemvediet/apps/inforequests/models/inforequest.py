@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.db import models, IntegrityError, transaction, connection
 from django.db.models import Q, Prefetch
 from django.conf import settings
@@ -450,6 +451,9 @@ class Inforequest(models.Model):
                 return # object is already saved
 
         super(Inforequest, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse(u'inforequests:detail', args=[self.pk])
 
     def _send_notification(self, template, anchor, dictionary):
         dictionary.update({

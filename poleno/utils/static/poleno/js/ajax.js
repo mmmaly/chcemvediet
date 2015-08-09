@@ -89,3 +89,36 @@ $(function(){
 	$(document).on('ajax-done', '.ajax-modal-once', done);
 	$(document).on('ajax-fail', '.ajax-modal-once', fail);
 });
+
+/* Takes data returned by an Ajax request and performs received operations. The response should be
+ * a dictionary with two keys: ``result`` and ``operations``, where ``result`` should be the string
+ * "operations" and ``operations`` should be a list of supported operations. If the request fails
+ * a modal specified with ``fail-target`` attribute is opened.
+ *
+ * Supported operations:
+ *     {operation: 'content', content: <html>}
+ *         Replaces curent element inner html with new ``content``. After replacing its content, we
+ *         emit ``dom-changed`` on the element.
+ */
+$(function(){
+	function done(event, data){
+		if (data.result != 'operations') return;
+		var that = this;
+		$.each(data.operations, function(index, operation){
+			switch (operation.operation) {
+				case 'content':
+					$(that).html(operation.content).trigger('dom-changed');
+					break;
+				case 'redirect':
+					window.location = operation.location;
+					break;
+			}
+		});
+	}
+	function fail(event){
+		var target = $(this).data('fail-target');
+		$(target).modal('show');
+	}
+	$(document).on('ajax-done', '.ajax-operations', done);
+	$(document).on('ajax-fail', '.ajax-operations', fail);
+});
