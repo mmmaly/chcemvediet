@@ -9,16 +9,14 @@
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- text_template: string (template path)
- %  -- section_template: string (template path)
  %
 {% endcomment %}
 
 {% block "body" %}
-  {% if text_template %}{% include text_template %}{% endif %}
-  {% if section_template %}
+  {{ block.super }}
+  {% if step.section_template %}
     <div class="well paper-section">
-      {% include section_template %}
+      {% include step.section_template %}
     </div>
   {% endif %}
 {% endblock %}

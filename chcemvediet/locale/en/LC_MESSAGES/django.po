@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-09 22:09+0200\n"
+"POT-Creation-Date: 2015-08-10 02:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -344,20 +344,8 @@ msgstr "Unknown"
 msgid "inforequests:appeals:title"
 msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 
-msgid "inforequests:appeals:save"
-msgstr "Save"
-
-msgid "inforequests:appeals:prev"
-msgstr "Back"
-
-msgid "inforequests:appeals:finish"
-msgstr "Finish"
-
-msgid "inforequests:appeals:next"
-msgstr "Next"
-
-msgid "inforequests:appeals:cancel"
-msgstr "Cancel"
+msgid "inforequests:appeals:heading"
+msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 
 msgid "inforequests:appeals:print"
 msgstr "Print"
@@ -794,6 +782,21 @@ msgstr "E-mail"
 
 msgid "obligees:obligee_with_address_input:email"
 msgstr "E-mail"
+
+msgid "wizards:wizard:save"
+msgstr "Save"
+
+msgid "wizards:wizard:prev"
+msgstr "Back"
+
+msgid "wizards:wizard:finish"
+msgstr "Finish"
+
+msgid "wizards:wizard:next"
+msgstr "Next"
+
+msgid "wizards:wizard:cancel"
+msgstr "Cancel"
 
 msgid "account:inactive:title"
 msgstr "Account Inactive"

@@ -1,0 +1,73 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "main/base/single_column.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.wizards.Wizard
+ %  -- step: chcemvediet.apps.wizards.WizardStep
+ %
+{% endcomment %}
+
+{% block content %}
+  <form class="form-horizontal" method="post" action="{{ step.get_url }}">
+    {% csrf_token %}
+    {% block "header" %}
+      <h1>
+        {% block "header-heading" %}{% endblock %}
+        {% block "header-step" %}
+          ({{ step.step_number }}/{{ wizard.number_of_steps }})
+        {% endblock %}
+      </h1>
+    {% endblock %}
+    {% block "body" %}
+      {% block "body-text" %}
+        {% if step.text_template %}{% include step.text_template %}{% endif %}
+      {% endblock %}
+      {% block "body-form" %}
+        {% if step.form_template %}<div>{% include step.form_template with form=step %}</div>{% endif %}
+      {% endblock %}
+    {% endblock %}
+    <div class="form-actions">
+      {% block "footer" %}
+        {% block "footer-save" %}
+          <button type="submit" class="btn" name="button" value="save">
+            {% block "footer-save-label" %}
+              <i class="icon-file"></i> {% trans 'wizards:wizard:save' %}
+            {% endblock %}
+          </button>
+        {% endblock %}
+        {% block "footer-prev" %}
+          {% if not step.is_first %}
+            <a class="btn" href="{{ step.prev.get_url }}">
+              {% block "footer-prev-label" %}
+                <i class="icon-chevron-left"></i> {% trans 'wizards:wizard:prev' %}
+              {% endblock %}
+            </a>
+          {% endif %}
+        {% endblock %}
+        {% block "footer-next" %}
+          <button type="submit" class="btn btn-primary" name="button" value="next">
+            {% if step.is_last %}
+              {% block "footer-finish-label" %}
+                <i class="icon-chevron-right icon-white"></i> {% trans 'wizards:wizard:finish' %}
+              {% endblock %}
+            {% else %}
+              {% block "footer-next-label" %}
+                <i class="icon-chevron-right icon-white"></i> {% trans 'wizards:wizard:next' %}
+              {% endblock %}
+            {% endif %}
+          </button>
+        {% endblock %}
+        {% block "footer-cancel" %}
+          <a class="btn pull-right" href="{% block "footer-cancel-href" %}{% endblock %}">
+            {% block "footer-cancel-label" %}
+              <i class="icon-remove"></i> {% trans 'wizards:wizard:cancel' %}
+            {% endblock %}
+          </a>
+        {% endblock %}
+      {% endblock %}
+    </div>
+  </form>
+{% endblock %}

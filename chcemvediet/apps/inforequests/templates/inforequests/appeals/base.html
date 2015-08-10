@@ -1,5 +1,5 @@
 {# vim: set filetype=htmldjango :#}
-{% extends "main/base/single_column.html" %}
+{% extends "wizards/wizard.html" %}
 {% load trans from i18n %}
 
 {% comment %}
@@ -10,63 +10,11 @@
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- text_template: string (template path)
- %  -- form_template: string (template path)
  %
 {% endcomment %}
 
-{% block title %}{% trans 'inforequests:appeals:title' %} | {{ block.super }}{% endblock %}
+{% block "title" %}{% trans 'inforequests:appeals:title' %} | {{ block.super }}{% endblock %}
 
-{% block content %}
-  <form class="form-horizontal" method="post" action="{{ step.get_url }}">
-    {% csrf_token %}
-    {% block "header" %}
-      <h1>
-        {% block "header-heading" %}
-          {% include "inforequests/appeals/texts/base-heading.txt" %}
-        {% endblock %}
-        {% block "header-step" %}
-          ({{ step.step_number }}/{{ wizard.number_of_steps }})
-        {% endblock %}
-      </h1>
-    {% endblock %}
-    {% block "body" %}
-      {% block "body-text" %}
-        {% if text_template %}{% include text_template %}{% endif %}
-      {% endblock %}
-      {% block "body-form" %}
-        {% if form_template %}<div>{% include form_template with form=step %}</div>{% endif %}
-      {% endblock %}
-    {% endblock %}
-    <div class="form-actions">
-      {% block "footer" %}
-        {% block "footer-save" %}
-          <button type="submit" class="btn" name="button" value="save">
-            <i class="icon-file"></i> {% trans 'inforequests:appeals:save' %}
-          </button>
-        {% endblock %}
-        {% block "footer-prev" %}
-          {% if not step.is_first %}
-            <a class="btn" href="{{ step.prev.get_url }}">
-              <i class="icon-chevron-left"></i> {% trans 'inforequests:appeals:prev' %}
-            </a>
-          {% endif %}
-        {% endblock %}
-        {% block "footer-next" %}
-          <button type="submit" class="btn btn-primary" name="button" value="next">
-            {% if step.is_last %}
-              <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:finish' %}
-            {% else %}
-              <i class="icon-chevron-right icon-white"></i> {% trans 'inforequests:appeals:next' %}
-            {% endif %}
-          </button>
-        {% endblock %}
-        {% block "footer-cancel" %}
-          <a class="btn pull-right" href="{{ inforequest.get_absolute_url }}">
-            <i class="icon-remove"></i> {% trans 'inforequests:appeals:cancel' %}
-          </a>
-        {% endblock %}
-      {% endblock %}
-    </div>
-  </form>
-{% endblock %}
+{% block "header-heading" %}{% trans 'inforequests:appeals:heading' %}{% endblock %}
+
+{% block "footer-cancel-href" %}{{ inforequest.get_absolute_url }}{% endblock %}

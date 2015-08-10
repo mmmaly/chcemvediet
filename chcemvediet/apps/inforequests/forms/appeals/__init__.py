@@ -54,16 +54,12 @@ class OptionalReasonCheckboxField(forms.BooleanField):
         super(OptionalReasonCheckboxField, self).__init__(*args, **kwargs)
 
 
-class AppealSectionStep(WizardStep):
+class AppealStep(WizardStep):
+    template = u'inforequests/appeals/base.html'
+
+class AppealSectionStep(AppealStep):
     template = u'inforequests/appeals/section.html'
     section_template = None
-
-    def context(self, extra=None):
-        res = super(AppealSectionStep, self).context(extra)
-        res.update({
-                u'section_template': self.section_template,
-                })
-        return res
 
     def paper_fields(self, step):
         pass
@@ -74,7 +70,7 @@ class AppealSectionStep(WizardStep):
     def section_is_empty(self):
         return False
 
-class AppealDeadEndStep(WizardStep):
+class AppealDeadEndStep(AppealStep):
     template = u'inforequests/appeals/dead-end.html'
     counted_step = False
 
@@ -83,7 +79,7 @@ class AppealDeadEndStep(WizardStep):
         self.add_error(None, u'dead-end')
         return cleaned_data
 
-class AppealPaperStep(WizardStep):
+class AppealPaperStep(AppealStep):
     template = u'inforequests/appeals/paper.html'
     text_template = u'inforequests/appeals/texts/paper-text.html'
     subject_template = u'inforequests/appeals/papers/subject.txt'
@@ -125,17 +121,14 @@ class AppealPaperStep(WizardStep):
 
     def context(self, extra=None):
         res = super(AppealPaperStep, self).context(extra)
-        res.update({
-                u'subject_template': self.subject_template,
-                u'content_template': self.content_template,
-                })
         for step in self.wizard.steps.values():
             if isinstance(step, AppealSectionStep):
                 res.update(step.paper_context())
         return res
 
-class AppealFinalStep(WizardStep):
+class AppealFinalStep(AppealStep):
     template = u'inforequests/appeals/final.html'
+    text_template = u'inforequests/appeals/texts/final-text.html'
 
     def context(self, extra=None):
         res = super(AppealFinalStep, self).context(extra)

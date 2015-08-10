@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-09 22:09+0200\n"
+"POT-Creation-Date: 2015-08-10 02:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -344,20 +344,8 @@ msgstr "Neznáme"
 msgid "inforequests:appeals:title"
 msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 
-msgid "inforequests:appeals:save"
-msgstr "Uložiť"
-
-msgid "inforequests:appeals:prev"
-msgstr "Späť"
-
-msgid "inforequests:appeals:finish"
-msgstr "Dokončiť"
-
-msgid "inforequests:appeals:next"
-msgstr "Ďalej"
-
-msgid "inforequests:appeals:cancel"
-msgstr "Zrušiť"
+msgid "inforequests:appeals:heading"
+msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 
 msgid "inforequests:appeals:print"
 msgstr "Vytlačiť"
@@ -794,6 +782,21 @@ msgstr "E-mail"
 
 msgid "obligees:obligee_with_address_input:email"
 msgstr "E-mail"
+
+msgid "wizards:wizard:save"
+msgstr "Uložiť"
+
+msgid "wizards:wizard:prev"
+msgstr "Späť"
+
+msgid "wizards:wizard:finish"
+msgstr "Dokončiť"
+
+msgid "wizards:wizard:next"
+msgstr "Ďalej"
+
+msgid "wizards:wizard:cancel"
+msgstr "Zrušiť"
 
 msgid "account:inactive:title"
 msgstr "Neaktívny účet"

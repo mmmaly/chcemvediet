@@ -6,13 +6,12 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.forms import EditableSpan
-from chcemvediet.apps.wizards import WizardStep
 from chcemvediet.apps.inforequests.models import Action
 
 from . import PaperCharField, OptionalReasonCheckboxField
-from . import AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
+from . import AppealStep, AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
 
-class ReasonStep(WizardStep):
+class ReasonStep(AppealStep):
     covered_reason = None
 
     @classmethod
@@ -371,7 +370,7 @@ class RefusalAppealOtherReasonInvalidReasonStep(ReasonStep, AppealSectionStep):
         step.fields[u'other_reason_invalid_reason'] = PaperCharField(widget=EditableSpan())
 
 
-class SanitizationStep(WizardStep):
+class SanitizationStep(AppealStep):
     sanitizable_reasons = set([
             Action.REFUSAL_REASONS.BUSINESS_SECRET,
             Action.REFUSAL_REASONS.PERSONAL,

@@ -16,7 +16,7 @@ class WizzardRollback(Exception):
 
 
 class WizardStep(forms.Form):
-    template = u'inforequests/appeals/base.html'
+    template = u'wizards/wizard.html'
     text_template = None
     form_template = None
     counted_step = True
@@ -52,8 +52,6 @@ class WizardStep(forms.Form):
     def context(self, extra=None):
         return dict(self.wizard.context(extra),
                 step=self,
-                text_template=self.text_template,
-                form_template=self.form_template,
                 )
 
     def get_url(self, anchor=u''):
