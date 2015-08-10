@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "inforequests/appeals/papers/base.html" %}
-{% load paragraph from chcemvediet.inforequests %}
+{% load paragraph from chcemvediet.wizards %}
 
 {% comment %}
  %
@@ -17,7 +17,7 @@
  %
 {% endcomment %}
 
-{% block "reasoning" %}
+{% block reasoning %}
   {% paragraph before=0 %}
     Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi povinná osoba doručila rozhodnutie
     o nesprístupnení informácie{% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif%}.

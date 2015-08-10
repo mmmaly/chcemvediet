@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-10 02:34+0200\n"
+"POT-Creation-Date: 2015-08-10 03:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -350,6 +350,12 @@ msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 msgid "inforequests:appeals:print"
 msgstr "Vytlačiť"
 
+msgid "inforequests:clarification_responses:title"
+msgstr "Odpoveď na výzvu na doplnenie žiadosti"
+
+msgid "inforequests:clarification_responses:heading"
+msgstr "Odpoveď na výzvu na doplnenie žiadosti"
+
 msgid "inforequests:create:title"
 msgstr "Nová infožiadosť"
 
@@ -397,6 +403,9 @@ msgstr "Vytlačiť"
 
 msgid "inforequests:detail:action:extend_deadline"
 msgstr "Lehota uplynula, predĺžte ju"
+
+msgid "inforequests:detail:action:clarification_response"
+msgstr "Odpoveď na výzvu na doplnenie žiadosti"
 
 msgid "inforequests:detail:action:appeal"
 msgstr "Odvolanie"
@@ -478,9 +487,6 @@ msgstr "Prílohy"
 
 msgid "inforequests:detail:new_action:title"
 msgstr "Čo môžete vykonať"
-
-msgid "inforequests:detail:new_action:clarification_response"
-msgstr "Odpoveď na výzvu na doplnenie žiadosti"
 
 msgid "inforequests:detail:request:applicant"
 msgstr "Žiadateľ"

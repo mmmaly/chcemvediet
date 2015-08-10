@@ -22,3 +22,4 @@ from .action import AppealForm
 from .action import ExtendDeadlineForm
 
 from .appeals import AppealWizards
+from .clarification_responses import ClarificationResponseWizards

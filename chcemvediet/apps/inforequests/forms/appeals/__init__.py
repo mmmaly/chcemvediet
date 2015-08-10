@@ -5,82 +5,33 @@ from dateutil.relativedelta import relativedelta
 from django import forms
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-from django.template.loader import render_to_string
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.utils.html import format_html
-from django.utils.dateformat import format
 
 from poleno.utils.date import local_today
-from poleno.utils.misc import squeeze
 from chcemvediet.apps.wizards import WizardStep, Wizard, WizardGroup
+from chcemvediet.apps.wizards import WizardSectionStep, WizardDeadendStep, WizardPaperStep, WizardPrintStep
+from chcemvediet.apps.wizards.forms import PaperDateField
 from chcemvediet.apps.inforequests.models import Action
-
-
-class PaperField(forms.Field):
-
-    def __init__(self, *args, **kwargs):
-        super(PaperField, self).__init__(*args, **kwargs)
-
-    def render_finalized(self, value):
-        return format_html(u'{0}', value)
-
-class PaperDateField(PaperField, forms.DateField):
-
-    def __init__(self, *args, **kwargs):
-        self.final_format = kwargs.pop(u'final_format', settings.DATE_FORMAT)
-        super(PaperDateField, self).__init__(*args, **kwargs)
-
-    def render_finalized(self, value):
-        if value in [None, u'']:
-            return u''
-        return format_html(u'{0}', format(value, self.final_format))
-
-class PaperCharField(PaperField, forms.CharField):
-
-    def render_finalized(self, value):
-        if value is None:
-            value = u''
-        return format_html(u'<span style="white-space: pre-wrap;">{0}</span>', value)
-
-class OptionalReasonCheckboxField(forms.BooleanField):
-    def __init__(self, *args, **kwargs):
-        kwargs[u'widget'] = forms.CheckboxInput(attrs={
-                u'class': u'toggle-checkbox',
-                u'data-container': u'form',
-                u'data-target': u'button[value="next"], .paper-section'
-                    if kwargs.get(u'required', True) else u'.paper-section',
-                })
-        super(OptionalReasonCheckboxField, self).__init__(*args, **kwargs)
 
 
 class AppealStep(WizardStep):
     template = u'inforequests/appeals/base.html'
+    template_base_extends = u'wizards/wizard.html'
 
-class AppealSectionStep(AppealStep):
-    template = u'inforequests/appeals/section.html'
-    section_template = None
-
-    def paper_fields(self, step):
-        pass
-
-    def paper_context(self, extra=None):
-        return dict(extra or {})
+class AppealSectionStep(WizardSectionStep):
+    template = u'inforequests/appeals/base.html'
+    template_base_extends = u'wizards/section.html'
 
     def section_is_empty(self):
         return False
 
-class AppealDeadEndStep(AppealStep):
-    template = u'inforequests/appeals/dead-end.html'
-    counted_step = False
+class AppealDeadendStep(WizardDeadendStep):
+    template = u'inforequests/appeals/base.html'
+    template_base_extends = u'wizards/deadend.html'
 
-    def clean(self):
-        cleaned_data = super(AppealDeadEndStep, self).clean()
-        self.add_error(None, u'dead-end')
-        return cleaned_data
-
-class AppealPaperStep(AppealStep):
-    template = u'inforequests/appeals/paper.html'
+class AppealPaperStep(WizardPaperStep):
+    template = u'inforequests/appeals/base.html'
+    template_base_extends = u'wizards/paper.html'
     text_template = u'inforequests/appeals/texts/paper-text.html'
     subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/base.html'
@@ -94,12 +45,6 @@ class AppealPaperStep(AppealStep):
                 u'class': u'datepicker',
                 }),
             )
-
-    def __init__(self, *args, **kwargs):
-        super(AppealPaperStep, self).__init__(*args, **kwargs)
-        for step in self.wizard.steps.values():
-            if isinstance(step, AppealSectionStep):
-                step.paper_fields(self)
 
     def clean(self):
         cleaned_data = super(AppealPaperStep, self).clean()
@@ -119,28 +64,16 @@ class AppealPaperStep(AppealStep):
 
         return cleaned_data
 
-    def context(self, extra=None):
-        res = super(AppealPaperStep, self).context(extra)
-        for step in self.wizard.steps.values():
-            if isinstance(step, AppealSectionStep):
-                res.update(step.paper_context())
-        return res
-
-class AppealFinalStep(AppealStep):
-    template = u'inforequests/appeals/final.html'
+class AppealFinalStep(WizardPrintStep):
+    template = u'inforequests/appeals/base.html'
+    template_base_extends = u'wizards/print.html'
     text_template = u'inforequests/appeals/texts/final-text.html'
 
     def context(self, extra=None):
         res = super(AppealFinalStep, self).context(extra)
+
         last_action = self.wizard.branch.last_action
         effective_date = self.wizard.values[u'effective_date']
-
-        res.update({
-                u'appeal_subject': self.wizard.finalize_subject(),
-                u'appeal_content': self.wizard.finalize_content(),
-                u'effective_date': effective_date,
-                })
-
         if last_action.has_applicant_deadline:
             res.update({
                     u'deadline_missed_at_today': last_action.deadline_missed,
@@ -150,6 +83,7 @@ class AppealFinalStep(AppealStep):
                     })
 
         return res
+
 
 class AppealWizard(Wizard):
 
@@ -171,11 +105,10 @@ class AppealWizard(Wizard):
                 u'fiktivne': self.branch.last_action.type != Action.TYPES.REFUSAL,
                 u'not_at_all': self.branch.last_action.disclosure_level not in [
                     Action.DISCLOSURE_LEVELS.PARTIAL, Action.DISCLOSURE_LEVELS.FULL],
-                u'retrospection': self.retrospection_data(self.branch.last_action),
                 })
         return res
 
-    def retrospection_data(self, last_action, recursive=False):
+    def _retrospection(self, last_action, recursive=False):
         res = []
         branch = last_action.branch
         obligee = branch.historicalobligee if recursive else None
@@ -186,7 +119,7 @@ class AppealWizard(Wizard):
         if branch.is_main:
             clause(u'request', inforequest=branch.inforequest)
         else:
-            res.extend(self.retrospection_data(branch.advanced_by, recursive=True))
+            res.extend(self._retrospection(branch.advanced_by, recursive=True))
 
         start_index = 0
         while True:
@@ -230,24 +163,15 @@ class AppealWizard(Wizard):
 
         return res
 
-    def finalize_subject(self):
-        step = self.steps[u'paper']
-        return squeeze(render_to_string(step.subject_template, step.context(dict(finalize=True))))
-
-    def finalize_content(self):
-        step = self.steps[u'paper']
-        return render_to_string(step.content_template, step.context(dict(finalize=True)))
-
-    def finalize_effective_date(self):
-        step = self.steps[u'paper']
-        return step.cleaned_data[u'effective_date']
+    def retrospection(self):
+        return self._retrospection(self.branch.last_action)
 
     def save(self, appeal):
         appeal.branch = self.branch
-        appeal.subject = self.finalize_subject()
-        appeal.content = self.finalize_content()
+        appeal.subject = self.values[u'subject']
+        appeal.content = self.values[u'content']
         appeal.content_type = Action.CONTENT_TYPES.HTML
-        appeal.effective_date = self.finalize_effective_date()
+        appeal.effective_date = self.values[u'effective_date']
 
 
 # Must be after ``AppealWizard`` to break cyclic dependency

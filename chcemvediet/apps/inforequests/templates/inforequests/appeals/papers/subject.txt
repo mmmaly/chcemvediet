@@ -4,7 +4,7 @@
  %
  % Context:
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
- %  -- step: chcemvediet.apps.wizards.WizardStep
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action

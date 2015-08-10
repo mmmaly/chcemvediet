@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 from django.db import transaction
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.sessions.models import Session
 
 from poleno.utils.views import require_ajax, login_required
 from poleno.utils.forms import clean_button
 from poleno.utils.date import local_today
-from chcemvediet.apps.wizards import WizzardRollback
+from chcemvediet.apps.wizards.views import wizard_view
 from chcemvediet.apps.inforequests import forms
 from chcemvediet.apps.inforequests.models import Inforequest, Branch, Action, ActionDraft
-from chcemvediet.apps.inforequests.forms import AppealWizards
+from chcemvediet.apps.inforequests.forms import AppealWizards, ClarificationResponseWizards
 
 from .shortcuts import render_form, json_form, json_draft, json_success
 
@@ -91,6 +91,27 @@ def new_action_appeal(request, inforequest_pk):
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @transaction.atomic
 @login_required(raise_exception=True)
+def clarification_response(request, inforequest_pk, branch_pk, step_idx=None):
+    inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
+    branch = inforequest.branch_set.get_or_404(pk=branch_pk)
+
+    if not branch.can_add_clarification_response:
+        return HttpResponseNotFound()
+    if inforequest.has_undecided_emails:
+        return HttpResponseNotFound()
+
+    def finish(wizard):
+        raise NotImplementedError
+        action = Action(type=Action.TYPES.CLARIFICATION_RESPONSE)
+        wizard.save(action)
+        action.save()
+        return action.get_absolute_url()
+
+    return wizard_view(ClarificationResponseWizards, request, step_idx, finish, branch)
+
+@require_http_methods([u'HEAD', u'GET', u'POST'])
+@transaction.atomic
+@login_required(raise_exception=True)
 def appeal(request, inforequest_pk, branch_pk, step_idx=None):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
     branch = inforequest.branch_set.get_or_404(pk=branch_pk)
@@ -100,32 +121,11 @@ def appeal(request, inforequest_pk, branch_pk, step_idx=None):
     if inforequest.has_undecided_emails:
         return HttpResponseNotFound()
 
-    try:
-        wizard = AppealWizards.find_applicable(branch)
-        wizard.step(request, step_idx)
-    except WizzardRollback as e:
-        return HttpResponseRedirect(e.step.get_url())
-
-    if request.method != u'POST':
-        return wizard.current_step.render(request)
-
-    button = clean_button(request.POST, [u'save', u'next'])
-
-    if button == u'save':
-        wizard.commit()
-        return HttpResponseRedirect(wizard.current_step.get_url())
-
-    if button == u'next':
-        if not wizard.current_step.is_valid():
-            return wizard.current_step.render(request)
-        wizard.commit()
-        if not wizard.current_step.is_last():
-            return HttpResponseRedirect(wizard.next_step().get_url())
+    def finish(wizard):
         branch.add_expiration_if_expired()
         action = Action(type=Action.TYPES.APPEAL)
         wizard.save(action)
         action.save()
-        wizard.reset()
-        return HttpResponseRedirect(action.get_absolute_url())
+        return action.get_absolute_url()
 
-    return HttpResponseBadRequest()
+    return wizard_view(AppealWizards, request, step_idx, finish, branch)

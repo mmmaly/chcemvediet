@@ -1,0 +1,19 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "wizards/wizard.html" %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.wizards.Wizard
+ %  -- step: chcemvediet.apps.wizards.WizardSectionStep
+ %
+{% endcomment %}
+
+{% block body %}
+  {{ block.super }}
+  {% if step.section_template %}
+    <div class="well paper-section">
+      {% include step.section_template %}
+    </div>
+  {% endif %}
+{% endblock %}

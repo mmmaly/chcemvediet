@@ -7,6 +7,8 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.shortcuts import render
 
+from poleno.utils.misc import squeeze
+
 from .models import WizardDraft
 
 
@@ -50,9 +52,10 @@ class WizardStep(forms.Form):
         return self.wizard.step_number(self)
 
     def context(self, extra=None):
-        return dict(self.wizard.context(extra),
-                step=self,
-                )
+        return dict(self.wizard.context(extra), step=self)
+
+    def values(self):
+        return {f: self.cleaned_data[f] for f in self.fields}
 
     def get_url(self, anchor=u''):
         return self.wizard.get_step_url(self, anchor)
@@ -62,6 +65,64 @@ class WizardStep(forms.Form):
 
     def render_to_string(self, request):
         return render_to_string(self.template, context_instance=RequestContext(request), dictionary=self.context())
+
+class WizardDeadendStep(WizardStep):
+    template = u'wizards/deadend.html'
+    counted_step = False
+
+    def clean(self):
+        cleaned_data = super(WizardDeadEndStep, self).clean()
+        self.add_error(None, u'deadend')
+        return cleaned_data
+
+class WizardSectionStep(WizardStep):
+    template = u'wizards/section.html'
+    section_template = None
+
+    def paper_fields(self, step):
+        pass
+
+    def paper_context(self, extra=None):
+        return dict(extra or {})
+
+class WizardPaperStep(WizardStep):
+    template = u'wizards/paper.html'
+    subject_template = None
+    content_template = None
+    subject_value_name = u'subject'
+    content_value_name = u'content'
+
+    def __init__(self, *args, **kwargs):
+        super(WizardPaperStep, self).__init__(*args, **kwargs)
+        for step in self.wizard.steps.values():
+            if isinstance(step, WizardSectionStep):
+                step.paper_fields(self)
+
+    def context(self, extra=None):
+        res = super(WizardPaperStep, self).context(extra)
+        for step in self.wizard.steps.values():
+            if isinstance(step, WizardSectionStep):
+                res.update(step.paper_context())
+        return res
+
+    def values(self):
+        res = super(WizardPaperStep, self).values()
+
+        subject = squeeze(render_to_string(self.subject_template, self.context(dict(finalize=True))))
+        content = render_to_string(self.content_template, self.context(dict(finalize=True)))
+        res.update({
+                self.subject_value_name: subject,
+                self.content_value_name: content,
+                })
+
+        return res
+
+class WizardPrintStep(WizardStep):
+    template = u'wizards/print.html'
+    print_value_name = u'content'
+
+    def print_content(self):
+        return self.wizard.values[self.print_value_name]
 
 
 class Wizard(object):
@@ -102,14 +163,16 @@ class Wizard(object):
                     self.steps[step_key] = step
                     if not step.is_valid():
                         raise WizzardRollback(step)
-                    for field_name in step.fields:
-                        self.values[field_name] = step.cleaned_data[field_name]
+                    self.values.update(step.values())
                 elif step_index == current_index:
                     initial = dict(self.draft.data)
                     post = request.POST if request.method == u'POST' else None
                     step = step_class(self, step_index, step_key, initial=initial, data=post)
                     self.steps[step_key] = step
                     self.current_step = step
+                    if not step.is_valid():
+                        continue
+                    self.values.update(step.values())
                 else:
                     initial = dict(self.draft.data)
                     step = step_class(self, step_index, step_key, initial=initial)

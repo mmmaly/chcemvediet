@@ -99,17 +99,31 @@
       <i class="icon-print"></i> {% trans 'inforequests:detail:action:print' %}
     </button>
   {% endif %}
-  {% if forloop.last and not inforequest.closed and action.has_obligee_deadline and action.deadline_missed and not inforequest.has_undecided_emails %}
-    <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip" action="{% url 'inforequests:action_extend_deadline' inforequest.pk branch.pk action.pk %}"
-            data-type="html" data-target="#action-extend-deadline-{{ action.pk }}-modal" data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
-            title="{% spaceless %}{% include "inforequests/tooltips/detail-action-extend_deadline.txt" %}{% endspaceless %}">{% trans 'inforequests:detail:action:extend_deadline' %}</button>
-    <span id="action-extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
-  {% endif %}
-  {% if forloop.last and not inforequest.closed and branch.can_add_appeal and not inforequest.has_undecided_emails %}
-    <a class="btn btn-primary with-tooltip" href="{% url 'inforequests:appeal' inforequest.pk branch.pk %}"
-       data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/tooltips/detail-action-appeal.txt" %}{% endspaceless %}">
-      {% trans 'inforequests:detail:action:appeal' %}
-    </a>
+  {% if forloop.last and not inforequest.closed and not inforequest.has_undecided_emails %}
+    {% if action.has_obligee_deadline and action.deadline_missed %}
+      <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip"
+              action="{% url 'inforequests:action_extend_deadline' inforequest.pk branch.pk action.pk %}"
+              data-type="html" data-target="#action-extend-deadline-{{ action.pk }}-modal"
+              data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
+              title="{% spaceless %}{% include "inforequests/tooltips/detail-action-extend_deadline.txt" %}{% endspaceless %}">
+        {% trans 'inforequests:detail:action:extend_deadline' %}
+      </button>
+      <span id="action-extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
+    {% endif %}
+    {% if branch.can_add_clarification_response %}
+      <a class="btn btn-primary with-tooltip" data-toggle="tooltip" data-placement="right"
+         href="{% url 'inforequests:clarification_response' inforequest.pk branch.pk %}"
+         title="{% spaceless %}{% include "inforequests/tooltips/detail-action-clarification-response.txt" %}{% endspaceless %}">
+        {% trans 'inforequests:detail:action:clarification_response' %}
+      </a>
+    {% endif %}
+    {% if branch.can_add_appeal %}
+      <a class="btn btn-primary with-tooltip" data-toggle="tooltip" data-placement="right"
+         href="{% url 'inforequests:appeal' inforequest.pk branch.pk %}"
+         title="{% spaceless %}{% include "inforequests/tooltips/detail-action-appeal.txt" %}{% endspaceless %}">
+        {% trans 'inforequests:detail:action:appeal' %}
+      </a>
+    {% endif %}
   {% endif %}
   {% for sub_branch in inforequest|method:'branches_advanced_by'|call_with:action %}
     <div class="well well-inverse">

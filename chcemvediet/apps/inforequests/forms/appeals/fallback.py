@@ -3,8 +3,8 @@
 from collections import OrderedDict
 
 from poleno.utils.forms import EditableSpan
+from chcemvediet.apps.wizards.forms import PaperCharField
 
-from . import PaperCharField
 from . import AppealPaperStep, AppealFinalStep, AppealWizard
 
 

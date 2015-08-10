@@ -1,0 +1,31 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "wizards/wizard.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.wizards.Wizard
+ %  -- step: chcemvediet.apps.wizards.WizardPrintStep
+ %
+{% endcomment %}
+
+{% block body %}
+  {{ block.super }}
+  <div class="action-content">
+    <div id="print-area-{{ wizard.instance_id }}">
+      {{ step.print_content }}
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {% block footer-print %}
+    <button type="button" class="btn print" data-target="#print-area-{{ wizard.instance_id }}">
+      {% block footer-print-label %}
+        <i class="icon-print"></i> {% trans 'wizards:wizard:print' %}
+      {% endblock %}
+    </button>
+  {% endblock %}
+  {{ block.super }}
+{% endblock %}

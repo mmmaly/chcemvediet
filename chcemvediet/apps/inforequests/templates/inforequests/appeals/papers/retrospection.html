@@ -1,14 +1,16 @@
 {# vim: set filetype=htmldjango :#}
-{% load paragraph obligee_declension obligee_gender from chcemvediet.inforequests %}
+{% load paragraph from chcemvediet.wizards %}
+{% load obligee_declension obligee_gender from chcemvediet.inforequests %}
 
 {% comment %}
  %
  % Context:
- %  -- retrospection: See chcemvediet.apps.inforequests.forms.appeals.AppealWizard.retrospection_data
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealPaperStep
  %
 {% endcomment %}
 
-{% for clause in retrospection %}
+{% for clause in wizard.retrospection %}
   {% if clause.key == "request" %}
     {% paragraph before=2 %}
       Dňa {{ clause.inforequest.submission_date|date:"d.m.Y" }} som formou emailu požiadal

@@ -1,5 +1,6 @@
 {# vim: set filetype=htmldjango :#}
-{% load paper_field paragraph obligee_declension from chcemvediet.inforequests %}
+{% load paper_field paragraph from chcemvediet.wizards %}
+{% load obligee_declension from chcemvediet.inforequests %}
 
 {% comment %}
  %
@@ -9,7 +10,6 @@
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
- %  -- retrospection: See chcemvediet.apps.inforequests.forms.appeals.AppealWizard.retrospection_data
  %  -- rozklad: boolean
  %  -- fiktivne: boolean
  %  -- not_at_all: boolean
@@ -21,31 +21,31 @@
   {# Initialize paragraphs #}
   {% paragraph before=0 after=0 %}{% endparagraph %}
 
-  {% block "applicant" %}
+  {% block applicant %}
     <div style="border-bottom: solid 1px black; text-align: center;">
       {{ inforequest.applicant_name }}, {{ inforequest.applicant_street }},
       {{ inforequest.applicant_zip }} {{ inforequest.applicant_city }}
     </div>
   {% endblock %}
-  {% block "obligee" %}
+  {% block obligee %}
     <div style="margin-top: 10ex; margin-left: 50%;">
       {{ branch.obligee.name }}<br>
       {{ branch.obligee.street }}<br>
       {{ branch.obligee.zip }} {{ branch.obligee.city }}
     </div>
   {% endblock %}
-  {% block "effective-date" %}
+  {% block effective-date %}
     <div style="margin-top: 10ex; text-align: right;">
       {{ inforequest.applicant_city }}, {% paper_field step.effective_date %}
     </div>
   {% endblock %}
 
-  {% block "appeal-title" %}
+  {% block appeal-title %}
     <div style="margin-top: 2ex; text-align: center;">
       <strong>{% if rozklad %}Rozklad{% else %}Odvolanie{% endif %}</strong>
     </div>
   {% endblock %}
-  {% block "appeal-subtitle" %}
+  {% block appeal-subtitle %}
     <div style="text-align: center;">
       {% if fiktivne %}
         <small>voči fiktívnemu rozhodnutiu o neposkytnutí informácie (§ 18 ods. 3 zák. 211/2000 Z. z.)</small>
@@ -54,7 +54,7 @@
       {% endif %}
     </div>
   {% endblock %}
-  {% block "appeal" %}
+  {% block appeal %}
     {% paragraph before=2 %}
       V zmysle § 19 ods. 1 zákona 211/2000 Z. z. o slobodnom prístupe k informáciám (ďalej len
       „zákon o slobode inforácií” alebo len „zákon”) podávam
@@ -73,29 +73,29 @@
     {% endparagraph %}
   {% endblock %}
 
-  {% block "reasoning-title" %}
+  {% block reasoning-title %}
     <div style="margin-top: 2ex; text-align: center;">
       <strong>Odôvodnenie:</strong>
     </div>
   {% endblock %}
-  {% block "retrospection" %}
+  {% block retrospection %}
     {% include "inforequests/appeals/papers/retrospection.html" %}
   {% endblock %}
-  {% block "reasoning" %}
+  {% block reasoning %}
     {% for substep in wizard.steps.values %}
       {% if substep and substep.section_template %}
         {% include substep.section_template with reason_number_on_paper=substep.reason_number_on_paper %}
       {% endif %}
     {% endfor %}
   {% endblock %}
-  {% block "request" %}
+  {% block request %}
     {% paragraph before=2 %}
       Z uvedených dôvodov žiadam o zrušenie {% if fiktivne %}fiktívneho{% endif %} rozhodnutia
       o neposkytnutí informácie a sprístupnenie informácií v plnom rozsahu.
     {% endparagraph %}
   {% endblock %}
 
-  {% block "signature" %}
+  {% block signature %}
     <div style="margin: 10ex; text-align: right;">
       {{ inforequest.applicant_name }}
     </div>

@@ -1,0 +1,20 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "wizards/wizard.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.clarification_responses.ClarificationResponseWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.clarification_responses.ClarificationResponseStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+{% block title %}{% trans 'inforequests:clarification_responses:title' %} | {{ block.super }}{% endblock %}
+
+{% block header-heading %}{% trans 'inforequests:clarification_responses:heading' %}{% endblock %}
+
+{% block footer-cancel-href %}{{ inforequest.get_absolute_url }}{% endblock %}

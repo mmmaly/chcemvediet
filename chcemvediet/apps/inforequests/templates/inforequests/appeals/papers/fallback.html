@@ -1,6 +1,6 @@
 {# vim: set filetype=htmldjango :#}
 {% extends "inforequests/appeals/papers/base.html" %}
-{% load paper_field paragraph from chcemvediet.inforequests %}
+{% load paper_field paragraph from chcemvediet.wizards %}
 
 {% comment %}
  %
@@ -17,7 +17,7 @@
  %
 {% endcomment %}
 
-{% block "reasoning" %}
+{% block reasoning %}
   {% paragraph before=0 after=2 editable=True %}
     {% paper_field step.reason %}
   {% endparagraph %}

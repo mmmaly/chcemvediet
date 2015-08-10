@@ -1,20 +1,20 @@
 {# vim: set filetype=htmldjango :#}
-{% extends "wizards/wizard.html" %}
+{% extends step.template_base_extends %}
 {% load trans from i18n %}
 
 {% comment %}
  %
  % Context:
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
- %  -- step: chcemvediet.apps.wizards.WizardStep
+ %  -- step: chcemvediet.apps.inforequests.forms.apps.AppealStep
  %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
  %  -- branch: chcemvediet.apps.inforequests.models.Branch
  %  -- last_action: chcemvediet.apps.inforequests.models.Action
  %
 {% endcomment %}
 
-{% block "title" %}{% trans 'inforequests:appeals:title' %} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'inforequests:appeals:title' %} | {{ block.super }}{% endblock %}
 
-{% block "header-heading" %}{% trans 'inforequests:appeals:heading' %}{% endblock %}
+{% block header-heading %}{% trans 'inforequests:appeals:heading' %}{% endblock %}
 
-{% block "footer-cancel-href" %}{{ inforequest.get_absolute_url }}{% endblock %}
+{% block footer-cancel-href %}{{ inforequest.get_absolute_url }}{% endblock %}

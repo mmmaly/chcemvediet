@@ -4,7 +4,8 @@
 {% comment %}
  %
  % Context:
- %  -- effective_date: datetime.date
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.AppealFinalStep
  %  -- deadline_missed_at_today: bool | undefined
  %  -- deadline_remaining_at_today: int | undefined
  %  -- deadline_missed_at_effective_date: bool | undefined
@@ -17,11 +18,18 @@
 {% if deadline_missed_at_today %}
   <div class="alert alert-block">
     <h4>Zmeškaný termin</h4>
-    <p>Termin na podanie odvolania vypršal pred {{ deadline_remaining_at_today|negate }} pracovnými dnami.</p>
+    <p>
+    Termin na podanie odvolania vypršal pred {{ deadline_remaining_at_today|negate }} pracovnými
+    dnami.
+    </p>
   </div>
 {% elif deadline_missed_at_effective_date %}
   <div class="alert alert-block">
     <h4>Dátum po termíne</h4>
-    <p>Zadaný dátum odvolania {{ effective_date }} je {{ deadline_remaining_at_effective_date|negate }} pracovných dní po termíne na podanie odvolanie.</p>
+    <p>
+    Zadaný dátum odvolania {{ wizard.values.effective_date }} je
+    {{ deadline_remaining_at_effective_date|negate }} pracovných dní po termíne na podanie
+    odvolanie.
+    </p>
   </div>
 {% endif %}

@@ -3,9 +3,9 @@
 from collections import OrderedDict
 
 from poleno.utils.forms import EditableSpan
+from chcemvediet.apps.wizards.forms import PaperCharField
 from chcemvediet.apps.inforequests.models import Action
 
-from . import PaperCharField
 from . import AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
 
 
