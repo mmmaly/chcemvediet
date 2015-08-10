@@ -42,7 +42,7 @@ class ReasonStep(AppealStep):
 
 class RefusalAppealDoesNotHaveReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_HAVE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-have-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-have-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-does-not-have-reason.html'
 
     does_not_have_reason = PaperCharField(widget=EditableSpan())
@@ -53,7 +53,7 @@ class RefusalAppealDoesNotHaveReasonStep(AppealSectionStep, ReasonStep):
 
 class RefusalAppealDoesNotProvidePublicFundsStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_PROVIDE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-public-funds-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-public-funds.html'
 
     does_not_provide_public_funds = forms.TypedChoiceField(
             coerce=int,
@@ -66,7 +66,7 @@ class RefusalAppealDoesNotProvidePublicFundsStep(ReasonStep):
 
 class RefusalAppealDoesNotProvidePublicFundsReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_PROVIDE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-public-funds-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-public-funds-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-does-not-provide-public-funds-reason.html'
 
     does_not_provide_public_funds_reason = PaperCharField(widget=EditableSpan())
@@ -82,7 +82,7 @@ class RefusalAppealDoesNotProvidePublicFundsReasonStep(AppealSectionStep, Reason
 
 class RefusalAppealDoesNotProvideFallbackReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_PROVIDE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-fallback-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-provide-fallback-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-does-not-provide-fallback-reason.html'
 
     does_not_provide_fallback = OptionalSectionCheckboxField()
@@ -100,7 +100,7 @@ class RefusalAppealDoesNotProvideFallbackReasonStep(AppealSectionStep, ReasonSte
 
 class RefusalAppealDoesNotCreateReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.DOES_NOT_CREATE
-    text_template = u'inforequests/appeals/texts/refusal-does-not-create-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-does-not-create-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-does-not-create-reason.html'
 
     does_not_create_reason = PaperCharField(widget=EditableSpan())
@@ -111,7 +111,7 @@ class RefusalAppealDoesNotCreateReasonStep(AppealSectionStep, ReasonStep):
 
 class RefusalAppealCopyrightReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.COPYRIGHT
-    text_template = u'inforequests/appeals/texts/refusal-copyright-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-copyright-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-copyright-reason.html'
 
     copyright_reason = PaperCharField(widget=EditableSpan())
@@ -122,7 +122,7 @@ class RefusalAppealCopyrightReasonStep(AppealSectionStep, ReasonStep):
 
 class RefusalAppealBusinessSecretPublicFundsStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
-    text_template = u'inforequests/appeals/texts/refusal-business-secret-public-funds-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-business-secret-public-funds.html'
 
     business_secret_public_funds = forms.TypedChoiceField(
             coerce=int,
@@ -135,7 +135,7 @@ class RefusalAppealBusinessSecretPublicFundsStep(ReasonStep):
 
 class RefusalAppealBusinessSecretDefinitionStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
-    text_template = u'inforequests/appeals/texts/refusal-business-secret-definition-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-business-secret-definition.html'
     form_template = u'main/snippets/form_horizontal.html'
 
     business_secret_definition = forms.MultipleChoiceField(
@@ -153,7 +153,7 @@ class RefusalAppealBusinessSecretDefinitionStep(ReasonStep):
 
 class RefusalAppealBusinessSecretDefinitionReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
-    text_template = u'inforequests/appeals/texts/refusal-business-secret-definition-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-business-secret-definition-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-business-secret-definition-reason.html'
 
     def __init__(self, *args, **kwargs):
@@ -175,7 +175,7 @@ class RefusalAppealBusinessSecretDefinitionReasonStep(AppealSectionStep, ReasonS
 
 class RefusalAppealBusinessSecretFallbackReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.BUSINESS_SECRET
-    text_template = u'inforequests/appeals/texts/refusal-business-secret-fallback-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-business-secret-fallback-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-business-secret-fallback-reason.html'
 
     business_secret_fallback = OptionalSectionCheckboxField(required=False)
@@ -206,7 +206,7 @@ class RefusalAppealBusinessSecretFallbackReasonStep(AppealSectionStep, ReasonSte
 
 class RefusalAppealPersonalOfficerStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.PERSONAL
-    text_template = u'inforequests/appeals/texts/refusal-personal-officer-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-personal-officer.html'
 
     personal_officer = forms.TypedChoiceField(
             coerce=int,
@@ -219,7 +219,7 @@ class RefusalAppealPersonalOfficerStep(ReasonStep):
 
 class RefusalAppealPersonalOfficerReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.PERSONAL
-    text_template = u'inforequests/appeals/texts/refusal-personal-officer-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-personal-officer-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-personal-officer-reason.html'
 
     personal_officer_reason = PaperCharField(required=False, widget=EditableSpan())
@@ -235,7 +235,7 @@ class RefusalAppealPersonalOfficerReasonStep(AppealSectionStep, ReasonStep):
 
 class RefusalAppealPersonalFallbackReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.PERSONAL
-    text_template = u'inforequests/appeals/texts/refusal-personal-fallback-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-personal-fallback-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-personal-fallback-reason.html'
 
     personal_fallback = OptionalSectionCheckboxField(required=False)
@@ -266,7 +266,7 @@ class RefusalAppealPersonalFallbackReasonStep(AppealSectionStep, ReasonStep):
 
 class RefusalAppealConfidentialNotConfidentialStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.CONFIDENTIAL
-    text_template = u'inforequests/appeals/texts/refusal-confidential-not-confidential-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-confidential-not-confidential.html'
 
     confidential_not_confidential = forms.TypedChoiceField(
             coerce=int,
@@ -279,7 +279,7 @@ class RefusalAppealConfidentialNotConfidentialStep(ReasonStep):
 
 class RefusalAppealConfidentialNotConfidentialReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.CONFIDENTIAL
-    text_template = u'inforequests/appeals/texts/refusal-confidential-not-confidential-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-confidential-not-confidential-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-confidential-not-confidential-reason.html'
 
     confidential_not_confidential_reason = PaperCharField(required=False, widget=EditableSpan())
@@ -295,7 +295,7 @@ class RefusalAppealConfidentialNotConfidentialReasonStep(AppealSectionStep, Reas
 
 class RefusalAppealConfidentialFallbackReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.CONFIDENTIAL
-    text_template = u'inforequests/appeals/texts/refusal-confidential-fallback-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-confidential-fallback-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-confidential-fallback-reason.html'
 
     confidential_fallback = OptionalSectionCheckboxField(required=False)
@@ -326,7 +326,7 @@ class RefusalAppealConfidentialFallbackReasonStep(AppealSectionStep, ReasonStep)
 
 class RefusalAppealOtherReasonValidStep(ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.OTHER_REASON
-    text_template = u'inforequests/appeals/texts/refusal-other-reason-valid-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-other-reason-valid.html'
 
     other_reason_valid = forms.TypedChoiceField(
             coerce=int,
@@ -339,7 +339,7 @@ class RefusalAppealOtherReasonValidStep(ReasonStep):
 
 class RefusalAppealOtherReasonValidReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.OTHER_REASON
-    text_template = u'inforequests/appeals/texts/refusal-other-reason-valid-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-other-reason-valid-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-other-reason-valid-reason.html'
 
     other_reason_valid_reason = PaperCharField(widget=EditableSpan())
@@ -355,7 +355,7 @@ class RefusalAppealOtherReasonValidReasonStep(AppealSectionStep, ReasonStep):
 
 class RefusalAppealOtherReasonInvalidReasonStep(AppealSectionStep, ReasonStep):
     covered_reason = Action.REFUSAL_REASONS.OTHER_REASON
-    text_template = u'inforequests/appeals/texts/refusal-other-reason-invalid-reason-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-other-reason-invalid-reason.html'
     section_template = u'inforequests/appeals/papers/refusal-other-reason-invalid-reason.html'
 
     other_reason_invalid_reason = PaperCharField(widget=EditableSpan())
@@ -409,7 +409,7 @@ class SanitizationStep(AppealStep):
                 }
 
 class RefusalAppealSanitizationLevelStep(SanitizationStep):
-    text_template = u'inforequests/appeals/texts/refusal-sanitization-level-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-sanitization-level.html'
 
     sanitization_level = forms.ChoiceField(
             choices=(
@@ -422,7 +422,7 @@ class RefusalAppealSanitizationLevelStep(SanitizationStep):
             )
 
 class RefusalAppealSanitizationOverlySanitizedStep(AppealSectionStep, SanitizationStep):
-    text_template = u'inforequests/appeals/texts/refusal-sanitization-overly-sanitized-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-sanitization-overly-sanitized.html'
     section_template = u'inforequests/appeals/papers/refusal-sanitization-overly-sanitized.html'
 
     sanitization_overly_sanitized = PaperCharField(widget=EditableSpan())
@@ -437,7 +437,7 @@ class RefusalAppealSanitizationOverlySanitizedStep(AppealSectionStep, Sanitizati
         step.fields[u'sanitization_overly_sanitized'] = PaperCharField(widget=EditableSpan())
 
 class RefusalAppealSanitizationMissingDocumentStep(AppealSectionStep, SanitizationStep):
-    text_template = u'inforequests/appeals/texts/refusal-sanitization-missing-document-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-sanitization-missing-document.html'
     section_template = u'inforequests/appeals/papers/refusal-sanitization-missing-document.html'
 
     sanitization_missing_document = PaperCharField(widget=EditableSpan())

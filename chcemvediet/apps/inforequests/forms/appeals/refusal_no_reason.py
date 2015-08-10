@@ -8,7 +8,7 @@ from . import AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class RefusalNoReasonAppealPaperStep(AppealPaperStep):
-    text_template = u'inforequests/appeals/texts/refusal-no-reason-paper-text.html'
+    text_template = u'inforequests/appeals/texts/refusal-no-reason-paper.html'
     content_template = u'inforequests/appeals/papers/refusal-no-reason.html'
 
 class RefusalNoReasonAppealWizard(AppealWizard):

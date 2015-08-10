@@ -10,7 +10,7 @@ from . import AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class AdvancementAppealReasonStep(AppealSectionStep):
-    text_template = u'inforequests/appeals/texts/advancement-reason-text.html'
+    text_template = u'inforequests/appeals/texts/advancement-reason.html'
     section_template = u'inforequests/appeals/papers/advancement-reason.html'
 
     reason = PaperCharField(widget=EditableSpan())

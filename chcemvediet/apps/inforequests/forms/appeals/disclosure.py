@@ -10,7 +10,7 @@ from . import AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class DisclosureAppealReasonStep(AppealSectionStep):
-    text_template = u'inforequests/appeals/texts/disclosure-reason-text.html'
+    text_template = u'inforequests/appeals/texts/disclosure-reason.html'
     section_template = u'inforequests/appeals/papers/disclosure-reason.html'
 
     reason = PaperCharField(widget=EditableSpan())

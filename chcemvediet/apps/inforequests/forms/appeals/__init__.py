@@ -32,7 +32,7 @@ class AppealDeadendStep(WizardDeadendStep):
 class AppealPaperStep(WizardPaperStep):
     template = u'inforequests/appeals/base.html'
     template_base_extends = u'wizards/paper.html'
-    text_template = u'inforequests/appeals/texts/paper-text.html'
+    text_template = u'inforequests/appeals/texts/paper.html'
     subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/base.html'
 
@@ -67,7 +67,7 @@ class AppealPaperStep(WizardPaperStep):
 class AppealFinalStep(WizardPrintStep):
     template = u'inforequests/appeals/base.html'
     template_base_extends = u'wizards/print.html'
-    text_template = u'inforequests/appeals/texts/final-text.html'
+    text_template = u'inforequests/appeals/texts/final.html'
 
     def context(self, extra=None):
         res = super(AppealFinalStep, self).context(extra)
