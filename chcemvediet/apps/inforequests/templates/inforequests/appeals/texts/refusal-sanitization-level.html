@@ -32,7 +32,7 @@
       {% elif reason == last_action.REFUSAL_REASONS.CONFIDENTIAL %}
         utajovaná skutočnosť
       {% endif %}
-    {% endfilter squeeze %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}.{% endif %}
+    {% endfilter %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}.{% endif %}
   {% endfor %}
 </p>
 <p>
@@ -47,7 +47,7 @@
       {% elif reason == last_action.REFUSAL_REASONS.CONFIDENTIAL %}
         utajované skutočnosti
       {% endif %}
-    {% endfilter squeeze %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}{% endif %}
+    {% endfilter %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}{% endif %}
   {% endfor %}
   vyčierni a sprístupni aspoň dokument, v ktorom sú čitateľné všetky ostatné informácie. Stáva sa
   však, že inštitúcia nesprístupní dokument vôbec, alebo v ňom vyčierni viac, ako by bolo nutné.

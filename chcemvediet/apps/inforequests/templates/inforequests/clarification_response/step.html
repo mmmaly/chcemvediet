@@ -1,0 +1,51 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "inforequests/clarification_response/wizard.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.clarification_response.ClarificationResponseWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.clarification_response.ClarificationResponseStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+{% block body-form %}
+  <div class="control-group">
+    <label class="control-label">{% trans 'inforequests:clarification_response:applicant_label' %}:</label>
+    <div class="controls">
+      <div class="suppressed-control">
+        {{ inforequest.applicant.get_full_name }}<br>
+        {{ inforequest.applicant.profile.street }}<br>
+        {{ inforequest.applicant.profile.zip }} {{ inforequest.applicant.profile.city }}
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">{% trans 'inforequests:clarification_response:obligee' %}:</label>
+    <div class="controls">
+      <div class="suppressed-control">
+        {{ branch.obligee.name }}<br>
+        {{ branch.obligee.street }}<br>
+        {{ branch.obligee.zip }} {{ branch.obligee.city }}<br>
+        E-mail: {% for r in branch.collect_obligee_emails %}{{ r.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">{% trans 'inforequests:clarification_response:subject' %}:</label>
+    <div class="controls">
+      <div class="suppressed-control">
+        {% include "inforequests/clarification_response/forms/subject.txt" %}
+      </div>
+    </div>
+  </div>
+  {{ block.super }}
+{% endblock %}
+
+{% block footer-finish-label %}
+  <i class="icon-envelope icon-white"></i> {% trans 'inforequests:clarification_response:submit' %}
+{% endblock %}

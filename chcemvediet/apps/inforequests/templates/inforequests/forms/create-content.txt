@@ -14,8 +14,8 @@
 {% endcomment %}
 
 {% if finalize %}
-Pre: {{ obligee.name }}, {{ obligee.street }}, {{ obligee.city }} {{ obligee.zip }}, {{ obligee.emails }}
-Od: {{ user.get_full_name }}, {{ user.profile.street }}, {{ user.profile.city }} {{ user.profile.zip }}, {{ unique_email }}
+Povinná osoba: {{ obligee.name }}, {{ obligee.street }}, {{ obligee.city }} {{ obligee.zip }}, {{ obligee.emails }}
+Žiadateľ: {{ user.get_full_name }}, {{ user.profile.street }}, {{ user.profile.city }} {{ user.profile.zip }}, {{ unique_email }}
 {% endif %}
 
 Dobrý deň,

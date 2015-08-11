@@ -17,7 +17,9 @@
       <h1>
         {% block header-heading %}{% endblock %}
         {% block header-step %}
-          ({{ step.step_number }}/{{ wizard.number_of_steps }})
+          {% if wizard.number_of_steps > 1 %}
+            ({{ step.step_number }}/{{ wizard.number_of_steps }})
+          {% endif %}
         {% endblock %}
       </h1>
     {% endblock %}

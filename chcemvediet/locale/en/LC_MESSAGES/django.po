@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-11 09:27+0200\n"
+"POT-Creation-Date: 2015-08-11 18:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -224,6 +224,15 @@ msgstr "Áno, niečo úplne chýbalo."
 msgid "inforequests:RefusalAppealSanitizationLevelStep:ProperlySanitized"
 msgstr "Nie, vyčiernenie bolo korektné."
 
+msgid "inforequests:ClarificationResponseStep:content:label"
+msgstr "Odpoveď"
+
+msgid "inforequests:ClarificationResponseStep:content:placeholder"
+msgstr "Uveďte, čo inštitúcia chcela doplniť"
+
+msgid "inforequests:ClarificationResponseStep:attachments:label"
+msgstr "Prílohy"
+
 msgid "inforequests:InforequestForm:obligee:label"
 msgstr "Obligee"
 
@@ -344,10 +353,22 @@ msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 msgid "inforequests:appeals:heading"
 msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 
-msgid "inforequests:clarification_responses:title"
+msgid "inforequests:clarification_response:applicant_label"
+msgstr "Žiadateľ"
+
+msgid "inforequests:clarification_response:obligee"
+msgstr "Povinná osoba"
+
+msgid "inforequests:clarification_response:subject"
+msgstr "Predmet"
+
+msgid "inforequests:clarification_response:submit"
+msgstr "Odoslať odpoveď"
+
+msgid "inforequests:clarification_response:title"
 msgstr "Clarification Response"
 
-msgid "inforequests:clarification_responses:heading"
+msgid "inforequests:clarification_response:heading"
 msgstr "Clarification Response"
 
 msgid "inforequests:create:title"

@@ -28,7 +28,7 @@
 /* Well with white background  */
 .well-inverse { background-color: white; }
 
-/* Fix text position if used instead a controll in a form */
+/* Fix text position if used instead a control in a form */
 .suppressed-control { padding: 5px; height: 20px; line-height: 20px; display: inline-block; vertical-align: center; }
 
 /* Fix .text-right for table cells */

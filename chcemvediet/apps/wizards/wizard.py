@@ -18,7 +18,8 @@ class WizzardRollback(Exception):
 
 
 class WizardStep(forms.Form):
-    template = u'wizards/wizard.html'
+    base_template = u'wizards/wizard.html'
+    template = None
     text_template = None
     form_template = None
     counted_step = True
@@ -32,6 +33,10 @@ class WizardStep(forms.Form):
         self.wizard = wizard
         self.index = index
         self.key = key
+
+    def commit(self):
+        for field_name in self.fields:
+            self.wizard.draft.data[field_name] = self._raw_value(field_name)
 
     def add_prefix(self, field_name):
         return self.wizard.add_prefix(field_name)
@@ -60,14 +65,15 @@ class WizardStep(forms.Form):
     def get_url(self, anchor=u''):
         return self.wizard.get_step_url(self, anchor)
 
-    def render(self, request):
-        return render(request, self.template, self.context())
+    def render(self):
+        return render(self.wizard.request, self.template or self.base_template, self.context())
 
-    def render_to_string(self, request):
-        return render_to_string(self.template, context_instance=RequestContext(request), dictionary=self.context())
+    def render_to_string(self):
+        return render_to_string(self.template or self.base_template,
+                context_instance=RequestContext(self.wizard.request), dictionary=self.context())
 
 class WizardDeadendStep(WizardStep):
-    template = u'wizards/deadend.html'
+    base_template = u'wizards/deadend.html'
     counted_step = False
 
     def clean(self):
@@ -76,7 +82,7 @@ class WizardDeadendStep(WizardStep):
         return cleaned_data
 
 class WizardSectionStep(WizardStep):
-    template = u'wizards/section.html'
+    base_template = u'wizards/section.html'
     section_template = None
 
     def paper_fields(self, step):
@@ -85,8 +91,11 @@ class WizardSectionStep(WizardStep):
     def paper_context(self, extra=None):
         return dict(extra or {})
 
+    def section_is_empty(self):
+        return False
+
 class WizardPaperStep(WizardStep):
-    template = u'wizards/paper.html'
+    base_template = u'wizards/paper.html'
     subject_template = None
     content_template = None
     subject_value_name = u'subject'
@@ -118,7 +127,7 @@ class WizardPaperStep(WizardStep):
         return res
 
 class WizardPrintStep(WizardStep):
-    template = u'wizards/print.html'
+    base_template = u'wizards/print.html'
     print_value_name = u'content'
 
     def print_content(self):
@@ -132,14 +141,15 @@ class Wizard(object):
     def applicable(cls):
         raise NotImplementedError
 
-    def __init__(self):
+    def __init__(self, request):
+        self.request = request
         self.instance_id = None
         self.current_step = None
         self.steps = None
         self.draft = None
         self.values = None
 
-    def step(self, request, index=None):
+    def step(self, index=None):
         try:
             self.draft = WizardDraft.objects.get(pk=self.instance_id)
         except WizardDraft.DoesNotExist:
@@ -166,7 +176,7 @@ class Wizard(object):
                     self.values.update(step.values())
                 elif step_index == current_index:
                     initial = dict(self.draft.data)
-                    post = request.POST if request.method == u'POST' else None
+                    post = self.request.POST if self.request.method == u'POST' else None
                     step = step_class(self, step_index, step_key, initial=initial, data=post)
                     self.steps[step_key] = step
                     self.current_step = step
@@ -185,8 +195,7 @@ class Wizard(object):
             raise ValueError(u'The wizard has no applicable steps')
 
     def commit(self):
-        for field_name in self.current_step.fields:
-            self.draft.data[field_name] = self.current_step._raw_value(field_name)
+        self.current_step.commit()
         self.draft.step = self.current_step.key
         self.draft.save()
 
@@ -237,8 +246,8 @@ class WizardGroup(object):
     wizard_classes = []
 
     @classmethod
-    def find_applicable(cls, *args, **kwargs):
+    def find_applicable(cls, request, *args, **kwargs):
         for wizard_class in cls.wizard_classes:
             if wizard_class.applicable(*args, **kwargs):
-                return wizard_class(*args, **kwargs)
+                return wizard_class(request, *args, **kwargs)
         raise ValueError

@@ -18,10 +18,12 @@
     {% csrf_token %}
     <div class="control-group">
       <label class="control-label">{% trans 'inforequests:create:applicant_label' %}:</label>
-      <div class="controls" style="padding: 5px 0px 0px 5px;">
-        {{ user.get_full_name }}<br>
-        {{ user.profile.street }}<br>
-        {{ user.profile.zip }} {{ user.profile.city }}
+      <div class="controls">
+        <div class="suppressed-control">
+          {{ user.get_full_name }}<br>
+          {{ user.profile.street }}<br>
+          {{ user.profile.zip }} {{ user.profile.city }}
+        </div>
       </div>
     </div>
     {% include "main/snippets/form_horizontal.html" with form=form %}

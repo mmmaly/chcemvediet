@@ -11,7 +11,7 @@ from poleno.utils.date import local_today
 from chcemvediet.apps.wizards.views import wizard_view
 from chcemvediet.apps.inforequests import forms
 from chcemvediet.apps.inforequests.models import Inforequest, Branch, Action, ActionDraft
-from chcemvediet.apps.inforequests.forms import AppealWizards, ClarificationResponseWizards
+from chcemvediet.apps.inforequests.forms import AppealWizards, ClarificationResponseWizard
 
 from .shortcuts import render_form, json_form, json_draft, json_success
 
@@ -101,13 +101,13 @@ def clarification_response(request, inforequest_pk, branch_pk, step_idx=None):
         return HttpResponseNotFound()
 
     def finish(wizard):
-        raise NotImplementedError
         action = Action(type=Action.TYPES.CLARIFICATION_RESPONSE)
         wizard.save(action)
         action.save()
+        action.send_by_email()
         return action.get_absolute_url()
 
-    return wizard_view(ClarificationResponseWizards, request, step_idx, finish, branch)
+    return wizard_view(ClarificationResponseWizard, request, step_idx, finish, branch)
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
 @transaction.atomic

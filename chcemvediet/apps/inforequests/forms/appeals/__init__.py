@@ -15,23 +15,15 @@ from chcemvediet.apps.inforequests.models import Action
 
 
 class AppealStep(WizardStep):
-    template = u'inforequests/appeals/base.html'
-    template_base_extends = u'wizards/wizard.html'
+    template = u'inforequests/appeals/wizard.html'
 
-class AppealSectionStep(WizardSectionStep):
-    template = u'inforequests/appeals/base.html'
-    template_base_extends = u'wizards/section.html'
+class AppealSectionStep(AppealStep, WizardSectionStep):
+    pass
 
-    def section_is_empty(self):
-        return False
+class AppealDeadendStep(AppealStep, WizardDeadendStep):
+    pass
 
-class AppealDeadendStep(WizardDeadendStep):
-    template = u'inforequests/appeals/base.html'
-    template_base_extends = u'wizards/deadend.html'
-
-class AppealPaperStep(WizardPaperStep):
-    template = u'inforequests/appeals/base.html'
-    template_base_extends = u'wizards/paper.html'
+class AppealPaperStep(AppealStep, WizardPaperStep):
     text_template = u'inforequests/appeals/texts/paper.html'
     subject_template = u'inforequests/appeals/papers/subject.txt'
     content_template = u'inforequests/appeals/papers/base.html'
@@ -64,9 +56,7 @@ class AppealPaperStep(WizardPaperStep):
 
         return cleaned_data
 
-class AppealFinalStep(WizardPrintStep):
-    template = u'inforequests/appeals/base.html'
-    template_base_extends = u'wizards/print.html'
+class AppealFinalStep(AppealStep, WizardPrintStep):
     text_template = u'inforequests/appeals/texts/final.html'
 
     def context(self, extra=None):
@@ -87,13 +77,13 @@ class AppealFinalStep(WizardPrintStep):
 
 class AppealWizard(Wizard):
 
-    def __init__(self, branch):
-        super(AppealWizard, self).__init__()
+    def __init__(self, request, branch):
+        super(AppealWizard, self).__init__(request)
         self.instance_id = u'%s-%s' % (self.__class__.__name__, branch.last_action.pk)
         self.branch = branch
 
     def get_step_url(self, step, anchor=u''):
-        return reverse(u'inforequests:appeal_step', args=[self.branch.inforequest.pk, self.branch.pk, step.index]) + anchor
+        return reverse(u'inforequests:appeal', args=[self.branch.inforequest.pk, self.branch.pk, step.index]) + anchor
 
     def context(self, extra=None):
         res = super(AppealWizard, self).context(extra)

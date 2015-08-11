@@ -6,6 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from . import views
 
+parts = {
+    u'inforequest_pk': r'(?P<inforequest_pk>\d+)',
+    u'branch_pk': r'(?P<branch_pk>\d+)',
+    u'step_idx': r'(?:-(?P<step_idx>\d+))?',
+    }
+
 urlpatterns = patterns(u'',
     url(r'^$', views.inforequest_index, name=u'index'),
     url(_(r'^create/$'), views.inforequest_create, name=u'create'),
@@ -31,10 +37,8 @@ urlpatterns = patterns(u'',
     url(_(r'^add-smail/remandment/(?P<inforequest_pk>\d+)/$'), views.add_smail_remandment, name=u'add_smail_remandment'),
     url(_(r'^new-action/clarification-response/(?P<inforequest_pk>\d+)/$'), views.new_action_clarification_response, name=u'new_action_clarification_response'),
     url(_(r'^new-action/appeal/(?P<inforequest_pk>\d+)/$'), views.new_action_appeal, name=u'new_action_appeal'),
-    url(r'^(?P<inforequest_pk>\d+)/clarification-response/(?P<branch_pk>\d+)/$',                   views.clarification_response, name=u'clarification_response'),
-    url(r'^(?P<inforequest_pk>\d+)/clarification-response/(?P<branch_pk>\d+)/(?P<step_idx>\d+)/$', views.clarification_response, name=u'clarification_response_step'),
-    url(r'^(?P<inforequest_pk>\d+)/appeal/(?P<branch_pk>\d+)/$',                                   views.appeal,                 name=u'appeal'),
-    url(r'^(?P<inforequest_pk>\d+)/appeal/(?P<branch_pk>\d+)/(?P<step_idx>\d+)/$',                 views.appeal,                 name=u'appeal_step'),
+    url(r'^{inforequest_pk}/clarification-response/{branch_pk}{step_idx}/$'.format(**parts), views.clarification_response, name=u'clarification_response'),
+    url(r'^{inforequest_pk}/appeal/{branch_pk}{step_idx}/$'.format(**parts),                 views.appeal,                 name=u'appeal'),
     url(_(r'^action/extend-deadline/(?P<inforequest_pk>\d+)/(?P<branch_pk>\d+)/(?P<action_pk>\d+)/$'), views.action_extend_deadline, name=u'action_extend_deadline'),
     url(_(r'^attachments/$'), views.attachment_upload, name=u'upload_attachment'),
     url(_(r'^attachments/(?P<attachment_pk>\d+)/$'), views.attachment_download, name=u'download_attachment'),

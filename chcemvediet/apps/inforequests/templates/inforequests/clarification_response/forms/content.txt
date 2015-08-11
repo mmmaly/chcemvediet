@@ -1,0 +1,39 @@
+{# vim: set filetype=htmldjango :#}
+{% load squeeze from poleno.utils %}
+{% load obligee_declension obligee_gender from chcemvediet.inforequests %}
+
+{% comment %}
+ %
+ % Warning: Watch your white-space and line breaks. They are preserved.
+ %
+ % Context:
+ %  -- inputs.0: string | html
+ %  -- finalize: boolean
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+{% if finalize %}
+Povinná osoba: {{ branch.obligee.name }}, {{ branch.obligee.street }}, {{ branch.obligee.city }} {{ branch.obligee.zip }}, {{ branch.obligee.emails }}
+Žiadateľ: {{ inforequest.applicant.get_full_name }}, {{ inforequest.applicant.profile.street }}, {{ inforequest.applicant.profile.city }} {{ inforequest.applicant.profile.zip }}, {{ inforequest.unique_email }}
+{% endif %}
+
+Dobrý deň,
+
+{% filter squeeze %}
+dňa {{ inforequest.submission_date|date:"d.m.Y" }} som formou emailu požiadal
+{% obligee_declension inforequest.main_branch.historicalobligee "accusative" %}
+o poskytnutie informácie: {{ inforequest.subject }}.
+Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi
+{% obligee_declension branch.obligee "nominative" %}
+{% obligee_gender branch.obligee "doručil" "doručila" "doručilo" "doručili" %}
+výzvu {% if last_action.file_number %} číslo {{ last_action.file_number}}{% endif %}
+na doplnenie žiadosti.
+{% endfilter %}
+
+{{ inputs.0 }}
+
+S pozdravom,
+{{ inforequest.applicant.get_full_name }}

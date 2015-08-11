@@ -9,17 +9,17 @@ from . import WizardGroup, WizzardRollback
 def wizard_view(wizard_class, request, index, finish, *args, **kwargs):
 
     if issubclass(wizard_class, WizardGroup):
-        wizard = wizard_class.find_applicable(*args, **kwargs)
+        wizard = wizard_class.find_applicable(request, *args, **kwargs)
     else:
-        wizard = wizard_class(*args, **kwargs)
+        wizard = wizard_class(request, *args, **kwargs)
 
     try:
-        wizard.step(request, index)
+        wizard.step(index)
     except WizzardRollback as e:
         return HttpResponseRedirect(e.step.get_url())
 
     if request.method != u'POST':
-        return wizard.current_step.render(request)
+        return wizard.current_step.render()
 
     button = clean_button(request.POST, [u'save', u'next'])
 
@@ -29,7 +29,7 @@ def wizard_view(wizard_class, request, index, finish, *args, **kwargs):
 
     if button == u'next':
         if not wizard.current_step.is_valid():
-            return wizard.current_step.render(request)
+            return wizard.current_step.render()
         wizard.commit()
         if not wizard.current_step.is_last():
             return HttpResponseRedirect(wizard.next_step().get_url())

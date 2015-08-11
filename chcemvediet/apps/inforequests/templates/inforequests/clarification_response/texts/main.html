@@ -1,0 +1,27 @@
+{# vim: set filetype=htmldjango :#}
+{% load negate from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.clarification_response.ClarificationResponseWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.clarification_response.ClarificationResponseStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+<p>
+  <span style="color: red;">FIXME</span>
+</p>
+
+{% if last_action.deadline_missed %}
+  <div class="alert alert-block">
+    <h4>Zmeškaný termin</h4>
+    <p>
+    Termin na odpovedanie na výzvu na doplnenie žiadosti vypršal pred
+    {{ last_action.deadline_remaining|negate }} pracovnými dnami.
+    </p>
+  </div>
+{% endif %}
