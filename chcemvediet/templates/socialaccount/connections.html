@@ -14,7 +14,7 @@
 {% block content %}
   <h1>{% trans 'socialaccount:connections:heading' %}</h1>
   {% if form.accounts %}
-    {% include "socialaccount/texts/connections-list.html" %}
+    {% include "socialaccount/texts/connections_list.html" %}
     <form class="form-horizontal" method="post" action="">
       {% csrf_token %}
       {% if form.non_field_errors %}
@@ -39,11 +39,11 @@
       </div>
     </form>
   {% else %}
-    {% include "socialaccount/texts/connections-empty.html" %}
+    {% include "socialaccount/texts/connections_empty.html" %}
   {% endif %}
 
   <h3>{% trans 'socialaccount:connections:add:heading' %}</h3>
-  {% include "socialaccount/texts/connections-add.html" %}
+  {% include "socialaccount/texts/connections_add.html" %}
   <div class="row">
     <p class="span2 text-right" style="padding-top: 5px;">{% trans 'socialaccount:connections:add:social_buttons' %}:</p>
     <p class="span10">

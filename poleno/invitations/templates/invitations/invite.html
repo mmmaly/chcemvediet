@@ -14,7 +14,7 @@
 {% block content %}
   <h1>{% trans 'invitations:invite:heading' %}</h1>
   {% if user.invitationsupply.can_invite %}
-    {% include "invitations/texts/invite-text.html" %}
+    {% include "invitations/texts/invite_text.html" %}
     <form class="form-horizontal" method="post" action="">
       {% csrf_token %}
       <div class="control-group">
@@ -29,6 +29,6 @@
       </div>
     </form>
   {% else %}
-    {% include "invitations/texts/invite-depleted.html" %}
+    {% include "invitations/texts/invite_depleted.html" %}
   {% endif %}
 {% endblock %}

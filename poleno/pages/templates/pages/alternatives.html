@@ -14,7 +14,7 @@
 
 {% block content %}
   <h1>{% trans 'pages:alternatives:heading' %}</h1>
-  {% include "pages/texts/alternatives-text.html" %}
+  {% include "pages/texts/alternatives_text.html" %}
   <ul>
     {% for alt in alternatives %}
       <li><img src="{% static "main/images/languages/"|add:alt.lang|add:".png" %}"> {{ alt.name }}: <a href="{{ alt.page.url }}">{{ alt.page.title }}</a></li>

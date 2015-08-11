@@ -111,7 +111,7 @@ def decide_email_unrelated(request, inforequest_pk, email_pk):
         return HttpResponseNotFound()
 
     if request.method != u'POST':
-        template = u'inforequests/modals/unrelated-email.html'
+        template = u'inforequests/modals/unrelated_email.html'
         return render(request, template, dict(inforequest=inforequest, email=email))
 
     inforequestemail.type = InforequestEmail.TYPES.UNRELATED
@@ -144,7 +144,7 @@ def decide_email_unknown(request, inforequest_pk, email_pk):
         return HttpResponseNotFound()
 
     if request.method != u'POST':
-        template = u'inforequests/modals/unknown-email.html'
+        template = u'inforequests/modals/unknown_email.html'
         return render(request, template, dict(inforequest=inforequest, email=email))
 
     inforequestemail.type = InforequestEmail.TYPES.UNKNOWN

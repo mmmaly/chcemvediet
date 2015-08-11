@@ -1,0 +1,20 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.wizards %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealOtherReasonInvalidReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- reason_number_on_paper: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+{% paragraph before=0 after=2 editable=True %}
+  Ako {% include "inforequests/appeals/papers/refusal/cislo_dovodu.html" %} nesprístupnenia
+  informácie bolo uvedené, že{% paper_field step.other_reason_invalid_reason %}
+  Uvedený dôvod nespadá pod dôvody taxatívne vymenované v §§ 8-11 zákona, pre ktoré možno
+  sprístupnenie informácie odmietnuť.
+{% endparagraph %}

@@ -29,7 +29,7 @@ class ActionAbstractForm(PrefixedForm):
                     u'class': u'with-tooltip span5',
                     u'data-toggle': u'tooltip',
                     u'data-placement': u'right',
-                    u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/branch-field.txt'),
+                    u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/branch_field.txt'),
                     },
                 suppressed_attrs={
                     u'class': u'suppressed-control',
@@ -223,7 +223,7 @@ class DeadlineMixin(ActionAbstractForm):
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/deadline-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/deadline_field.txt'),
                 }),
             )
 
@@ -410,15 +410,15 @@ class DecideEmailCommonForm(FileNumberMixin, ActionAbstractForm):
     pass
 
 class ConfirmationEmailForm(DecideEmailCommonForm):
-    template = u'inforequests/modals/confirmation-email.html'
+    template = u'inforequests/modals/confirmation_email.html'
     action_type = Action.TYPES.CONFIRMATION
 
 class ExtensionEmailForm(DeadlineMixin, DecideEmailCommonForm):
-    template = u'inforequests/modals/extension-email.html'
+    template = u'inforequests/modals/extension_email.html'
     action_type = Action.TYPES.EXTENSION
 
 class AdvancementEmailForm(DisclosureLevelMixin, AdvancedToMixin, DecideEmailCommonForm):
-    template = u'inforequests/modals/advancement-email.html'
+    template = u'inforequests/modals/advancement_email.html'
     action_type = Action.TYPES.ADVANCEMENT
 
 class ClarificationRequestEmailForm(DecideEmailCommonForm):
@@ -426,11 +426,11 @@ class ClarificationRequestEmailForm(DecideEmailCommonForm):
     action_type = Action.TYPES.CLARIFICATION_REQUEST
 
 class DisclosureEmailForm(DisclosureLevelMixin, DecideEmailCommonForm):
-    template = u'inforequests/modals/disclosure-email.html'
+    template = u'inforequests/modals/disclosure_email.html'
     action_type = Action.TYPES.DISCLOSURE
 
 class RefusalEmailForm(RefusalReasonMixin, DecideEmailCommonForm):
-    template = u'inforequests/modals/refusal-email.html'
+    template = u'inforequests/modals/refusal_email.html'
     action_type = Action.TYPES.REFUSAL
 
 
@@ -440,7 +440,7 @@ class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, FileNumberMixin,
 
         if not self.draft:
             if self.inforequest.has_undecided_emails:
-                msg = squeeze(render_to_string(u'inforequests/messages/add_smail-undecided_emails.txt', {
+                msg = squeeze(render_to_string(u'inforequests/messages/add_smail_undecided_emails.txt', {
                         u'inforequest': self.inforequest,
                         }))
                 raise forms.ValidationError(msg, code=u'undecided_emails')
@@ -448,15 +448,15 @@ class AddSmailCommonForm(AttachmentsMixin, SubjectContentMixin, FileNumberMixin,
         return cleaned_data
 
 class ConfirmationSmailForm(AddSmailCommonForm):
-    template = u'inforequests/modals/confirmation-smail.html'
+    template = u'inforequests/modals/confirmation_smail.html'
     action_type = Action.TYPES.CONFIRMATION
 
 class ExtensionSmailForm(DeadlineMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/extension-smail.html'
+    template = u'inforequests/modals/extension_smail.html'
     action_type = Action.TYPES.EXTENSION
 
 class AdvancementSmailForm(DisclosureLevelMixin, AdvancedToMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/advancement-smail.html'
+    template = u'inforequests/modals/advancement_smail.html'
     action_type = Action.TYPES.ADVANCEMENT
 
 class ClarificationRequestSmailForm(AddSmailCommonForm):
@@ -464,23 +464,23 @@ class ClarificationRequestSmailForm(AddSmailCommonForm):
     action_type = Action.TYPES.CLARIFICATION_REQUEST
 
 class DisclosureSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/disclosure-smail.html'
+    template = u'inforequests/modals/disclosure_smail.html'
     action_type = Action.TYPES.DISCLOSURE
 
 class RefusalSmailForm(RefusalReasonMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/refusal-smail.html'
+    template = u'inforequests/modals/refusal_smail.html'
     action_type = Action.TYPES.REFUSAL
 
 class AffirmationSmailForm(RefusalReasonMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/affirmation-smail.html'
+    template = u'inforequests/modals/affirmation_smail.html'
     action_type = Action.TYPES.AFFIRMATION
 
 class ReversionSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/reversion-smail.html'
+    template = u'inforequests/modals/reversion_smail.html'
     action_type = Action.TYPES.REVERSION
 
 class RemandmentSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
-    template = u'inforequests/modals/remandment-smail.html'
+    template = u'inforequests/modals/remandment_smail.html'
     action_type = Action.TYPES.REMANDMENT
 
 
@@ -490,7 +490,7 @@ class NewActionCommonForm(AttachmentsMixin, SubjectContentMixin, ActionAbstractF
 
         if not self.draft:
             if self.inforequest.has_undecided_emails:
-                msg = squeeze(render_to_string(u'inforequests/messages/new_action-undecided_emails.txt', {
+                msg = squeeze(render_to_string(u'inforequests/messages/new_action_undecided_emails.txt', {
                         u'inforequest': self.inforequest,
                         }))
                 raise forms.ValidationError(msg, code=u'undecided_emails')
@@ -507,7 +507,7 @@ class AppealForm(NewActionCommonForm):
 
 
 class ExtendDeadlineForm(PrefixedForm):
-    template = u'inforequests/modals/extend-deadline.html'
+    template = u'inforequests/modals/extend_deadline.html'
 
     extension = forms.IntegerField(
             label=_(u'inforequests:ExtendDeadlineForm:extension:label'),

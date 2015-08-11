@@ -1,0 +1,25 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.wizards %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealCopyrightReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- reason_number_on_paper: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+{% paragraph before=0 %}
+  Ako {% include "inforequests/appeals/papers/refusal/cislo_dovodu.html" %} nesprístupnenia
+  informácie bolo uvedené, že žiadaná informácia podlieha ochrane podľa autorského práva v zmysle
+  § 11 ods. 1 písm. a) a c) zákona o slobode informácií.
+{% endparagraph %}
+{% paragraph after=2 editable=True %}
+  S uvedeným nemožno súhlasiť, nakoľko ide o informáciu, ktorá nespadá pod ochranu autorského
+  zákona v zmysle § 7 ods. 3 zákona č. 618/2003 Z. z. o autorskom práve a právach súvisiacich
+  s autorským právom (autorský zákon), pretože{% paper_field step.copyright_reason %}
+{% endparagraph %}

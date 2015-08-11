@@ -1,0 +1,42 @@
+{# vim: set filetype=htmldjango :#}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:applicant' %}:</p>
+  <div class="span10">
+    <p>{{ inforequest.applicant_name }}</p>
+    <p>{{ inforequest.applicant_street }}<br>
+      {{ inforequest.applicant_zip }} {{ inforequest.applicant_city }}</p>
+  </div>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:obligee' %}:</p>
+  <div class="span10">
+    <p>{{ inforequest.main_branch.historicalobligee.name }}</p>
+    <p>{{ inforequest.main_branch.historicalobligee.street }}<br>
+      {{ inforequest.main_branch.historicalobligee.zip }} {{ inforequest.main_branch.historicalobligee.city }}</p>
+  </div>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:unique_email' %}:</p>
+  <p class="span10">{{ inforequest.unique_email }} <i class="icon-question-sign with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/detail/tooltips/request_unique_email.txt" %}{% endspaceless %}"></i></p>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:submission_date' %}:</p>
+  <p class="span10">{{ inforequest.submission_date }}</p>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:subject' %}:</p>
+  <p class="span10">{{ inforequest.subject }}</p>
+</div>
+<div class="row">
+  <p class="span2 text-right">{% trans 'inforequests:detail:request:content' %}:</p>
+  <p class="span10" style="white-space: pre-wrap;">{{ inforequest.content }}</p>
+</div>

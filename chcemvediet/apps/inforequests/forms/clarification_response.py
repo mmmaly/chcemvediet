@@ -17,7 +17,7 @@ from chcemvediet.apps.wizards import Wizard, WizardStep
 
 
 class ClarificationResponseStep(WizardStep):
-    template = u'inforequests/clarification_response/step.html'
+    template = u'inforequests/clarification_response/main.html'
     text_template = u'inforequests/clarification_response/texts/main.html'
     form_template = u'main/snippets/form_horizontal.html'
 
@@ -65,7 +65,7 @@ class ClarificationResponseStep(WizardStep):
 
 class ClarificationResponseWizard(Wizard):
     step_classes = OrderedDict([
-            (u'step', ClarificationResponseStep),
+            (u'main', ClarificationResponseStep),
             ])
 
     def __init__(self, request, branch):

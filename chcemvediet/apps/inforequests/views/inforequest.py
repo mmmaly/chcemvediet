@@ -35,7 +35,7 @@ def inforequest_index(request):
             .prefetch_related(Inforequest.prefetch_main_branch(None, Branch.objects.select_related(u'historicalobligee')))
             )
 
-    return render(request, u'inforequests/index.html', {
+    return render(request, u'inforequests/index/index.html', {
             u'inforequests': inforequests,
             u'drafts': drafts,
             u'closed_inforequests': closed_inforequests,
@@ -46,7 +46,7 @@ def inforequest_index(request):
 @transaction.atomic
 @verified_email_required
 def inforequest_create(request, draft_pk=None):
-    template = u'inforequests/create.html'
+    template = u'inforequests/create/create.html'
     draft = InforequestDraft.objects.owned_by(request.user).get_or_404(pk=draft_pk) if draft_pk else None
     session = Session.objects.get(session_key=request.session.session_key)
     attached_to = (session, draft) if draft else (session,)
@@ -88,9 +88,9 @@ def inforequest_create(request, draft_pk=None):
 @login_required
 def inforequest_detail(request, inforequest_pk):
     inforequest = Inforequest.objects.owned_by(request.user).prefetch_detail().get_or_404(pk=inforequest_pk)
-    return render(request, u'inforequests/detail.html', {
+    return render(request, u'inforequests/detail/detail.html', {
             u'inforequest': inforequest,
-            u'devtools': u'inforequests/detail-devtools.html',
+            u'devtools': u'inforequests/detail/devtools.html',
             })
 
 

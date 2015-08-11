@@ -1,0 +1,20 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field paragraph from chcemvediet.wizards %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealDoesNotProvideFallbackReasonStep
+ %         | chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealPaperStep
+ %  -- reason_number_on_paper: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+{% paragraph before=0 after=2 editable=True %}
+  Ako {% include "inforequests/appeals/papers/refusal/cislo_dovodu.html" %} nesprístupnenia
+  informácie bolo uvedené, že povinná osoba žiadanú informáciu neposkytuje.
+  {% paper_field step.does_not_provide_fallback_reason %}
+{% endparagraph %}

@@ -24,12 +24,12 @@ class InforequestForm(PrefixedForm):
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
                 u'data-container': u'body',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/tooltips/create-obligee.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/create/tooltips/obligee.txt'),
                 }),
             )
     subject = CompositeTextField(
             label=_(u'inforequests:InforequestForm:subject:label'),
-            template=u'inforequests/forms/create-subject.txt',
+            template=u'inforequests/create/forms/subject.txt',
             fields=[
                 forms.CharField(max_length=50, widget=forms.TextInput(attrs={
                     u'placeholder': _(u'inforequests:InforequestForm:subject:placeholder'),
@@ -39,7 +39,7 @@ class InforequestForm(PrefixedForm):
             )
     content = CompositeTextField(
             label=_(u'inforequests:InforequestForm:content:label'),
-            template=u'inforequests/forms/create-content.txt',
+            template=u'inforequests/create/forms/content.txt',
             fields=[
                 forms.CharField(widget=forms.Textarea(attrs={
                     u'placeholder': _(u'inforequests:InforequestForm:content:placeholder'),
@@ -65,7 +65,7 @@ class InforequestForm(PrefixedForm):
         super(InforequestForm, self).__init__(*args, **kwargs)
 
         unique_email = settings.INFOREQUEST_UNIQUE_EMAIL.format(token=u'xxxx')
-        unique_email = mark_safe(render_to_string(u'inforequests/create-content-unique-email.html', dict(unique_email=unique_email)).strip())
+        unique_email = mark_safe(render_to_string(u'inforequests/create/content_unique_email.html', dict(unique_email=unique_email)).strip())
         self.fields[u'content'].widget.context[u'user'] = self.user
         self.fields[u'content'].widget.context[u'unique_email'] = unique_email
         self.fields[u'attachments'].attached_to = self.attached_to

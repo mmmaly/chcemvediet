@@ -1,0 +1,72 @@
+{# vim: set filetype=htmldjango :#}
+{% load paper_field from chcemvediet.wizards %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealOtherReasonValidStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+<h4>Iný dôvod</h4>
+<p>
+  Ako {% include "inforequests/appeals/texts/refusal/cislo_dovodu.html" %} nesprístupnenia
+  informácie bol uvedený dôvod, ktorý systém nepozná. Niektoré dôvody majú oporu v zákone, iné nie.
+  Inštitúcia môže obmedziť sprístupnenie informácie, ak:
+</p>
+<ol>
+  <li>
+    jej bola odovzdaná osobou, ktorej takú povinnosť zákon neukladá a ktorá na výzvu povinnej osoby
+    písomne oznámila, že so sprístupnením informácie nesúhlasí. Ak na výzvu povinnej osoby
+    neodpovie osoba oprávnená udeliť súhlas na sprístupnenie informácie do siedmich dní,
+    predpokladá sa, že so sprístupnením informácie súhlasí. Na tieto následky musí byť osoba vo
+    výzve upozornená,
+  </li>
+    ju zverejňuje na základe osobitného zákona; ak je podľa takého zákona zverejňovaná vo vopred
+    stanovenej dobe, iba do tejto doby,
+  <li>
+    tým možno porušiť ochranu duševného vlastníctva ustanovenú osobitným predpisom s výnimkou,
+    ak osoba oprávnená podľa týchto osobitných predpisov na výzvu povinnej osoby na
+    sprístupnenie informácie udelí súhlas,
+  </li>
+  <li>
+    sa týka rozhodovacej činnosti súdu vrátane medzinárodných súdnych orgánov alebo orgánu činného
+    v trestnom konaní okrem informácie, ktorá sa sprístupňuje podľa osobitného predpisu,
+    rozhodnutia policajta v prípravnom konaní podľa druhej časti druhej hlavy piateho dielu
+    Trestného poriadku a informácie o vznesení obvinenia vrátane opisu skutku, ak ich sprístupnenie
+    nezakazuje zákon alebo ak ich sprístupnenie neohrozuje práva a právom chránené záujmy,
+  </li>
+  <li>
+    sa týka zmierovacieho konania, arbitrážneho konania alebo rozhodcovského konania okrem
+    informácie o rozhodnutí alebo o výsledku konania, ak jej sprístupnenie nezakazujú osobitné
+    predpisy,
+  </li>
+  <li>
+    sa týka miesta výskytu chránených druhov rastlín, živočíchov, nerastov a skamenelín a hrozí ich
+    neprípustné rušenie, poškodzovanie alebo ničenie,
+  </li>
+  <li>
+    by to bolo v rozpore s právne záväznými aktmi Európskych spoločenstiev a Európskej únie alebo
+    s medzinárodnou zmluvou, ktorou je Slovenská republika viazaná,
+  </li>
+  <li>
+    sa týka výkonu kontroly, dohľadu alebo dozoru orgánom verejnej moci podľa osobitných
+    predpisov okrem informácie o rozhodnutí alebo o inom výsledku kontroly, dohľadu alebo
+    dozoru, ak jej sprístupnenie nezakazujú osobitné predpisy,
+  </li>
+  <li>
+    ide o dokumentáciu, ktorá obsahuje informácie, ktorých zverejnenie by sa mohlo použiť na
+    plánovanie a vykonanie činností s cieľom spôsobiť narušenie alebo zničenie jadrového zariadenia
+    alebo objektov osobitnej dôležitosti a ďalších dôležitých objektov podľa osobitných
+    predpisov.
+  </li>
+</ol>
+<p>
+  Niekedy inštitúcia odpovie svojvoľne, napríklad, že nemá čas. Toto samozrejme nemá oporu
+  v zákone. Ide o dôvod uvedený v zákone alebo o haluz?
+  {% paper_field step.other_reason_valid %}
+</p>

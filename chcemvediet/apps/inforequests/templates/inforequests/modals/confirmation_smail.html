@@ -1,0 +1,29 @@
+{# vim: set filetype=htmldjango :#}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- form: chcemvediet.apps.inforequests.forms.ConfirmationSmailForm
+ %
+{% endcomment %}
+
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:add_smail_confirmation' inforequest.pk %}">
+  {% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3>{% trans 'inforequests:modals:confirmation:heading' %}</h3>
+  </div>
+  <div class="modal-body">
+    {% include "inforequests/modals/texts/confirmation_smail_text.html" %}
+    <div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" name="button" value="add"><i class="icon-plus icon-white"></i> {% trans 'inforequests:modals:confirmation:add_smail' %}</button>
+    <button type="submit" class="btn" name="button" value="draft"><i class="icon-file"></i> {% trans 'inforequests:modals:draft' %}</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% trans 'inforequests:modals:close' %}</button>
+  </div>
+</form>

@@ -8,7 +8,7 @@ from . import AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class ExpirationAppealPaperStep(AppealPaperStep):
-    text_template = u'inforequests/appeals/texts/expiration-paper.html'
+    text_template = u'inforequests/appeals/texts/expiration.html'
     content_template = u'inforequests/appeals/papers/expiration.html'
 
 class ExpirationAppealWizard(AppealWizard):

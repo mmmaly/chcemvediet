@@ -15,7 +15,7 @@
   <h1>{% trans 'account:email:heading' %}</h1>
   {% with user.emailaddress_set.all as emailaddresses %}
     {% if emailaddresses %}
-      {% include "account/texts/email-list.html" %}
+      {% include "account/texts/email_list.html" %}
       <form class="form-horizontal" method="post" action="{% url 'account_email' %}">
         {% csrf_token %}
         <div class="control-group">
@@ -43,12 +43,12 @@
         </div>
       </form>
     {% else %}
-      {% include "account/texts/email-empty.html" %}
+      {% include "account/texts/email_empty.html" %}
     {% endif %}
   {% endwith %}
 
   <h3>{% trans 'account:email:add:heading' %}</h3>
-  {% include "account/texts/email-add.html" %}
+  {% include "account/texts/email_add.html" %}
   <form class="form-horizontal" method="post" action="">
     {% csrf_token %}
     {% include "main/snippets/form_horizontal.html" with form=form %}

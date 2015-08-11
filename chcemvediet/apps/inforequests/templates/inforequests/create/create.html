@@ -1,0 +1,45 @@
+{# vim: set filetype=htmldjango :#}
+{% extends "main/base/single_column.html" %}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- form: chcemvediet.apps.inforequests.forms.InforequestForm
+ %
+{% endcomment %}
+
+{% block title %}{% trans 'inforequests:create:title' %} | {{ block.super }}{% endblock %}
+
+{% block content %}
+  <h1>{% trans 'inforequests:create:heding' %}</h1>
+  {% include "inforequests/create/texts/create.html" %}
+  <form class="form-horizontal" method="post" action="">
+    {% csrf_token %}
+    <div class="control-group">
+      <label class="control-label">{% trans 'inforequests:create:applicant_label' %}:</label>
+      <div class="controls">
+        <div class="suppressed-control">
+          {{ user.get_full_name }}<br>
+          {{ user.profile.street }}<br>
+          {{ user.profile.zip }} {{ user.profile.city }}
+        </div>
+      </div>
+    </div>
+    {% include "main/snippets/form_horizontal.html" with form=form %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary with-tooltip" name="button" value="submit" data-toggle="tooltip"
+              title="{% spaceless %}{% include "inforequests/create/tooltips/submit.txt" %}{% endspaceless %}">
+        <i class="icon-envelope icon-white"></i> {% trans 'inforequests:create:submit' %}
+      </button>
+      <button type="submit" class="btn with-tooltip" name="button" value="draft" data-toggle="tooltip"
+              title="{% spaceless %}{% include "inforequests/create/tooltips/draft.txt" %}{% endspaceless %}">
+        <i class="icon-file"></i> {% trans 'inforequests:create:draft' %}
+      </button>
+      <a class="btn pull-right with-tooltip" href="{% url 'inforequests:index' %}" data-toggle="tooltip"
+         title="{% spaceless %}{% include "inforequests/create/tooltips/cancel.txt" %}{% endspaceless %}">
+        <i class="icon-remove"></i> {% trans 'inforequests:create:cancel' %}
+      </a>
+    </div>
+  </form>
+{% endblock %}

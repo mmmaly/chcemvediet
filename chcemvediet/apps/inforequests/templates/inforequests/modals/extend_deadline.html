@@ -1,0 +1,30 @@
+{# vim: set filetype=htmldjango :#}
+{% load trans from i18n %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- action: chcemvediet.apps.inforequests.models.Action
+ %  -- form: chcemvediet.apps.inforequests.forms.ExtendDeadlineForm
+ %
+{% endcomment %}
+
+<form class="form-horizontal ajax" method="post" action="{% url 'inforequests:action_extend_deadline' inforequest.pk branch.pk action.pk %}">
+  {% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3>{% trans 'inforequests:modals:action-extend-deadline:heading' %}</h3>
+  </div>
+  <div class="modal-body">
+    {% include "inforequests/modals/texts/action_extend_deadline_text.html" with inforequest=inforequest branch=branch action=action %}
+    <div>
+      {% include "main/snippets/form_horizontal.html" with form=form %}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" name="button" value="extend">{% trans 'inforequests:modals:action-extend-deadline:extend' %}</button>
+    <button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> {% trans 'inforequests:modals:close' %}</button>
+  </div>
+</form>

@@ -1,0 +1,10 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- unique_email: string
+ %
+{% endcomment %}
+
+<span class="with-tooltip" data-toggle="tooltip" data-placement="right" title="{% spaceless %}{% include "inforequests/create/tooltips/content_unique_email.txt" %}{% endspaceless %}">{{ unique_email }} <i class="icon-question-sign"></i></span>

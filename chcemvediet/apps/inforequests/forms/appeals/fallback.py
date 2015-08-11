@@ -9,7 +9,7 @@ from . import AppealPaperStep, AppealFinalStep, AppealWizard
 
 
 class FallbackAppealPaperStep(AppealPaperStep):
-    text_template = u'inforequests/appeals/texts/fallback-paper.html'
+    text_template = u'inforequests/appeals/texts/fallback.html'
     content_template = u'inforequests/appeals/papers/fallback.html'
 
     reason = PaperCharField(widget=EditableSpan())

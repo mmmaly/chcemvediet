@@ -1,0 +1,24 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealCopyrightReasonStep
+ %  -- reason_number_in_wizard: int
+ %  -- number_of_reasons: int
+ %
+{% endcomment %}
+
+
+<h4>Autorské právo</h4>
+<div class="alert">
+  Ak inštitúcia dôveryhodne odôvodnila, že informácia naozaj podlieha ochrane podľa autorského
+  práva, odvolanie nemá zmysel podávať.
+</div>
+<p>
+  Ako {% include "inforequests/appeals/texts/refusal/cislo_dovodu.html" %} nesprístupnenia
+  informácie bolo uvedené, že žiadaná informácia podlieha ochrane podľa autorského práva. Ak sa
+  máte dôvod domnievať, že informácia nepodlieha ochrane podľa autorského práva, doplnte ho do
+  odvolania:
+</p>
