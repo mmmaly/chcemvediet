@@ -23,8 +23,6 @@ from .decide_email import decide_email_disclosure
 from .decide_email import decide_email_refusal
 from .decide_email import decide_email_unrelated
 from .decide_email import decide_email_unknown
-from .new_action import new_action_clarification_response
-from .new_action import new_action_appeal
 from .new_action import appeal
 from .new_action import clarification_response
 from .attachment import attachment_upload

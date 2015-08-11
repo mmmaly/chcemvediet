@@ -17,8 +17,6 @@ from .action import RefusalSmailForm
 from .action import AffirmationSmailForm
 from .action import ReversionSmailForm
 from .action import RemandmentSmailForm
-from .action import ClarificationResponseForm
-from .action import AppealForm
 from .action import ExtendDeadlineForm
 
 from .appeals import AppealWizards

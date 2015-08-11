@@ -500,9 +500,6 @@ msgstr "Prijaté"
 msgid "inforequests:detail:email:attachments"
 msgstr "Prílohy"
 
-msgid "inforequests:detail:new_action:title"
-msgstr "Čo môžete vykonať"
-
 msgid "inforequests:detail:request:applicant"
 msgstr "Žiadateľ"
 
@@ -605,9 +602,6 @@ msgstr "Potvrdenie rozhodnutia"
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Pridať potvrdenie rozhodnutia"
 
-msgid "inforequests:modals:appeal:heading"
-msgstr "Odvolanie"
-
 msgid "inforequests:modals:print"
 msgstr "Vytlačiť a poslať obyčajným listom"
 
@@ -619,12 +613,6 @@ msgstr "Označiť ako výzva na doplnenie žiadosti"
 
 msgid "inforequests:modals:clarification_request:add_smail"
 msgstr "Pridať výzvu na doplnenie žiadosti"
-
-msgid "inforequests:modals:clarification_response:heading"
-msgstr "Odpoveď na výzvu na doplnenie žiadosti"
-
-msgid "inforequests:modals:email"
-msgstr "Poslať e-mailom"
 
 msgid "inforequests:modals:confirmation:heading"
 msgstr "Potvrdenie prijatia"
@@ -760,12 +748,6 @@ msgid "^add-smail/reversion/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^add-smail/remandment/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^new-action/clarification-response/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^new-action/appeal/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^action/extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"

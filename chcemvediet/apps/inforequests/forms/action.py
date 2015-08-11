@@ -484,28 +484,6 @@ class RemandmentSmailForm(DisclosureLevelMixin, AddSmailCommonForm):
     action_type = Action.TYPES.REMANDMENT
 
 
-class NewActionCommonForm(AttachmentsMixin, SubjectContentMixin, ActionAbstractForm):
-    def clean(self):
-        cleaned_data = super(NewActionCommonForm, self).clean()
-
-        if not self.draft:
-            if self.inforequest.has_undecided_emails:
-                msg = squeeze(render_to_string(u'inforequests/messages/new_action_undecided_emails.txt', {
-                        u'inforequest': self.inforequest,
-                        }))
-                raise forms.ValidationError(msg, code=u'undecided_emails')
-
-        return cleaned_data
-
-class ClarificationResponseForm(NewActionCommonForm):
-    template = u'inforequests/modals/clarification_response.html'
-    action_type = Action.TYPES.CLARIFICATION_RESPONSE
-
-class AppealForm(NewActionCommonForm):
-    template = u'inforequests/modals/appeal.html'
-    action_type = Action.TYPES.APPEAL
-
-
 class ExtendDeadlineForm(PrefixedForm):
     template = u'inforequests/modals/extend_deadline.html'
 

@@ -500,9 +500,6 @@ msgstr "Received"
 msgid "inforequests:detail:email:attachments"
 msgstr "Attachments"
 
-msgid "inforequests:detail:new_action:title"
-msgstr "What You Can Do"
-
 msgid "inforequests:detail:request:applicant"
 msgstr "Applicant"
 
@@ -605,9 +602,6 @@ msgstr "Affirmation"
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Add an Affirmation"
 
-msgid "inforequests:modals:appeal:heading"
-msgstr "Appeal"
-
 msgid "inforequests:modals:print"
 msgstr "Print and Send by Regular Mail"
 
@@ -619,12 +613,6 @@ msgstr "Mark as Clarification Request"
 
 msgid "inforequests:modals:clarification_request:add_smail"
 msgstr "Add an Clarification Request"
-
-msgid "inforequests:modals:clarification_response:heading"
-msgstr "Clarification Response"
-
-msgid "inforequests:modals:email"
-msgstr "Send by E-mail"
 
 msgid "inforequests:modals:confirmation:heading"
 msgstr "Confirmation"
@@ -760,12 +748,6 @@ msgid "^add-smail/reversion/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^add-smail/remandment/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^new-action/clarification-response/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^new-action/appeal/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^action/extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"
