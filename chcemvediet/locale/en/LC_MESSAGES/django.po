@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-10 03:52+0200\n"
+"POT-Creation-Date: 2015-08-11 09:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -219,13 +219,10 @@ msgid "inforequests:RefusalAppealSanitizationLevelStep:OverlySanitized"
 msgstr "Áno, bolo vyčiernené viac."
 
 msgid "inforequests:RefusalAppealSanitizationLevelStep:MissingDocument"
-msgstr "Áno, dokument úplne chýbal."
+msgstr "Áno, niečo úplne chýbalo."
 
 msgid "inforequests:RefusalAppealSanitizationLevelStep:ProperlySanitized"
 msgstr "Nie, vyčiernenie bolo korektné."
-
-msgid "inforequests:RefusalAppealSanitizationLevelStep:NotSanitized"
-msgstr "Nie, vyčiernené nebolo nič."
 
 msgid "inforequests:InforequestForm:obligee:label"
 msgstr "Obligee"
@@ -346,9 +343,6 @@ msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
 
 msgid "inforequests:appeals:heading"
 msgstr "Odvolanie voči rozhodnutiu o nesprístupnení informácie"
-
-msgid "inforequests:appeals:print"
-msgstr "Print"
 
 msgid "inforequests:clarification_responses:title"
 msgstr "Clarification Response"
@@ -788,6 +782,9 @@ msgstr "E-mail"
 
 msgid "obligees:obligee_with_address_input:email"
 msgstr "E-mail"
+
+msgid "wizards:wizard:print"
+msgstr "Print"
 
 msgid "wizards:wizard:save"
 msgstr "Save"

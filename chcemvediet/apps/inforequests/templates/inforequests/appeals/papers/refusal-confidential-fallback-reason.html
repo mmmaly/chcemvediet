@@ -14,7 +14,7 @@
 
 {% if step.key == "confidential_fallback_reason" or wizard.values.confidential_fallback %}
   {% paragraph before=0 after=2 editable=True %}
-    Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} dôvod nesprístupnenia
+    Ako {% include "inforequests/appeals/papers/refusal-cislo-dovodu.html" %} nesprístupnenia
     informácie bolo uvedené, že žiadaná informácia je utajovanou skutočnosťou.
     {% paper_field step.confidential_fallback_reason %}
   {% endparagraph %}

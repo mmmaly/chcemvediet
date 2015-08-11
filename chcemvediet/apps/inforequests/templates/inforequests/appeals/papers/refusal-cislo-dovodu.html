@@ -9,15 +9,13 @@
 {% endcomment %}
 
 {% if number_of_reasons == 1 %}
-  {# empty #}
+  dôvod
 {% elif reason_number_on_paper == 1 %}
-  prvý
+  jeden z dôvodov
 {% elif reason_number_on_paper == 2 %}
-  druhý
+  druhý dôvod
 {% elif reason_number_on_paper == 3 %}
-  tretí
-{% elif reason_number_on_paper == number_of_reasons %}
-  posledný
+  tretí dôvod
 {% else %}
-  ďalší
+  ďalší dôvod
 {% endif %}

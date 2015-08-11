@@ -71,7 +71,7 @@ class WizardDeadendStep(WizardStep):
     counted_step = False
 
     def clean(self):
-        cleaned_data = super(WizardDeadEndStep, self).clean()
+        cleaned_data = super(WizardDeadendStep, self).clean()
         self.add_error(None, u'deadend')
         return cleaned_data
 

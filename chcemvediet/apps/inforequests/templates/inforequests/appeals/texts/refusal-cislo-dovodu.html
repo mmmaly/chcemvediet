@@ -9,15 +9,15 @@
 {% endcomment %}
 
 {% if number_of_reasons == 1 %}
-  {# empty #}
+  dôvod
 {% elif reason_number_in_wizard == 1 %}
-  prvý
+  jeden z dôvodov
 {% elif reason_number_in_wizard == 2 %}
-  druhý
+  druhý dôvod
 {% elif reason_number_in_wizard == 3 %}
-  tretí
+  tretí dôvod
 {% elif reason_number_in_wizard == number_of_reasons %}
-  posledný
+  posledný dôvod
 {% else %}
-  ďalší
+  ďalší dôvod
 {% endif %}

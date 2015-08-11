@@ -9,7 +9,8 @@ from poleno.utils.forms import EditableSpan
 from chcemvediet.apps.wizards.forms import PaperCharField, OptionalSectionCheckboxField
 from chcemvediet.apps.inforequests.models import Action
 
-from . import AppealStep, AppealSectionStep, AppealPaperStep, AppealFinalStep, AppealWizard
+from . import AppealStep, AppealSectionStep, AppealDeadendStep, AppealPaperStep, AppealFinalStep
+from . import AppealWizard
 
 class ReasonStep(AppealStep):
     covered_reason = None
@@ -371,7 +372,7 @@ class RefusalAppealOtherReasonInvalidReasonStep(AppealSectionStep, ReasonStep):
 
 
 class SanitizationStep(AppealStep):
-    sanitizable_reasons = set([
+    all_sanitizable_reasons = set([
             Action.REFUSAL_REASONS.BUSINESS_SECRET,
             Action.REFUSAL_REASONS.PERSONAL,
             Action.REFUSAL_REASONS.CONFIDENTIAL,
@@ -379,34 +380,25 @@ class SanitizationStep(AppealStep):
 
     @classmethod
     def applicable(cls, wizard):
-        return bool(cls.sanitizable_reasons & set(wizard.branch.last_action.refusal_reason))
+        return bool(cls.actual_sanitizable_reasons(wizard))
+
+    @classmethod
+    def actual_sanitizable_reasons(cls, wizard):
+        return cls.all_sanitizable_reasons & set(wizard.branch.last_action.refusal_reason)
 
     def context(self, extra=None):
         res = super(SanitizationStep, self).context(extra)
         res.update({
-                u'sanitizable': self.sanitizable(),
+                u'sanitizable': self.actual_sanitizable_reasons(self.wizard),
                 })
         return res
 
     def paper_context(self, extra=None):
         res = super(SanitizationStep, self).paper_context(extra)
         res.update({
-                u'sanitizable': self.sanitizable(),
+                u'sanitizable': self.actual_sanitizable_reasons(self.wizard),
                 })
         return res
-
-    def sanitizable(self):
-        covered = set(step.covered_reason
-                for step in self.wizard.steps.values()
-                if step and isinstance(step, ReasonStep) and isinstance(step, AppealSectionStep)
-                    and not step.section_is_empty()
-                )
-        sanitizable = self.sanitizable_reasons & set(self.wizard.branch.last_action.refusal_reason)
-        return {
-                u'all': sanitizable,
-                u'covered': sanitizable & covered,
-                u'not_covered': sanitizable - covered,
-                }
 
 class RefusalAppealSanitizationLevelStep(SanitizationStep):
     text_template = u'inforequests/appeals/texts/refusal-sanitization-level.html'
@@ -417,7 +409,6 @@ class RefusalAppealSanitizationLevelStep(SanitizationStep):
                 (u'overly-sanitized',   _(u'inforequests:RefusalAppealSanitizationLevelStep:OverlySanitized')),
                 (u'missing-document',   _(u'inforequests:RefusalAppealSanitizationLevelStep:MissingDocument')),
                 (u'properly-sanitized', _(u'inforequests:RefusalAppealSanitizationLevelStep:ProperlySanitized')),
-                (u'not-sanitized',      _(u'inforequests:RefusalAppealSanitizationLevelStep:NotSanitized')),
                 ),
             )
 
@@ -450,6 +441,24 @@ class RefusalAppealSanitizationMissingDocumentStep(AppealSectionStep, Sanitizati
 
     def paper_fields(self, step):
         step.fields[u'sanitization_missing_document'] = PaperCharField(widget=EditableSpan())
+
+class RefusalAppealSanitizationProperlySanitizedStep(AppealDeadendStep, SanitizationStep):
+    text_template = u'inforequests/appeals/texts/refusal-sanitization-properly-sanitized.html'
+
+    @classmethod
+    def applicable(cls, wizard):
+        if not super(RefusalAppealSanitizationProperlySanitizedStep, cls).applicable(wizard):
+            return False
+        if wizard.values.get(u'sanitization_level', None) != u'properly-sanitized':
+            return False
+        for reason in cls.actual_sanitizable_reasons(wizard):
+            if wizard.reason_sections_are_empty(reason):
+                return True
+        return False
+
+    def reasons_with_empty_sections(self):
+        return [r for r in self.actual_sanitizable_reasons(self.wizard)
+                  if self.wizard.reason_sections_are_empty(r)]
 
 
 class RefusalAppealPaperStep(AppealPaperStep):
@@ -484,6 +493,7 @@ class RefusalAppealWizard(AppealWizard):
             (u'sanitization_level', RefusalAppealSanitizationLevelStep),
             (u'sanitization_overly_sanitized', RefusalAppealSanitizationOverlySanitizedStep),
             (u'sanitization_missing_document', RefusalAppealSanitizationMissingDocumentStep),
+            (u'sanitization_properly_sanitized', RefusalAppealSanitizationProperlySanitizedStep),
             (u'paper', RefusalAppealPaperStep),
             (u'final', AppealFinalStep),
             ])
@@ -506,3 +516,10 @@ class RefusalAppealWizard(AppealWizard):
                 u'number_of_reasons': len(self.branch.last_action.refusal_reason),
                 })
         return res
+
+    def reason_sections_are_empty(self, reason):
+        for step in self.steps.values():
+            if step and isinstance(step, ReasonStep) and step.covered_reason == reason:
+                if isinstance(step, AppealSectionStep) and not step.section_is_empty():
+                    return False
+        return True

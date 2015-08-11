@@ -8,18 +8,37 @@
  %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealWizard
  %  -- step: chcemvediet.apps.inforequests.forms.appeals.refusal.RefusalAppealSanitizationLevelStep
  %  -- number_of_reasons: int
- %  -- sanitizable.all: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
- %  -- sanitizable.covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
- %  -- sanitizable.not_covered: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
+ %  -- sanitizable: set of chcemvediet.apps.inforequests.models.action.Action.REFUSAL_REASONS
  %
 {% endcomment %}
 
 
 <h4>Začiernenie citlivých informácií</h4>
 <p>
+  {% if number_of_reasons == 1 %}
+    Ako dôvod
+  {% elif number_of_reasons == sanitizable|length %}
+    Ako dôvody
+  {% else %}
+    Medzi dôvodmi
+  {% endif %}
+  nesprístupnenia informácie bolo uvedené, že žiadaná informácia je
+  {% for reason in sanitizable %}
+    {% filter squeeze %}
+      {% if reason == last_action.REFUSAL_REASONS.BUSINESS_SECRET %}
+        obchodné tajomstvo
+      {% elif reason == last_action.REFUSAL_REASONS.PERSONAL %}
+        osobný údaj podliehajúci ochrane
+      {% elif reason == last_action.REFUSAL_REASONS.CONFIDENTIAL %}
+        utajovaná skutočnosť
+      {% endif %}
+    {% endfilter squeeze %}{% if forloop.revcounter > 2 %},{% elif forloop.revcounter == 2 %} a {% else %}.{% endif %}
+  {% endfor %}
+</p>
+<p>
   Aj keby platilo, že časť žiadanej informácie nemôže inštitúcia sprístupniť, stále máte právo na
   zvyšok informácie. Znamená to, že inštitúcia ma informáciu zverejniť tak, že
-  {% for reason in sanitizable.all %}
+  {% for reason in sanitizable %}
     {% filter squeeze %}
       {% if reason == last_action.REFUSAL_REASONS.BUSINESS_SECRET %}
         obchodné tajomstvo
