@@ -79,7 +79,7 @@ class EffectiveDateMixin(ActionAbstractForm):
                 u'class': u'datepicker with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/effective_date-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/effective_date_field.txt'),
                 }),
             )
 
@@ -253,7 +253,7 @@ class AdvancedToMixin(ActionAbstractForm):
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
                 u'data-container': u'.modal.in',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to_field.txt'),
                 }),
             )
     advanced_to_2 = ObligeeAutocompleteField(
@@ -265,7 +265,7 @@ class AdvancedToMixin(ActionAbstractForm):
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
                 u'data-container': u'.modal.in',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to_field.txt'),
                 }),
             )
     advanced_to_3 = ObligeeAutocompleteField(
@@ -277,7 +277,7 @@ class AdvancedToMixin(ActionAbstractForm):
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
                 u'data-container': u'.modal.in',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/advanced_to_field.txt'),
                 }),
             )
     ADVANCED_TO_FIELDS = [u'advanced_to_1', u'advanced_to_2', u'advanced_to_3']
@@ -354,7 +354,7 @@ class DisclosureLevelMixin(ActionAbstractForm):
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/disclosure_level-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/disclosure_level_field.txt'),
                 }),
             )
 
@@ -384,7 +384,7 @@ class RefusalReasonMixin(ActionAbstractForm):
                 u'class': u'with-tooltip',
                 u'data-toggle': u'tooltip',
                 u'data-placement': u'right',
-                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/refusal_reason-field.txt'),
+                u'title': lazy(render_to_string, unicode)(u'inforequests/modals/tooltips/refusal_reason_field.txt'),
                 }),
             )
 
@@ -422,7 +422,7 @@ class AdvancementEmailForm(DisclosureLevelMixin, AdvancedToMixin, DecideEmailCom
     action_type = Action.TYPES.ADVANCEMENT
 
 class ClarificationRequestEmailForm(DecideEmailCommonForm):
-    template = u'inforequests/modals/clarification_request-email.html'
+    template = u'inforequests/modals/clarification_request_email.html'
     action_type = Action.TYPES.CLARIFICATION_REQUEST
 
 class DisclosureEmailForm(DisclosureLevelMixin, DecideEmailCommonForm):
@@ -460,7 +460,7 @@ class AdvancementSmailForm(DisclosureLevelMixin, AdvancedToMixin, AddSmailCommon
     action_type = Action.TYPES.ADVANCEMENT
 
 class ClarificationRequestSmailForm(AddSmailCommonForm):
-    template = u'inforequests/modals/clarification_request-smail.html'
+    template = u'inforequests/modals/clarification_request_smail.html'
     action_type = Action.TYPES.CLARIFICATION_REQUEST
 
 class DisclosureSmailForm(DisclosureLevelMixin, AddSmailCommonForm):

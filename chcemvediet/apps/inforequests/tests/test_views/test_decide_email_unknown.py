@@ -54,7 +54,7 @@ class DecideEmailUnknownViewTest(
 
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
-        self.assertTemplateUsed(response, u'inforequests/modals/unknown-email.html')
+        self.assertTemplateUsed(response, u'inforequests/modals/unknown_email.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
         self.assertEqual(response.context[u'email'], scenario.email)
         self.assertNotIn(u'form', response.context)
@@ -100,7 +100,7 @@ class DecideEmailUnknownViewTest(
 
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
-        self.assertTemplateUsed(response, u'inforequests/detail-main.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_main.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
 
         data = json.loads(response.content)

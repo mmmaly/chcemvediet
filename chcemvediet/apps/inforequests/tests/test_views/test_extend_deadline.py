@@ -153,7 +153,7 @@ class ExtendDeadlineViewTest(
         self._login_user()
         response = self.client.get(url, HTTP_X_REQUESTED_WITH=u'XMLHttpRequest')
 
-        self.assertTemplateUsed(response, u'inforequests/modals/extend-deadline.html')
+        self.assertTemplateUsed(response, u'inforequests/modals/extend_deadline.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
         self.assertEqual(response.context[u'branch'], scenario.branch)
         self.assertEqual(response.context[u'action'], scenario.action)
@@ -213,7 +213,7 @@ class ExtendDeadlineViewTest(
 
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
-        self.assertTemplateUsed(response, u'inforequests/detail-main.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_main.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
 
         data = json.loads(response.content)
@@ -249,7 +249,7 @@ class ExtendDeadlineViewTest(
 
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
-        self.assertTemplateUsed(response, u'inforequests/modals/extend-deadline.html')
+        self.assertTemplateUsed(response, u'inforequests/modals/extend_deadline.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
         self.assertEqual(response.context[u'branch'], scenario.branch)
         self.assertEqual(response.context[u'action'], scenario.action)

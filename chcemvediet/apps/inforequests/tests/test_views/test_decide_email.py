@@ -135,7 +135,7 @@ class DecideEmailTests(
 
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
-        self.assertTemplateUsed(response, u'inforequests/detail-main.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_main.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
 
         data = json.loads(response.content)
@@ -199,7 +199,7 @@ class DecideEmailConfirmationViewTest(
     view_name = u'inforequests:decide_email_confirmation'
     form_class = forms.ConfirmationEmailForm
     form_prefix = u'confirmationemailform'
-    template = u'inforequests/modals/confirmation-email.html'
+    template = u'inforequests/modals/confirmation_email.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -231,7 +231,7 @@ class DecideEmailExtensionViewTest(
     view_name = u'inforequests:decide_email_extension'
     form_class = forms.ExtensionEmailForm
     form_prefix = u'extensionemailform'
-    template = u'inforequests/modals/extension-email.html'
+    template = u'inforequests/modals/extension_email.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -264,7 +264,7 @@ class DecideEmailAdvancementViewTest(
     view_name = u'inforequests:decide_email_advancement'
     form_class = forms.AdvancementEmailForm
     form_prefix = u'advancementemailform'
-    template = u'inforequests/modals/advancement-email.html'
+    template = u'inforequests/modals/advancement_email.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -295,7 +295,7 @@ class DecideEmailClarificationRequestViewTest(
     view_name = u'inforequests:decide_email_clarification_request'
     form_class = forms.ClarificationRequestEmailForm
     form_prefix = u'clarificationrequestemailform'
-    template = u'inforequests/modals/clarification_request-email.html'
+    template = u'inforequests/modals/clarification_request_email.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -327,7 +327,7 @@ class DecideEmailDisclosureViewTest(
     view_name = u'inforequests:decide_email_disclosure'
     form_class = forms.DisclosureEmailForm
     form_prefix = u'disclosureemailform'
-    template = u'inforequests/modals/disclosure-email.html'
+    template = u'inforequests/modals/disclosure_email.html'
     good_scenario = []
     bad_scenario = [u'refusal']
     can_add_after = {
@@ -359,7 +359,7 @@ class DecideEmailRefusalViewTest(
     view_name = u'inforequests:decide_email_refusal'
     form_class = forms.RefusalEmailForm
     form_prefix = u'refusalemailform'
-    template = u'inforequests/modals/refusal-email.html'
+    template = u'inforequests/modals/refusal_email.html'
     good_scenario = []
     bad_scenario = [u'refusal']
     can_add_after = {

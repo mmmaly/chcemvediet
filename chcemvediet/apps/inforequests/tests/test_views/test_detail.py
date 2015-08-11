@@ -52,8 +52,8 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
         # Three actions in single branch
-        self.assertTemplateUsedCount(response, u'inforequests/detail-branch.html', 1)
-        self.assertTemplateUsedCount(response, u'inforequests/detail-action.html', 3)
+        self.assertTemplateUsedCount(response, u'inforequests/detail_branch.html', 1)
+        self.assertTemplateUsedCount(response, u'inforequests/detail_action.html', 3)
 
     def test_inforequest_with_single_branch_related_models_are_prefetched_before_render(self):
         inforequest, _, _ = self._create_inforequest_scenario(u'confirmation', u'extension')
@@ -90,8 +90,8 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         #                  -- branch:
         #                      -- advanced_request
         #                      -- refusal
-        self.assertTemplateUsedCount(response, u'inforequests/detail-branch.html', 5)
-        self.assertTemplateUsedCount(response, u'inforequests/detail-action.html', 12)
+        self.assertTemplateUsedCount(response, u'inforequests/detail_branch.html', 5)
+        self.assertTemplateUsedCount(response, u'inforequests/detail_action.html', 12)
 
     def test_inforequest_with_multiple_branches_related_models_are_prefetched_before_render(self):
         inforequest, _, _ = self._create_inforequest_scenario(
@@ -115,17 +115,17 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
         # User can decide
-        self.assertTemplateUsed(response, u'inforequests/detail-decide.html')
-        self.assertTemplateUsed(response, u'inforequests/detail-undecided.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_decide.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_undecided.html')
         # User may not act
-        self.assertTemplateNotUsed(response, u'inforequests/detail-add_smail.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-new_action.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_add_smail.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_new_action.html')
 
         templates = defaultdict(list)
         for template in response.templates:
             templates[template.name].append(template)
 
-        self.assertTemplateUsedCount(response, u'inforequests/detail-email.html', 3)
+        self.assertTemplateUsedCount(response, u'inforequests/detail_email.html', 3)
 
     def test_inforequest_with_undecided_email_related_models_are_prefetched_before_render(self):
         inforequest, _, _ = self._create_inforequest_scenario()
@@ -143,11 +143,11 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
         # There is nothing to decide
-        self.assertTemplateNotUsed(response, u'inforequests/detail-decide.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-undecided.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_decide.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_undecided.html')
         # User may act
-        self.assertTemplateUsed(response, u'inforequests/detail-add_smail.html')
-        self.assertTemplateUsed(response, u'inforequests/detail-new_action.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_add_smail.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_new_action.html')
 
     def test_inforequest_without_undecided_email_related_models_are_prefetched_before_render(self):
         inforequest, _, _ = self._create_inforequest_scenario()
@@ -165,10 +165,10 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
         # Inforequest is closed, user may do nothing
-        self.assertTemplateNotUsed(response, u'inforequests/detail-decide.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-undecided.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-add_smail.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-new_action.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_decide.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_undecided.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_add_smail.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_new_action.html')
 
     def test_closed_inforequest_without_undecided_email(self):
         inforequest, _, _ = self._create_inforequest_scenario(dict(closed=True))
@@ -176,10 +176,10 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.pk,)))
 
         # Inforequest is closed, user may do nothing
-        self.assertTemplateNotUsed(response, u'inforequests/detail-decide.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-undecided.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-add_smail.html')
-        self.assertTemplateNotUsed(response, u'inforequests/detail-new_action.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_decide.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_undecided.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_add_smail.html')
+        self.assertTemplateNotUsed(response, u'inforequests/detail_new_action.html')
 
     def test_closed_inforequest_related_models_are_prefetched_before_render(self):
         inforequest, _, _ = self._create_inforequest_scenario(dict(closed=True))

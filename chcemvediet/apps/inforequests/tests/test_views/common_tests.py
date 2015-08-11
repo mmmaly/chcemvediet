@@ -452,7 +452,7 @@ class AddSmailAndNewActionCommonTests(AbstractTests):
 
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
-        self.assertTemplateUsed(response, u'inforequests/detail-main.html')
+        self.assertTemplateUsed(response, u'inforequests/detail_main.html')
         self.assertEqual(response.context[u'inforequest'], scenario.inforequest)
 
         data = json.loads(response.content)

@@ -27,7 +27,7 @@ class AddSmailTests(
     view_name = None
     good_scenario = None # Some scenario the view will be successfull on
     post_with_bad_scenario_returns_404 = False
-    undecided_email_message_template = u'inforequests/messages/add_smail-undecided_emails.en.txt'
+    undecided_email_message_template = u'inforequests/messages/add_smail_undecided_emails.en.txt'
 
     def _create_scenario(self, **kwargs):
         res = Bunch()
@@ -67,7 +67,7 @@ class AddSmailConfirmationViewTest(
     view_name = u'inforequests:add_smail_confirmation'
     form_class = forms.ConfirmationSmailForm
     form_prefix = u'confirmationsmailform'
-    template = u'inforequests/modals/confirmation-smail.html'
+    template = u'inforequests/modals/confirmation_smail.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -99,7 +99,7 @@ class AddSmailExtensionViewTest(
     view_name = u'inforequests:add_smail_extension'
     form_class = forms.ExtensionSmailForm
     form_prefix = u'extensionsmailform'
-    template = u'inforequests/modals/extension-smail.html'
+    template = u'inforequests/modals/extension_smail.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -132,7 +132,7 @@ class AddSmailAdvancementViewTest(
     view_name = u'inforequests:add_smail_advancement'
     form_class = forms.AdvancementSmailForm
     form_prefix = u'advancementsmailform'
-    template = u'inforequests/modals/advancement-smail.html'
+    template = u'inforequests/modals/advancement_smail.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -163,7 +163,7 @@ class AddSmailClarificationRequestViewTest(
     view_name = u'inforequests:add_smail_clarification_request'
     form_class = forms.ClarificationRequestSmailForm
     form_prefix = u'clarificationrequestsmailform'
-    template = u'inforequests/modals/clarification_request-smail.html'
+    template = u'inforequests/modals/clarification_request_smail.html'
     good_scenario = []
     bad_scenario = [u'extension']
     can_add_after = {
@@ -195,7 +195,7 @@ class AddSmailDisclosureViewTest(
     view_name = u'inforequests:add_smail_disclosure'
     form_class = forms.DisclosureSmailForm
     form_prefix = u'disclosuresmailform'
-    template = u'inforequests/modals/disclosure-smail.html'
+    template = u'inforequests/modals/disclosure_smail.html'
     good_scenario = []
     bad_scenario = [u'refusal']
     can_add_after = {
@@ -227,7 +227,7 @@ class AddSmailRefusalViewTest(
     view_name = u'inforequests:add_smail_refusal'
     form_class = forms.RefusalSmailForm
     form_prefix = u'refusalsmailform'
-    template = u'inforequests/modals/refusal-smail.html'
+    template = u'inforequests/modals/refusal_smail.html'
     good_scenario = []
     bad_scenario = [u'refusal']
     can_add_after = {
@@ -259,7 +259,7 @@ class AddSmailAffirmationViewTest(
     view_name = u'inforequests:add_smail_affirmation'
     form_class = forms.AffirmationSmailForm
     form_prefix = u'affirmationsmailform'
-    template = u'inforequests/modals/affirmation-smail.html'
+    template = u'inforequests/modals/affirmation_smail.html'
     good_scenario = [u'refusal', u'appeal']
     bad_scenario = []
     can_add_after = {
@@ -291,7 +291,7 @@ class AddSmailReversionViewTest(
     view_name = u'inforequests:add_smail_reversion'
     form_class = forms.ReversionSmailForm
     form_prefix = u'reversionsmailform'
-    template = u'inforequests/modals/reversion-smail.html'
+    template = u'inforequests/modals/reversion_smail.html'
     good_scenario = [u'refusal', u'appeal']
     bad_scenario = []
     can_add_after = {
@@ -323,7 +323,7 @@ class AddSmailRemandmentViewTest(
     view_name = u'inforequests:add_smail_remandment'
     form_class = forms.RemandmentSmailForm
     form_prefix = u'remandmentsmailform'
-    template = u'inforequests/modals/remandment-smail.html'
+    template = u'inforequests/modals/remandment_smail.html'
     good_scenario = [u'refusal', u'appeal']
     bad_scenario = []
     can_add_after = {
