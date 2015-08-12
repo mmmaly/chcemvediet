@@ -12,8 +12,8 @@ class WizardDraft(models.Model):
     # Primary key (Wizard.instance_id)
     id = models.CharField(max_length=255, primary_key=True)
 
-    # May NOT be NULL
-    step = models.CharField(max_length=32)
+    # May be empty
+    step = models.CharField(blank=True, max_length=255)
 
     # May NOT be empty
     data = JSONField()
