@@ -64,7 +64,7 @@ class ClarificationResponseStep(WizardStep):
 
         @after_saved(self.wizard.draft)
         def deferred(draft):
-            for attachment in self.cleaned_data[u'attachments']:
+            for attachment in self.cleaned_data.get(u'attachments', []):
                 attachment.generic_object = draft
                 attachment.save()
 
