@@ -1,0 +1,12 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+{% autoescape off %}
+FIXME Clarification response sa neda poslat, kym nezaradite nove maily
+{% endautoescape %}

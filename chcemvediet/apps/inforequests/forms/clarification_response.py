@@ -48,6 +48,17 @@ class ClarificationResponseStep(WizardStep):
         self.fields[u'content'].widget.context.update(self.context())
         self.fields[u'attachments'].attached_to = (self.wizard.draft, session)
 
+    def clean(self):
+        cleaned_data = super(ClarificationResponseStep, self).clean()
+
+        if self.wizard.branch.inforequest.has_undecided_emails:
+                msg = squeeze(render_to_string(u'inforequests/clarification_response/messages/undecided_emails.txt', {
+                        u'inforequest': self.wizard.branch.inforequest,
+                        }))
+                raise forms.ValidationError(msg, code=u'undecided_emails')
+
+        return cleaned_data
+
     def commit(self):
         super(ClarificationResponseStep, self).commit()
 

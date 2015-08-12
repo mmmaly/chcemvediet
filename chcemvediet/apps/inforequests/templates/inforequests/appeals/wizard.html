@@ -18,3 +18,12 @@
 {% block header-heading %}{% trans 'inforequests:appeals:heading' %}{% endblock %}
 
 {% block footer-cancel-href %}{{ inforequest.get_absolute_url }}{% endblock %}
+
+{% block body %}
+  {% if inforequest.has_undecided_emails %}
+    <div class="alert alert-block alert-error">
+      {% include "inforequests/appeals/texts/undecided_alert.html" %}
+    </div>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

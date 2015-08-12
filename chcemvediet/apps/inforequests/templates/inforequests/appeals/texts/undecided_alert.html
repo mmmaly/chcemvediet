@@ -1,0 +1,21 @@
+{# vim: set filetype=htmldjango :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.appeals.AppealWizard
+ %  -- step: chcemvediet.apps.inforequests.forms.apps.AppealStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- branch: chcemvediet.apps.inforequests.models.Branch
+ %  -- last_action: chcemvediet.apps.inforequests.models.Action
+ %
+{% endcomment %}
+
+
+<h4>Nový e-mail</h4>
+<p>
+<span style="color: green;">FIXME</span> {{ inforequest.undecided_emails_count }}
+nerozhodnutych mailov; Odvolanie sa neda podat, kym sa nezaradia maily; Rozpracovane odvolanie
+ulozte, zaradte dosle maily; Potom, ak to bude stale aktualne, mozete pokracovat.
+<a href="{{ inforequest.get_absolute_url }}#decide">Linka na maily</a>
+</p>

@@ -1,0 +1,12 @@
+{# vim: set filetype=django :#}
+
+{% comment %}
+ %
+ % Context:
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %
+{% endcomment %}
+
+{% autoescape off %}
+FIXME Appeal sa neda podat, kym nezaradite nove maily
+{% endautoescape %}

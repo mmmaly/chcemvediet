@@ -19,8 +19,6 @@ def clarification_response(request, inforequest_pk, branch_pk, step_idx=None):
 
     if not branch.can_add_clarification_response:
         return HttpResponseNotFound()
-    if inforequest.has_undecided_emails:
-        return HttpResponseNotFound()
 
     def finish(wizard):
         action = Action(type=Action.TYPES.CLARIFICATION_RESPONSE)
@@ -39,8 +37,6 @@ def appeal(request, inforequest_pk, branch_pk, step_idx=None):
     branch = inforequest.branch_set.get_or_404(pk=branch_pk)
 
     if not branch.can_add_appeal:
-        return HttpResponseNotFound()
-    if inforequest.has_undecided_emails:
         return HttpResponseNotFound()
 
     def finish(wizard):

@@ -5,9 +5,11 @@ from dateutil.relativedelta import relativedelta
 from django import forms
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.date import local_today
+from poleno.utils.misc import squeeze
 from chcemvediet.apps.wizards import WizardStep, Wizard, WizardGroup
 from chcemvediet.apps.wizards import WizardSectionStep, WizardDeadendStep, WizardPaperStep, WizardPrintStep
 from chcemvediet.apps.wizards.forms import PaperDateField
@@ -58,6 +60,17 @@ class AppealPaperStep(AppealStep, WizardPaperStep):
 
 class AppealFinalStep(AppealStep, WizardPrintStep):
     text_template = u'inforequests/appeals/texts/final.html'
+
+    def clean(self):
+        cleaned_data = super(AppealFinalStep, self).clean()
+
+        if self.wizard.branch.inforequest.has_undecided_emails:
+                msg = squeeze(render_to_string(u'inforequests/appeals/messages/undecided_emails.txt', {
+                        u'inforequest': self.wizard.branch.inforequest,
+                        }))
+                raise forms.ValidationError(msg, code=u'undecided_emails')
+
+        return cleaned_data
 
     def context(self, extra=None):
         res = super(AppealFinalStep, self).context(extra)
