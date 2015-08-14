@@ -1,0 +1,56 @@
+{# vim: set filetype=htmldjango :#}
+{% load trans from i18n %}
+{% load squeeze from poleno.utils %}
+
+{% comment %}
+ %
+ % Context:
+ %  -- wizard: chcemvediet.apps.inforequests.forms.obligee_action.ObligeeActionWizard
+ %  -- step: chcemvediet.apps.wizards.WizardStep
+ %  -- inforequest: chcemvediet.apps.inforequests.models.Inforequest
+ %  -- email: poleno.mail.models.Message | None
+ %
+{% endcomment %}
+
+<h4>{% trans 'inforequests:obligee_action:email:email:heading' %}</h4>
+<div class="well">
+  <div class="row-fluid">
+    <p class="span2 text-right">{% trans 'inforequests:obligee_action:email:subject' %}:</p>
+    <p class="span10">{{ email.subject }}</p>
+  </div>
+  <div class="row-fluid">
+    <p class="span2 text-right">{% trans 'inforequests:obligee_action:email:from' %}:</p>
+    <p class="span10">{{ email.from_formatted }}</p>
+  </div>
+  <div class="row-fluid">
+    <p class="span2 text-right">{% trans 'inforequests:obligee_action:email:to' %}:</p>
+    <p class="span10">
+      {% for recipient in email.recipients %}
+        {% filter squeeze %}
+          {% if recipient.mail == email.received_for %}
+            <b>{{ recipient.formatted }}</b>
+          {% else %}
+            <span>{{ recipient.formatted }}</span>
+          {% endif %}
+        {% endfilter %}{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    </p>
+  </div>
+  <div class="row-fluid">
+    <p class="span2 text-right">{% trans 'inforequests:obligee_action:email:processed' %}:</p>
+    <p class="span10">{{ email.processed }}</p>
+  </div>
+  {% if email.attachments %}
+    <div class="row-fluid">
+      <p class="span2 text-right">{% trans 'inforequests:obligee_action:email:attachments' %}:</p>
+      <p class="span10">
+        {% for attachment in email.attachments %}
+          <a href="{% url 'inforequests:download_attachment' attachment.pk %}"><span class="label label-info">{{ attachment.name }}</span></a>
+        {% endfor %}
+      </p>
+    </div>
+  {% endif %}
+  <div class="row-fluid">
+    <p class="span12" style="white-space: pre-line;">{{ email.text }}</p>
+  </div>
+</div>

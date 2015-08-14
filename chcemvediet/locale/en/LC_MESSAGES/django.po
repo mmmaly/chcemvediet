@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-11 18:03+0200\n"
+"POT-Creation-Date: 2015-08-14 06:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -254,6 +254,33 @@ msgstr "Request"
 msgid "inforequests:InforequestForm:attachments:label"
 msgstr "Attachments"
 
+msgid "inforequests:obligee_action:BasicsStep:branch:label"
+msgstr "Obligee"
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:label"
+msgstr "Effective Date"
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:placeholder"
+msgstr "mm/dd/yyyy"
+
+msgid "inforequests:obligee_action:BasicsStep:file_number:label"
+msgstr "File Number"
+
+msgid "inforequests:obligee_action:BasicsStep:file_number:placeholder"
+msgstr "File Number"
+
+msgid "inforequests:obligee_action:BasicsStep:attachments:label"
+msgstr "Attachments"
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:older_than_previous_error"
+msgstr "May not be older than previous action."
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:from_future_error"
+msgstr "May not be from future."
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:older_than_month_error"
+msgstr "May not be older than one month."
+
 msgid "inforequests:Action:type:REQUEST"
 msgstr "Request"
 
@@ -485,6 +512,15 @@ msgstr "Unrelated e-mail, or SPAM"
 msgid "inforequests:detail:decide:unknown"
 msgstr "I don't know"
 
+msgid "inforequests:detail:title"
+msgstr "Inforequest Detail"
+
+msgid "inforequests:detail:heading"
+msgstr "Inforequest Detail"
+
+msgid "inforequests:detail:history:heading"
+msgstr "Inforequest Detail"
+
 msgid "inforequests:detail:email:subject"
 msgstr "Subject"
 
@@ -520,15 +556,6 @@ msgstr "Content"
 
 msgid "inforequests:detail:undecided:show"
 msgstr "Show them"
-
-msgid "inforequests:detail:title"
-msgstr "Inforequest Detail"
-
-msgid "inforequests:detail:heading"
-msgstr "Inforequest Detail"
-
-msgid "inforequests:detail:history:heading"
-msgstr "Inforequest Detail"
 
 msgid "inforequests:index:title"
 msgstr "Submitted Inforequests"
@@ -601,9 +628,6 @@ msgstr "Affirmation"
 
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Add an Affirmation"
-
-msgid "inforequests:modals:print"
-msgstr "Print and Send by Regular Mail"
 
 msgid "inforequests:modals:clarification_request:heading"
 msgstr "Clarification Request"
@@ -686,6 +710,36 @@ msgstr "Unrelated E-mail"
 
 msgid "inforequests:modals:unrelated:decide_email"
 msgstr "Mark as Unrelated"
+
+msgid "inforequests:obligee_action:email:title"
+msgstr "Nový e-mail od inštitúcie"
+
+msgid "inforequests:obligee_action:smail:title"
+msgstr "Nová pošta od inštitúcie"
+
+msgid "inforequests:obligee_action:email:heading"
+msgstr "Nový e-mail od inštitúcie"
+
+msgid "inforequests:obligee_action:smail:heading"
+msgstr "Nová pošta od inštitúcie"
+
+msgid "inforequests:obligee_action:email:email:heading"
+msgstr "Received E-mail"
+
+msgid "inforequests:obligee_action:email:subject"
+msgstr "Subject"
+
+msgid "inforequests:obligee_action:email:from"
+msgstr "From"
+
+msgid "inforequests:obligee_action:email:to"
+msgstr "To"
+
+msgid "inforequests:obligee_action:email:processed"
+msgstr "Received"
+
+msgid "inforequests:obligee_action:email:attachments"
+msgstr "Attachments"
 
 msgid "^create/$"
 msgstr ""
@@ -993,6 +1047,9 @@ msgstr "Reload Page"
 msgid "main:ajax-fail:close"
 msgstr "Close"
 
+msgid "main:menu:brand"
+msgstr "Chcem Vedieť (Pre Alpha)"
+
 msgid "main:menu:account:profile"
 msgstr "User Profile"
 
@@ -1025,9 +1082,6 @@ msgstr "Requests"
 
 msgid "main:menu:obligees"
 msgstr "Obligees"
-
-msgid "main:menu:brand"
-msgstr "Chcem Vedieť (Pre Alpha)"
 
 msgid "socialaccount:authentication_error:title"
 msgstr "Social Network Login Failure"

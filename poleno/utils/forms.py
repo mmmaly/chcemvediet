@@ -33,6 +33,11 @@ def clean_button(post, clean_values, default_value=None, key=u'button'):
         return default_value
     return post[key]
 
+class SuppressedInput(forms.TextInput):
+    def render(self, name, value, attrs=None, choices=()):
+        return format_html(u'<span{0}><input type="hidden" name="{1}" value="{2}">{3}</span>',
+                flatatt(self.attrs), name, value, value)
+
 class AutoSuppressedSelect(forms.Select):
     u"""
     Selectbox that replaces itself with a static text if there is only one choice available. Actual

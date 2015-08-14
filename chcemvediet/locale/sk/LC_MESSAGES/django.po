@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-11 18:03+0200\n"
+"POT-Creation-Date: 2015-08-14 06:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -254,6 +254,33 @@ msgstr "Uveďte čo najkonkrétnejšie, o aké informácie máte záujem."
 msgid "inforequests:InforequestForm:attachments:label"
 msgstr "Prílohy"
 
+msgid "inforequests:obligee_action:BasicsStep:branch:label"
+msgstr "Povinná osoba"
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:label"
+msgstr "Dátum doručenia"
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:placeholder"
+msgstr "dd.mm.yyyy"
+
+msgid "inforequests:obligee_action:BasicsStep:file_number:label"
+msgstr "Číslo spisu"
+
+msgid "inforequests:obligee_action:BasicsStep:file_number:placeholder"
+msgstr "Číslo spisu"
+
+msgid "inforequests:obligee_action:BasicsStep:attachments:label"
+msgstr "Prílohy"
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:older_than_previous_error"
+msgstr "Nesmie byť staršia ako predošlé akcie."
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:from_future_error"
+msgstr "Nesmie byť z budúcnosti."
+
+msgid "inforequests:obligee_action:BasicsStep:effective_date:older_than_month_error"
+msgstr "Nesmie byť starší ako 1 mesiac."
+
 msgid "inforequests:Action:type:REQUEST"
 msgstr "Žiadosť"
 
@@ -485,6 +512,15 @@ msgstr "Nesúvisiaci email alebo spam"
 msgid "inforequests:detail:decide:unknown"
 msgstr "Neviem sa rozhodnúť"
 
+msgid "inforequests:detail:title"
+msgstr "Detail žiadosti"
+
+msgid "inforequests:detail:heading"
+msgstr "Detail žiadosti"
+
+msgid "inforequests:detail:history:heading"
+msgstr "Detail žiadosti"
+
 msgid "inforequests:detail:email:subject"
 msgstr "Predmet"
 
@@ -520,15 +556,6 @@ msgstr "Obsah"
 
 msgid "inforequests:detail:undecided:show"
 msgstr "Ukázať"
-
-msgid "inforequests:detail:title"
-msgstr "Detail žiadosti"
-
-msgid "inforequests:detail:heading"
-msgstr "Detail žiadosti"
-
-msgid "inforequests:detail:history:heading"
-msgstr "Detail žiadosti"
 
 msgid "inforequests:index:title"
 msgstr "Odoslané žiadosti"
@@ -601,9 +628,6 @@ msgstr "Potvrdenie rozhodnutia"
 
 msgid "inforequests:modals:affirmation:add_smail"
 msgstr "Pridať potvrdenie rozhodnutia"
-
-msgid "inforequests:modals:print"
-msgstr "Vytlačiť a poslať obyčajným listom"
 
 msgid "inforequests:modals:clarification_request:heading"
 msgstr "Výzva na doplnenie žiadosti "
@@ -686,6 +710,36 @@ msgstr "Nesúvisiaci e-mail"
 
 msgid "inforequests:modals:unrelated:decide_email"
 msgstr "Označiť ako Nesúvisiaci email"
+
+msgid "inforequests:obligee_action:email:title"
+msgstr "Nový e-mail od inštitúcie"
+
+msgid "inforequests:obligee_action:smail:title"
+msgstr "Nová pošta od inštitúcie"
+
+msgid "inforequests:obligee_action:email:heading"
+msgstr "Nový e-mail od inštitúcie"
+
+msgid "inforequests:obligee_action:smail:heading"
+msgstr "Nová pošta od inštitúcie"
+
+msgid "inforequests:obligee_action:email:email:heading"
+msgstr "Doručený e-mail"
+
+msgid "inforequests:obligee_action:email:subject"
+msgstr "Predmet"
+
+msgid "inforequests:obligee_action:email:from"
+msgstr "Odosielateľ"
+
+msgid "inforequests:obligee_action:email:to"
+msgstr "Adresát"
+
+msgid "inforequests:obligee_action:email:processed"
+msgstr "Prijaté"
+
+msgid "inforequests:obligee_action:email:attachments"
+msgstr "Prílohy"
 
 msgid "^create/$"
 msgstr ""
@@ -993,6 +1047,9 @@ msgstr "Obnoviť stránku"
 msgid "main:ajax-fail:close"
 msgstr "Zavrieť"
 
+msgid "main:menu:brand"
+msgstr "Chcem Vedieť (Pre Alpha)"
+
 msgid "main:menu:account:profile"
 msgstr "Profil užívateľa"
 
@@ -1025,9 +1082,6 @@ msgstr "Žiadosti"
 
 msgid "main:menu:obligees"
 msgstr "Inštitúcie"
-
-msgid "main:menu:brand"
-msgstr "Chcem Vedieť (Pre Alpha)"
 
 msgid "socialaccount:authentication_error:title"
 msgstr "Zlyhalo prihlásenie cez sociálnu sieť"

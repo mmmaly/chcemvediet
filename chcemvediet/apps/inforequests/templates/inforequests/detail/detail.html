@@ -17,6 +17,9 @@
     {% include "inforequests/detail/request.html" with inforequest=inforequest %}
   </div>
   {% if not inforequest.closed %}
+    <div>
+      <a class="btn btn-primary" href="{% url "inforequests:obligee_action" inforequest.pk %}">Obligee Action</a>
+    </div>
     {% if inforequest.has_undecided_emails %}
       <div id="decide" class="anchor">
         {% include "inforequests/detail/decide.html" with inforequest=inforequest email=inforequest.oldest_undecided_email %}

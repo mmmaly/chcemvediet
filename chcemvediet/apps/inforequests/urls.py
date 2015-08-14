@@ -9,7 +9,7 @@ from . import views
 parts = {
     u'inforequest_pk': r'(?P<inforequest_pk>\d+)',
     u'branch_pk': r'(?P<branch_pk>\d+)',
-    u'step_idx': r'(?:-(?P<step_idx>\d+))?',
+    u'step_idx': r'(?:/(?P<step_idx>\d+))?',
     }
 
 urlpatterns = patterns(u'',
@@ -35,6 +35,7 @@ urlpatterns = patterns(u'',
     url(_(r'^add-smail/affirmation/(?P<inforequest_pk>\d+)/$'), views.add_smail_affirmation, name=u'add_smail_affirmation'),
     url(_(r'^add-smail/reversion/(?P<inforequest_pk>\d+)/$'), views.add_smail_reversion, name=u'add_smail_reversion'),
     url(_(r'^add-smail/remandment/(?P<inforequest_pk>\d+)/$'), views.add_smail_remandment, name=u'add_smail_remandment'),
+    url(r'^{inforequest_pk}/obligee-action{step_idx}/$'.format(**parts),                     views.obligee_action,         name=u'obligee_action'),
     url(r'^{inforequest_pk}/clarification-response/{branch_pk}{step_idx}/$'.format(**parts), views.clarification_response, name=u'clarification_response'),
     url(r'^{inforequest_pk}/appeal/{branch_pk}{step_idx}/$'.format(**parts),                 views.appeal,                 name=u'appeal'),
     url(_(r'^action/extend-deadline/(?P<inforequest_pk>\d+)/(?P<branch_pk>\d+)/(?P<action_pk>\d+)/$'), views.action_extend_deadline, name=u'action_extend_deadline'),
