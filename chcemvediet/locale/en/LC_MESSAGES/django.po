@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 10:45+0200\n"
+"POT-Creation-Date: 2015-08-15 12:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -314,8 +314,38 @@ msgstr "Áno, obsahuje to dokument s nadpisom rozhodnutie"
 msgid "inforequests:obligee_action:IsDecisionStep:no"
 msgstr "Nie, je to niečo iné"
 
-msgid "inforequests:obligee_action:ReasonsStep:none"
+msgid "inforequests:obligee_action:RefusalReasonsStep:none"
 msgstr "V texte sa nespomínajú žiadne dôvody"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:yes"
+msgstr "Áno, inštitúcia postupuje žiadosť inej inštitúcii"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:no"
+msgstr "Nie, v texte sa postúpenie nespomína"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:advanced_to_1:label"
+msgstr "Advanced To"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:advanced_to_1:placeholder"
+msgstr "Obligee"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:advanced_to_2:label"
+msgstr "Advanced To"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:advanced_to_2:placeholder"
+msgstr "Obligee"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:advanced_to_3:label"
+msgstr "Advanced To"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:advanced_to_3:placeholder"
+msgstr "Obligee"
+
+msgid "inforequests:obligee_action:IsAdvancementStep:same_obligee_error"
+msgstr "May not advance to the same obligee."
+
+msgid "inforequests:obligee_action:IsAdvancementStep:duplicate_obligee_error"
+msgstr "May not advance twice to the same obligee."
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
 msgstr "Áno, chcem pomoc od admina"

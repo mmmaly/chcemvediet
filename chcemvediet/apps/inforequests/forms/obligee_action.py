@@ -16,7 +16,8 @@ from poleno.utils.models import after_saved
 from poleno.utils.forms import AutoSuppressedSelect
 from poleno.utils.date import local_date, local_today
 from chcemvediet.apps.wizards import Wizard, WizardStep
-from chcemvediet.apps.inforequests.models import Action, InforequestEmail
+from chcemvediet.apps.obligees.forms import ObligeeWithAddressInput, ObligeeAutocompleteField
+from chcemvediet.apps.inforequests.models import Branch, Action, InforequestEmail
 
 class ObligeeActionStep(WizardStep):
     template = u'inforequests/obligee_action/wizard.html'
@@ -251,11 +252,11 @@ class IsDecisionStep(ObligeeActionStep):
             res[u'result_action'] = Action.TYPES.REFUSAL
         return res
 
-class ReasonsStep(ObligeeActionStep):
-    text_template = u'inforequests/obligee_action/texts/reasons.html'
+class RefusalReasonsStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/refusal_reasons.html'
 
     no_reason = forms.BooleanField(
-            label=_(u'inforequests:obligee_action:ReasonsStep:none'),
+            label=_(u'inforequests:obligee_action:RefusalReasonsStep:none'),
             required=False,
             widget=forms.CheckboxInput(attrs={
                 u'class': u'toggle-changed',
@@ -277,14 +278,10 @@ class ReasonsStep(ObligeeActionStep):
     def applicable(cls, wizard):
         result = wizard.values.get(u'result', None)
         action = wizard.values.get(u'result_action', None)
-        level = wizard.values.get(u'result_disclosure_level', None)
-        return result == u'action' and (
-                action == Action.TYPES.REFUSAL or
-                action == Action.TYPES.DISCLOSURE and level != ACTION.DISCLOSURE_LEVELS.FULL
-                )
+        return result == u'action' and action == Action.TYPES.REFUSAL
 
     def clean(self):
-        cleaned_data = super(ReasonsStep, self).clean()
+        cleaned_data = super(RefusalReasonsStep, self).clean()
 
         no_reason = cleaned_data.get(u'no_reason', None)
         refusal_reason = cleaned_data.get(u'refusal_reason', None)
@@ -295,11 +292,91 @@ class ReasonsStep(ObligeeActionStep):
         return cleaned_data
 
     def values(self):
-        res = super(ReasonsStep, self).values()
+        res = super(RefusalReasonsStep, self).values()
         if self.cleaned_data[u'no_reason']:
             res[u'result_refusal_reason'] = []
         else:
             res[u'result_refusal_reason'] = self.cleaned_data[u'refusal_reason']
+        return res
+
+class IsAdvancementStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_advancement.html'
+
+    is_advancement = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsAdvancementStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsAdvancementStep:no')),
+                ),
+            widget=forms.RadioSelect(attrs={
+                u'class': u'toggle-changed',
+                u'data-container': u'form',
+                u'data-target-1': u'.control-group:has(.visible-if-advancement)',
+                }),
+            )
+    advanced_to_1 = ObligeeAutocompleteField(
+            label=_(u'inforequests:obligee_action:IsAdvancementStep:advanced_to_1:label'),
+            required=False,
+            widget=ObligeeWithAddressInput(attrs={
+                u'placeholder': _(u'inforequests:obligee_action:IsAdvancementStep:advanced_to_1:placeholder'),
+                u'class': u'span5 visible-if-advancement',
+                }),
+            )
+    advanced_to_2 = ObligeeAutocompleteField(
+            label=_(u'inforequests:obligee_action:IsAdvancementStep:advanced_to_2:label'),
+            required=False,
+            widget=ObligeeWithAddressInput(attrs={
+                u'placeholder': _(u'inforequests:obligee_action:IsAdvancementStep:advanced_to_2:placeholder'),
+                u'class': u'span5 visible-if-advancement',
+                }),
+            )
+    advanced_to_3 = ObligeeAutocompleteField(
+            label=_(u'inforequests:obligee_action:IsAdvancementStep:advanced_to_3:label'),
+            required=False,
+            widget=ObligeeWithAddressInput(attrs={
+                u'placeholder': _(u'inforequests:obligee_action:IsAdvancementStep:advanced_to_3:placeholder'),
+                u'class': u'span5 visible-if-advancement',
+                }),
+            )
+    ADVANCED_TO_FIELDS = [u'advanced_to_1', u'advanced_to_2', u'advanced_to_3']
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_on_topic = wizard.values.get(u'is_on_topic', True)
+        return not result and branch and branch.can_add_advancement and is_on_topic
+
+    def clean(self):
+        cleaned_data = super(IsAdvancementStep, self).clean()
+
+        is_advancement = cleaned_data.get(u'is_advancement', None)
+        if is_advancement and not any(cleaned_data.get(f) for f in self.ADVANCED_TO_FIELDS):
+            msg = self.fields[u'advanced_to_1'].error_messages[u'required']
+            self.add_error(u'advanced_to_1', msg)
+
+        branch = self.wizard.values[u'branch']
+        for i, field in enumerate(self.ADVANCED_TO_FIELDS):
+            advanced_to = cleaned_data.get(field, None)
+            try:
+                if advanced_to and advanced_to == branch.obligee:
+                    raise ValidationError(_(u'inforequests:obligee_action:IsAdvancementStep:same_obligee_error'))
+                for field_2 in self.ADVANCED_TO_FIELDS[0:i]:
+                    advanced_to_2 = cleaned_data.get(field_2, None)
+                    if advanced_to_2 and advanced_to_2 == advanced_to:
+                        raise ValidationError(_(u'inforequests:obligee_action:IsAdvancementStep:duplicate_obligee_error'))
+            except ValidationError as e:
+                self.add_error(field, e)
+
+        return cleaned_data
+
+    def values(self):
+        res = super(IsAdvancementStep, self).values()
+        if self.cleaned_data[u'is_advancement']:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.ADVANCEMENT
+            res[u'result_advanced_to'] = [self.cleaned_data[f] for f in self.ADVANCED_TO_FIELDS]
         return res
 
 class NotCategorizedStep(ObligeeActionStep):
@@ -369,7 +446,8 @@ class ObligeeActionWizard(Wizard):
             (u'is_on_topic', IsOnTopicStep),
             (u'contains_info', ContainsInfoStep),
             (u'is_decision', IsDecisionStep),
-            (u'reasons', ReasonsStep),
+            (u'refusal_reasons', RefusalReasonsStep),
+            (u'is_advancement', IsAdvancementStep),
             (u'not_categorized', NotCategorizedStep),
             (u'categorized', CategorizedStep),
             ])
@@ -419,6 +497,22 @@ class ObligeeActionWizard(Wizard):
                 attachment.save()
         else:
             action.attachment_set = self.values[u'result_attachments']
+
+        for obligee in self.values.get(u'result_advanced_to', []):
+            if obligee:
+                sub_branch = Branch(
+                        obligee=obligee,
+                        inforequest=action.branch.inforequest,
+                        advanced_by=action,
+                        )
+                sub_branch.save()
+
+                sub_action = Action(
+                        branch=sub_branch,
+                        effective_date=action.effective_date,
+                        type=Action.TYPES.ADVANCED_REQUEST,
+                        )
+                sub_action.save()
 
         if self.email:
             self.inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
