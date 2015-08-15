@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import weakref
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.db.models.constants import LOOKUP_SEP
@@ -142,6 +143,16 @@ class QuerySet(models.query.QuerySet):
         one object is found.
         """
         return get_object_or_404(self, *args, **kwargs)
+
+    def get_or_none(self, *args, **kwargs):
+        u"""
+        Uses ``get()`` to return an object, or None if the object does not exist. Like with
+        ``get()``, an ``MultipleObjectsReturned`` will be raised if more than one object is found.
+        """
+        try:
+            return self.get(*args, **kwargs)
+        except ObjectDoesNotExist:
+            return None
 
     def apply(self, func):
         u"""

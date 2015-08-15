@@ -14,9 +14,21 @@ from chcemvediet.apps.inforequests.forms import ObligeeActionWizard
 @login_required(raise_exception=True)
 def obligee_action(request, inforequest_pk, step_idx=None):
     inforequest = Inforequest.objects.not_closed().owned_by(request.user).get_or_404(pk=inforequest_pk)
+    inforequestemail = inforequest.inforequestemail_set.undecided().oldest().get_or_none()
+    email = inforequestemail.email if inforequestemail is not None else None
 
     def finish(wizard):
-        print(wizard.values)
-        raise NotImplementedError
+        result = wizard.values[u'result']
+        if result == u'action':
+            action = wizard.save_action()
+            return action.get_absolute_url()
+        if result == u'help':
+            wizard.save_help()
+            return inforequest.get_absolute_url()
+        if result == u'unrelated':
+            wizard.save_unrelated()
+            return inforequest.get_absolute_url()
+        raise ValueError
 
-    return wizard_view(ObligeeActionWizard, request, step_idx, finish, inforequest)
+    return wizard_view(ObligeeActionWizard, request, step_idx, finish,
+            inforequest, inforequestemail, email)

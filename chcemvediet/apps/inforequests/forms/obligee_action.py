@@ -15,7 +15,7 @@ from poleno.utils.models import after_saved
 from poleno.utils.forms import AutoSuppressedSelect
 from poleno.utils.date import local_date, local_today
 from chcemvediet.apps.wizards import Wizard, WizardStep
-from chcemvediet.apps.inforequests.models import Action
+from chcemvediet.apps.inforequests.models import Action, InforequestEmail
 
 class ObligeeActionStep(WizardStep):
     template = u'inforequests/obligee_action/wizard.html'
@@ -117,9 +117,10 @@ class BasicsStep(ObligeeActionStep):
 
     def values(self):
         res = super(BasicsStep, self).values()
-        if self.wizard.email:
-            res[u'effective_date'] = local_date(self.wizard.email.processed)
-            res[u'attachments'] = []
+        res[u'result_branch'] = self.cleaned_data[u'branch']
+        res[u'result_effective_date'] = self.cleaned_data[u'effective_date'] if not self.wizard.email else None
+        res[u'result_file_number'] = self.cleaned_data[u'file_number']
+        res[u'result_attachments'] = self.cleaned_data[u'attachments'] if not self.wizard.email else None
         return res
 
 class IsQuestionStep(ObligeeActionStep):
@@ -185,7 +186,7 @@ class NotCategorizedStep(ObligeeActionStep):
             coerce=int,
             choices=(
                 (1, _(u'inforequests:obligee_action:NotCategorizedStep:help')),
-                (0, _(u'inforequests:obligee_action:NotCategorizedStep:offtopic')),
+                (0, _(u'inforequests:obligee_action:NotCategorizedStep:unrelated')),
                 ),
             widget=forms.RadioSelect(attrs={
                 u'class': u'toggle-changed',
@@ -224,7 +225,7 @@ class NotCategorizedStep(ObligeeActionStep):
             res[u'result'] = u'help'
             res[u'result_help'] = self.cleaned_data[u'help_request']
         else:
-            res[u'result'] = u'offtopic'
+            res[u'result'] = u'unrelated'
         return res
 
 class CategorizedStep(ObligeeActionStep):
@@ -245,11 +246,12 @@ class ObligeeActionWizard(Wizard):
             (u'categorized', CategorizedStep),
             ])
 
-    def __init__(self, request, inforequest):
+    def __init__(self, request, inforequest, inforequestemail, email):
         super(ObligeeActionWizard, self).__init__(request)
         self.instance_id = u'%s-%s' % (self.__class__.__name__, inforequest.pk)
         self.inforequest = inforequest
-        self.email = inforequest.oldest_undecided_email
+        self.inforequestemail = inforequestemail
+        self.email = email
 
     def get_step_url(self, step, anchor=u''):
         return reverse(u'inforequests:obligee_action',
@@ -262,3 +264,51 @@ class ObligeeActionWizard(Wizard):
                 u'email': self.email,
                 })
         return res
+
+    def save_action(self):
+        assert self.values[u'result'] == u'action'
+        assert self.values[u'result_action'] in Action.OBLIGEE_ACTION_TYPES
+        assert not self.email or self.values[u'result_action'] in Action.OBLIGEE_EMAIL_ACTION_TYPES
+        assert self.values[u'result_branch'].can_add_action(self.values[u'result_action'])
+
+        action = Action(type=self.values[u'result_action'])
+        action.branch = self.values[u'result_branch']
+        action.email = self.email if self.email else None
+        action.subject = self.email.subject if self.email else u''
+        action.content = self.email.text if self.email else u''
+        action.effective_date = (
+                local_date(self.email.processed) if self.email else
+                self.values[u'result_effective_date'])
+        action.file_number = self.values.get(u'result_file_number', u'')
+        action.deadline = self.values.get(u'result_deadline', None)
+        action.disclosure_level = self.values.get(u'result_disclosure_level', None)
+        action.refusal_reason = self.values.get(u'result_refusal_reason', None)
+        action.save()
+
+        if self.email:
+            for attch in self.email.attachments:
+                attachment = attch.clone(action)
+                attachment.save()
+        else:
+            action.attachment_set = self.values[u'result_attachments']
+
+        if self.email:
+            self.inforequestemail.type = InforequestEmail.TYPES.OBLIGEE_ACTION
+            self.inforequestemail.save(update_fields=[u'type'])
+
+        return action
+
+    def save_help(self):
+        assert self.values[u'result'] == u'help'
+        # FIXME: use wizard.values[u'result_help'] to create a ticket
+
+        if self.email:
+            self.inforequestemail.type = InforequestEmail.TYPES.UNKNOWN
+            self.inforequestemail.save(update_fields=[u'type'])
+
+    def save_unrelated(self):
+        assert self.values[u'result'] == u'unrelated'
+
+        if self.email:
+            self.inforequestemail.type = InforequestEmail.TYPES.UNRELATED
+            self.inforequestemail.save(update_fields=[u'type'])
