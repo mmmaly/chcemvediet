@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-14 06:37+0200\n"
+"POT-Creation-Date: 2015-08-15 03:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -280,6 +280,30 @@ msgstr "Nesmie byť z budúcnosti."
 
 msgid "inforequests:obligee_action:BasicsStep:effective_date:older_than_month_error"
 msgstr "Nesmie byť starší ako 1 mesiac."
+
+msgid "inforequests:obligee_action:IsQuestionStep:yes"
+msgstr "Áno, je to otázka"
+
+msgid "inforequests:obligee_action:IsQuestionStep:no"
+msgstr "Nie, nie je to otázka"
+
+msgid "inforequests:obligee_action:IsConfirmationStep:yes"
+msgstr "Áno, potvrdzujú, že vec dostali"
+
+msgid "inforequests:obligee_action:IsConfirmationStep:no"
+msgstr "Nie, je to niečo iné"
+
+msgid "inforequests:obligee_action:NotCategorizedStep:help"
+msgstr "Áno, chcem pomoc od admina"
+
+msgid "inforequests:obligee_action:NotCategorizedStep:offtopic"
+msgstr "Nie, je to úplna haluz"
+
+msgid "inforequests:obligee_action:NotCategorizedStep:help_request:label"
+msgstr "Správa pre admina"
+
+msgid "inforequests:obligee_action:NotCategorizedStep:help_request:placeholder"
+msgstr "Popíšte adminovi, čomu ste nerozumeli"
 
 msgid "inforequests:Action:type:REQUEST"
 msgstr "Žiadosť"
@@ -711,18 +735,6 @@ msgstr "Nesúvisiaci e-mail"
 msgid "inforequests:modals:unrelated:decide_email"
 msgstr "Označiť ako Nesúvisiaci email"
 
-msgid "inforequests:obligee_action:email:title"
-msgstr "Nový e-mail od inštitúcie"
-
-msgid "inforequests:obligee_action:smail:title"
-msgstr "Nová pošta od inštitúcie"
-
-msgid "inforequests:obligee_action:email:heading"
-msgstr "Nový e-mail od inštitúcie"
-
-msgid "inforequests:obligee_action:smail:heading"
-msgstr "Nová pošta od inštitúcie"
-
 msgid "inforequests:obligee_action:email:email:heading"
 msgstr "Doručený e-mail"
 
@@ -740,6 +752,18 @@ msgstr "Prijaté"
 
 msgid "inforequests:obligee_action:email:attachments"
 msgstr "Prílohy"
+
+msgid "inforequests:obligee_action:email:title"
+msgstr "Nový e-mail od inštitúcie"
+
+msgid "inforequests:obligee_action:smail:title"
+msgstr "Nová pošta od inštitúcie"
+
+msgid "inforequests:obligee_action:email:heading"
+msgstr "Nový e-mail od inštitúcie"
+
+msgid "inforequests:obligee_action:smail:heading"
+msgstr "Nová pošta od inštitúcie"
 
 msgid "^create/$"
 msgstr ""

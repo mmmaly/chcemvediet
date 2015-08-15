@@ -15,9 +15,13 @@ from poleno.utils.models import after_saved
 from poleno.utils.forms import AutoSuppressedSelect
 from poleno.utils.date import local_date, local_today
 from chcemvediet.apps.wizards import Wizard, WizardStep
+from chcemvediet.apps.inforequests.models import Action
 
-class BasicsStep(WizardStep):
+class ObligeeActionStep(WizardStep):
     template = u'inforequests/obligee_action/wizard.html'
+
+
+class BasicsStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/basics.html'
     form_template = u'main/snippets/form_horizontal.html'
 
@@ -118,10 +122,127 @@ class BasicsStep(WizardStep):
             res[u'attachments'] = []
         return res
 
+class IsQuestionStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_question.html'
+    form_template = u'main/snippets/form_horizontal.html'
+
+    is_question = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsQuestionStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsQuestionStep:no')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        return not result and branch and branch.can_add_clarification_request
+
+    def values(self):
+        res = super(IsQuestionStep, self).values()
+        if self.cleaned_data[u'is_question']:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.CLARIFICATION_REQUEST
+        return res
+
+class IsConfirmationStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_confirmation.html'
+    form_template = u'main/snippets/form_horizontal.html'
+
+    is_confirmation = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsConfirmationStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsConfirmationStep:no')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        return not result and branch and branch.can_add_confirmation
+
+    def values(self):
+        res = super(IsConfirmationStep, self).values()
+        if self.cleaned_data[u'is_confirmation']:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.CONFIRMATION
+        return res
+
+class NotCategorizedStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/not_categorized.html'
+    form_template = u'main/snippets/form_horizontal.html'
+
+    wants_help = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:NotCategorizedStep:help')),
+                (0, _(u'inforequests:obligee_action:NotCategorizedStep:offtopic')),
+                ),
+            widget=forms.RadioSelect(attrs={
+                u'class': u'toggle-changed',
+                u'data-container': u'form',
+                u'data-target-1': u'.control-group:has(.visible-if-wants-help)',
+                }),
+            )
+    help_request = forms.CharField(
+            label=_(u'inforequests:obligee_action:NotCategorizedStep:help_request:label'),
+            required=False,
+            widget=forms.Textarea(attrs={
+                u'placeholder': _(u'inforequests:obligee_action:NotCategorizedStep:help_request:placeholder'),
+                u'class': u'input-block-level visible-if-wants-help',
+                }),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        return not result
+
+    def clean(self):
+        cleaned_data = super(NotCategorizedStep, self).clean()
+
+        wants_help = cleaned_data.get(u'wants_help', None)
+        help_request = cleaned_data.get(u'help_request', None)
+        if wants_help and not help_request:
+            msg = self.fields[u'help_request'].error_messages[u'required']
+            self.add_error(u'help_request', msg)
+
+        return cleaned_data
+
+    def values(self):
+        res = super(NotCategorizedStep, self).values()
+        if self.cleaned_data[u'wants_help']:
+            res[u'result'] = u'help'
+            res[u'result_help'] = self.cleaned_data[u'help_request']
+        else:
+            res[u'result'] = u'offtopic'
+        return res
+
+class CategorizedStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/categorized.html'
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        return result == u'action'
+
 
 class ObligeeActionWizard(Wizard):
     step_classes = OrderedDict([
             (u'basics', BasicsStep),
+            (u'is_question', IsQuestionStep),
+            (u'is_confirmation', IsConfirmationStep),
+            (u'not_categorized', NotCategorizedStep),
+            (u'categorized', CategorizedStep),
             ])
 
     def __init__(self, request, inforequest):
