@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 08:55+0200\n"
+"POT-Creation-Date: 2015-08-15 10:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -292,6 +292,30 @@ msgstr "Áno, potvrdzujú, že vec dostali"
 
 msgid "inforequests:obligee_action:IsConfirmationStep:no"
 msgstr "Nie, je to niečo iné"
+
+msgid "inforequests:obligee_action:IsOnTopicStep:yes"
+msgstr "Áno, je to reakcia na žiadosť"
+
+msgid "inforequests:obligee_action:IsOnTopicStep:no"
+msgstr "Nie, je to niečo iné"
+
+msgid "inforequests:obligee_action:ContainsInfoStep:full"
+msgstr "Som úplne spokojný"
+
+msgid "inforequests:obligee_action:ContainsInfoStep:partial"
+msgstr "Čiastočne"
+
+msgid "inforequests:obligee_action:ContainsInfoStep:none"
+msgstr "Vôbec"
+
+msgid "inforequests:obligee_action:IsDecisionStep:yes"
+msgstr "Áno, obsahuje to dokument s nadpisom rozhodnutie"
+
+msgid "inforequests:obligee_action:IsDecisionStep:no"
+msgstr "Nie, je to niečo iné"
+
+msgid "inforequests:obligee_action:ReasonsStep:none"
+msgstr "V texte sa nespomínajú žiadne dôvody"
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
 msgstr "Áno, chcem pomoc od admina"

@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_text
 from django.contrib.sessions.models import Session
+from multiselectfield import MultiSelectFormField
 
 from poleno.attachments.forms import AttachmentsField
 from poleno.utils.models import after_saved
@@ -19,11 +20,11 @@ from chcemvediet.apps.inforequests.models import Action, InforequestEmail
 
 class ObligeeActionStep(WizardStep):
     template = u'inforequests/obligee_action/wizard.html'
+    form_template = u'main/snippets/form_horizontal.html'
 
 
 class BasicsStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/basics.html'
-    form_template = u'main/snippets/form_horizontal.html'
 
     branch = forms.TypedChoiceField(
             label=_(u'inforequests:obligee_action:BasicsStep:branch:label'),
@@ -125,7 +126,6 @@ class BasicsStep(ObligeeActionStep):
 
 class IsQuestionStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/is_question.html'
-    form_template = u'main/snippets/form_horizontal.html'
 
     is_question = forms.TypedChoiceField(
             label=u' ',
@@ -152,7 +152,6 @@ class IsQuestionStep(ObligeeActionStep):
 
 class IsConfirmationStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/is_confirmation.html'
-    form_template = u'main/snippets/form_horizontal.html'
 
     is_confirmation = forms.TypedChoiceField(
             label=u' ',
@@ -177,9 +176,134 @@ class IsConfirmationStep(ObligeeActionStep):
             res[u'result_action'] = Action.TYPES.CONFIRMATION
         return res
 
+class IsOnTopicStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_on_topic.html'
+
+    is_on_topic = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsOnTopicStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsOnTopicStep:no')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        return not result and branch and branch.can_add_refusal
+
+class ContainsInfoStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/contains_info.html'
+
+    contains_info = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (Action.DISCLOSURE_LEVELS.FULL, _(u'inforequests:obligee_action:ContainsInfoStep:full')),
+                (Action.DISCLOSURE_LEVELS.PARTIAL, _(u'inforequests:obligee_action:ContainsInfoStep:partial')),
+                (Action.DISCLOSURE_LEVELS.NONE, _(u'inforequests:obligee_action:ContainsInfoStep:none')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_on_topic = wizard.values.get(u'is_on_topic', True)
+        return not result and branch and branch.can_add_refusal and is_on_topic
+
+    def values(self):
+        res = super(ContainsInfoStep, self).values()
+        res[u'result_disclosure_level'] = self.cleaned_data[u'contains_info']
+        if self.cleaned_data[u'contains_info'] == Action.DISCLOSURE_LEVELS.FULL:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.DISCLOSURE
+        return res
+
+class IsDecisionStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_decision.html'
+
+    is_decision = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsDecisionStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsDecisionStep:no')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_on_topic = wizard.values.get(u'is_on_topic', True)
+        return not result and branch and branch.can_add_refusal and is_on_topic
+
+    def values(self):
+        res = super(IsDecisionStep, self).values()
+        if self.cleaned_data[u'is_decision']:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.REFUSAL
+        return res
+
+class ReasonsStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/reasons.html'
+
+    no_reason = forms.BooleanField(
+            label=_(u'inforequests:obligee_action:ReasonsStep:none'),
+            required=False,
+            widget=forms.CheckboxInput(attrs={
+                u'class': u'toggle-changed',
+                u'data-container': u'form',
+                u'data-action': u'disable',
+                u'data-target-false': u'.disabled-if-no-reasons',
+                })
+            )
+    refusal_reason = MultiSelectFormField(
+            label=u' ',
+            required=False,
+            choices=Action.REFUSAL_REASONS._choices,
+            widget=forms.CheckboxSelectMultiple(attrs={
+                u'class': u'disabled-if-no-reasons',
+                }),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        action = wizard.values.get(u'result_action', None)
+        level = wizard.values.get(u'result_disclosure_level', None)
+        return result == u'action' and (
+                action == Action.TYPES.REFUSAL or
+                action == Action.TYPES.DISCLOSURE and level != ACTION.DISCLOSURE_LEVELS.FULL
+                )
+
+    def clean(self):
+        cleaned_data = super(ReasonsStep, self).clean()
+
+        no_reason = cleaned_data.get(u'no_reason', None)
+        refusal_reason = cleaned_data.get(u'refusal_reason', None)
+        if not no_reason and not refusal_reason:
+            msg = self.fields[u'refusal_reason'].error_messages[u'required']
+            self.add_error(u'refusal_reason', msg)
+
+        return cleaned_data
+
+    def values(self):
+        res = super(ReasonsStep, self).values()
+        if self.cleaned_data[u'no_reason']:
+            res[u'result_refusal_reason'] = []
+        else:
+            res[u'result_refusal_reason'] = self.cleaned_data[u'refusal_reason']
+        return res
+
 class NotCategorizedStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/not_categorized.html'
-    form_template = u'main/snippets/form_horizontal.html'
 
     wants_help = forms.TypedChoiceField(
             label=u' ',
@@ -242,6 +366,10 @@ class ObligeeActionWizard(Wizard):
             (u'basics', BasicsStep),
             (u'is_question', IsQuestionStep),
             (u'is_confirmation', IsConfirmationStep),
+            (u'is_on_topic', IsOnTopicStep),
+            (u'contains_info', ContainsInfoStep),
+            (u'is_decision', IsDecisionStep),
+            (u'reasons', ReasonsStep),
             (u'not_categorized', NotCategorizedStep),
             (u'categorized', CategorizedStep),
             ])

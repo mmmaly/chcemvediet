@@ -1,14 +1,15 @@
 /* Enables input elements to automatically toggle other elemets when their value change. Tested on
- * checkbox, radio and select. But should work on all input elements as well.
+ * checkbox, radio and select. But should work on all input elements as well. Toggled elements may
+ * be hidden or disabled.
  *
  * Requires:
  *  -- JQuery
  *
  * Examples:
- *     <input type="checkbox" class="toggle-changed" data-container="form"
+ *     <input type="checkbox" class="toggle-changed" data-container="form" data-action="hide"
  *            data-target-true=".visible-if-true" data-target-false=".visible-if-false" />
  *
- *     <select class="toggle-changed" data-container="form"
+ *     <select class="toggle-changed" data-container="form" data-action="disable"
  *             data-target-aaa=".visible-if-aaa" data-target-bbb=".visible-if-bbb">
  *       <option value="aaa">...</option>
  *       <option value="bbb">...</option>
@@ -21,15 +22,20 @@
  */
 $(function(){
 	function toggle(){
-		console.log(this);
 		var container = $(this).data('container') || 'html';
+		var action = $(this).data('action') || 'hide';
 		var value = $(this).is(':checkbox') ? $(this).prop('checked') : $(this).val();
 		var active = $(this).attr('data-target-' + value);
 		var all = $.map(this.attributes, function(attr){
 			if (attr.name.match("^data-target-")) return attr.value;
 		}).join(', ');
-		$(this).parents(container).find(all).not(active).hide();
-		$(this).parents(container).find(active).show();
+		if (action == 'hide') {
+			$(this).parents(container).find(all).not(active).hide();
+			$(this).parents(container).find(active).show();
+		} else {
+			$(this).parents(container).find(all).not(active).prop('disabled', true);
+			$(this).parents(container).find(active).prop('disabled', false);
+		}
 	}
 	function toggleAll(){
 		// Every radio group shlould be initialized only once. If there is a checked button
