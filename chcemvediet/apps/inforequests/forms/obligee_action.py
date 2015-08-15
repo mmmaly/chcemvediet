@@ -449,6 +449,51 @@ class DisclosureReasonsStep(ReasonsMixin, ObligeeActionStep):
         res[u'result_action'] = Action.TYPES.DISCLOSURE
         return res
 
+class IsAppealDecisionStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_appeal_decision.html'
+
+    is_appeal_decision = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsAppealDecisionStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsAppealDecisionStep:no')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        return not wizard.email and not result and branch and branch.can_add_remandment
+
+class ContainsAppealInfoStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/contains_appeal_info.html'
+
+    contains_appeal_info = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (Action.DISCLOSURE_LEVELS.FULL, _(u'inforequests:obligee_action:ContainsAppealInfoStep:full')),
+                (Action.DISCLOSURE_LEVELS.PARTIAL, _(u'inforequests:obligee_action:ContainsAppealInfoStep:partial')),
+                (Action.DISCLOSURE_LEVELS.NONE, _(u'inforequests:obligee_action:ContainsAppealInfoStep:none')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_appeal_decision = wizard.values.get(u'is_appeal_decision', True)
+        return not wizard.email and not result and branch and branch.can_add_remandment and is_appeal_decision
+
+    def values(self):
+        res = super(ContainsAppealInfoStep, self).values()
+        res[u'result_disclosure_level'] = self.cleaned_data[u'contains_appeal_info']
+        return res
+
 class NotCategorizedStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/not_categorized.html'
 
@@ -520,6 +565,8 @@ class ObligeeActionWizard(Wizard):
             (u'is_advancement', IsAdvancementStep),
             (u'is_extension', IsExtensionStep),
             (u'disclosure_reasons', DisclosureReasonsStep),
+            (u'is_appeal_decision', IsAppealDecisionStep),
+            (u'contains_appeal_info', ContainsAppealInfoStep),
             (u'not_categorized', NotCategorizedStep),
             (u'categorized', CategorizedStep),
             ])

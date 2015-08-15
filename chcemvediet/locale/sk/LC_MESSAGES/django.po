@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 13:21+0200\n"
+"POT-Creation-Date: 2015-08-15 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -358,6 +358,21 @@ msgstr "Nová lehota"
 
 msgid "inforequests:obligee_action:IsExtensionStep:deadline:placeholder"
 msgstr "Lehota"
+
+msgid "inforequests:obligee_action:IsAppealDecisionStep:yes"
+msgstr "Áno, má"
+
+msgid "inforequests:obligee_action:IsAppealDecisionStep:no"
+msgstr "Nie, nemá"
+
+msgid "inforequests:obligee_action:ContainsAppealInfoStep:full"
+msgstr "Áno, som úplne spokojný"
+
+msgid "inforequests:obligee_action:ContainsAppealInfoStep:partial"
+msgstr "Čiastočne"
+
+msgid "inforequests:obligee_action:ContainsAppealInfoStep:none"
+msgstr "Vôbec"
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
 msgstr "Áno, chcem pomoc od admina"
