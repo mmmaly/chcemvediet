@@ -23,6 +23,45 @@ class ObligeeActionStep(WizardStep):
     template = u'inforequests/obligee_action/wizard.html'
     form_template = u'main/snippets/form_horizontal.html'
 
+class ReasonsMixin(ObligeeActionStep):
+    no_reason = forms.BooleanField(
+            label=_(u'inforequests:obligee_action:ReasonsMixin:none'),
+            required=False,
+            widget=forms.CheckboxInput(attrs={
+                u'class': u'toggle-changed',
+                u'data-container': u'form',
+                u'data-action': u'disable',
+                u'data-target-false': u'.disabled-if-no-reasons',
+                })
+            )
+    refusal_reason = MultiSelectFormField(
+            label=u' ',
+            required=False,
+            choices=Action.REFUSAL_REASONS._choices,
+            widget=forms.CheckboxSelectMultiple(attrs={
+                u'class': u'disabled-if-no-reasons',
+                }),
+            )
+
+    def clean(self):
+        cleaned_data = super(ReasonsMixin, self).clean()
+
+        no_reason = cleaned_data.get(u'no_reason', None)
+        refusal_reason = cleaned_data.get(u'refusal_reason', None)
+        if not no_reason and not refusal_reason:
+            msg = self.fields[u'refusal_reason'].error_messages[u'required']
+            self.add_error(u'refusal_reason', msg)
+
+        return cleaned_data
+
+    def values(self):
+        res = super(ReasonsMixin, self).values()
+        if self.cleaned_data[u'no_reason']:
+            res[u'result_refusal_reason'] = []
+        else:
+            res[u'result_refusal_reason'] = self.cleaned_data[u'refusal_reason']
+        return res
+
 
 class BasicsStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/basics.html'
@@ -252,52 +291,14 @@ class IsDecisionStep(ObligeeActionStep):
             res[u'result_action'] = Action.TYPES.REFUSAL
         return res
 
-class RefusalReasonsStep(ObligeeActionStep):
+class RefusalReasonsStep(ReasonsMixin, ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/refusal_reasons.html'
-
-    no_reason = forms.BooleanField(
-            label=_(u'inforequests:obligee_action:RefusalReasonsStep:none'),
-            required=False,
-            widget=forms.CheckboxInput(attrs={
-                u'class': u'toggle-changed',
-                u'data-container': u'form',
-                u'data-action': u'disable',
-                u'data-target-false': u'.disabled-if-no-reasons',
-                })
-            )
-    refusal_reason = MultiSelectFormField(
-            label=u' ',
-            required=False,
-            choices=Action.REFUSAL_REASONS._choices,
-            widget=forms.CheckboxSelectMultiple(attrs={
-                u'class': u'disabled-if-no-reasons',
-                }),
-            )
 
     @classmethod
     def applicable(cls, wizard):
         result = wizard.values.get(u'result', None)
         action = wizard.values.get(u'result_action', None)
         return result == u'action' and action == Action.TYPES.REFUSAL
-
-    def clean(self):
-        cleaned_data = super(RefusalReasonsStep, self).clean()
-
-        no_reason = cleaned_data.get(u'no_reason', None)
-        refusal_reason = cleaned_data.get(u'refusal_reason', None)
-        if not no_reason and not refusal_reason:
-            msg = self.fields[u'refusal_reason'].error_messages[u'required']
-            self.add_error(u'refusal_reason', msg)
-
-        return cleaned_data
-
-    def values(self):
-        res = super(RefusalReasonsStep, self).values()
-        if self.cleaned_data[u'no_reason']:
-            res[u'result_refusal_reason'] = []
-        else:
-            res[u'result_refusal_reason'] = self.cleaned_data[u'refusal_reason']
-        return res
 
 class IsAdvancementStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/is_advancement.html'
@@ -379,6 +380,75 @@ class IsAdvancementStep(ObligeeActionStep):
             res[u'result_advanced_to'] = [self.cleaned_data[f] for f in self.ADVANCED_TO_FIELDS]
         return res
 
+class IsExtensionStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/is_extension.html'
+
+    is_extension = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:IsExtensionStep:yes')),
+                (0, _(u'inforequests:obligee_action:IsExtensionStep:no')),
+                ),
+            widget=forms.RadioSelect(attrs={
+                u'class': u'toggle-changed',
+                u'data-container': u'form',
+                u'data-target-1': u'.control-group:has(.visible-if-extension)',
+                }),
+            )
+    deadline = forms.IntegerField(
+            label=_(u'inforequests:obligee_action:IsExtensionStep:deadline:label'),
+            initial=Action.DEFAULT_DEADLINES.EXTENSION,
+            min_value=2,
+            max_value=100,
+            widget=forms.NumberInput(attrs={
+                u'placeholder': _(u'inforequests:obligee_action:IsExtensionStep:deadline:placeholder'),
+                u'class': u'visible-if-extension',
+                }),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_on_topic = wizard.values.get(u'is_on_topic', True)
+        return not result and branch and branch.can_add_extension and is_on_topic
+
+    def clean(self):
+        cleaned_data = super(IsExtensionStep, self).clean()
+
+        is_extension = cleaned_data.get(u'is_extension', None)
+        deadline = cleaned_data.get(u'deadline', None)
+        if not is_extension and not deadline:
+            msg = self.fields[u'deadline'].error_messages[u'required']
+            self.add_error(u'deadline', msg)
+
+        return cleaned_data
+
+    def values(self):
+        res = super(IsExtensionStep, self).values()
+        if self.cleaned_data[u'is_extension']:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.EXTENSION
+            res[u'result_deadline'] = self.cleaned_data[u'deadline']
+        return res
+
+class DisclosureReasonsStep(ReasonsMixin, ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/disclosure_reasons.html'
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_on_topic = wizard.values.get(u'is_on_topic', True)
+        return not result and branch and branch.can_add_disclosure and is_on_topic
+
+    def values(self):
+        res = super(DisclosureReasonsStep, self).values()
+        res[u'result'] = u'action'
+        res[u'result_action'] = Action.TYPES.DISCLOSURE
+        return res
+
 class NotCategorizedStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/not_categorized.html'
 
@@ -448,6 +518,8 @@ class ObligeeActionWizard(Wizard):
             (u'is_decision', IsDecisionStep),
             (u'refusal_reasons', RefusalReasonsStep),
             (u'is_advancement', IsAdvancementStep),
+            (u'is_extension', IsExtensionStep),
+            (u'disclosure_reasons', DisclosureReasonsStep),
             (u'not_categorized', NotCategorizedStep),
             (u'categorized', CategorizedStep),
             ])

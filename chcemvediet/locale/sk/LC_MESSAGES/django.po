@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 12:43+0200\n"
+"POT-Creation-Date: 2015-08-15 13:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -254,6 +254,9 @@ msgstr "Uveďte čo najkonkrétnejšie, o aké informácie máte záujem."
 msgid "inforequests:InforequestForm:attachments:label"
 msgstr "Prílohy"
 
+msgid "inforequests:obligee_action:ReasonsMixin:none"
+msgstr "V texte sa nespomínajú žiadne dôvody"
+
 msgid "inforequests:obligee_action:BasicsStep:branch:label"
 msgstr "Povinná osoba"
 
@@ -314,9 +317,6 @@ msgstr "Áno, obsahuje to dokument s nadpisom rozhodnutie"
 msgid "inforequests:obligee_action:IsDecisionStep:no"
 msgstr "Nie, je to niečo iné"
 
-msgid "inforequests:obligee_action:RefusalReasonsStep:none"
-msgstr "V texte sa nespomínajú žiadne dôvody"
-
 msgid "inforequests:obligee_action:IsAdvancementStep:yes"
 msgstr "Áno, inštitúcia postupuje žiadosť inej inštitúcii"
 
@@ -346,6 +346,18 @@ msgstr "Nemožno postúpiť tej istej inštitúcii."
 
 msgid "inforequests:obligee_action:IsAdvancementStep:duplicate_obligee_error"
 msgstr "Nemožno postúpiť dvakrát tej istej inštitúcii."
+
+msgid "inforequests:obligee_action:IsExtensionStep:yes"
+msgstr "Áno, spomína sa"
+
+msgid "inforequests:obligee_action:IsExtensionStep:no"
+msgstr "Nie, nespomína sa"
+
+msgid "inforequests:obligee_action:IsExtensionStep:deadline:label"
+msgstr "Nová lehota"
+
+msgid "inforequests:obligee_action:IsExtensionStep:deadline:placeholder"
+msgstr "Lehota"
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
 msgstr "Áno, chcem pomoc od admina"
