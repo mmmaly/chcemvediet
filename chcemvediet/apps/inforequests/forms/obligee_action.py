@@ -62,6 +62,7 @@ class ReasonsMixin(ObligeeActionStep):
             res[u'result_refusal_reason'] = self.cleaned_data[u'refusal_reason']
         return res
 
+# Prologue
 
 class BasicsStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/basics.html'
@@ -163,6 +164,8 @@ class BasicsStep(ObligeeActionStep):
         res[u'result_file_number'] = self.cleaned_data[u'file_number']
         res[u'result_attachments'] = self.cleaned_data[u'attachments'] if not self.wizard.email else None
         return res
+
+# Pre Appeal
 
 class IsQuestionStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/is_question.html'
@@ -449,6 +452,8 @@ class DisclosureReasonsStep(ReasonsMixin, ObligeeActionStep):
         res[u'result_action'] = Action.TYPES.DISCLOSURE
         return res
 
+# Post Appeal
+
 class IsAppealDecisionStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/is_appeal_decision.html'
 
@@ -494,6 +499,101 @@ class ContainsAppealInfoStep(ObligeeActionStep):
         res[u'result_disclosure_level'] = self.cleaned_data[u'contains_appeal_info']
         return res
 
+class WasAcceptedStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/was_accepted.html'
+
+    was_accepted = forms.ChoiceField(
+            label=u' ',
+            choices=(
+                (u'all', _(u'inforequests:obligee_action:WasAcceptedStep:all')),
+                (u'some', _(u'inforequests:obligee_action:WasAcceptedStep:some')),
+                (u'none', _(u'inforequests:obligee_action:WasAcceptedStep:none')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_appeal_decision = wizard.values.get(u'is_appeal_decision', True)
+        return not wizard.email and not result and branch and branch.can_add_remandment and is_appeal_decision
+
+    def values(self):
+        res = super(WasAcceptedStep, self).values()
+        if self.cleaned_data[u'was_accepted'] == u'none':
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.AFFIRMATION
+        return res
+
+class WasReturnedStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/was_returned.html'
+
+    was_returned = forms.TypedChoiceField(
+            label=u' ',
+            coerce=int,
+            choices=(
+                (1, _(u'inforequests:obligee_action:WasReturnedStep:yes')),
+                (0, _(u'inforequests:obligee_action:WasReturnedStep:no')),
+                ),
+            widget=forms.RadioSelect(),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_appeal_decision = wizard.values.get(u'is_appeal_decision', True)
+        return not wizard.email and not result and branch and branch.can_add_remandment and is_appeal_decision
+
+    def values(self):
+        res = super(WasReturnedStep, self).values()
+        if self.cleaned_data[u'was_returned']:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.REMANDMENT
+        elif self.wizard.values[u'result_disclosure_level'] != Action.DISCLOSURE_LEVELS.NONE:
+            res[u'result'] = u'action'
+            res[u'result_action'] = Action.TYPES.REVERSION
+        else:
+            res[u'result'] = u'help'
+        return res
+
+class ReversionReasonsStep(ReasonsMixin, ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/reversion_reasons.html'
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        action = wizard.values.get(u'result_action', None)
+        level = wizard.values.get(u'result_disclosure_level', None)
+        return result == u'action' and action == Action.TYPES.REVERSION and level == Action.DISCLOSURE_LEVELS.PARTIAL
+
+class InvalidReversionStep(ObligeeActionStep):
+    text_template = u'inforequests/obligee_action/texts/invalid_reversion.html'
+
+    help_request = forms.CharField(
+            label=_(u'inforequests:obligee_action:InvalidReversionStep:help_request:label'),
+            widget=forms.Textarea(attrs={
+                u'placeholder': _(u'inforequests:obligee_action:InvalidReversionStep:help_request:placeholder'),
+                u'class': u'input-block-level',
+                }),
+            )
+
+    @classmethod
+    def applicable(cls, wizard):
+        result = wizard.values.get(u'result', None)
+        branch = wizard.values.get(u'branch', None)
+        is_appeal_decision = wizard.values.get(u'is_appeal_decision', True)
+        return not wizard.email and result == u'help' and branch and branch.can_add_remandment and is_appeal_decision
+
+    def values(self):
+        res = super(InvalidReversionStep, self).values()
+        res[u'result'] = u'help'
+        res[u'result_help'] = self.cleaned_data[u'help_request']
+        return res
+
+# Epilogue
+
 class NotCategorizedStep(ObligeeActionStep):
     text_template = u'inforequests/obligee_action/texts/not_categorized.html'
 
@@ -518,6 +618,7 @@ class NotCategorizedStep(ObligeeActionStep):
                 u'class': u'input-block-level visible-if-wants-help',
                 }),
             )
+
 
     @classmethod
     def applicable(cls, wizard):
@@ -567,6 +668,10 @@ class ObligeeActionWizard(Wizard):
             (u'disclosure_reasons', DisclosureReasonsStep),
             (u'is_appeal_decision', IsAppealDecisionStep),
             (u'contains_appeal_info', ContainsAppealInfoStep),
+            (u'was_accepted', WasAcceptedStep),
+            (u'was_returned', WasReturnedStep),
+            (u'reversion_reasons', ReversionReasonsStep),
+            (u'invalid_reversion', InvalidReversionStep),
             (u'not_categorized', NotCategorizedStep),
             (u'categorized', CategorizedStep),
             ])

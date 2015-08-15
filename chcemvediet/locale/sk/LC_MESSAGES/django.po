@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 13:51+0200\n"
+"POT-Creation-Date: 2015-08-15 15:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -373,6 +373,27 @@ msgstr "Čiastočne"
 
 msgid "inforequests:obligee_action:ContainsAppealInfoStep:none"
 msgstr "Vôbec"
+
+msgid "inforequests:obligee_action:WasAcceptedStep:all"
+msgstr "Áno, všetky"
+
+msgid "inforequests:obligee_action:WasAcceptedStep:some"
+msgstr "Niektoré"
+
+msgid "inforequests:obligee_action:WasAcceptedStep:none"
+msgstr "Žiadne"
+
+msgid "inforequests:obligee_action:WasReturnedStep:yes"
+msgstr "Áno, vracia"
+
+msgid "inforequests:obligee_action:WasReturnedStep:no"
+msgstr "Nie, nevracia"
+
+msgid "inforequests:obligee_action:InvaidReversionStep:help_request:label"
+msgstr "Správa pre admina"
+
+msgid "inforequests:obligee_action:InvaidReversionStep:help_request:placeholder"
+msgstr "Popíšte adminovi, čo sa stalo"
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
 msgstr "Áno, chcem pomoc od admina"
