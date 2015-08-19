@@ -26,6 +26,10 @@ Dobrý deň,
 dňa {{ inforequest.submission_date|date:"d.m.Y" }} som formou emailu požiadal
 {% obligee_declension inforequest.main_branch.historicalobligee "accusative" %}
 o poskytnutie informácie: {{ inforequest.subject }}.
+{% if not branch.is_main %}
+  Dňa {{ branch.advanced_by.effective_date|date:"d.m.Y" }} bola žiadosť postúpená
+  {% obligee_declension branch.historicalobligee "dative" %}.
+{% endif %}
 Dňa {{ last_action.effective_date|date:"d.m.Y" }} mi
 {% obligee_declension branch.obligee "nominative" %}
 {% obligee_gender branch.obligee "doručil" "doručila" "doručilo" "doručili" %}
