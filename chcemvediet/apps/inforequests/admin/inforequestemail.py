@@ -3,6 +3,7 @@
 from django import forms
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import ManyToManyRel
 from django.conf.urls import patterns, url
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.encoding import force_text
@@ -17,10 +18,10 @@ from poleno.mail.models import Message
 from poleno.utils.models import after_saved
 from poleno.utils.date import local_date
 from poleno.utils.misc import try_except, decorate
-from poleno.utils.admin import (admin_obj_format, admin_obj_format_join, live_field,
-        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
+from poleno.utils.admin import admin_obj_format, admin_obj_format_join, live_field
+from poleno.utils.admin import AdminLiveFieldsMixin, ADMIN_FIELD_INDENT
 
-from chcemvediet.apps.inforequests.models import InforequestEmail, Branch, Action, ActionDraft
+from chcemvediet.apps.inforequests.models import InforequestEmail, Branch, Action
 from chcemvediet.apps.obligees.models import Obligee
 
 from .action import ActionAdmin
@@ -107,9 +108,11 @@ class InforequestEmailAdminDecideForm(forms.Form):
             )
     refusal_reason = Action._meta.get_field(u'refusal_reason').formfield(
             )
-    obligee_set = ActionDraft._meta.get_field(u'obligee_set').formfield(
-            widget=admin.widgets.ManyToManyRawIdWidget(
-                ActionDraft._meta.get_field(u'obligee_set').rel, admin.site),
+    obligee_set = forms.ModelMultipleChoiceField(
+            queryset=Obligee.objects,
+            required=False,
+            help_text=u'May be empty for advancement actions. Must be empty for all other actions.',
+            widget=admin.widgets.ManyToManyRawIdWidget(ManyToManyRel(Obligee), admin.site),
             )
 
     class _meta:

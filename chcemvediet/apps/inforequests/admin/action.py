@@ -5,6 +5,7 @@ from functools import partial
 
 from django import forms
 from django.core.urlresolvers import reverse
+from django.db.models import ManyToManyRel
 from django.utils.formats import get_format
 from django.contrib import admin
 from django.contrib.admin.templatetags.admin_list import _boolean_icon
@@ -17,10 +18,10 @@ from poleno.workdays import workdays
 from poleno.utils.models import after_saved
 from poleno.utils.date import local_today
 from poleno.utils.misc import try_except, decorate, squeeze
-from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format,
-        admin_obj_format_join, live_field, AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
+from poleno.utils.admin import simple_list_filter_factory, admin_obj_format, admin_obj_format_join
+from poleno.utils.admin import live_field, AdminLiveFieldsMixin, ADMIN_FIELD_INDENT
 
-from chcemvediet.apps.inforequests.models import Branch, Action, ActionDraft
+from chcemvediet.apps.inforequests.models import Branch, Action
 from chcemvediet.apps.obligees.models import Obligee
 
 from .misc import ForeignKeyRawIdWidgetWithUrlParams
@@ -66,9 +67,11 @@ class ActionAdminAddForm(forms.ModelForm):
             upload_url_func=(lambda: reverse(u'admin:attachments_attachment_upload')),
             download_url_func=(lambda a: reverse(u'admin:attachments_attachment_download', args=(a.pk,))),
             )
-    obligee_set = ActionDraft._meta.get_field(u'obligee_set').formfield(
-            widget=admin.widgets.ManyToManyRawIdWidget(
-                ActionDraft._meta.get_field(u'obligee_set').rel, admin.site),
+    obligee_set = forms.ModelMultipleChoiceField(
+            queryset=Obligee.objects,
+            required=False,
+            help_text=u'May be empty for advancement actions. Must be empty for all other actions.',
+            widget=admin.widgets.ManyToManyRawIdWidget(ManyToManyRel(Obligee), admin.site),
             )
     send_email = forms.BooleanField(
             required=False,

@@ -67,7 +67,6 @@ ADMIN_MODEL_GROUPS = [
                 u'chcemvediet.apps.inforequests.models.inforequestemail.InforequestEmail',
                 u'chcemvediet.apps.inforequests.models.branch.Branch',
                 u'chcemvediet.apps.inforequests.models.action.Action',
-                u'chcemvediet.apps.inforequests.models.actiondraft.ActionDraft',
                 ],
             ),
         # E-mail and attachment models

@@ -10,11 +10,10 @@ from django.contrib.sessions.models import Session
 from poleno.attachments.forms import AttachmentsField
 from poleno.utils.models import after_saved
 from poleno.utils.misc import try_except, decorate, squeeze
-from poleno.utils.admin import (simple_list_filter_factory, admin_obj_format, live_field,
-        AdminLiveFieldsMixin, ADMIN_FIELD_INDENT)
+from poleno.utils.admin import simple_list_filter_factory, admin_obj_format, live_field
+from poleno.utils.admin import AdminLiveFieldsMixin, ADMIN_FIELD_INDENT
 
-from chcemvediet.apps.inforequests.models import (Inforequest, InforequestEmail, Branch, Action,
-        ActionDraft)
+from chcemvediet.apps.inforequests.models import Inforequest, InforequestEmail, Branch, Action
 from chcemvediet.apps.obligees.models import Obligee
 
 
@@ -95,44 +94,6 @@ class InforequestAdminInforequestEmailInline(admin.TabularInline):
     def get_queryset(self, request):
         queryset = super(InforequestAdminInforequestEmailInline, self).get_queryset(request)
         queryset = queryset.select_related(u'email')
-        return queryset
-
-class InforequestAdminActionDraftInline(admin.TabularInline):
-    model = ActionDraft
-    extra = 0
-
-    fields = [
-            u'actiondraft_field',
-            u'branch_field',
-            u'branch_obligee_field',
-            u'type',
-            ]
-    readonly_fields = fields
-    ordering = [u'pk']
-
-    @decorate(short_description=u'Action Draft')
-    def actiondraft_field(self, draft):
-        return admin_obj_format(draft)
-
-    @decorate(short_description=u'Branch')
-    def branch_field(self, draft):
-        branch = draft.branch
-        return admin_obj_format(branch)
-
-    @decorate(short_description=u'Obligee')
-    def branch_obligee_field(self, draft):
-        obligee = draft.branch.obligee if draft.branch else None
-        return admin_obj_format(obligee, u'{obj.name}')
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def get_queryset(self, request):
-        queryset = super(InforequestAdminActionDraftInline, self).get_queryset(request)
-        queryset = queryset.select_related(u'branch__obligee')
         return queryset
 
 class InforequestAdminAddForm(forms.ModelForm):
@@ -304,7 +265,6 @@ class InforequestAdmin(AdminLiveFieldsMixin, admin.ModelAdmin):
     inlines = [
             InforequestAdminBranchInline,
             InforequestAdminInforequestEmailInline,
-            InforequestAdminActionDraftInline,
             ]
 
     @decorate(short_description=u'%s%s' % (ADMIN_FIELD_INDENT, u'Details'))
