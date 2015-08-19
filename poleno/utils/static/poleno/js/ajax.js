@@ -84,7 +84,7 @@ $(function(){
 	}
 	function fail(event){
 		var target = $(this).data('fail-target');
-		$(target).modal('show');
+		$(target).subModal();
 	}
 	$(document).on('ajax-done', '.ajax-modal-once', done);
 	$(document).on('ajax-fail', '.ajax-modal-once', fail);
@@ -96,28 +96,44 @@ $(function(){
  * a modal specified with ``fail-target`` attribute is opened.
  *
  * Supported operations:
- *     {operation: 'content', content: <html>}
- *         Replaces curent element inner html with new ``content``. After replacing its content, we
- *         emit ``dom-changed`` on the element.
+ *
+ *     {operation: 'content', target: <selector> | null, content: <html>}
+ *         Replaces the ``target`` or the curent element inner html with new ``content``. After
+ *         replacing its content, we emit ``dom-changed`` on the element.
+ *
+ *     {operation: 'redirect', localtion: <url>}
+ *         Redirects to the given ``url``.
+ *
+ *     {operation: 'close-modal'}
+ *         Closes bootstrap modal. Note that execution of any further operations is delayed until
+ *         the modal is closed.
  */
 $(function(){
+	function execute(ops){
+		if (!ops.length) return;
+		var op = ops[0];
+		var next = function(){ execute(ops.slice(1)); };
+		switch (op.operation) {
+			case 'content':
+				$(op.target || this).html(op.content).trigger('dom-changed');
+				next();
+				break;
+			case 'redirect':
+				window.location = op.location;
+				next();
+				break;
+			case 'close-modal':
+				$.hideBootstrapModal(next);
+				break;
+		}
+	}
 	function done(event, data){
 		if (data.result != 'operations') return;
-		var that = this;
-		$.each(data.operations, function(index, operation){
-			switch (operation.operation) {
-				case 'content':
-					$(that).html(operation.content).trigger('dom-changed');
-					break;
-				case 'redirect':
-					window.location = operation.location;
-					break;
-			}
-		});
+		execute(data.operations);
 	}
 	function fail(event){
 		var target = $(this).data('fail-target');
-		$(target).modal('show');
+		$(target).subModal();
 	}
 	$(document).on('ajax-done', '.ajax-operations', done);
 	$(document).on('ajax-fail', '.ajax-operations', fail);

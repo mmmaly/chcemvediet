@@ -136,7 +136,7 @@
               title="{% spaceless %}{% include "inforequests/detail/tooltips/extend_deadline.txt" %}{% endspaceless %}">
         {% trans 'inforequests:detail:action:extend_deadline' %}
       </button>
-      <span id="extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
+      <span id="extend-deadline-{{ action.pk }}-modal" class="modal ajax-operations hide fade" data-fail-target="#ajax-fail-modal"></span>
     {% endif %}
     {% if branch.can_add_clarification_response %}
       <a class="btn btn-primary with-tooltip" data-toggle="tooltip" data-placement="right"

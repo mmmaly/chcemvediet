@@ -45,9 +45,13 @@ class JsonOperation(object):
         return dict(operation=self.operation, **self.kwargs)
 
 class JsonContent(JsonOperation):
-    def __init__(self, content):
-        super(JsonContent, self).__init__(u'content', content=content)
+    def __init__(self, target, content):
+        super(JsonContent, self).__init__(u'content', target=target, content=content)
 
 class JsonRedirect(JsonOperation):
     def __init__(self, location):
         super(JsonRedirect, self).__init__(u'redirect', location=location)
+
+class JsonCloseModal(JsonOperation):
+    def __init__(self):
+        super(JsonCloseModal, self).__init__(u'close-modal')
