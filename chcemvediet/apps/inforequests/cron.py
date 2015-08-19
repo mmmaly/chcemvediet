@@ -11,7 +11,7 @@ from poleno.utils.translation import translation
 from poleno.utils.date import local_date, local_today
 from poleno.utils.misc import nop
 
-from .models import Inforequest, Branch
+from .models import Inforequest, Branch, Action
 
 # All these jobs do all their work the first time they are run in a day. Any later runs in the same
 # day should do nothing. However, we run them multiple times in a day in case something was broken
@@ -129,6 +129,9 @@ def applicant_deadline_reminder():
             for branch in inforequest.branches:
                 try:
                     if not branch.last_action.has_applicant_deadline:
+                        continue
+                    # Although Advancement has an applicant deadline, we don't send reminders for it.
+                    if branch.last_action.type == Action.TYPES.ADVANCEMENT:
                         continue
                     # The reminder is sent 2 WDs before the deadline is missed.
                     if branch.last_action.deadline_remaining > 2:
