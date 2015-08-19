@@ -13,5 +13,26 @@
 <h4>Zaradené</h4>
 <p>
   <span style="color: red;">FIXME</span>
-  Odpoveď sa zaradi ako: {{ wizard.values.result_action }}
+  Odpoveď sa zaradí ako: 
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.ADVANCEMENT %}postúpenie žiadosti{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.AFFIRMATION %}potvrdenie rozhodnutia a zamietnutie odvolania{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.CLARIFICATION_REQUEST %}výzva na doplnenie žiadosti{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.CONFIRMATION %}potvrdenie prijatia žiadosti{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.DISCLOSURE %}
+	{% if wizard.values.result_disclosure_level == wizard.inforequest.main_branch.last_action.DISCLOSURE_LEVELS.NONE %}
+		nesprístupnienie informácií (bez vydania rozhodnutia)
+	{% endif %}
+	{% if wizard.values.result_disclosure_level == wizard.inforequest.main_branch.last_action.DISCLOSURE_LEVELS.PARTIAL %}
+		čiastočné nesprístupnienie informácií (bez vydania rozhodnutia)
+	{% endif %}
+	{% if wizard.values.result_disclosure_level == wizard.inforequest.main_branch.last_action.DISCLOSURE_LEVELS.FULL %}
+		sprístupnienie informácií
+	{% endif %}
+{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.EXTENSION %}predĺženie lehoty{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.REFUSAL %}rozhodnutie o nesprístupnení informácie{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.REMANDMENT %}rozhodnutie, ktorým pôvodné rozhodnutie ruší a vec vracia na nové prejednanie{% endif %}
+{% if wizard.values.result_action == wizard.inforequest.main_branch.last_action.TYPES.REVERSION %}rozhodnutie, ktorým pôvodné rozhodnutie mení{% endif %}.
+
+
 </p>
