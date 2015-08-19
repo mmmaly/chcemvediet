@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 15:09+0200\n"
+"POT-Creation-Date: 2015-08-19 15:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,81 +76,6 @@ msgstr "Manage Connections"
 
 msgid "^profile/$"
 msgstr ""
-
-msgid "inforequests:ActionAbstractForm:branch:label"
-msgstr "Obligee"
-
-msgid "inforequests:EffectiveDateMixin:effective_date:label"
-msgstr "Effective Date"
-
-msgid "inforequests:EffectiveDateMixin:effective_date:placeholder"
-msgstr "mm/dd/yyyy"
-
-msgid "inforequests:EffectiveDateMixin:older_than_previous_error"
-msgstr "May not be older than previous action."
-
-msgid "inforequests:EffectiveDateMixin:from_future_error"
-msgstr "May not be from future."
-
-msgid "inforequests:EffectiveDateMixin:older_than_month_error"
-msgstr "May not be older than one month."
-
-msgid "inforequests:FileNumberMixin:file_number:label"
-msgstr "File Number"
-
-msgid "inforequests:FileNumberMixin:file_number:placeholder"
-msgstr "File Number"
-
-msgid "inforequests:SubjectContentMixin:subject:label"
-msgstr "Subject"
-
-msgid "inforequests:SubjectContentMixin:subject:placeholder"
-msgstr "Subject"
-
-msgid "inforequests:SubjectContentMixin:content:label"
-msgstr "Content"
-
-msgid "inforequests:SubjectContentMixin:content:placeholder"
-msgstr "Content"
-
-msgid "inforequests:AttachmentsMixin:attachments:label"
-msgstr "Attachments"
-
-msgid "inforequests:DeadlineMixin:deadline:label"
-msgstr "New Deadline"
-
-msgid "inforequests:DeadlineMixin:deadline:placeholder"
-msgstr "Deadline"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_1:label"
-msgstr "Advanced To"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_1:placeholder"
-msgstr "Obligee"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_2:label"
-msgstr " "
-
-msgid "inforequests:AdvancedToMixin:advanced_to_2:placeholder"
-msgstr "Obligee"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_3:label"
-msgstr " "
-
-msgid "inforequests:AdvancedToMixin:advanced_to_3:placeholder"
-msgstr "Obligee"
-
-msgid "inforequests:AdvancedToMixin:same_obligee_error"
-msgstr "May not advance to the same obligee."
-
-msgid "inforequests:AdvancedToMixin:duplicate_obligee_error"
-msgstr "May not advance twice to the same obligee."
-
-msgid "inforequests:DisclosureLevelMixin:disclosure_level:label"
-msgstr "Disclosure Level"
-
-msgid "inforequests:RefusalReasonMixin:refusal_reason:label"
-msgstr "Refusal Reason"
 
 msgid "inforequests:ExtendDeadlineForm:extension:label"
 msgstr "Deadline Extension"
@@ -389,10 +314,10 @@ msgstr "Áno, vracia"
 msgid "inforequests:obligee_action:WasReturnedStep:no"
 msgstr "Nie, nevracia"
 
-msgid "inforequests:obligee_action:InvaidReversionStep:help_request:label"
+msgid "inforequests:obligee_action:InvalidReversionStep:help_request:label"
 msgstr "Správa pre admina"
 
-msgid "inforequests:obligee_action:InvaidReversionStep:help_request:placeholder"
+msgid "inforequests:obligee_action:InvalidReversionStep:help_request:placeholder"
 msgstr "Popíšte adminovi, čo sa stalo"
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
@@ -581,86 +506,17 @@ msgstr "Appeal"
 msgid "inforequests:detail:action:advanced_to"
 msgstr "New Obligee"
 
-msgid "inforequests:detail:add_smail:heading"
-msgstr "Add Received Regular Mail"
-
-msgid "inforequests:detail:add_smail:confirmation"
-msgstr "Confirmation"
-
-msgid "inforequests:detail:add_smail:extension"
-msgstr "Extension"
-
-msgid "inforequests:detail:add_smail:advancement"
-msgstr "Advancement"
-
-msgid "inforequests:detail:add_smail:clarification_request"
-msgstr "Clarification Request"
-
-msgid "inforequests:detail:add_smail:disclosure"
-msgstr "Disclosure"
-
-msgid "inforequests:detail:add_smail:refusal"
-msgstr "Refusal"
-
-msgid "inforequests:detail:add_smail:affirmation"
-msgstr "Affirmation"
-
-msgid "inforequests:detail:add_smail:reversion"
-msgstr "Reversion"
-
-msgid "inforequests:detail:add_smail:remandment"
-msgstr "Remandment"
-
-msgid "inforequests:detail:decide:title"
-msgstr "Undecided Received E-mail"
-
-msgid "inforequests:detail:decide:confirmation"
-msgstr "Confirmation"
-
-msgid "inforequests:detail:decide:extension"
-msgstr "Extension"
-
-msgid "inforequests:detail:decide:advancement"
-msgstr "Advancement"
-
-msgid "inforequests:detail:decide:clarification_request"
-msgstr "Clarification Request"
-
-msgid "inforequests:detail:decide:disclosure"
-msgstr "Disclosure"
-
-msgid "inforequests:detail:decide:refusal"
-msgstr "Refusal"
-
-msgid "inforequests:detail:decide:unrelated"
-msgstr "Unrelated e-mail, or SPAM"
-
-msgid "inforequests:detail:decide:unknown"
-msgstr "I don't know"
-
 msgid "inforequests:detail:title"
 msgstr "Inforequest Detail"
 
 msgid "inforequests:detail:heading"
 msgstr "Inforequest Detail"
 
-msgid "inforequests:detail:history:heading"
-msgstr "Inforequest Detail"
+msgid "inforequests:detail:add_email_button"
+msgstr "Open the e-mail"
 
-msgid "inforequests:detail:email:subject"
-msgstr "Subject"
-
-msgid "inforequests:detail:email:from"
-msgstr "From"
-
-msgid "inforequests:detail:email:to"
-msgstr "To"
-
-msgid "inforequests:detail:email:processed"
-msgstr "Received"
-
-msgid "inforequests:detail:email:attachments"
-msgstr "Attachments"
+msgid "inforequests:detail:add_smail_button"
+msgstr "I have got a regular mail"
 
 msgid "inforequests:detail:request:applicant"
 msgstr "Applicant"
@@ -679,9 +535,6 @@ msgstr "Subject"
 
 msgid "inforequests:detail:request:content"
 msgstr "Content"
-
-msgid "inforequests:detail:undecided:show"
-msgstr "Show them"
 
 msgid "inforequests:index:title"
 msgstr "Submitted Inforequests"
@@ -734,108 +587,14 @@ msgstr "Subject"
 msgid "inforequests:index:closed:submission_date"
 msgstr "Submission Date"
 
-msgid "inforequests:modals:advancement:heading"
-msgstr "Inforequest Advancement"
-
-msgid "inforequests:modals:advancement:decide_email"
-msgstr "Mark as Advancement"
-
-msgid "inforequests:modals:close"
-msgstr "Close"
-
-msgid "inforequests:modals:advancement:add_smail"
-msgstr "Add an Advancement"
-
-msgid "inforequests:modals:draft"
-msgstr "Save as Draft"
-
-msgid "inforequests:modals:affirmation:heading"
-msgstr "Affirmation"
-
-msgid "inforequests:modals:affirmation:add_smail"
-msgstr "Add an Affirmation"
-
-msgid "inforequests:modals:clarification_request:heading"
-msgstr "Clarification Request"
-
-msgid "inforequests:modals:clarification_request:decide_email"
-msgstr "Mark as Clarification Request"
-
-msgid "inforequests:modals:clarification_request:add_smail"
-msgstr "Add an Clarification Request"
-
-msgid "inforequests:modals:confirmation:heading"
-msgstr "Confirmation"
-
-msgid "inforequests:modals:confirmation:decide_email"
-msgstr "Mark as Inforequest Confirmation"
-
-msgid "inforequests:modals:confirmation:add_smail"
-msgstr "Add an Inforequest Confirmation"
-
-msgid "inforequests:modals:disclosure:heading"
-msgstr "Information Disclosure"
-
-msgid "inforequests:modals:disclosure:decide_email"
-msgstr "Mark as Information Disclosure"
-
-msgid "inforequests:modals:disclosure:add_smail"
-msgstr "Add an Information Disclosure"
-
 msgid "inforequests:modals:action-extend-deadline:heading"
 msgstr "Deadline Extension"
 
 msgid "inforequests:modals:action-extend-deadline:extend"
 msgstr "Extend Deadline"
 
-msgid "inforequests:modals:extension:heading"
-msgstr "Deadline Extension"
-
-msgid "inforequests:modals:extension:decide_email"
-msgstr "Mark as Deadline Extension"
-
-msgid "inforequests:modals:extension:add_smail"
-msgstr "Add a Deadline Extension"
-
-#, python-format
-msgid "inforequests:modals:print:heading %(action_name)s"
-msgstr "Print %(action_name)s"
-
-msgid "inforequests:modals:print:print"
-msgstr "Print"
-
-msgid "inforequests:modals:refusal:heading"
-msgstr "Refusal to Disclose Information"
-
-msgid "inforequests:modals:refusal:decide_email"
-msgstr "Mark as Refusal to Disclose Information"
-
-msgid "inforequests:modals:refusal:add_smail"
-msgstr "Add a Refusal to Disclose Information"
-
-msgid "inforequests:modals:remandment:heading"
-msgstr "Remandment"
-
-msgid "inforequests:modals:remandment:add_smail"
-msgstr "Add a Remandment"
-
-msgid "inforequests:modals:reversion:heading"
-msgstr "Reversion"
-
-msgid "inforequests:modals:reversion:add_smail"
-msgstr "Add a Reversion"
-
-msgid "inforequests:modals:unknown:heading"
-msgstr "I don't Know, What This E-mail Is"
-
-msgid "inforequests:modals:unknown:decide_email"
-msgstr "Ask Admin for Help"
-
-msgid "inforequests:modals:unrelated:heading"
-msgstr "Unrelated E-mail"
-
-msgid "inforequests:modals:unrelated:decide_email"
-msgstr "Mark as Unrelated"
+msgid "inforequests:modals:close"
+msgstr "Close"
 
 msgid "inforequests:obligee_action:email:email:heading"
 msgstr "Received E-mail"
@@ -877,57 +636,6 @@ msgid "^detail/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^delete-draft/(?P<draft_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/confirmation/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/extension/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/advancement/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/clarification-request/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/disclosure/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/refusal/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/unrelated/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/unknown/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/confirmation/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/extension/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/advancement/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/clarification-request/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/disclosure/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/refusal/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/affirmation/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/reversion/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/remandment/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^action/extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"

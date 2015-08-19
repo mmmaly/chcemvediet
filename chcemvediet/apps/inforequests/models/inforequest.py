@@ -467,12 +467,12 @@ class Inforequest(models.Model):
         msg.send()
 
     def send_received_email_notification(self, email):
-        self._send_notification(u'inforequests/mails/received_email_notification', u'#decide', {
+        self._send_notification(u'inforequests/mails/received_email_notification', None, {
                 u'email': email,
                 })
 
     def send_undecided_email_reminder(self):
-        self._send_notification(u'inforequests/mails/undecided_email_reminder', u'#decide', {
+        self._send_notification(u'inforequests/mails/undecided_email_reminder', None, {
                 })
 
         self.last_undecided_email_reminder = utc_now()

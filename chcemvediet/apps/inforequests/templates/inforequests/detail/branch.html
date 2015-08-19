@@ -10,6 +10,6 @@
 
 {% for action in branch.actions %}
   <div id="action-{{ action.pk }}" class="anchor">
-    {% include "inforequests/detail/action.html" with inforequest=inforequest branch=branch action=action forloop=forloop %}
+    {% include "inforequests/detail/action.html" %}
   </div>
 {% endfor %}

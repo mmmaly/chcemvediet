@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 15:09+0200\n"
+"POT-Creation-Date: 2015-08-19 15:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,81 +76,6 @@ msgstr "Spravovať pripojenia"
 
 msgid "^profile/$"
 msgstr ""
-
-msgid "inforequests:ActionAbstractForm:branch:label"
-msgstr "Povinná osoba"
-
-msgid "inforequests:EffectiveDateMixin:effective_date:label"
-msgstr "Dátum, od ktorého sa počíta"
-
-msgid "inforequests:EffectiveDateMixin:effective_date:placeholder"
-msgstr "dd.mm.yyyy"
-
-msgid "inforequests:EffectiveDateMixin:older_than_previous_error"
-msgstr "Nesmie byť staršia ako predošlé akcie."
-
-msgid "inforequests:EffectiveDateMixin:from_future_error"
-msgstr "Nesmie byť z budúcnosti."
-
-msgid "inforequests:EffectiveDateMixin:older_than_month_error"
-msgstr "Nesmie byť starší ako 1 mesiac."
-
-msgid "inforequests:FileNumberMixin:file_number:label"
-msgstr "Číslo spisu"
-
-msgid "inforequests:FileNumberMixin:file_number:placeholder"
-msgstr "Číslo spisu"
-
-msgid "inforequests:SubjectContentMixin:subject:label"
-msgstr "Predmet"
-
-msgid "inforequests:SubjectContentMixin:subject:placeholder"
-msgstr "Predmet"
-
-msgid "inforequests:SubjectContentMixin:content:label"
-msgstr "Obsah"
-
-msgid "inforequests:SubjectContentMixin:content:placeholder"
-msgstr "Obsah"
-
-msgid "inforequests:AttachmentsMixin:attachments:label"
-msgstr "Prílohy"
-
-msgid "inforequests:DeadlineMixin:deadline:label"
-msgstr "Nová lehota"
-
-msgid "inforequests:DeadlineMixin:deadline:placeholder"
-msgstr "Lehota"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_1:label"
-msgstr "Postúpené pre"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_1:placeholder"
-msgstr "Povinná osoba"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_2:label"
-msgstr " "
-
-msgid "inforequests:AdvancedToMixin:advanced_to_2:placeholder"
-msgstr "Povinná osoba"
-
-msgid "inforequests:AdvancedToMixin:advanced_to_3:label"
-msgstr " "
-
-msgid "inforequests:AdvancedToMixin:advanced_to_3:placeholder"
-msgstr "Povinná osoba"
-
-msgid "inforequests:AdvancedToMixin:same_obligee_error"
-msgstr "Nemožno postúpiť tej istej inštitúcii."
-
-msgid "inforequests:AdvancedToMixin:duplicate_obligee_error"
-msgstr "Nemožno postúpiť dvakrát tej istej inštitúcii."
-
-msgid "inforequests:DisclosureLevelMixin:disclosure_level:label"
-msgstr "Miera sprístupnenia"
-
-msgid "inforequests:RefusalReasonMixin:refusal_reason:label"
-msgstr "Dôvod odmietnutia"
 
 msgid "inforequests:ExtendDeadlineForm:extension:label"
 msgstr "Predĺženie lehoty"
@@ -389,10 +314,10 @@ msgstr "Áno, vracia"
 msgid "inforequests:obligee_action:WasReturnedStep:no"
 msgstr "Nie, nevracia"
 
-msgid "inforequests:obligee_action:InvaidReversionStep:help_request:label"
+msgid "inforequests:obligee_action:InvalidReversionStep:help_request:label"
 msgstr "Správa pre admina"
 
-msgid "inforequests:obligee_action:InvaidReversionStep:help_request:placeholder"
+msgid "inforequests:obligee_action:InvalidReversionStep:help_request:placeholder"
 msgstr "Popíšte adminovi, čo sa stalo"
 
 msgid "inforequests:obligee_action:NotCategorizedStep:help"
@@ -581,86 +506,17 @@ msgstr "Odvolanie"
 msgid "inforequests:detail:action:advanced_to"
 msgstr "Nová povinná osoba"
 
-msgid "inforequests:detail:add_smail:heading"
-msgstr "Pridajte list, ktorý prišiel poštou"
-
-msgid "inforequests:detail:add_smail:confirmation"
-msgstr "Potvrdenie prijatia"
-
-msgid "inforequests:detail:add_smail:extension"
-msgstr "Predĺženie lehoty"
-
-msgid "inforequests:detail:add_smail:advancement"
-msgstr "Postúpenie žiadosti"
-
-msgid "inforequests:detail:add_smail:clarification_request"
-msgstr "Výzva na doplnenie žiadosti"
-
-msgid "inforequests:detail:add_smail:disclosure"
-msgstr "Sprístupnenie"
-
-msgid "inforequests:detail:add_smail:refusal"
-msgstr "Rozhodnutie o odmietnutí"
-
-msgid "inforequests:detail:add_smail:affirmation"
-msgstr "Potvrdenie rozhodnutia o odmietnutí"
-
-msgid "inforequests:detail:add_smail:reversion"
-msgstr "Zrušenie rozhodnutia o odmietnutí"
-
-msgid "inforequests:detail:add_smail:remandment"
-msgstr "Vrátenie rozhodnutia o odmietnutí"
-
-msgid "inforequests:detail:decide:title"
-msgstr "Došlé nerozhodnuté e-maily"
-
-msgid "inforequests:detail:decide:confirmation"
-msgstr "Potvrdenie prijatia"
-
-msgid "inforequests:detail:decide:extension"
-msgstr "Predĺženie"
-
-msgid "inforequests:detail:decide:advancement"
-msgstr "Postúpenie žiadosti"
-
-msgid "inforequests:detail:decide:clarification_request"
-msgstr "Výzva na doplnenie žiadosti"
-
-msgid "inforequests:detail:decide:disclosure"
-msgstr "Sprístupnenie"
-
-msgid "inforequests:detail:decide:refusal"
-msgstr "Rozhodnutie o odmietnutí"
-
-msgid "inforequests:detail:decide:unrelated"
-msgstr "Nesúvisiaci email alebo spam"
-
-msgid "inforequests:detail:decide:unknown"
-msgstr "Neviem sa rozhodnúť"
-
 msgid "inforequests:detail:title"
 msgstr "Detail žiadosti"
 
 msgid "inforequests:detail:heading"
 msgstr "Detail žiadosti"
 
-msgid "inforequests:detail:history:heading"
-msgstr "Detail žiadosti"
+msgid "inforequests:detail:add_email_button"
+msgstr "Otvotiť e-mail"
 
-msgid "inforequests:detail:email:subject"
-msgstr "Predmet"
-
-msgid "inforequests:detail:email:from"
-msgstr "Odosielateľ"
-
-msgid "inforequests:detail:email:to"
-msgstr "Adresát"
-
-msgid "inforequests:detail:email:processed"
-msgstr "Prijaté"
-
-msgid "inforequests:detail:email:attachments"
-msgstr "Prílohy"
+msgid "inforequests:detail:add_smail_button"
+msgstr "Prišla mi pošta"
 
 msgid "inforequests:detail:request:applicant"
 msgstr "Žiadateľ"
@@ -679,9 +535,6 @@ msgstr "Subjekt"
 
 msgid "inforequests:detail:request:content"
 msgstr "Obsah"
-
-msgid "inforequests:detail:undecided:show"
-msgstr "Ukázať"
 
 msgid "inforequests:index:title"
 msgstr "Odoslané žiadosti"
@@ -734,108 +587,14 @@ msgstr "Subjekt"
 msgid "inforequests:index:closed:submission_date"
 msgstr "Dátum odoslania"
 
-msgid "inforequests:modals:advancement:heading"
-msgstr "Postúpenie žiadosti"
-
-msgid "inforequests:modals:advancement:decide_email"
-msgstr "Označ ako postúpenie žiadosti"
-
-msgid "inforequests:modals:close"
-msgstr "Zavrieť"
-
-msgid "inforequests:modals:advancement:add_smail"
-msgstr "Pridať postúpenie"
-
-msgid "inforequests:modals:draft"
-msgstr "Uložiť ako rozpracované"
-
-msgid "inforequests:modals:affirmation:heading"
-msgstr "Potvrdenie rozhodnutia"
-
-msgid "inforequests:modals:affirmation:add_smail"
-msgstr "Pridať potvrdenie rozhodnutia"
-
-msgid "inforequests:modals:clarification_request:heading"
-msgstr "Výzva na doplnenie žiadosti "
-
-msgid "inforequests:modals:clarification_request:decide_email"
-msgstr "Označiť ako výzva na doplnenie žiadosti"
-
-msgid "inforequests:modals:clarification_request:add_smail"
-msgstr "Pridať výzvu na doplnenie žiadosti"
-
-msgid "inforequests:modals:confirmation:heading"
-msgstr "Potvrdenie prijatia"
-
-msgid "inforequests:modals:confirmation:decide_email"
-msgstr "Označiť ako potvrdenie prijatia žiadosti"
-
-msgid "inforequests:modals:confirmation:add_smail"
-msgstr "Pridať potvrdenie prijatia žiadosti"
-
-msgid "inforequests:modals:disclosure:heading"
-msgstr "Sprístupnenie informácie"
-
-msgid "inforequests:modals:disclosure:decide_email"
-msgstr "Označiť ako sprístupnenie informácie"
-
-msgid "inforequests:modals:disclosure:add_smail"
-msgstr "Pridať sprístupnenie informácie"
-
 msgid "inforequests:modals:action-extend-deadline:heading"
 msgstr "Oznámenie o predĺžení lehoty"
 
 msgid "inforequests:modals:action-extend-deadline:extend"
 msgstr "Oznámenie o predĺžení lehoty"
 
-msgid "inforequests:modals:extension:heading"
-msgstr "Oznámenie o predĺžení lehoty"
-
-msgid "inforequests:modals:extension:decide_email"
-msgstr "Označiť ako oznámenie o predĺžení lehoty"
-
-msgid "inforequests:modals:extension:add_smail"
-msgstr "Pridať oznámenie o predĺžení lehoty"
-
-#, python-format
-msgid "inforequests:modals:print:heading %(action_name)s"
-msgstr "Vytlačiť %(action_name)s"
-
-msgid "inforequests:modals:print:print"
-msgstr "Tlačiť"
-
-msgid "inforequests:modals:refusal:heading"
-msgstr "Rozhodnutie o nesprístupnení informácie"
-
-msgid "inforequests:modals:refusal:decide_email"
-msgstr "Označiť ako rozhodnutie o nesprístupnení informácie"
-
-msgid "inforequests:modals:refusal:add_smail"
-msgstr "Pridať rozhodnutie o nesprístupnení informácie"
-
-msgid "inforequests:modals:remandment:heading"
-msgstr "Pridať rozhodnutie, ktorým sa ruší predošlé rozhodnutie"
-
-msgid "inforequests:modals:remandment:add_smail"
-msgstr "Pridať rozhodnutie, ktorým sa ruší predošlé rozhodnutie"
-
-msgid "inforequests:modals:reversion:heading"
-msgstr "Pridať rozhodnutie, ktorým sa vec vracia na ďalšie konanie"
-
-msgid "inforequests:modals:reversion:add_smail"
-msgstr "Pridať rozhodnutie, ktorým sa vec vracia na ďalšie konanie"
-
-msgid "inforequests:modals:unknown:heading"
-msgstr "Neviem, čo znamená tento email"
-
-msgid "inforequests:modals:unknown:decide_email"
-msgstr "Požiadať o pomoc administrátora"
-
-msgid "inforequests:modals:unrelated:heading"
-msgstr "Nesúvisiaci e-mail"
-
-msgid "inforequests:modals:unrelated:decide_email"
-msgstr "Označiť ako Nesúvisiaci email"
+msgid "inforequests:modals:close"
+msgstr "Zavrieť"
 
 msgid "inforequests:obligee_action:email:email:heading"
 msgstr "Doručený e-mail"
@@ -877,57 +636,6 @@ msgid "^detail/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^delete-draft/(?P<draft_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/confirmation/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/extension/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/advancement/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/clarification-request/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/disclosure/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/refusal/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/unrelated/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^decide-email/unknown/(?P<inforequest_pk>\\d+)/(?P<email_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/confirmation/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/extension/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/advancement/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/clarification-request/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/disclosure/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/refusal/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/affirmation/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/reversion/(?P<inforequest_pk>\\d+)/$"
-msgstr ""
-
-msgid "^add-smail/remandment/(?P<inforequest_pk>\\d+)/$"
 msgstr ""
 
 msgid "^action/extend-deadline/(?P<inforequest_pk>\\d+)/(?P<branch_pk>\\d+)/(?P<action_pk>\\d+)/$"

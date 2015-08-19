@@ -26,6 +26,4 @@ def json_success(request, inforequest, action=None, print_=False):
             u'scroll_to': u'#action-%d' % action.pk if action else None,
             u'content': render_to_string(u'inforequests/detail/detail.html', context_instance=RequestContext(request),
                 dictionary=dict(inforequest=inforequest)),
-            u'print': render_to_string(u'inforequests/modals/print.html', context_instance=RequestContext(request),
-                dictionary=dict(inforequest=inforequest, action=action)) if print_ else None,
             })
