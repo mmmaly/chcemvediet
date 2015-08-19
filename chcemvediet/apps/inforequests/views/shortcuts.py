@@ -15,11 +15,6 @@ def json_form(request, form, **context):
                 dictionary=dict(context, form=form)),
             })
 
-def json_draft():
-    return JsonResponse({
-            u'result': u'success',
-            })
-
 def json_success(request, inforequest, action=None, print_=False):
     return JsonResponse({
             u'result': u'success',

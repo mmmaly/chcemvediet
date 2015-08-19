@@ -21,7 +21,7 @@ urlpatterns = patterns(u'',
     url(r'^{inforequest_pk}/obligee-action{step_idx}/$'.format(**parts),                     views.obligee_action,         name=u'obligee_action'),
     url(r'^{inforequest_pk}/clarification-response/{branch_pk}{step_idx}/$'.format(**parts), views.clarification_response, name=u'clarification_response'),
     url(r'^{inforequest_pk}/appeal/{branch_pk}{step_idx}/$'.format(**parts),                 views.appeal,                 name=u'appeal'),
-    url(_(r'^action/extend-deadline/(?P<inforequest_pk>\d+)/(?P<branch_pk>\d+)/(?P<action_pk>\d+)/$'), views.action_extend_deadline, name=u'action_extend_deadline'),
+    url(_(r'^extend-deadline/(?P<inforequest_pk>\d+)/(?P<branch_pk>\d+)/(?P<action_pk>\d+)/$'), views.extend_deadline, name=u'extend_deadline'),
     url(_(r'^attachments/$'), views.attachment_upload, name=u'upload_attachment'),
     url(_(r'^attachments/(?P<attachment_pk>\d+)/$'), views.attachment_download, name=u'download_attachment'),
 )

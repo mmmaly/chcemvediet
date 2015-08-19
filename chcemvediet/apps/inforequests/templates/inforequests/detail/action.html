@@ -19,8 +19,8 @@
     <p class="span10">{{ action.effective_date }}
       {% if forloop.last and action.deadline %}&mdash;
         <span class="with-tooltip" data-toggle="tooltip" data-placement="right"
-              title="{% spaceless %}{% include "inforequests/detail/tooltips/action_deadline.txt" %}{% endspaceless %}">
-          {% include "inforequests/detail/texts/action_deadline.html" %}
+              title="{% spaceless %}{% include "inforequests/detail/tooltips/deadline.txt" %}{% endspaceless %}">
+          {% include "inforequests/detail/texts/deadline.html" %}
           <i class="icon-question-sign"></i>
         </span>
       {% endif %}
@@ -49,32 +49,32 @@
             {% endif %}
             {% if recipient.status == recipient.STATUSES.QUEUED %}
               <span class="label with-tooltip" data-toggle="tooltip" data-placement="right"
-                    title="{% spaceless %}{% include "inforequests/detail/tooltips/action_queued.txt" %}{% endspaceless %}">
+                    title="{% spaceless %}{% include "inforequests/detail/tooltips/email_queued.txt" %}{% endspaceless %}">
                 {{ recipient.get_status_display }}
               </span>
             {% elif recipient.status == recipient.STATUSES.REJECTED %}
               <span class="label label-important with-tooltip" data-toggle="tooltip" data-placement="right"
-                    title="{% spaceless %}{% include "inforequests/detail/tooltips/action_rejected.txt" %}{% endspaceless %}">
+                    title="{% spaceless %}{% include "inforequests/detail/tooltips/email_rejected.txt" %}{% endspaceless %}">
                 {{ recipient.get_status_display }}
               </span>
             {% elif recipient.status == recipient.STATUSES.INVALID %}
               <span class="label label-important with-tooltip" data-toggle="tooltip" data-placement="right"
-                    title="{% spaceless %}{% include "inforequests/detail/tooltips/action_invalid.txt"   %}{% endspaceless %}">
+                    title="{% spaceless %}{% include "inforequests/detail/tooltips/email_invalid.txt"   %}{% endspaceless %}">
                 {{ recipient.get_status_display }}
               </span>
             {% elif recipient.status == recipient.STATUSES.SENT %}
               <span class="label label-info with-tooltip" data-toggle="tooltip" data-placement="right"
-                    title="{% spaceless %}{% include "inforequests/detail/tooltips/action_sent.txt" %}{% endspaceless %}">
+                    title="{% spaceless %}{% include "inforequests/detail/tooltips/email_sent.txt" %}{% endspaceless %}">
                 {{ recipient.get_status_display }}
               </span>
             {% elif recipient.status == recipient.STATUSES.DELIVERED %}
               <span class="label label-success with-tooltip" data-toggle="tooltip" data-placement="right"
-                    title="{% spaceless %}{% include "inforequests/detail/tooltips/action_delivered.txt" %}{% endspaceless %}">
+                    title="{% spaceless %}{% include "inforequests/detail/tooltips/email_delivered.txt" %}{% endspaceless %}">
                 {{ recipient.get_status_display }}
               </span>
             {% elif recipient.status == recipient.STATUSES.OPENED %}
               <span class="label label-success with-tooltip" data-toggle="tooltip" data-placement="right"
-                    title="{% spaceless %}{% include "inforequests/detail/tooltips/action_opened.txt" %}{% endspaceless %}">
+                    title="{% spaceless %}{% include "inforequests/detail/tooltips/email_opened.txt" %}{% endspaceless %}">
                 {{ recipient.get_status_display }}
               </span>
             {% endif %}
@@ -130,25 +130,25 @@
   {% if forloop.last and not inforequest.closed and not inforequest.has_undecided_emails %}
     {% if action.has_obligee_deadline and action.deadline_missed %}
       <button type="button" class="btn btn-primary ajax ajax-modal-once with-tooltip"
-              action="{% url 'inforequests:action_extend_deadline' inforequest.pk branch.pk action.pk %}"
-              data-type="html" data-target="#action-extend-deadline-{{ action.pk }}-modal"
+              action="{% url 'inforequests:extend_deadline' inforequest.pk branch.pk action.pk %}"
+              data-type="html" data-target="#extend-deadline-{{ action.pk }}-modal"
               data-fail-target="#ajax-fail-modal" data-toggle="tooltip" data-placement="right"
-              title="{% spaceless %}{% include "inforequests/detail/tooltips/action_extend_deadline.txt" %}{% endspaceless %}">
+              title="{% spaceless %}{% include "inforequests/detail/tooltips/extend_deadline.txt" %}{% endspaceless %}">
         {% trans 'inforequests:detail:action:extend_deadline' %}
       </button>
-      <span id="action-extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
+      <span id="extend-deadline-{{ action.pk }}-modal" class="modal inforequest-ajax-modal hide fade"></span>
     {% endif %}
     {% if branch.can_add_clarification_response %}
       <a class="btn btn-primary with-tooltip" data-toggle="tooltip" data-placement="right"
          href="{% url 'inforequests:clarification_response' inforequest.pk branch.pk %}"
-         title="{% spaceless %}{% include "inforequests/detail/tooltips/action_clarification_response.txt" %}{% endspaceless %}">
+         title="{% spaceless %}{% include "inforequests/detail/tooltips/clarification_response.txt" %}{% endspaceless %}">
         {% trans 'inforequests:detail:action:clarification_response' %}
       </a>
     {% endif %}
     {% if branch.can_add_appeal %}
       <a class="btn btn-primary with-tooltip" data-toggle="tooltip" data-placement="right"
          href="{% url 'inforequests:appeal' inforequest.pk branch.pk %}"
-         title="{% spaceless %}{% include "inforequests/detail/tooltips/action_appeal.txt" %}{% endspaceless %}">
+         title="{% spaceless %}{% include "inforequests/detail/tooltips/appeal.txt" %}{% endspaceless %}">
         {% trans 'inforequests:detail:action:appeal' %}
       </a>
     {% endif %}
