@@ -120,9 +120,6 @@ class Inforequest(models.Model):
     #  -- branch_set: by Branch.inforequest
     #     May NOT be empty
     #
-    #  -- actiondraft_set: by ActionDraft.inforequest
-    #     May be empty; May contain at most one instance for every ActionDraft.TYPES
-    #
     #  -- inforequestemail_set: by InforequestEmail.inforequest
     #     May be empty
 

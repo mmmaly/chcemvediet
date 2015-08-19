@@ -12,7 +12,7 @@ from poleno.attachments.models import Attachment
 from poleno.mail.models import Message
 from poleno.utils.views import require_ajax, login_required
 
-from chcemvediet.apps.inforequests.models import InforequestDraft, Action, ActionDraft
+from chcemvediet.apps.inforequests.models import InforequestDraft, Action
 
 
 @require_http_methods([u'POST'])
@@ -32,7 +32,6 @@ def attachment_download(request, attachment_pk):
             Message: Q(inforequest__applicant=request.user),
             InforequestDraft: Q(applicant=request.user),
             Action: Q(branch__inforequest__applicant=request.user),
-            ActionDraft: Q(inforequest__applicant=request.user),
             }
 
     attachment = Attachment.objects.get_or_404(pk=attachment_pk)

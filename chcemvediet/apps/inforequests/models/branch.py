@@ -44,9 +44,6 @@ class Branch(models.Model):
     #  -- action_set: by Action.branch
     #     May NOT be empty; The first action of every main branch must be REQUEST and the first
     #     action of every advanced branch ADVANCED_REQUEST.
-    #
-    #  -- actiondraft_set: by ActionDraft.branch
-    #     May be empty
 
     # Backward relations added to other models:
     #

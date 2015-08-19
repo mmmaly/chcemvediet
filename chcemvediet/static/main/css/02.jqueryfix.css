@@ -3,4 +3,3 @@
 /* Loading icon and fixing z-index for JQuery Autocomplete */
 .ui-autocomplete-loading { background: white url("../images/ui-anim_basic_16x16.gif") right center no-repeat; }
 .ui-autocomplete { z-index: 1100 !important; /* Must be higher than 1050, what's Bootstrap modal z-index. */ }
-
