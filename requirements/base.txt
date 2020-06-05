@@ -3,7 +3,7 @@ Unidecode==0.04.17
 pytz==2014.10
 python-dateutil==2.4.0
 requests==2.5.1
-Django==1.7.4
+Django==1.11.29
 django-allauth==0.19.1
 django-simple-history==1.5.4
 django-aggregate-if==0.5
