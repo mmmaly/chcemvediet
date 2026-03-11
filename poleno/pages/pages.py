@@ -10,7 +10,8 @@ import logging
 import mimetypes
 
 from django.core.files.storage import default_storage
-from django.template import Context, Template, Origin
+from django.template import Context, Template
+from django.template.base import Origin
 from django.utils.functional import cached_property
 from django.utils.translation import get_language
 
