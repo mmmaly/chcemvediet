@@ -24,8 +24,16 @@ class TranslationLoaderTest(TestCase):
 
         self.settings_override = override_settings(
             LANGUAGES=((u'de', u'Deutsch'), (u'en', u'English'), (u'fr', u'Francais')),
-            TEMPLATE_LOADERS=((u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),),
-            TEMPLATE_DIRS=(self.tempdir.path,),
+            TEMPLATES=[{
+                u'BACKEND': u'django.template.backends.django.DjangoTemplates',
+                u'DIRS': [self.tempdir.path],
+                u'APP_DIRS': False,
+                u'OPTIONS': {
+                    u'loaders': [
+                        (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
+                    ],
+                },
+            }],
             )
         self.settings_override.enable()
 

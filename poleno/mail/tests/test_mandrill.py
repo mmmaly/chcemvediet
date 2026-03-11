@@ -304,7 +304,12 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
     @contextlib.contextmanager
     def _overrides(self, delete_settings=(), **override_settings):
         overrides = {
-                u'TEMPLATE_LOADERS': (u'django.template.loaders.filesystem.Loader',),
+                u'TEMPLATES': [{
+                    u'BACKEND': u'django.template.backends.django.DjangoTemplates',
+                    u'DIRS': [],
+                    u'APP_DIRS': False,
+                    u'OPTIONS': {u'loaders': [u'django.template.loaders.filesystem.Loader']},
+                }],
                 u'MANDRILL_WEBHOOK_SECRET': u'default_testing_secret',
                 u'MANDRILL_WEBHOOK_SECRET_NAME': u'default_testing_secret_name',
                 u'MANDRILL_WEBHOOK_KEYS': [u'default_testing_api_key'],

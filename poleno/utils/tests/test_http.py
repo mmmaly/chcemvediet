@@ -36,7 +36,12 @@ class SendFileResponseTest(TestCase):
     def setUp(self):
         self.tempdir = TempDirectory()
         self.settings_override = override_settings(
-            TEMPLATE_LOADERS=(u'django.template.loaders.filesystem.Loader',),
+            TEMPLATES=[{
+                u'BACKEND': u'django.template.backends.django.DjangoTemplates',
+                u'DIRS': [],
+                u'APP_DIRS': False,
+                u'OPTIONS': {u'loaders': [u'django.template.loaders.filesystem.Loader']},
+            }],
         )
         self.settings_override.enable()
 

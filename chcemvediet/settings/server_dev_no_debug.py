@@ -6,7 +6,6 @@
 ###
 
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 PREPEND_WWW = True
 LIBSASS_OUTPUT_STYLE = u'compressed'

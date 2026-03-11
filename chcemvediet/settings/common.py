@@ -88,30 +88,38 @@ AUTHENTICATION_BACKENDS = (
     u'chcemvediet.auth_backends.AllauthAuthenticationBackendWithAdminLoginAs',
     )
 
-TEMPLATE_LOADERS = (
-    (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
-    (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.app_directories.Loader'),
-    (u'poleno.utils.template.TranslationLoader', u'poleno.utils.template.AppLoader'),
-    )
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    u'django.contrib.auth.context_processors.auth',
-    u'django.core.context_processors.debug',
-    u'django.core.context_processors.i18n',
-    u'django.core.context_processors.media',
-    u'django.core.context_processors.static',
-    u'django.core.context_processors.request',
-    u'django.core.context_processors.tz',
-    u'django.contrib.messages.context_processors.messages',
-    u'allauth.account.context_processors.account',
-    u'allauth.socialaccount.context_processors.socialaccount',
-    u'poleno.mail.context_processors.constants',
-    u'poleno.utils.context_processors.idgenerator',
-    u'chcemvediet.apps.obligees.context_processors.constants',
-    u'chcemvediet.apps.inforequests.context_processors.constants',
-    u'chcemvediet.apps.anonymization.context_processors.constants',
-    u'chcemvediet.context_processors.settings',
-    )
+TEMPLATES = [
+    {
+        u'BACKEND': u'django.template.backends.django.DjangoTemplates',
+        u'DIRS': [],
+        u'APP_DIRS': False,
+        u'OPTIONS': {
+            u'loaders': [
+                (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
+                (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.app_directories.Loader'),
+                (u'poleno.utils.template.TranslationLoader', u'poleno.utils.template.AppLoader'),
+            ],
+            u'context_processors': [
+                u'django.contrib.auth.context_processors.auth',
+                u'django.template.context_processors.debug',
+                u'django.template.context_processors.i18n',
+                u'django.template.context_processors.media',
+                u'django.template.context_processors.static',
+                u'django.template.context_processors.request',
+                u'django.template.context_processors.tz',
+                u'django.contrib.messages.context_processors.messages',
+                u'allauth.account.context_processors.account',
+                u'allauth.socialaccount.context_processors.socialaccount',
+                u'poleno.mail.context_processors.constants',
+                u'poleno.utils.context_processors.idgenerator',
+                u'chcemvediet.apps.obligees.context_processors.constants',
+                u'chcemvediet.apps.inforequests.context_processors.constants',
+                u'chcemvediet.apps.anonymization.context_processors.constants',
+                u'chcemvediet.context_processors.settings',
+            ],
+        },
+    },
+]
 
 # Daily jobs do all their work the first time they are run in a day. Duplicte runs in the same day
 # should do nothing. However, we run them multiple times in a day in case something was broken and

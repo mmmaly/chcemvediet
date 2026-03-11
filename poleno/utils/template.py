@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import io
 from os.path import splitext, join
 from inspect import getargspec
 from functools import partial
@@ -8,9 +9,8 @@ from django import template
 from django.apps import apps
 from django.template import TemplateSyntaxError, TemplateDoesNotExist, RequestContext
 from django.template.base import parse_bits
-from django.template.loader import BaseLoader, find_template_loader
 from django.template.loader import render_to_string as django_render_to_string
-from django.template.loaders.filesystem import Loader as FilesystemLoader
+from django.template.loaders.base import Loader as BaseLoader
 from django.utils.translation import get_language
 
 from .http import get_request
@@ -45,20 +45,24 @@ class TranslationLoader(BaseLoader):
     The language code is inserted before the last template extenstion. If the template name has no
     extensions, the language code is appended at its end.
 
-    To use this loader together with default Django template loaders set TEMPLATE_LOADERS in
-    'settings.py' as follows:
+    To use this loader together with default Django template loaders set the TEMPLATES loaders
+    option in 'settings.py' as follows:
 
-        TEMPLATE_LOADERS = (
-            ('poleno.utils.template.TranslationLoader',
-                'django.template.loaders.filesystem.Loader'),
-            ('poleno.utils.template.TranslationLoader',
-                'django.template.loaders.app_directories.Loader'),
-        )
+        TEMPLATES = [{
+            ...
+            'OPTIONS': {
+                'loaders': [
+                    ('poleno.utils.template.TranslationLoader',
+                        'django.template.loaders.filesystem.Loader'),
+                    ('poleno.utils.template.TranslationLoader',
+                        'django.template.loaders.app_directories.Loader'),
+                ],
+            },
+        }]
     """
-    is_usable = True
 
-    def __init__(self, loader):
-        super(TranslationLoader, self).__init__()
+    def __init__(self, engine, loader):
+        super(TranslationLoader, self).__init__(engine)
         self._loader = loader
         self._cached_loader = None
 
@@ -66,20 +70,20 @@ class TranslationLoader(BaseLoader):
     def loader(self):
         # Resolve loader on demand as suggusted in django.template.loaders.cached.Loader
         if not self._cached_loader:
-            self._cached_loader = find_template_loader(self._loader)
+            self._cached_loader = self.engine.find_template_loader(self._loader)
         return self._cached_loader
 
     def load_template(self, template_name, template_dirs=None):
         language = get_language()
         template_base, template_ext = splitext(template_name)
         try:
-            return self.loader(u'{}.{}{}'.format(
+            return self.loader.load_template(u'{}.{}{}'.format(
                 template_base, language, template_ext), template_dirs)
         except TemplateDoesNotExist:
-            return self.loader(template_name, template_dirs)
+            return self.loader.load_template(template_name, template_dirs)
 
 
-class AppLoader(FilesystemLoader):
+class AppLoader(BaseLoader):
     u"""
     Django template loader that allows you to load a template from a specific application. This
     allows you to both extend and override a template at the same time. The default Django loaders
@@ -92,30 +96,38 @@ class AppLoader(FilesystemLoader):
 
     Settings::
 
-        TEMPLATE_LOADERS = (
-            'django.template.loaders.filesystem.Loader',
-            'django.template.loaders.app_directories.Loader',
-            'poleno.utils.template.AppLoader',
-        )
+        TEMPLATES = [{
+            ...
+            'OPTIONS': {
+                'loaders': [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                    'poleno.utils.template.AppLoader',
+                ],
+            },
+        }]
 
     Based on: https://pypi.python.org/pypi/django-apptemplates/
     Which is based on: http://djangosnippets.org/snippets/1376/
     """
-    is_usable = True
 
-    def get_template_sources(self, template_name, template_dirs=None):
+    def load_template_source(self, template_name, template_dirs=None):
         u"""
-        Returns the absolute paths to "template_name" in the specified app. If the name does not
-        contain an app name (no colon), an empty list is returned. The parent
-        FilesystemLoader.load_template_source() will take care of the actual loading for us.
+        Loads the template from the app specified by a colon-prefixed name. If the name does not
+        contain an app name (no colon), raises TemplateDoesNotExist.
         """
-        if not u':' in template_name:
-            return []
-        app_name, template_name = template_name.split(u':', 1)
+        if u':' not in template_name:
+            raise TemplateDoesNotExist(template_name)
+        app_name, tmpl_name = template_name.split(u':', 1)
         for app in apps.get_app_configs():
             if app.label == app_name:
-                return [join(app.path, u'templates', template_name)]
-        return []
+                template_path = join(app.path, u'templates', tmpl_name)
+                try:
+                    with io.open(template_path, encoding=self.engine.file_charset) as fp:
+                        return fp.read(), template_path
+                except IOError:
+                    raise TemplateDoesNotExist(template_name)
+        raise TemplateDoesNotExist(template_name)
 
 
 class Library(template.Library):

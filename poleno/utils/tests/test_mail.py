@@ -22,8 +22,12 @@ class RenderMailTest(TestCase):
         self.tempdir = TempDirectory()
 
         self.settings_override = override_settings(
-            TEMPLATE_LOADERS=(u'django.template.loaders.filesystem.Loader',),
-            TEMPLATE_DIRS=(self.tempdir.path,),
+            TEMPLATES=[{
+                u'BACKEND': u'django.template.backends.django.DjangoTemplates',
+                u'DIRS': [self.tempdir.path],
+                u'APP_DIRS': False,
+                u'OPTIONS': {u'loaders': [u'django.template.loaders.filesystem.Loader']},
+            }],
             )
         self.settings_override.enable()
 

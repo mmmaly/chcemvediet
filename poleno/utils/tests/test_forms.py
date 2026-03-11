@@ -272,8 +272,17 @@ class CompositeTextFieldTest(TestCase):
     def setUp(self):
         self.tempdir = TempDirectory()
         self.settings_override = override_settings(
-            TEMPLATE_LOADERS=(u'django.template.loaders.filesystem.Loader', u'django.template.loaders.app_directories.Loader',),
-            TEMPLATE_DIRS=(self.tempdir.path,),
+            TEMPLATES=[{
+                u'BACKEND': u'django.template.backends.django.DjangoTemplates',
+                u'DIRS': [self.tempdir.path],
+                u'APP_DIRS': False,
+                u'OPTIONS': {
+                    u'loaders': [
+                        u'django.template.loaders.filesystem.Loader',
+                        u'django.template.loaders.app_directories.Loader',
+                    ],
+                },
+            }],
             )
         self.settings_override.enable()
         self.tempdir.write(u'composite.txt', u'(composite.txt)\n{{ aaa }}{{ bbb }}\n{{ inputs.0 }}\n{{ inputs.1 }}\n')

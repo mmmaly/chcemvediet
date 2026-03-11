@@ -6,7 +6,7 @@
 ###
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+TEMPLATES[0][u'OPTIONS'][u'debug'] = True
 
 PREPEND_WWW = True
 
