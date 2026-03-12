@@ -338,24 +338,24 @@ class ObligeeDeadlineReminderCronJobTest(CronTestCaseMixin, InforequestsTestCase
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
         inforequest, _, _ = self._create_inforequest_scenario(
                 u'clarification_request',
-                # snooze is missed at 2010-10-14
+                # snooze is missed at 2010-10-18
                 u'clarification_response',
                 )
 
-        timewarp.jump(local_datetime_from_local(u'2010-10-14 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-18 10:33:00'))
         message_set = self._call_cron_job()
         self.assertTrue(message_set.exists())
 
     def test_reminder_is_not_sent_if_last_action_snooze_was_already_missed_when_last_reminder_was_sent(self):
         timewarp.jump(local_datetime_from_local(u'2010-10-05 10:33:00'))
-        last = utc_datetime_from_local(u'2010-10-14 10:33:00')
+        last = utc_datetime_from_local(u'2010-10-18 10:33:00')
         inforequest, _, _ = self._create_inforequest_scenario(
                 u'clarification_request',
-                # snooze is missed at 2010-10-14
+                # snooze is missed at 2010-10-18
                 (u'clarification_response', dict(last_deadline_reminder=last)),
                 )
 
-        timewarp.jump(local_datetime_from_local(u'2010-10-20 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-24 10:33:00'))
         message_set = self._call_cron_job()
         self.assertFalse(message_set.exists())
 
@@ -717,8 +717,8 @@ class CloseInforequestsCronJobTest(CronTestCaseMixin, InforequestsTestCaseMixin,
         timewarp.jump(local_datetime_from_local(u'2010-03-01 10:33:00'))
         inforequest, _, _ = self._create_inforequest_scenario()
 
-        # Request deadline was missed at 2010-03-10.
-        timewarp.jump(local_datetime_from_local(u'2010-03-19 10:33:00'))
+        # Request deadline was missed at 2010-03-14.
+        timewarp.jump(local_datetime_from_local(u'2010-03-23 10:33:00'))
         with mock.patch(u'chcemvediet.apps.inforequests.cron.DAYS_TO_CLOSE_INFOREQUEST', 10):
             self._call_cron_job()
 

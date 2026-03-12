@@ -1,13 +1,12 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.db import models, IntegrityError, transaction, connection
-from django.db.models import Q, Prefetch, Max
+from django.db.models import Q, Prefetch, Max, Count, Case, When, IntegerField
 from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.http import urlencode
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from aggregate_if import Count
 
 from poleno import datacheck
 from poleno.mail.models import Message
@@ -51,8 +50,9 @@ class InforequestQuerySet(QuerySet):
         Use to select ``Inforequest.undecided_emails_count``. Redundant if
         ``prefetch_related(Inforequest.prefetch_undecided_emails())`` is already used.
         """
-        return self.annotate(undecided_emails_count=Count(u'inforequestemail',
-                only=Q(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
+        return self.annotate(undecided_emails_count=Count(Case(
+                When(inforequestemail__type=InforequestEmail.TYPES.UNDECIDED, then=1),
+                output_field=IntegerField())))
     def order_by_pk(self):
         return self.order_by(u'pk')
     def order_by_submission_date(self):
@@ -594,8 +594,10 @@ def datachecks(superficial, autofix):
     Checks that every ``Inforequest`` instance has exactly one main branch.
     """
     inforequests = (Inforequest.objects
-            .annotate(Count(u'branch', only=Q(branch__advanced_by=None)))
-            .filter(~Q(branch__count=1))
+            .annotate(main_branch_count=Count(Case(
+                When(branch__advanced_by=None, then=1),
+                output_field=IntegerField())))
+            .filter(~Q(main_branch_count=1))
             )
 
     if superficial:

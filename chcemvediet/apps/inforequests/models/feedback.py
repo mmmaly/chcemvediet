@@ -33,7 +33,7 @@ class Feedback(FormatMixin, models.Model):
         (u'EXCELLENT',   6, _(u'inforequests:Feedback:rating:EXCELLENT')),
     )
 
-    rating = models.SmallIntegerField(choices=RATING_LEVELS._choices, blank=True, default=None)
+    rating = models.SmallIntegerField(choices=RATING_LEVELS._choices, blank=True, null=True, default=None)
 
     # Indexes:
     #  -- inforequest: ForeignKey

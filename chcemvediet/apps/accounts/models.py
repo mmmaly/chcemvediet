@@ -1,10 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Count, Case, When, IntegerField
 from django.utils.functional import cached_property
 from django.contrib.auth.models import User
-from aggregate_if import Count
 from jsonfield import JSONField
 
 from poleno.mail.models import Message
@@ -20,8 +19,9 @@ class ProfileQuerySet(QuerySet):
         u"""
         Use to select ``Profile.undecided_emails_count``.
         """
-        return self.annotate(undecided_emails_count=Count(u'user__inforequest__inforequestemail',
-                only=Q(user__inforequest__inforequestemail__type=InforequestEmail.TYPES.UNDECIDED)))
+        return self.annotate(undecided_emails_count=Count(Case(
+                When(user__inforequest__inforequestemail__type=InforequestEmail.TYPES.UNDECIDED, then=1),
+                output_field=IntegerField())))
 
 class Profile(FormatMixin, OriginalValuesMixin, models.Model):
     user = models.OneToOneField(User)

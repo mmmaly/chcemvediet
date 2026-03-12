@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+import re
 import mock
 import contextlib
 from testfixtures import TempDirectory
@@ -19,6 +20,14 @@ from ..models import Inforequest, InforequestEmail, Branch, Action
 
 
 class InforequestsTestCaseMixin(ChcemvedietTestCaseMixin):
+
+    @staticmethod
+    def _extract_query_sql(sql):
+        u"""Extract bare SQL from Django 1.8 SQLite query format: QUERY = u'...' - PARAMS = (...)"""
+        match = re.match(r"^QUERY = u'(.*)'( - PARAMS = .*)$", sql, re.DOTALL)
+        if match:
+            return match.group(1)
+        return sql
 
     @contextlib.contextmanager
     def assertQueriesDuringRender(self, *patterns, **kwargs):
@@ -55,12 +64,12 @@ class InforequestsTestCaseMixin(ChcemvedietTestCaseMixin):
             self.assertEqual(len(render_queries), len(render_patterns), u'\n'.join([
                 u'%d queries executed, %d expected' % (len(render_queries), len(render_patterns)),
                 u'Captured queries were:',
-                u'\n'.join(q[u'sql'] for q in render_queries),
+                u'\n'.join(self._extract_query_sql(q[u'sql']) for q in render_queries),
                 u'Expected patterns were:',
                 u'\n'.join(render_patterns),
                 ]))
             for query, pattern in zip(render_queries, render_patterns):
-                self.assertRegexpMatches(query[u'sql'], pattern)
+                self.assertRegexpMatches(self._extract_query_sql(query[u'sql']), pattern)
 
 
     def _pre_setup(self):

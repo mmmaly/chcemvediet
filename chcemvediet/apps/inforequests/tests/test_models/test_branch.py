@@ -590,11 +590,11 @@ class BranchTest(InforequestsTestCaseMixin, TestCase):
 
     def test_add_expiration_if_expired_method(self):
         tests = (                                   # legal date,                expected action type,      branch, scenario
-                (Action.TYPES.REQUEST,                naive_date(u'2010-07-15'), Action.TYPES.EXPIRATION,        0, []),
-                (Action.TYPES.CLARIFICATION_RESPONSE, naive_date(u'2010-07-15'), Action.TYPES.EXPIRATION,        0, [u'clarification_request', u'clarification_response']),
+                (Action.TYPES.REQUEST,                naive_date(u'2010-07-21'), Action.TYPES.EXPIRATION,        0, []),
+                (Action.TYPES.CLARIFICATION_RESPONSE, naive_date(u'2010-07-21'), Action.TYPES.EXPIRATION,        0, [u'clarification_request', u'clarification_response']),
                 (Action.TYPES.APPEAL,                 naive_date(u'2010-07-20'), Action.TYPES.APPEAL_EXPIRATION, 0, [u'expiration', u'appeal']),
-                (Action.TYPES.CONFIRMATION,           naive_date(u'2010-07-15'), Action.TYPES.EXPIRATION,        0, [u'request', u'confirmation']),
-                (Action.TYPES.EXTENSION,              naive_date(u'2010-07-15'), Action.TYPES.EXPIRATION,        0, [u'request', u'extension']),
+                (Action.TYPES.CONFIRMATION,           naive_date(u'2010-07-21'), Action.TYPES.EXPIRATION,        0, [u'request', u'confirmation']),
+                (Action.TYPES.EXTENSION,              naive_date(u'2010-07-21'), Action.TYPES.EXPIRATION,        0, [u'request', u'extension']),
                 (Action.TYPES.ADVANCEMENT,            None,                      None,                           0, [u'advancement']),
                 (Action.TYPES.CLARIFICATION_REQUEST,  None,                      None,                           0, [u'clarification_request']),
                 (Action.TYPES.DISCLOSURE,             None,                      None,                           0, [u'disclosure']),

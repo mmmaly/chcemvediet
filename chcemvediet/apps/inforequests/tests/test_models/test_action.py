@@ -422,11 +422,11 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         self.assertTrue(action.has_obligee_deadline_missed)
 
     def test_has_obligee_deadline_snooze_missed_property(self):
-        action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'), snooze=naive_date(u'2010-10-16'))
-        timewarp.jump(local_datetime_from_local(u'2010-10-16 10:33:00'))
+        action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'), snooze=naive_date(u'2010-10-22'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-22 10:33:00'))
         self.assertFalse(action.has_obligee_deadline_snooze_missed)
-        action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'), snooze=naive_date(u'2010-10-16'))
-        timewarp.jump(local_datetime_from_local(u'2010-10-17 10:33:00'))
+        action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'), snooze=naive_date(u'2010-10-22'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-23 10:33:00'))
         self.assertTrue(action.has_obligee_deadline_snooze_missed)
 
     def test_has_applicant_deadline_missed_property(self):
@@ -439,24 +439,24 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
 
     def test_can_applicant_snooze_property(self):
         action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'))
-        timewarp.jump(local_datetime_from_local(u'2010-10-15 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-21 10:33:00'))
         self.assertFalse(action.can_applicant_snooze)
         action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'))
-        timewarp.jump(local_datetime_from_local(u'2010-10-16 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-22 10:33:00'))
         self.assertTrue(action.can_applicant_snooze)
         action = self._create_action(type=Action.TYPES.REQUEST, legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05'))
-        timewarp.jump(local_datetime_from_local(u'2010-10-21 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-27 10:33:00'))
         self.assertFalse(action.can_applicant_snooze)
 
     def test_deadline_property(self):
         delivered_date = naive_date(u'2010-10-05')
         legal_date = naive_date(u'2010-10-04')
         tests = (
-                (Action.TYPES.REQUEST,                naive_date(u'2010-10-15'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # 8 WD since delivered_date
-                (Action.TYPES.CLARIFICATION_RESPONSE, naive_date(u'2010-10-15'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # 8 WD since delivered_date
+                (Action.TYPES.REQUEST,                naive_date(u'2010-10-21'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # 12 WD since delivered_date
+                (Action.TYPES.CLARIFICATION_RESPONSE, naive_date(u'2010-10-21'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # 12 WD since delivered_date
                 (Action.TYPES.APPEAL,                 naive_date(u'2010-10-20'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # 15 CD since delivered_date
-                (Action.TYPES.CONFIRMATION,           naive_date(u'2010-10-15'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # previous action deadline
-                (Action.TYPES.EXTENSION,              naive_date(u'2010-10-15'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # previous action deadline + extension
+                (Action.TYPES.CONFIRMATION,           naive_date(u'2010-10-21'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # previous action deadline
+                (Action.TYPES.EXTENSION,              naive_date(u'2010-10-21'), Deadline.TYPES.OBLIGEE_DEADLINE, dict()),  # previous action deadline + extension
                 (Action.TYPES.ADVANCEMENT,            None, None, dict()),
                 (Action.TYPES.CLARIFICATION_REQUEST,  naive_date(u'2010-10-12'), Deadline.TYPES.APPLICANT_DEADLINE, dict()),  # 7 CD since delivered date
                 (Action.TYPES.DISCLOSURE,             naive_date(u'2010-10-20'), Deadline.TYPES.APPLICANT_DEADLINE, dict(disclosure_level=Action.DISCLOSURE_LEVELS.NONE)),  # 15 CD since delivered_date
@@ -520,8 +520,8 @@ class ActionTest(InforequestsTestCaseMixin, TestCase):
         action_with_extension = self._create_action(type=Action.TYPES.EXTENSION, extension=2)
         self._create_action(type=Action.TYPES.REQUEST, delivered_date=naive_date(u'2010-10-05'))
         action_without_extension = self._create_action(type=Action.TYPES.EXTENSION)
-        self.assertEqual(action_with_extension.deadline.deadline_date, naive_date(u'2010-10-19'))
-        self.assertEqual(action_without_extension.deadline.deadline_date, naive_date(u'2010-10-15'))
+        self.assertEqual(action_with_extension.deadline.deadline_date, naive_date(u'2010-10-25'))
+        self.assertEqual(action_without_extension.deadline.deadline_date, naive_date(u'2010-10-21'))
 
     def test_deadline_property_none_for_action_without_deadline(self):
         action = self._create_action(type=Action.TYPES.REVERSION)

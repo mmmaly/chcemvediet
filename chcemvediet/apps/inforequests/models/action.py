@@ -4,11 +4,10 @@ from email.utils import formataddr
 
 from django.core.mail import EmailMessage
 from django.db import models
-from django.db.models import Prefetch, Q, F
+from django.db.models import Prefetch, Q, F, Count, Case, When, IntegerField
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.contrib.contenttypes import generic
-from aggregate_if import Count
 from multiselectfield import MultiSelectField
 
 from poleno import datacheck
@@ -533,9 +532,10 @@ def datachecks(superficial, autofix):
     """
     actions = (Action.objects
             .filter(email__isnull=False)
-            .annotate(Count(u'branch__inforequest__email_set',
-                only=Q(branch__inforequest__email_set=F(u'email'))))
-            .filter(branch__inforequest__email_set__count=0)
+            .annotate(email_match_count=Count(Case(
+                When(branch__inforequest__email_set=F(u'email'), then=1),
+                output_field=IntegerField())))
+            .filter(email_match_count=0)
             )
 
     if superficial:

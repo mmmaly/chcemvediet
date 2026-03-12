@@ -206,7 +206,7 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
                 (u'request', dict(legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05')))
         )
         self._create_inforequest_email(inforequest=inforequest)
-        timewarp.jump(local_datetime_from_local(u'2010-10-16 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-22 10:33:00'))
         self._login_user()
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.slug, inforequest.pk)))
         snooze_url = url(u'inforequests:snooze', action=inforequest.last_action)
@@ -217,7 +217,7 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         inforequest, _, _ = self._create_inforequest_scenario(
                 (u'request', dict(legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05')))
         )
-        timewarp.jump(local_datetime_from_local(u'2010-10-16 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-22 10:33:00'))
         self._login_user()
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.slug, inforequest.pk)))
         snooze_url = url(u'inforequests:snooze', action=inforequest.last_action)
@@ -228,7 +228,7 @@ class DetailViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         inforequest, _, _ = self._create_inforequest_scenario(dict(closed=True),
                 (u'request', dict(legal_date=naive_date(u'2010-10-05'), delivered_date=naive_date(u'2010-10-05')))
         )
-        timewarp.jump(local_datetime_from_local(u'2010-10-16 10:33:00'))
+        timewarp.jump(local_datetime_from_local(u'2010-10-22 10:33:00'))
         self._login_user()
         response = self.client.get(reverse(u'inforequests:detail', args=(inforequest.slug, inforequest.pk)))
         snooze_url = url(u'inforequests:snooze', action=inforequest.last_action)

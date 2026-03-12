@@ -7,7 +7,7 @@ from functools import partial
 from django.template.defaultfilters import stringfilter
 from django.core.urlresolvers import resolve, Resolver404
 from django.conf import settings
-from django.contrib.webdesign.lorem_ipsum import paragraphs
+from poleno.utils.lorem_ipsum import paragraphs
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.html import format_html

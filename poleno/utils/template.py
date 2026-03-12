@@ -35,6 +35,7 @@ def lazy_squeeze_render_to_string(*args, **kwargs):
 
 
 class TranslationLoader(BaseLoader):
+    is_usable = True
     u"""
     Wrapper template loader that takes another template loader and uses it to load templates.
     However, before loading any template the loader tries to load its translated version first. For
@@ -84,6 +85,7 @@ class TranslationLoader(BaseLoader):
 
 
 class AppLoader(BaseLoader):
+    is_usable = True
     u"""
     Django template loader that allows you to load a template from a specific application. This
     allows you to both extend and override a template at the same time. The default Django loaders

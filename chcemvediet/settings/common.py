@@ -108,8 +108,6 @@ TEMPLATES = [
                 u'django.template.context_processors.request',
                 u'django.template.context_processors.tz',
                 u'django.contrib.messages.context_processors.messages',
-                u'allauth.account.context_processors.account',
-                u'allauth.socialaccount.context_processors.socialaccount',
                 u'poleno.mail.context_processors.constants',
                 u'poleno.utils.context_processors.idgenerator',
                 u'chcemvediet.apps.obligees.context_processors.constants',
@@ -120,6 +118,18 @@ TEMPLATES = [
         },
     },
 ]
+
+# Allauth 0.30.0 checks the old-style TEMPLATE_CONTEXT_PROCESSORS setting directly.
+# We must include the socialaccount processor here even though rendering uses the TEMPLATES dict.
+TEMPLATE_CONTEXT_PROCESSORS = (
+    u'django.contrib.auth.context_processors.auth',
+    u'django.template.context_processors.debug',
+    u'django.template.context_processors.i18n',
+    u'django.template.context_processors.tz',
+    u'django.contrib.messages.context_processors.messages',
+    u'allauth.account.context_processors.account',
+    u'allauth.socialaccount.context_processors.socialaccount',
+)
 
 # Daily jobs do all their work the first time they are run in a day. Duplicte runs in the same day
 # should do nothing. However, we run them multiple times in a day in case something was broken and
