@@ -3,7 +3,7 @@
 import re
 import os
 import sys
-import StringIO
+import io
 import shutil
 import filecmp
 import zipfile
@@ -32,7 +32,7 @@ print(u'Fontello: Downloading fonts...')
 # TODO: Remove `verify=False` after we upgrade
 response = requests.get(u'{}/{}/get'.format(FONTELLO_HOST, session), verify=False)
 response.raise_for_status()
-zipped = StringIO.StringIO(response.content)
+zipped = io.BytesIO(response.content)
 
 print(u'Fontello: Unzipping...')
 shutil.rmtree(TEMP_DIR, ignore_errors=True)
