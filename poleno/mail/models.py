@@ -112,9 +112,9 @@ class Message(FormatMixin, models.Model):
     objects = MessageQuerySet.as_manager()
 
     class Meta:
-        index_together = [
-                [u'processed', u'id'],
-                [u'created', u'id'],
+        indexes = [
+                models.Index(fields=[u'processed', u'id']),
+                models.Index(fields=[u'created', u'id']),
                 ]
 
     @property

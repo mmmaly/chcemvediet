@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import io
 from os.path import splitext, join
-from inspect import getargspec
+from inspect import getfullargspec
 from functools import partial
 
 from django import template
@@ -175,7 +175,7 @@ class Library(template.Library):
                     else:
                         return func(content, *resolved_args, **resolved_kwargs)
 
-            params, varargs, varkw, defaults = getargspec(func)
+            params, varargs, varkw, defaults = getfullargspec(func)[:4]
             function_name = (name or getattr(func, u'_decorated_function', func).__name__)
             compile_func = partial(compiler, params=params, varargs=varargs, varkw=varkw,
                     defaults=defaults, name=function_name, takes_context=takes_context,

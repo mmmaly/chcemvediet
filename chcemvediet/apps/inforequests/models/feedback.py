@@ -43,6 +43,6 @@ class Feedback(FormatMixin, models.Model):
 
     class Meta:
         verbose_name_plural = u'Feedback'
-        index_together = [
-            [u'created', u'id'],
+        indexes = [
+            models.Index(fields=[u'created', u'id']),
         ]

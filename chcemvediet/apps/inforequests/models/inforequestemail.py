@@ -66,10 +66,10 @@ class InforequestEmail(FormatMixin, models.Model):
     objects = InforequestEmailQuerySet.as_manager()
 
     class Meta:
-        index_together = [
-                [u'email', u'inforequest'],
-                [u'inforequest', u'email'],
-                [u'type', u'inforequest'],
+        indexes = [
+                models.Index(fields=[u'email', u'inforequest']),
+                models.Index(fields=[u'inforequest', u'email']),
+                models.Index(fields=[u'type', u'inforequest']),
                 ]
 
     def __str__(self):

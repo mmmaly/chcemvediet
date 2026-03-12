@@ -165,8 +165,8 @@ class Inforequest(FormatMixin, models.Model):
     objects = InforequestQuerySet.as_manager()
 
     class Meta:
-        index_together = [
-                [u'submission_date', u'id'],
+        indexes = [
+                models.Index(fields=[u'submission_date', u'id']),
                 ]
 
     @cached_property

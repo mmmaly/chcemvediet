@@ -90,8 +90,8 @@ class Attachment(FormatMixin, models.Model):
     objects = AttachmentQuerySet.as_manager()
 
     class Meta:
-        index_together = [
-                [u'generic_type', u'generic_id'],
+        indexes = [
+                models.Index(fields=[u'generic_type', u'generic_id']),
                 ]
 
     @cached_property

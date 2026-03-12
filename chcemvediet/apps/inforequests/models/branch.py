@@ -72,9 +72,9 @@ class Branch(FormatMixin, models.Model):
 
     class Meta:
         verbose_name_plural = u'Branches'
-        index_together = [
-                [u'inforequest', u'advanced_by'],
-                [u'advanced_by', u'inforequest'],
+        indexes = [
+                models.Index(fields=[u'inforequest', u'advanced_by']),
+                models.Index(fields=[u'advanced_by', u'inforequest']),
                 ]
 
     @cached_property

@@ -286,8 +286,8 @@ class Action(FormatMixin, models.Model):
     objects = ActionQuerySet.as_manager()
 
     class Meta:
-        index_together = [
-                [u'created', u'id'],
+        indexes = [
+                models.Index(fields=[u'created', u'id']),
                 ]
 
     @staticmethod
