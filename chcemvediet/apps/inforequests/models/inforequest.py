@@ -130,7 +130,7 @@ class Inforequest(FormatMixin, models.Model):
                 True if the inforequest is closed and the applicant may not act on it any more.
                 """))
 
-    published = models.NullBooleanField(
+    published = models.BooleanField(null=True,
             help_text=squeeze(u"""
                 NULL if the inforequest will be published automatically. False if the inforequest
                 will never be published automatically. True if the inforequest is published and

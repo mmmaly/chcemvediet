@@ -15,6 +15,7 @@ HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'
 TEST_RUNNER = u'chcemvediet.tests.CustomTestRunner'
 WSGI_APPLICATION = u'chcemvediet.wsgi.application'
+DEFAULT_AUTO_FIELD = u'django.db.models.AutoField'
 
 TIME_ZONE = u'Europe/Bratislava'
 LANGUAGE_CODE = u'sk'
