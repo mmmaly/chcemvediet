@@ -34,6 +34,8 @@ parts = {
     u'feedback_action':           lazy_concat(_(u'inforequests:urls:feedback_action'), u'/')
     }
 
+app_name = u'inforequests'
+
 urlpatterns = [
     url(lazy_format(r'^$'),                                                                             views.inforequest_index,                name=u'index'),
     url(lazy_format(r'^{mine}$', **parts),                                                              views.inforequest_mine,                 name=u'mine'),

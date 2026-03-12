@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -23,7 +24,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(help_text='Date and time the attachment was finalized. Leave blank for current time.', blank=True)),
                 ('size', models.IntegerField(help_text='Attachment finalization file size in bytes. NULL if file is NULL. Automatically computed when creating a new object.', null=True, blank=True)),
                 ('debug', models.TextField(help_text='Debug message from finalization.', blank=True)),
-                ('attachment', models.ForeignKey(to='attachments.Attachment')),
+                ('attachment', models.ForeignKey(to='attachments.Attachment', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

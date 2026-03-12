@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 import jsonfield.fields
 
 
@@ -39,7 +40,7 @@ class Migration(migrations.Migration):
                 ('status', models.SmallIntegerField(help_text='Delivery status for the message recipient. It must be "Inbound" for inbound mesages or one of the remaining statuses for outbound messages.', choices=[(8, 'Inbound'), (1, 'Undefined'), (2, 'Queued'), (3, 'Rejected'), (4, 'Invalid'), (5, 'Sent'), (6, 'Delivered'), (7, 'Opened')])),
                 ('status_details', models.CharField(help_text='Unspecific delivery status details set by e-mail transport. Leave blank if not sure.', max_length=255, blank=True)),
                 ('remote_id', models.CharField(help_text='Recipient reference ID set by e-mail transport. Leave blank if not sure.', max_length=255, db_index=True, blank=True)),
-                ('message', models.ForeignKey(to='mail.Message')),
+                ('message', models.ForeignKey(to='mail.Message', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

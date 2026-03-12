@@ -11,6 +11,8 @@ urlparams = dict(
         name=r'(?P<name>[a-z0-9-]+[.][a-z0-9-.]+)',
         )
 
+app_name = u'pages'
+
 urlpatterns = [
     url(r'^alternatives/{lang}/{path}$'.format(**urlparams), views.alternatives, name=u'alternatives'),
     url(r'^{path}$'.format(**urlparams), views.view, name=u'view'),

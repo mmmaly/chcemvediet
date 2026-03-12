@@ -3,9 +3,9 @@ Unidecode==0.04.17
 pytz==2014.10
 python-dateutil==2.4.0
 requests==2.5.1
-Django==1.11.29
+Django==2.0.13
 django-allauth==0.30.0
-django-simple-history==1.9.0
+django-simple-history==2.7.3
 django-adminplus==0.5
 django-cron==0.5.1
 django-multiselectfield==0.1.8

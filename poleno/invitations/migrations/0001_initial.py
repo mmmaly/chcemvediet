@@ -23,8 +23,8 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(help_text='Date and time the invitation was created and sent.')),
                 ('valid_to', models.DateTimeField(help_text='Date and time the invitation is valid to.')),
                 ('accepted', models.DateTimeField(help_text='Date and time the invitation was accepted and the invitee registered himself.', null=True, blank=True)),
-                ('invitee', models.OneToOneField(related_name='invited_with', null=True, blank=True, to=settings.AUTH_USER_MODEL, help_text='NULL for pending and expired invitations and the user who was invited after he accepts the invitation and registers himself.')),
-                ('invitor', models.ForeignKey(help_text='The user who sent the invitation.', to=settings.AUTH_USER_MODEL)),
+                ('invitee', models.OneToOneField(related_name='invited_with', null=True, blank=True, to=settings.AUTH_USER_MODEL, help_text='NULL for pending and expired invitations and the user who was invited after he accepts the invitation and registers himself.', on_delete=django.db.models.deletion.CASCADE)),
+                ('invitor', models.ForeignKey(help_text='The user who sent the invitation.', to=settings.AUTH_USER_MODEL, on_delete=django.db.models.deletion.CASCADE)),
                 ('message', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='mail.Message', help_text='The e-mail message the invitation was sent by. NULL if the invitation was sent manually by the admin without sending any e-mail.')),
             ],
             options={

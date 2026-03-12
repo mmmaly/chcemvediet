@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 from django.conf import settings
 
 
@@ -20,7 +21,7 @@ class Migration(migrations.Migration):
                 ('enabled', models.BooleanField(default=True, help_text='Whether the user may send invitations.')),
                 ('unlimited', models.BooleanField(default=False, help_text='Whether the user may send an unlimited number of invitations.')),
                 ('supply', models.IntegerField(default=0, help_text='The number of invitations the user may send.')),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, help_text='The user to whom the invitation supply belongs.')),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, help_text='The user to whom the invitation supply belongs.', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

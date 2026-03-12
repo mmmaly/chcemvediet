@@ -55,8 +55,8 @@ class Migration(migrations.Migration):
             name='Branch',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('advanced_by', models.ForeignKey(related_name='advanced_to_set', blank=True, to='inforequests.Action', help_text='NULL for main branches. The advancement action the inforequest was advanced by for advanced branches. Every Inforequest must contain exactly one main branch.', null=True, db_index=False)),
-                ('historicalobligee', models.ForeignKey(help_text='Frozen Obligee at the time the Inforequest was submitted or advanced to it.', to='obligees.HistoricalObligee')),
+                ('advanced_by', models.ForeignKey(related_name='advanced_to_set', blank=True, to='inforequests.Action', help_text='NULL for main branches. The advancement action the inforequest was advanced by for advanced branches. Every Inforequest must contain exactly one main branch.', null=True, db_index=False, on_delete=django.db.models.deletion.CASCADE)),
+                ('historicalobligee', models.ForeignKey(help_text='Frozen Obligee at the time the Inforequest was submitted or advanced to it.', to='obligees.HistoricalObligee', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name_plural': 'Branches',
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('submission_date', models.DateField(auto_now_add=True)),
                 ('closed', models.BooleanField(default=False, help_text='True if the inforequest is closed and the applicant may not act on it any more.')),
                 ('last_undecided_email_reminder', models.DateTimeField(null=True, blank=True)),
-                ('applicant', models.ForeignKey(help_text='The inforequest owner, the user who submitted it.', to=settings.AUTH_USER_MODEL)),
+                ('applicant', models.ForeignKey(help_text='The inforequest owner, the user who submitted it.', to=settings.AUTH_USER_MODEL, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
@@ -87,8 +87,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('subject', jsonfield.fields.JSONField(default=(), blank=True)),
                 ('content', jsonfield.fields.JSONField(default=(), blank=True)),
-                ('applicant', models.ForeignKey(help_text='The draft owner, the future inforequest applicant.', to=settings.AUTH_USER_MODEL)),
-                ('obligee', models.ForeignKey(blank=True, to='obligees.Obligee', help_text='The obligee the inforequest will be sent to, if the user has already set it.', null=True)),
+                ('applicant', models.ForeignKey(help_text='The draft owner, the future inforequest applicant.', to=settings.AUTH_USER_MODEL, on_delete=django.db.models.deletion.CASCADE)),
+                ('obligee', models.ForeignKey(blank=True, to='obligees.Obligee', help_text='The obligee the inforequest will be sent to, if the user has already set it.', null=True, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
@@ -99,8 +99,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('type', models.SmallIntegerField(help_text='"Applicant Action": the email represents an applicant action; "Obligee Action": the email represents an obligee action; "Undecided": The email is waiting for applicant decision; "Unrelated": Marked as an unrelated email; "Unknown": Marked as an email the applicant didn\'t know how to decide. It must be "Applicant Action" for outbound mesages or one of the remaining values for inbound messages.', choices=[(1, 'Applicant Action'), (2, 'Obligee Action'), (3, 'Undecided'), (4, 'Unrelated'), (5, 'Unknown')])),
-                ('email', models.ForeignKey(to='mail.Message', db_index=False)),
-                ('inforequest', models.ForeignKey(to='inforequests.Inforequest', db_index=False)),
+                ('email', models.ForeignKey(to='mail.Message', db_index=False, on_delete=django.db.models.deletion.CASCADE)),
+                ('inforequest', models.ForeignKey(to='inforequests.Inforequest', db_index=False, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
@@ -123,13 +123,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='branch',
             name='inforequest',
-            field=models.ForeignKey(to='inforequests.Inforequest', db_index=False),
+            field=models.ForeignKey(to='inforequests.Inforequest', db_index=False, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='branch',
             name='obligee',
-            field=models.ForeignKey(help_text='The obligee the inforequest was sent or advanced to.', to='obligees.Obligee'),
+            field=models.ForeignKey(help_text='The obligee the inforequest was sent or advanced to.', to='obligees.Obligee', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterIndexTogether(
@@ -139,13 +139,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='actiondraft',
             name='branch',
-            field=models.ForeignKey(blank=True, to='inforequests.Branch', help_text='Must be owned by inforequest if set', null=True),
+            field=models.ForeignKey(blank=True, to='inforequests.Branch', help_text='Must be owned by inforequest if set', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='actiondraft',
             name='inforequest',
-            field=models.ForeignKey(to='inforequests.Inforequest'),
+            field=models.ForeignKey(to='inforequests.Inforequest', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -157,7 +157,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='action',
             name='branch',
-            field=models.ForeignKey(to='inforequests.Branch'),
+            field=models.ForeignKey(to='inforequests.Branch', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(

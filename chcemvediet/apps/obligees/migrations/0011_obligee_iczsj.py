@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -21,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='obligee',
             name='iczsj',
-            field=models.ForeignKey(default=u'1', to='geounits.Neighbourhood', help_text='City neighbourhood the obligee address is in.'),
+            field=models.ForeignKey(default=u'1', to='geounits.Neighbourhood', help_text='City neighbourhood the obligee address is in.', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=False,
         ),
     ]

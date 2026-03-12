@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -19,7 +20,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(help_text='Unique slug to identify the obligee alias used in urls. Automaticly computed from the obligee name. May not be changed manually.', unique=True, max_length=255)),
                 ('description', models.TextField(help_text='Obligee alias description.', blank=True)),
                 ('notes', models.TextField(help_text='Internal freetext notes. Not shown to the user.', blank=True)),
-                ('obligee', models.ForeignKey(help_text='Obligee of which this is alias.', to='obligees.Obligee')),
+                ('obligee', models.ForeignKey(help_text='Obligee of which this is alias.', to='obligees.Obligee', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 from django.conf import settings
 
 
@@ -21,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='invitation',
             name='invitee',
-            field=models.OneToOneField(related_name='invited_with', null=True, blank=True, to=settings.AUTH_USER_MODEL, help_text='The user who was invited after he accepts the invitation and registers himself. NULL for pending and expired invitations.'),
+            field=models.OneToOneField(related_name='invited_with', null=True, blank=True, to=settings.AUTH_USER_MODEL, help_text='The user who was invited after he accepts the invitation and registers himself. NULL for pending and expired invitations.', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
     ]

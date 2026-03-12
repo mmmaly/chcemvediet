@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -21,7 +22,7 @@ class Migration(migrations.Migration):
                 ('content_type', models.CharField(help_text='Attachment content type, e.g. "application/pdf". The value does not have to be a valid content type. It may be set by the user.', max_length=255)),
                 ('created', models.DateTimeField(help_text='Date and time the attachment was uploaded or received by an email. Leave blank for current time.', blank=True)),
                 ('size', models.IntegerField(help_text='Attachment file size in bytes. Automatically computed when creating a new object.', blank=True)),
-                ('generic_type', models.ForeignKey(to='contenttypes.ContentType', db_index=False)),
+                ('generic_type', models.ForeignKey(to='contenttypes.ContentType', db_index=False, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
