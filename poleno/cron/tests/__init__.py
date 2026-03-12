@@ -7,7 +7,7 @@ import warnings
 
 from django.core.management import call_command
 from django.test import TestCase
-from django_cron import CronJobLog
+from django_cron.models import CronJobLog
 
 from poleno.utils.date import utc_now
 

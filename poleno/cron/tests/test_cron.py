@@ -3,7 +3,8 @@
 import datetime
 
 from django.test import TestCase
-from django_cron import CronJobBase, CronJobLog
+from django_cron import CronJobBase
+from django_cron.models import CronJobLog
 
 from poleno.timewarp import timewarp
 from poleno.utils.date import local_datetime_from_local, utc_now
