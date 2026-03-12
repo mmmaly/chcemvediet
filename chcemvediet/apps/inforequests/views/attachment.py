@@ -28,7 +28,7 @@ def attachment_upload(request):
 
 @require_http_methods([u'HEAD', u'GET'])
 def attachment_download(request, attachment_pk):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         permitted = {
                 Action: Q(branch__inforequest__published=True) &
                         Q(branch__inforequest__applicant__profile__anonymize_inforequests=False),

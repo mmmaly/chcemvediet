@@ -70,7 +70,7 @@ INSTALLED_APPS = (
     u'chcemvediet.apps.anonymization',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     u'poleno.utils.http.RequestProviderMiddleware',
     u'django.middleware.common.CommonMiddleware',
     u'django.contrib.sessions.middleware.SessionMiddleware',
@@ -118,19 +118,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# Allauth 0.30.0 checks the old-style TEMPLATE_CONTEXT_PROCESSORS setting directly via
-# settings.TEMPLATE_CONTEXT_PROCESSORS. In Django 1.9 this setting is ignored by the template
-# engine, but third-party packages may still read it. We keep it here so allauth doesn't error.
-TEMPLATE_CONTEXT_PROCESSORS = (
-    u'django.contrib.auth.context_processors.auth',
-    u'django.template.context_processors.debug',
-    u'django.template.context_processors.i18n',
-    u'django.template.context_processors.tz',
-    u'django.contrib.messages.context_processors.messages',
-    u'allauth.account.context_processors.account',
-    u'allauth.socialaccount.context_processors.socialaccount',
-)
 
 # Daily jobs do all their work the first time they are run in a day. Duplicte runs in the same day
 # should do nothing. However, we run them multiple times in a day in case something was broken and

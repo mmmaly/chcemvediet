@@ -5,6 +5,7 @@ import stat
 from threading import local
 
 from django.http import HttpResponseNotModified, FileResponse, JsonResponse
+from django.utils.deprecation import MiddlewareMixin
 from django.views.static import was_modified_since
 from django.utils.http import http_date, urlquote
 
@@ -14,7 +15,7 @@ _local = local()
 def get_request():
     return getattr(_local, u'request', None)
 
-class RequestProviderMiddleware(object):
+class RequestProviderMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         _local.request = request

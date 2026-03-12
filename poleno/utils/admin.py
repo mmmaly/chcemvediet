@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.admin.actions import delete_selected
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import NoReverseMatch
+from django.urls import NoReverseMatch
 from django.db import transaction
 from django.utils.html import format_html
 from django.contrib import admin

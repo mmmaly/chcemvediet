@@ -6,7 +6,6 @@ from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import available_attrs
 
 
 def require_ajax(view):
@@ -18,7 +17,7 @@ def require_ajax(view):
         def view(request, ...):
             # We can assume now that only AJAX request gets here
     """
-    @wraps(view, assigned=available_attrs(view))
+    @wraps(view)
     def wrapped_view(request, *args, **kwargs):
         if not request.is_ajax():
             raise SuspiciousOperation()
@@ -45,7 +44,7 @@ def login_required(view=None, **kwargs):
     """
     raise_exception = kwargs.pop(u'raise_exception', False)
     def check(user):
-        if user.is_authenticated():
+        if user.is_authenticated:
             return True
         if raise_exception:
             raise PermissionDenied
@@ -72,7 +71,7 @@ def secure_required(view=None, raise_exception=False):
             # raised.
     """
     def actual_decorator(view):
-        @wraps(view, assigned=available_attrs(view))
+        @wraps(view)
         def wrapped_view(request, *args, **kwargs):
             if settings.DEBUG or request.is_secure():
                 return view(request, *args, **kwargs)

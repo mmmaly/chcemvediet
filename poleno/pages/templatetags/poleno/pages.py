@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.template import Library
 from django.utils.translation import get_language
 
@@ -91,7 +91,7 @@ def page_active(request, paths):
                 return True
     return False
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_page(context, *args):
     try:
         page = context[u'page']

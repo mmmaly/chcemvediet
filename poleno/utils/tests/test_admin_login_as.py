@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
-from django.conf.urls import url, RegexURLPattern
+from django.conf.urls import url
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.test import TestCase
@@ -29,8 +29,8 @@ class AdminLoginAsBackendMixinTest(TestCase):
     urls = (
             url(r'^$', public_view),
             url(r'admin/', ([
-                    RegexURLPattern(r'^$', admin_view),
-                    RegexURLPattern(r'^(\d+)/login-as/$', set_admin_login_as_attribute_admin_view),
+                    url(r'^$', admin_view),
+                    url(r'^(\d+)/login-as/$', set_admin_login_as_attribute_admin_view),
             ], None, u'admin')),
     )
 
@@ -61,11 +61,11 @@ class AdminLoginAsBackendMixinTest(TestCase):
     def test_public_route_uses_anonymous_user_if_user_is_not_logged_in(self):
         response = self.client.get(u'/')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.wsgi_request.user.is_anonymous())
+        self.assertTrue(response.wsgi_request.user.is_anonymous)
 
     def test_admin_route_uses_anonymous_user_and_fails_if_user_is_not_logged_in(self):
         response = self.client.get(u'/admin/')
-        self.assertTrue(response.wsgi_request.user.is_anonymous())
+        self.assertTrue(response.wsgi_request.user.is_anonymous)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, u'/login/?next=/admin/', fetch_redirect_response=False)
 

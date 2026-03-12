@@ -5,7 +5,7 @@ import random
 from functools import partial
 
 from django.template.defaultfilters import stringfilter
-from django.core.urlresolvers import resolve, Resolver404
+from django.urls import resolve, Resolver404
 from django.conf import settings
 from poleno.utils.lorem_ipsum import paragraphs
 from django.contrib.contenttypes.models import ContentType

@@ -12,7 +12,6 @@ from functools import wraps
 from StringIO import StringIO
 from unidecode import unidecode
 
-from django.utils.decorators import available_attrs
 
 
 class Bunch(object):
@@ -338,7 +337,7 @@ def cached_method(method=None, cached_exceptions=None):
         ValidationError
     """
     def actual_decorator(method):
-        @wraps(method, assigned=available_attrs(method))
+        @wraps(method)
         def wrapped_method(self, *args):
             cache = self.__dict__.setdefault(u'_{}__cache'.format(method.__name__), {})
             try:
@@ -363,7 +362,7 @@ def cached_method(method=None, cached_exceptions=None):
 def print_invocations(func=None):
     if not hasattr(print_invocations, u'level'):
         print_invocations.level = 0
-    @wraps(func, assigned=available_attrs(func))
+    @wraps(func)
     def wrapped_func(*args, **kwargs):
         print(u'{}>{}: args={} kwargs={}'.format(
                 u'  '*print_invocations.level, func.__name__,

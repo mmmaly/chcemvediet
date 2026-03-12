@@ -267,7 +267,7 @@ class ChangeLangTemplatetagTest(TestCase):
         self.lang = ((u'de', u'Deutsch'), (u'en', u'English'), (u'fr', u'Francais'))
         self.settings_override = override_settings(
             LANGUAGES=self.lang,
-            MIDDLEWARE_CLASSES=[mc for mc in settings.MIDDLEWARE_CLASSES
+            MIDDLEWARE=[mc for mc in settings.MIDDLEWARE
                                 if mc != u'django.middleware.locale.LocaleMiddleware'],
             )
         self.settings_override.enable()

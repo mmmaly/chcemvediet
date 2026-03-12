@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.backends import ModelBackend
-from django.core.urlresolvers import resolve, Resolver404
+from django.urls import resolve, Resolver404
 from django.http import HttpResponseRedirect
 
 from poleno.utils.http import get_request
