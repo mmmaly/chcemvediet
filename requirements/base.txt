@@ -3,31 +3,31 @@ Unidecode==0.04.17
 pytz==2014.10
 python-dateutil==2.4.0
 requests==2.5.1
-Django==2.2.28
-django-allauth==0.30.0
-django-simple-history==2.7.3
+Django==3.0.14
+django-allauth==0.44.0
+django-simple-history==3.0.0
 django-adminplus==0.5
 django-cron==0.5.1
-django-multiselectfield==0.1.8
+django-multiselectfield==0.1.12
 django-widget-tweaks==1.4.1
-django-compressor==1.5
-django-libsass==0.4
-jsonfield==1.0.2
+django-compressor==3.1
+django-libsass==0.9
+jsonfield==3.1.0
 openpyxl==2.2.6
 python-magic==0.4.15
 lxml==4.4.1
-django-recaptcha==1.0.6
+django-recaptcha==2.0.6
 
 # Dependencies for base requirements
-six==1.9.0                    # python-dateutil, django-libsass
+six==1.9.0                    # python-dateutil
 python3-openid==3.1.0         # django-allauth
 requests-oauthlib==0.4.2      # django-allauth
 oauthlib==0.7.2               # django-allauth
 django-common-helpers==0.6.4  # django-cron
-django-appconf==1.0.1         # django-compressor
-libsass==0.8.3                # django-libsass
+django-appconf==1.0.5         # django-compressor
+libsass==0.21.0               # django-libsass
 jdcal==1.2                    # openpyxl
 
 # Dependencies between base requirements
 # requests==2.5.1             # django-allauth
-# django-compressor==1.5      # django-libsass
+# django-compressor==3.1      # django-libsass
