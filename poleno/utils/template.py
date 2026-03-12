@@ -8,7 +8,7 @@ from functools import partial
 from django import template
 from django.apps import apps
 from django.template import TemplateSyntaxError, TemplateDoesNotExist, RequestContext
-from django.template.base import parse_bits
+from django.template.library import parse_bits
 from django.template.loader import render_to_string as django_render_to_string
 from django.template.loaders.base import Loader as BaseLoader
 from django.utils.translation import get_language
