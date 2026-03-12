@@ -9,10 +9,10 @@ def lazy_decorator(*resultclasses):
         return lazy(func, *resultclasses)
     return actual_decorator
 
-@lazy_decorator(unicode)
+@lazy_decorator(str)
 def lazy_concat(*strings):
     return u''.join(force_text(s) for s in strings)
 
-@lazy_decorator(unicode)
+@lazy_decorator(str)
 def lazy_format(fmt, *args, **kwargs):
     return force_text(fmt).format(*args, **kwargs)

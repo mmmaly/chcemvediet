@@ -20,11 +20,13 @@ class InforequestsSitemap(Sitemap):
         return [(lang, inforequest) for lang, name in settings.LANGUAGES
                 for inforequest in published_inforequests]
 
-    def location(self, (lang, inforequest)):
+    def location(self, item):
+        lang, inforequest = item
         with translation(lang):
             return reverse(u'inforequests:detail', args=[inforequest.slug, inforequest.pk])
 
-    def lastmod(self, (lang, inforequest)):
+    def lastmod(self, item):
+        lang, inforequest = item
         return (Action.objects
                 .of_inforequest(inforequest)
                 .aggregate(most_recent=Max(u'created'))[u'most_recent'])
@@ -38,6 +40,7 @@ class InforequestsPagingSitemap(Sitemap):
         paginator = Paginator(published_inforequests, INFOREQUESTS_PER_PAGE)
         return [(lang, i) for lang, name in settings.LANGUAGES for i in paginator.page_range]
 
-    def location(self, (lang, i)):
+    def location(self, item):
+        lang, i = item
         with translation(lang):
             return reverse(u'inforequests:index') + u'?' + urlencode({u'page': i})

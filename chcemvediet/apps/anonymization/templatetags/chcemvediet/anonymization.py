@@ -30,7 +30,7 @@ def anonymize_html(context, inforequest, html_content):
     try:
         return anonymize_markup(prog, html_content, etree.HTMLParser())
     except Exception as e:
-        trace = unicode(traceback.format_exc(), u'utf-8')
+        trace = traceback.format_exc()
         cron_logger.error(u'anonymize_html has failed.\n An '
                           u'unexpected error occured: {}\n{}'.format(e.__class__.__name__, trace))
         error = _(u'annonymization:anonymization:anonymize_html:error')

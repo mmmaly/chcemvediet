@@ -154,7 +154,7 @@ class Invitation(FormatMixin, models.Model):
         self.message = msg.instance
         self.save(update_fields=[u'message'])
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 
@@ -234,5 +234,5 @@ class InvitationSupply(FormatMixin, models.Model):
         self.supply = F(u'supply') + supply
         self.save()
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)

@@ -39,7 +39,7 @@ def undecided_email_reminder():
                 filtered.append(inforequest)
             except Exception:
                 msg = u'Checking if undecided email reminder should be sent failed: {}\n{}'
-                trace = unicode(traceback.format_exc(), u'utf-8')
+                trace = traceback.format_exc()
                 cron_logger.error(msg.format(inforequest, trace))
 
         if not filtered:
@@ -61,7 +61,7 @@ def undecided_email_reminder():
                     cron_logger.info(u'Sent undecided email reminder: {}'.format(inforequest))
             except Exception:
                 msg = u'Sending undecided email reminder failed: {}\n{}'
-                trace = unicode(traceback.format_exc(), u'utf-8')
+                trace = traceback.format_exc()
                 cron_logger.error(msg.format(inforequest, trace))
 
 @cron_job(run_at_times=settings.CRON_USER_INTERACTION_TIMES)
@@ -93,7 +93,7 @@ def obligee_deadline_reminder():
                     filtered.append(branch)
                 except Exception:
                     msg = u'Checking if obligee deadline reminder should be sent failed: {}\n{}'
-                    trace = unicode(traceback.format_exc(), u'utf-8')
+                    trace = traceback.format_exc()
                     cron_logger.error(msg.format(action, trace))
 
         if not filtered:
@@ -114,7 +114,7 @@ def obligee_deadline_reminder():
                     cron_logger.info(msg.format(branch.last_action))
             except Exception:
                 msg = u'Sending obligee deadline reminder failed: {}\n{}'
-                trace = unicode(traceback.format_exc(), u'utf-8')
+                trace = traceback.format_exc()
                 cron_logger.error(msg.format(branch.last_action, trace))
 
 @cron_job(run_at_times=settings.CRON_USER_INTERACTION_TIMES)
@@ -146,7 +146,7 @@ def applicant_deadline_reminder():
                     filtered.append(branch)
                 except Exception:
                     msg = u'Checking if applicant deadline reminder should be sent failed: {}\n{}'
-                    trace = unicode(traceback.format_exc(), u'utf-8')
+                    trace = traceback.format_exc()
                     cron_logger.error(msg.format(action, trace))
 
         if not filtered:
@@ -166,7 +166,7 @@ def applicant_deadline_reminder():
                     cron_logger.info(msg.format(branch.last_action))
             except Exception:
                 msg = u'Sending applicant deadline reminder failed: {}\n{}'
-                trace = unicode(traceback.format_exc(), u'utf-8')
+                trace = traceback.format_exc()
                 cron_logger.error(msg.format(branch.last_action, trace))
 
 @cron_job(run_at_times=settings.CRON_IMPORTANT_MAINTENANCE_TIMES)
@@ -193,7 +193,7 @@ def close_inforequests():
                 filtered.append(inforequest)
         except Exception:
             msg = u'Checking if inforequest should be closed failed: {}\n{}'
-            trace = unicode(traceback.format_exc(), u'utf-8')
+            trace = traceback.format_exc()
             cron_logger.error(msg.format(inforequest, trace))
 
     for inforequest in filtered:
@@ -207,7 +207,7 @@ def close_inforequests():
                 cron_logger.info(u'Closed inforequest: {}'.format(inforequest))
         except Exception:
             msg = u'Closing inforequest failed: {}\n{}'
-            trace = unicode(traceback.format_exc(), u'utf-8')
+            trace = traceback.format_exc()
             cron_logger.error(msg.format(inforequest, trace))
 
 @cron_job(run_at_times=settings.CRON_IMPORTANT_MAINTENANCE_TIMES)
@@ -246,7 +246,7 @@ def publish_inforequests():
                 filtered.append(inforequest)
         except Exception:
             msg = u'Checking if inforequest should be published failed: {}\n{}'
-            trace = unicode(traceback.format_exc(), u'utf-8')
+            trace = traceback.format_exc()
             cron_logger.error(msg.format(inforequest, trace))
 
     for inforequest in filtered:
@@ -256,7 +256,7 @@ def publish_inforequests():
             cron_logger.info(u'Published inforequest: {}'.format(inforequest))
         except Exception:
             msg = u'Publishing inforequest failed: {}\n{}'
-            trace = unicode(traceback.format_exc(), u'utf-8')
+            trace = traceback.format_exc()
             cron_logger.error(msg.format(inforequest, trace))
 
 @cron_job(run_at_times=settings.CRON_IMPORTANT_MAINTENANCE_TIMES)
@@ -285,7 +285,7 @@ def add_expirations():
                 filtered.append(branch)
             except Exception:
                 msg = u'Checking if expiration action should be added failed: {}\n{}'
-                trace = unicode(traceback.format_exc(), u'utf-8')
+                trace = traceback.format_exc()
                 cron_logger.error(msg.format(branch, trace))
 
     for branch in filtered:
@@ -295,5 +295,5 @@ def add_expirations():
                 cron_logger.info(u'Added expiration action: {}'.format(branch))
         except Exception:
             msg = u'Adding expiration action failed: {}\n{}'
-            trace = unicode(traceback.format_exc(), u'utf-8')
+            trace = traceback.format_exc()
             cron_logger.error(msg.format(branch, trace))

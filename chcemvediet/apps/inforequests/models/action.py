@@ -522,7 +522,7 @@ class Action(FormatMixin, models.Model):
         self.email = msg.instance
         self.save(update_fields=[u'email'])
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.get_type_display())
 
 @datacheck.register

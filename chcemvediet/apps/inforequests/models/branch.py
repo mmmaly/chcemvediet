@@ -382,7 +382,7 @@ class Branch(FormatMixin, models.Model):
 
         return [(name, mail) for mail, name in res.items()]
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 @datacheck.register

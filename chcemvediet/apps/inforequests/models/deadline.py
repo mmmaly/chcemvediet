@@ -152,7 +152,7 @@ class Deadline(FormatMixin, object):
     def is_snooze_missed_at(self, at):
         return self.snooze_date < at
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{} {} for {} since {}{}'.format(
                 self.value,
                 u'CD' if self.is_in_calendar_days else u'WD',

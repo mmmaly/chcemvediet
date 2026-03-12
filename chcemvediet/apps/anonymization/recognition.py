@@ -2,7 +2,7 @@ import os
 import shutil
 import traceback
 
-import subprocess32
+import subprocess
 from django.core.files.base import ContentFile
 from django.conf import settings
 
@@ -39,13 +39,13 @@ def recognize_using_ocr(attachment_normalization):
         with temporary_directory() as directory:
             filename = os.path.join(directory, u'file.pdf')
             shutil.copy2(attachment_normalization.file.path, filename)
-            p = subprocess32.run(
+            p = subprocess.run(
                 [u'abbyyocr11', u'--recognitionLanguage', u'Slovak', u'--splitDualPages', u'-if',
                  filename, u'-f', u'ODT', u'--rtfKeepLines', u'--rtfRemoveSoftHyphens',
                  u'--rtfPageSynthesisMode', u'ExactCopy', u'-of',
                  os.path.join(directory, u'file.odt')],
-                stdout=subprocess32.PIPE,
-                stderr=subprocess32.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 timeout=OCR_TIMEOUT,
                 check=True,
             )
@@ -55,16 +55,16 @@ def recognize_using_ocr(attachment_normalization):
                     successful=True,
                     file=ContentFile(file_odt.read()),
                     content_type=content_types.ODT_CONTENT_TYPE,
-                    debug=u'STDOUT:\n{}\nSTDERR:\n{}'.format(unicode(p.stdout, u'utf-8'),
-                                                             unicode(p.stderr, u'utf-8'),
+                    debug=u'STDOUT:\n{}\nSTDERR:\n{}'.format(p.stdout.decode(u'utf-8'),
+                                                             p.stderr.decode(u'utf-8'),
                                                              )
                 )
             cron_logger.info(u'Recognized attachment_normalization using OCR: {}'.format(
                 attachment_normalization))
     except Exception as e:
-        trace = unicode(traceback.format_exc(), u'utf-8')
-        stdout = unicode(p.stdout if p else getattr(e, u'stdout', ''), u'utf-8')
-        stderr = unicode(p.stderr if p else getattr(e, u'stderr', ''), u'utf-8')
+        trace = traceback.format_exc()
+        stdout = (p.stdout if p else getattr(e, u'stdout', b'')).decode(u'utf-8')
+        stderr = (p.stderr if p else getattr(e, u'stderr', b'')).decode(u'utf-8')
         AttachmentRecognition.objects.create(
             attachment=attachment_normalization.attachment,
             successful=False,

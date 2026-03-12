@@ -126,7 +126,7 @@ class Attachment(FormatMixin, models.Model):
                 created=self.created,
                 )
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 @datacheck.register

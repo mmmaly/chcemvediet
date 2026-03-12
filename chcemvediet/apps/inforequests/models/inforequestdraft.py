@@ -74,5 +74,5 @@ class InforequestDraft(FormatMixin, models.Model):
         """
         return list(self.attachment_set.order_by_pk())
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)

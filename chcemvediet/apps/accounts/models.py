@@ -127,5 +127,5 @@ class Profile(FormatMixin, OriginalValuesMixin, models.Model):
             return True
         return set(old_custom_anonymized_strings) != set(new_custom_anonymized_strings)
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)

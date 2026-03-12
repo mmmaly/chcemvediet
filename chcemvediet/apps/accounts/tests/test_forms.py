@@ -33,7 +33,7 @@ class LoginFormTest(TestCase):
         response = self.client.get(reverse(u'account_login'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'account/login.html')
-        html = lxml.html.fromstring(unicode(response.content, encoding=u'utf-8'))
+        html = lxml.html.fromstring(response.content.decode(u'utf-8'))
         element = html.get_element_by_id(u'g-recaptcha-response')
 
     def test_post_login_form_with_valid_data(self):
@@ -75,7 +75,7 @@ class SignupFormTest(TestCase):
         response = self.client.get(reverse(u'account_signup'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'account/signup.html')
-        html = lxml.html.fromstring(unicode(response.content, encoding=u'utf-8'))
+        html = lxml.html.fromstring(response.content.decode(u'utf-8'))
 
         element = html.get_element_by_id(u'id_first_name')
         self.assertEqual(element.tag, u'input')
@@ -228,7 +228,7 @@ class ResetPasswordFormTest(TestCase):
         response = self.client.get(reverse(u'account_reset_password'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'account/password_reset.html')
-        html = lxml.html.fromstring(unicode(response.content, encoding=u'utf-8'))
+        html = lxml.html.fromstring(response.content.decode(u'utf-8'))
         element = html.get_element_by_id(u'g-recaptcha-response')
 
     def test_post_reset_password_form_with_valid_data(self):

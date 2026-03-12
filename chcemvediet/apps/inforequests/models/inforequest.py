@@ -585,7 +585,7 @@ class Inforequest(FormatMixin, models.Model):
         action.last_deadline_reminder = utc_now()
         action.save(update_fields=[u'last_deadline_reminder'])
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.subject[:30])
 
 @datacheck.register

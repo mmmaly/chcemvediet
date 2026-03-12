@@ -62,7 +62,7 @@ def reverse(viewname, urlconf=None, args=None, kwargs=None, current_app=None):
         while args and args[-1] is None:
             args = args[:-1]
     if kwargs is not None:
-        kwargs = dict((k, v) for k, v in kwargs.iteritems() if v is not None)
+        kwargs = dict((k, v) for k, v in kwargs.items() if v is not None)
     return django_reverse(viewname, urlconf, args, kwargs, current_app)
 
 def complete_url(path, secure=False):

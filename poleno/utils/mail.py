@@ -61,8 +61,8 @@ def full_decode_header(header):
     # FIXME: Decoding "=?UTF-8?...?=" fails sometimes. Eg. if it is followed with "\r\n". This
     # happens with local dummy email infrastructure used with Thunderbird for instance.
     # See http://stackoverflow.com/questions/20816766/python-email-header-decode-header-fails-for-multiline-headers
-    if isinstance(header, unicode):
+    if isinstance(header, str):
         header = header.encode(u'utf-8')
     parts = decode_header(header)
-    decoded = u''.join(unicode(part, enc or u'utf-8', u'replace') for part, enc in parts)
+    decoded = u''.join(part.decode(enc or u'utf-8', u'replace') if isinstance(part, bytes) else part for part, enc in parts)
     return decoded

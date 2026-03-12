@@ -206,7 +206,7 @@ class Message(FormatMixin, models.Model):
     def bcc_formatted(self):
         return u', '.join(r.formatted for r in self.recipients_bcc)
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 
@@ -307,5 +307,5 @@ class Recipient(FormatMixin, models.Model):
     def formatted(self, value):
         self.name, self.mail = parseaddr(value)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.mail)

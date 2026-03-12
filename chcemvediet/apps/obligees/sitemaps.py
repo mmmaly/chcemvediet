@@ -19,6 +19,7 @@ class ObligeesSitemap(Sitemap):
         paginator = Paginator(obligees, OBLIGEES_PER_PAGE)
         return [(lang, i) for lang, name in settings.LANGUAGES for i in paginator.page_range]
 
-    def location(self, (lang, i)):
+    def location(self, item):
+        lang, i = item
         with translation(lang):
             return reverse(u'obligees:index') + u'?' + urlencode({u'page': i})

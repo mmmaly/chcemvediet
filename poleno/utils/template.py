@@ -25,11 +25,11 @@ def render_to_string(template_name, dictionary=None, context_instance=None, dirs
             context_instance = RequestContext(request)
     return django_render_to_string(template_name, dictionary, context_instance, dirs)
 
-@lazy_decorator(unicode)
+@lazy_decorator(str)
 def lazy_render_to_string(*args, **kwargs):
     return render_to_string(*args, **kwargs)
 
-@lazy_decorator(unicode)
+@lazy_decorator(str)
 def lazy_squeeze_render_to_string(*args, **kwargs):
     return squeeze(render_to_string(*args, **kwargs))
 

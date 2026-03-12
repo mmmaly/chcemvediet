@@ -33,7 +33,7 @@ class FakeField(object):
     def label_tag(self):
         return format_html(u'<label>{0}:</label>', self.label)
 
-    def __unicode__(self):
+    def __str__(self):
         return format_html(u'<div style="margin: 4px 0 0 106px;">{0}</div>', self.text)
 
 class LivePath(FakeField):

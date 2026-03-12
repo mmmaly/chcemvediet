@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import zipfile
-import StringIO
+import io
 import traceback
 from contextlib import closing
 
@@ -160,8 +160,8 @@ def anonymize_odt(attachment_recognition):
         parser = etree.XMLParser()
         pattern = generate_user_pattern(inforequest)
         namespace = {u'text': u'urn:oasis:names:tc:opendocument:xmlns:text:1.0'}
-        with closing(StringIO.StringIO(attachment_recognition.content)) as buffer_in:
-            with closing(StringIO.StringIO()) as buffer_out:
+        with closing(io.BytesIO(attachment_recognition.content)) as buffer_in:
+            with closing(io.BytesIO()) as buffer_out:
                 with zipfile.ZipFile(buffer_in) as zipfile_in:
                     with zipfile.ZipFile(buffer_out, u'w') as zipfile_out:
                         for f in zipfile_in.filelist:
@@ -180,7 +180,7 @@ def anonymize_odt(attachment_recognition):
                 cron_logger.info(u'Anonymized attachment_recognition: {}'.format(
                         attachment_recognition))
     except Exception as e:
-        trace = unicode(traceback.format_exc(), u'utf-8')
+        trace = traceback.format_exc()
         AttachmentAnonymization.objects.create(
             attachment=attachment_recognition.attachment,
             successful=False,

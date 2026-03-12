@@ -154,7 +154,7 @@ class InforequestsTestCaseMixin(ChcemvedietTestCaseMixin):
 
     def _create_inforequest_scenario__branch(self, inforequest, obligee, advanced_by, base_action, args):
         branch = Branch.objects.create(inforequest=inforequest, obligee=obligee, advanced_by=advanced_by)
-        args = [[a] if isinstance(a, basestring) else list(a) for a in args]
+        args = [[a] if isinstance(a, str) else list(a) for a in args]
         if not args or args[0][0] != base_action:
             args[0:0] = [[base_action]]
         actions = []

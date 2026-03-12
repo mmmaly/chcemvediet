@@ -18,7 +18,7 @@ def _combine_parts(parent, parts):
     parent.text = u''
     parent[:] = []
     for part in parts:
-        if isinstance(part, basestring):
+        if isinstance(part, str):
             try:
                 parent[-1].tail += part
             except IndexError:

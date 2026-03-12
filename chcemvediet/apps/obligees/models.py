@@ -68,7 +68,7 @@ class ObligeeTag(FormatMixin, models.Model):
 
         super(ObligeeTag, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.key)
 
 
@@ -132,7 +132,7 @@ class ObligeeGroup(FormatMixin, models.Model):
 
         super(ObligeeGroup, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.key)
 
 
@@ -308,7 +308,7 @@ class Obligee(FormatMixin, models.Model):
 
         super(Obligee, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.name)
 
 
@@ -369,7 +369,7 @@ class ObligeeAlias(FormatMixin, models.Model):
 
         super(ObligeeAlias, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.name)
 
 

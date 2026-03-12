@@ -21,7 +21,7 @@ class Issue(FormatMixin, object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{}: {}{}'.format(self.issuer, self.msg,
                 u' (Was autofixed)' if self.autofixed else
                 u' (Can be autofixed, use --autofix)' if self.autofixable else u'',
@@ -70,10 +70,13 @@ class Check(FormatMixin, object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return hash(self.name)
+
     def __lt__(self, other):
         return self.name < other.name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Registry(object):

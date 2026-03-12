@@ -6,7 +6,6 @@ requests==2.5.1
 Django==1.11.29
 django-allauth==0.30.0
 django-simple-history==1.9.0
-django-aggregate-if==0.5
 django-adminplus==0.5
 django-cron==0.5.1
 django-multiselectfield==0.1.8
@@ -16,13 +15,12 @@ django-libsass==0.4
 jsonfield==1.0.2
 openpyxl==2.2.6
 python-magic==0.4.15
-subprocess32==3.5.4
 lxml==4.4.1
 django-recaptcha==1.0.6
 
 # Dependencies for base requirements
-six==1.9.0                    # python-dateutil, django-aggregate-if, django-libsass
-python-openid==2.2.5          # django-allauth
+six==1.9.0                    # python-dateutil, django-libsass
+python3-openid==3.1.0         # django-allauth
 requests-oauthlib==0.4.2      # django-allauth
 oauthlib==0.7.2               # django-allauth
 django-common-helpers==0.6.4  # django-cron
@@ -33,7 +31,3 @@ jdcal==1.2                    # openpyxl
 # Dependencies between base requirements
 # requests==2.5.1             # django-allauth
 # django-compressor==1.5      # django-libsass
-
-# Installed by 'virtualenv env' directly
-# argparse==1.2.1
-# wsgiref==0.1.2

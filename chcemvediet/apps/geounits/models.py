@@ -64,7 +64,7 @@ class Region(FormatMixin, models.Model): # "Kraj"
 
         super(Region, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.name)
 
 
@@ -130,7 +130,7 @@ class District(FormatMixin, models.Model): # "Okres"
 
         super(District, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.name)
 
 
@@ -199,7 +199,7 @@ class Municipality(FormatMixin, models.Model): # "Obec"
 
         super(Municipality, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.name)
 
 
@@ -254,7 +254,7 @@ class Neighbourhood(FormatMixin, models.Model): # "Základná sídelná jednotka
 
     objects = NeighbourhoodQuerySet.as_manager()
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{}] {}'.format(self.pk, self.name)
 
 

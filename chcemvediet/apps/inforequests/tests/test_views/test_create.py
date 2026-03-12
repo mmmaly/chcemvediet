@@ -37,7 +37,7 @@ class CreateViewTest(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):
         defaults.update(kwargs)
         for key in omit:
             defaults.pop(key)
-        defaults = {translate.get(k, k): v for k, v in defaults.iteritems()}
+        defaults = {translate.get(k, k): v for k, v in defaults.items()}
         return defaults
 
 

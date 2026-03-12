@@ -36,7 +36,7 @@ class ImapTransportTest(MailTestCaseMixin, TestCase):
         defaults.update(headers)
         for name in omit:
             del defaults[name]
-        headers = u'\n'.join(u'%s: %s' % (name, value) for name, value in defaults.iteritems())
+        headers = u'\n'.join(u'%s: %s' % (name, value) for name, value in defaults.items())
         if body is None:
             body = dedent(u"""\
                     --===============1111111111==

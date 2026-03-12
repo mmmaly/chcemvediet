@@ -72,7 +72,7 @@ class InforequestEmail(FormatMixin, models.Model):
                 [u'type', u'inforequest'],
                 ]
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 @datacheck.register

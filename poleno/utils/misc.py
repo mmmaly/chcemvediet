@@ -8,8 +8,9 @@ import re
 import mimetypes
 import contextlib
 import collections
+import collections.abc
 from functools import wraps
-from StringIO import StringIO
+from io import StringIO
 from unidecode import unidecode
 
 
@@ -35,20 +36,20 @@ class FormatMixin(object):
 
     def __format__(self, format):
         try:
-            u = unicode(self)
+            u = str(self)
         except UnicodeError:
             u = u'[Bad Unicode data]'
         return u'<{}: {}>'.format(self.__class__.__name__, u)
 
     def __repr__(self):
-        return format(self).encode(u'utf-8')
+        return format(self)
 
 def random_string(length, chars=(string.ascii_letters + string.digits)):
     u"""
     Returns a random string ``length`` characters long consisting of ``chars``.
     """
     sysrandom = random.SystemRandom()
-    return u''.join(sysrandom.choice(chars) for i in xrange(length))
+    return u''.join(sysrandom.choice(chars) for i in range(length))
 
 def random_readable_string(length, vowels=u'aeiouy', consonants=u'bcdfghjklmnprstvxz'):
     u"""
@@ -133,7 +134,7 @@ def flatten(l):
        ['one', ['two', 'three']] -> ['one', 'two', 'three']
     """
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+        if isinstance(el, collections.abc.Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub
         else:
@@ -286,7 +287,7 @@ def decorate(func=None, **kwargs):
             func.foo == 7
     """
     def actual_decorator(func):
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             setattr(func, key, val)
         return func
     if func:
@@ -366,11 +367,11 @@ def print_invocations(func=None):
     def wrapped_func(*args, **kwargs):
         print(u'{}>{}: args={} kwargs={}'.format(
                 u'  '*print_invocations.level, func.__name__,
-                unicode(repr(args), u'utf-8'), unicode(repr(kwargs), u'utf-8')))
+                repr(args), repr(kwargs)))
         print_invocations.level += 1
         res = func(*args, **kwargs)
         print_invocations.level -= 1
         print(u'{}<{}: res={}'.format(u'  '*print_invocations.level, func.__name__,
-                unicode(repr(res), u'utf-8')))
+                repr(res)))
         return res
     return wrapped_func

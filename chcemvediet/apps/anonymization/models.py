@@ -112,7 +112,7 @@ class AttachmentNormalization(FormatMixin, models.Model):
                 self.name = adjust_extension(self.attachment.name, self.content_type)
         super(AttachmentNormalization, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 class AttachmentRecognitionQuerySet(QuerySet):
@@ -213,7 +213,7 @@ class AttachmentRecognition(FormatMixin, models.Model):
                 self.name = adjust_extension(self.attachment.name, self.content_type)
         super(AttachmentRecognition, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 class AttachmentAnonymizationQuerySet(QuerySet):
@@ -318,7 +318,7 @@ class AttachmentAnonymization(FormatMixin, models.Model):
                 self.name = adjust_extension(self.attachment.name, self.content_type)
         super(AttachmentAnonymization, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 class AttachmentFinalizationQuerySet(QuerySet):
@@ -416,7 +416,7 @@ class AttachmentFinalization(FormatMixin, models.Model):
                 self.name = adjust_extension(self.attachment.name, self.content_type)
         super(AttachmentFinalization, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return format(self.pk)
 
 

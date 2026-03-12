@@ -22,9 +22,7 @@ def squeeze(s):
     return u' '.join(s.split())
 
 def slugify(s):
-    if type(s) is str:
-        s = unicode(s, u'utf-8')
-    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore')
+    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode('ascii')
     s = re.sub(r'\W+', '-', s)
     s = s.lower().strip('-')
     return s
@@ -90,7 +88,7 @@ class Configure(object):
         configured = self.data.get(key, default)
         prompt = u'\n{} [{}]: '.format(prompt, configured)
         while True:
-            inputed = unicode(raw_input(PROMPT + prompt + RESET)) or configured
+            inputed = input(PROMPT + prompt + RESET) or configured
             if required and not inputed:
                 print(ERROR + u'\nError: The value is required.' + RESET)
                 continue
@@ -119,7 +117,7 @@ class Configure(object):
         configured = self.data.get(key, default)
         prompt = u'\n{} Y/N [{}]: '.format(prompt, configured)
         while True:
-            inputed = unicode(raw_input(PROMPT + prompt + RESET)) or configured
+            inputed = input(PROMPT + prompt + RESET) or configured
             if not inputed:
                 print(ERROR + u'\nError: The value is required.' + RESET)
                 continue
@@ -142,7 +140,7 @@ class Configure(object):
                 configured_choice = format(idx+1)
         prompt = u'\n{} [{}]: '.format(prompt, configured_choice)
         while True:
-            inputed = unicode(raw_input(PROMPT + prompt + RESET)) or configured_choice
+            inputed = input(PROMPT + prompt + RESET) or configured_choice
             if not inputed:
                 print(ERROR + u'\nError: The value is required.' + RESET)
                 continue
@@ -175,11 +173,11 @@ class Settings(object):
             self.lines.append(u'# {}'.format(line))
 
     def include(self, filaname):
-        self.lines.append(u'execfile(os.path.join(SETTINGS_PATH, {}))'.format(
-                unicode(repr(filaname), u'utf-8')))
+        self.lines.append(u"exec(compile(open(os.path.join(SETTINGS_PATH, {})).read(), {}, u'exec'))".format(
+                repr(filaname), repr(filaname)))
 
     def setting(self, name, value):
-        self.lines.append(u'{} = {}'.format(name, unicode(repr(value), u'utf-8')))
+        self.lines.append(u'{} = {}'.format(name, repr(value)))
 
 def generate_secret_key(length, chars):
     sysrandom = random.SystemRandom()
@@ -292,7 +290,7 @@ def download_fontello(configure):
 
 def configure_secret_key(configure, settings):
     secret_key = configure.auto(u'secret_key',
-            generate_secret_key(100, string.digits + string.letters + string.punctuation))
+            generate_secret_key(100, string.digits + string.ascii_letters + string.punctuation))
     settings.setting(u'SECRET_KEY', secret_key)
 
 def configure_domain_and_emails(configure, settings):
@@ -409,7 +407,7 @@ def configure_mandrill(configure, settings):
                     u'https' if mandrill_webhook_https == u'Y' else u'http', server_domain),
                 required=True)
         mandrill_webhook_secret = configure.auto(u'mandrill_webhook_secret',
-                generate_secret_key(32, string.digits + string.letters))
+                generate_secret_key(32, string.digits + string.ascii_letters))
         mandrill_webhook_url = u'{}/mandrill/webhook/?secret={}'.format(
                 mandrill_webhook_prefix.rstrip(u'/'), mandrill_webhook_secret)
         mandrill_api_key = configure.input(u'mandrill_api_key', u'Mandrill API key', required=True)

@@ -37,7 +37,7 @@ class SmtpTransportTest(MailTestCaseMixin, TestCase):
         for header in headers.split(u'\n'):
             key, value = header.split(u': ', 1)
             dd[key].append(value)
-        res = {k: v for k, v in dd.iteritems()}
+        res = {k: v for k, v in dd.items()}
         return res
 
     def _run_mail_cron_job(self):

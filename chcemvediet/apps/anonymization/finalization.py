@@ -2,7 +2,7 @@ import os
 import shutil
 import traceback
 
-import subprocess32
+import subprocess
 from django.core.files.base import ContentFile
 from django.conf import settings
 
@@ -42,11 +42,11 @@ def finalize_using_libreoffice(attachment_anonymization):
                                     u'file' + guess_extension(attachment_anonymization.content_type)
                                     )
             shutil.copy2(attachment_anonymization.file.path, filename)
-            p = subprocess32.run(
+            p = subprocess.run(
                 [u'libreoffice', u'--headless', u'--convert-to', u'pdf', u'--outdir', directory,
                  filename],
-                stdout=subprocess32.PIPE,
-                stderr=subprocess32.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 timeout=LIBREOFFICE_TIMEOUT,
                 check=True,
             )
@@ -56,16 +56,16 @@ def finalize_using_libreoffice(attachment_anonymization):
                     successful=True,
                     file=ContentFile(file_pdf.read()),
                     content_type=content_types.PDF_CONTENT_TYPE,
-                    debug=u'STDOUT:\n{}\nSTDERR:\n{}'.format(unicode(p.stdout, u'utf-8'),
-                                                             unicode(p.stderr, u'utf-8'),
+                    debug=u'STDOUT:\n{}\nSTDERR:\n{}'.format(p.stdout.decode(u'utf-8'),
+                                                             p.stderr.decode(u'utf-8'),
                                                              )
                 )
             cron_logger.info(u'Finalized attachment using libreoffice: {}'.format(
                 attachment_anonymization))
     except Exception as e:
-        trace = unicode(traceback.format_exc(), u'utf-8')
-        stdout = unicode(p.stdout if p else getattr(e, u'stdout', ''), u'utf-8')
-        stderr = unicode(p.stderr if p else getattr(e, u'stderr', ''), u'utf-8')
+        trace = traceback.format_exc()
+        stdout = (p.stdout if p else getattr(e, u'stdout', b'')).decode(u'utf-8')
+        stderr = (p.stderr if p else getattr(e, u'stderr', b'')).decode(u'utf-8')
         AttachmentFinalization.objects.create(
             attachment=attachment_anonymization.attachment,
             successful=False,

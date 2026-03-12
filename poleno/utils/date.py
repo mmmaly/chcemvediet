@@ -17,7 +17,7 @@ def local_now(tz=None):
     Usage:
         local_now([tz])
     """
-    tz = pytz.timezone(tz) if isinstance(tz, basestring) else tz
+    tz = pytz.timezone(tz) if isinstance(tz, str) else tz
     dt = timezone.localtime(timezone.now(), tz)
     return dt
 
@@ -30,7 +30,7 @@ def local_datetime(dt, tz=None):
     Usage:
         local_datetime(aware_datetime, [tz])
     """
-    tz = pytz.timezone(tz) if isinstance(tz, basestring) else tz
+    tz = pytz.timezone(tz) if isinstance(tz, str) else tz
     assert timezone.is_aware(dt)
     dt = timezone.localtime(dt, tz)
     return dt
@@ -57,9 +57,9 @@ def local_datetime_from_local(*args, **kwargs):
     numbers.
     """
     from_tz = kwargs.pop(u'from_tz', timezone.get_current_timezone())
-    from_tz = pytz.timezone(from_tz) if isinstance(from_tz, basestring) else from_tz
+    from_tz = pytz.timezone(from_tz) if isinstance(from_tz, str) else from_tz
     tz = kwargs.pop(u'tz', None)
-    tz = pytz.timezone(tz) if isinstance(tz, basestring) else tz
+    tz = pytz.timezone(tz) if isinstance(tz, str) else tz
     dt = _datetime_factory(*args, **kwargs)
     assert timezone.is_naive(dt)
     dt = timezone.make_aware(dt, from_tz)
@@ -265,7 +265,7 @@ def _datetime_factory(*args, **kwargs):
             value = kwargs.pop(name)
             value = parser(value)
             return value
-        if args and isinstance(args[0], (typ, basestring)):
+        if args and isinstance(args[0], (typ, str)):
             try:
                 value = args.pop(0)
                 value = parser(value)
@@ -277,7 +277,7 @@ def _datetime_factory(*args, **kwargs):
         if not error:
             error = name
         if args:
-            error = u'{}, got {}'.format(error, unicode(repr(args[0]), u'utf-8'))
+            error = u'{}, got {}'.format(error, repr(args[0]))
         raise TypeError(u'Expecting argument: {}'.format(error))
 
     dt = pop_arg(u'datetime', datetime.datetime, parse_dt, default=None)
@@ -298,7 +298,7 @@ def _datetime_factory(*args, **kwargs):
         dt = datetime.datetime.combine(date, time)
 
     if args or kwargs:
-        error = [unicode(repr(a), u'utf-8') for a in args]
-        error += [u'{}={}'.format(k, unicode(repr(v), u'utf-8')) for k, v in kwargs.items()]
+        error = [repr(a) for a in args]
+        error += [u'{}={}'.format(k, repr(v)) for k, v in kwargs.items()]
         raise TypeError(u'Unexpected arguments: {}'.format(u', '.join(error)))
     return dt

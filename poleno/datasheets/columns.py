@@ -129,7 +129,7 @@ class Column(object):
         return common_repr(value)
 
 class TextColumn(Column):
-    value_type = basestring
+    value_type = str
 
     def __init__(self, label, min_length=None, max_length=None, regex=None, unique_slug=False,
             **kwargs):
@@ -241,7 +241,7 @@ class ForeignKeyColumn(Column):
 
     def apply_relation(self, sheet, value):
         try:
-            obj = self.to_model.objects.get(**{self.to_field: unicode(value)})
+            obj = self.to_model.objects.get(**{self.to_field: str(value)})
         except self.to_model.DoesNotExist:
             raise CellError(u'relation_not_found', u'There is no {} with {}={}',
                     self.to_model.__name__, self.to_field, self.value_repr(value))
@@ -262,7 +262,7 @@ class ForeignKeyColumn(Column):
         return value
 
 class ManyToManyColumn(ForeignKeyColumn):
-    value_type = basestring
+    value_type = str
 
     def __init__(self, label, to_model, **kwargs):
         kwargs.setdefault(u'default', u'')

@@ -26,7 +26,7 @@ class AbstractTests(object):
         not_prefixed = kwargs.pop(u'not_prefixed', [])
         for key in omit:
             kwargs.pop(key)
-        kwargs = {k if k in not_prefixed else u'%s-%s' % (prefix, k): v for k, v in kwargs.iteritems()}
+        kwargs = {k if k in not_prefixed else u'%s-%s' % (prefix, k): v for k, v in kwargs.items()}
         return kwargs
 
 class CustomTestCase(InforequestsTestCaseMixin, ViewTestCaseMixin, TestCase):

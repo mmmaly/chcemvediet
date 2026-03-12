@@ -92,7 +92,7 @@ class Config(object):
     def write_to_string(self):
         res = []
         for key, val in self._config.items():
-            if not isinstance(key, basestring):
+            if not isinstance(key, str):
                 res.append(u'{}\n'.format(val))
             elif val is not None:
                 res.append(u'{} = {}\n'.format(key, val))
@@ -103,7 +103,7 @@ class Config(object):
         return default if res is None else res
 
     def set(self, key, value):
-        if not isinstance(key, basestring):
+        if not isinstance(key, str):
             raise SetConfigError(u'Key must be a string.', key=key)
         if u'\n' in key or u'\r' in key:
             raise SetConfigError(u'Key may not contain linebreaks.', key=key)
@@ -180,7 +180,7 @@ class File(object):
         else:
             return NotImplemented
 
-    def __unicode__(self):
+    def __str__(self):
         return self._name
 
     ##########

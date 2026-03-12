@@ -1,6 +1,6 @@
 import os
 import sys
-from StringIO import StringIO
+from io import StringIO
 from testfixtures import TempDirectory
 
 from django.core.management import call_command

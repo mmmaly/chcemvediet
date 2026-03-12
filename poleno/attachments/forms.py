@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import collections
+import collections.abc
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -72,7 +73,7 @@ class AttachmentsField(forms.Field):
         self.widget.download_url_func = self._download_url_func = func
 
     def prepare_value(self, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             try:
                 return self.to_python(value)
             except ValidationError:
@@ -89,7 +90,7 @@ class AttachmentsField(forms.Field):
             return []
 
         # Only attachments poiting to whitelisted objects may be used by the field.
-        if isinstance(self.attached_to, collections.Iterable):
+        if isinstance(self.attached_to, collections.abc.Iterable):
             query_set = Attachment.objects.attached_to(*self.attached_to)
         else:
             query_set = Attachment.objects.attached_to(self.attached_to)

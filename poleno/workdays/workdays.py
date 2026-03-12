@@ -49,7 +49,7 @@ class FixedHoliday(FormatMixin, Holiday):
     def for_year(self, year):
         return [datetime.date(year, self.month, self.day)]
 
-    def __unicode__(self):
+    def __str__(self):
         return u'day={}, month={}'.format(self.day, self.month)
 
 class EasterHoliday(FormatMixin, Holiday):
@@ -63,7 +63,7 @@ class EasterHoliday(FormatMixin, Holiday):
     def for_year(self, year):
         return [easter(year) + datetime.timedelta(days=self.days)]
 
-    def __unicode__(self):
+    def __str__(self):
         return u'days={}'.format(self.days)
 
 class HolidaySet(FormatMixin, object):
@@ -80,7 +80,7 @@ class HolidaySet(FormatMixin, object):
         return set(d for h in self.holidays
                      for d in h.between(after, before))
 
-    def __unicode__(self):
+    def __str__(self):
         return u', '.join(format(h) for h in self.holidays)
 
 

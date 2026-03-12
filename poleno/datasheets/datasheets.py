@@ -14,10 +14,10 @@ from poleno.utils.misc import squeeze, Bunch
 
 
 def common_repr(value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         return u'"{}"'.format(value)
     else:
-        return unicode(repr(value), u'utf-8')
+        return repr(value)
 
 
 class RollingError(Exception):
@@ -393,7 +393,7 @@ class Importer(object):
                     inputed = default
                 self.stdout.write(inputed)
             else:
-                inputed = unicode(raw_input()) or default
+                inputed = input() or default
 
             if not inputed:
                 error = u'The value is required.'

@@ -1,5 +1,4 @@
 # Requirements for unittests
-mock==1.0.1
 coverage==4.0a1
 instrumental==0.5.3
 testfixtures==4.1.2

@@ -4,7 +4,7 @@ import re
 import sys
 import datetime
 import mock
-from StringIO import StringIO
+from io import StringIO
 
 from django.core import management
 from django.core.management.base import CommandError
