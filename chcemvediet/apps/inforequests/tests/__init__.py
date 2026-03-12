@@ -23,11 +23,18 @@ class InforequestsTestCaseMixin(ChcemvedietTestCaseMixin):
 
     @staticmethod
     def _extract_query_sql(sql):
-        u"""Extract bare SQL from Django 1.8 SQLite query format: QUERY = u'...' - PARAMS = (...)"""
+        u"""Extract bare SQL from query format. Handles both Django 1.8 format
+        (QUERY = u'...' - PARAMS = (...)) and Django 1.9+ format (raw SQL)."""
         match = re.match(r"^QUERY = u'(.*)'( - PARAMS = .*)$", sql, re.DOTALL)
         if match:
             return match.group(1)
         return sql
+
+    @staticmethod
+    def _normalize_pattern(pattern):
+        u"""Replace %s placeholders in query patterns with regex matching actual values,
+        for compatibility with Django 1.9+ which inlines parameter values in logged SQL."""
+        return pattern.replace(u'%s', u'\\S+')
 
     @contextlib.contextmanager
     def assertQueriesDuringRender(self, *patterns, **kwargs):
@@ -69,7 +76,7 @@ class InforequestsTestCaseMixin(ChcemvedietTestCaseMixin):
                 u'\n'.join(render_patterns),
                 ]))
             for query, pattern in zip(render_queries, render_patterns):
-                self.assertRegexpMatches(self._extract_query_sql(query[u'sql']), pattern)
+                self.assertRegexpMatches(self._extract_query_sql(query[u'sql']), self._normalize_pattern(pattern))
 
 
     def _pre_setup(self):

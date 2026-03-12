@@ -17,9 +17,9 @@ class AjaxRequiredTest(TestCase):
     def require_ajax_view(request):
         return HttpResponse()
 
-    urls = [
+    urls = (
         url(r'^require-ajax/$', require_ajax_view),
-    ]
+    )
 
     def setUp(self):
         self.settings_override = override_settings(
@@ -64,10 +64,10 @@ class LoginRequiredTest(TestCase):
     def login_required_with_exception_view(request):
         return HttpResponse()
 
-    urls = [
+    urls = (
         url(r'^login-required-with-redirect/$', login_required_with_redirect_view),
         url(r'^login-required-with-exception/$', login_required_with_exception_view),
-    ]
+    )
 
     def setUp(self):
         self.settings_override = override_settings(
@@ -137,10 +137,10 @@ class SecureRequiredTest(TestCase):
     def secure_required_with_exception_view(request):
         return HttpResponse()
 
-    urls = [
+    urls = (
         url(r'^secure-required-with-redirect/$', secure_required_with_redirect_view),
         url(r'^secure-required-with-exception/$', secure_required_with_exception_view),
-    ]
+    )
 
     def setUp(self):
         self.settings_override = override_settings(

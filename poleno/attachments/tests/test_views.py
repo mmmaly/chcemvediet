@@ -31,10 +31,10 @@ class AttachmentViewsTest(TestCase):
         attachment = Attachment.objects.first()
         return download(request, attachment)
 
-    urls = [
+    urls = (
         url(r'^upload/$', upload_view),
         url(r'^download/$', download_view),
-        ]
+        )
 
 
     def setUp(self):

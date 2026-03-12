@@ -26,13 +26,13 @@ class AdminLoginAsBackendMixinTest(TestCase):
             pass
         return HttpResponse()
 
-    urls = [
+    urls = (
             url(r'^$', public_view),
             url(r'admin/', ([
                     RegexURLPattern(r'^$', admin_view),
                     RegexURLPattern(r'^(\d+)/login-as/$', set_admin_login_as_attribute_admin_view),
             ], None, u'admin')),
-    ]
+    )
 
     def create_users(self):
         self.user = User.objects.create_user(

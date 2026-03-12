@@ -111,9 +111,9 @@ class ViewTestCaseMixinAssertAllowedHttpMethodsTest(ViewTestCaseMixin, TestCase)
     def mock_view(request):
         return HttpResponse()
 
-    urls = [
+    urls = (
         url(r'^$', mock_view),
-    ]
+    )
 
     def test_with_all_methods_allowed_as_expected(self):
         allowed = [u'HEAD', u'GET']
@@ -149,11 +149,11 @@ class ViewTestCaseMixinAssertAnonymousUserIsRedirected(ViewTestCaseMixin, TestCa
     def login_view(request):
         return HttpResponse()
 
-    urls = [
+    urls = (
         url(r'^with_login_required/$', with_login_required_view, name=u'aa'),
         url(r'^without_login_required/$', without_login_required_view),
         url(r'^accounts/login/$', login_view, name=u'account_login'),
-    ]
+    )
 
     def test_on_wiew_with_login_required_passes(self):
         with mock.patch(u'poleno.utils.test.urlencode', return_value=u'next=/with_login_required/'):

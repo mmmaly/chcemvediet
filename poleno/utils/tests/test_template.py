@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from testfixtures import TempDirectory
 
-from django.template.base import TemplateDoesNotExist
+from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.test.utils import override_settings

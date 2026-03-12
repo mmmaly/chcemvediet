@@ -29,9 +29,9 @@ class SendFileResponseTest(TestCase):
         content_type = request.GET[u'content-type']
         return send_file_response(request, path, name, content_type)
 
-    urls = [
+    urls = (
         url(r'^file/$', file_view),
-        ]
+        )
 
     def setUp(self):
         self.tempdir = TempDirectory()
