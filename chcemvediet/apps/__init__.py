@@ -7,7 +7,9 @@ class ChcemvedietConfig(AppConfig):
     def init_admin_site_plus(self):
         from adminplus.sites import AdminSitePlus
         from django.contrib import admin
+        from django.contrib.admin import sites as admin_sites
         admin.site = AdminSitePlus()
+        admin_sites.site = admin.site
         admin.site.disable_action(u'delete_selected')
         admin.autodiscover()
 
