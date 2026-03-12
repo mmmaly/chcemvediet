@@ -25,8 +25,8 @@ class InforequestEmailQuerySet(QuerySet):
 class InforequestEmail(FormatMixin, models.Model):
     # May NOT be NULL; m2m ends; Indexes are prefixes of [inforequest, email] and
     # [email, inforequest] indexes, respectively
-    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
-    email = models.ForeignKey(u'mail.Message', db_index=False)
+    inforequest = models.ForeignKey(u'Inforequest', on_delete=models.CASCADE, db_index=False)
+    email = models.ForeignKey(u'mail.Message', on_delete=models.CASCADE, db_index=False)
 
     # May NOT be NULL
     TYPES = FieldChoices(

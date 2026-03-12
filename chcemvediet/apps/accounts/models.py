@@ -24,7 +24,7 @@ class ProfileQuerySet(QuerySet):
                 output_field=IntegerField())))
 
 class Profile(FormatMixin, OriginalValuesMixin, models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     zip = models.CharField(max_length=10)

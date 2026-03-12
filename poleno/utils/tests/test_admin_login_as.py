@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
-from django.conf.urls import patterns, url, RegexURLPattern
+from django.conf.urls import url, RegexURLPattern
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.test import TestCase
@@ -26,13 +26,13 @@ class AdminLoginAsBackendMixinTest(TestCase):
             pass
         return HttpResponse()
 
-    urls = tuple(patterns(u'',
+    urls = [
             url(r'^$', public_view),
             url(r'admin/', ([
                     RegexURLPattern(r'^$', admin_view),
                     RegexURLPattern(r'^(\d+)/login-as/$', set_admin_login_as_attribute_admin_view),
             ], None, u'admin')),
-    ))
+    ]
 
     def create_users(self):
         self.user = User.objects.create_user(

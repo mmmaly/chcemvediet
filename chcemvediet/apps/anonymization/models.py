@@ -30,7 +30,7 @@ class AttachmentNormalizationQuerySet(QuerySet):
 class AttachmentNormalization(FormatMixin, models.Model):
 
     # May NOT be NULL
-    attachment = models.ForeignKey(Attachment)
+    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
 
     # May NOT be NULL
     successful = models.BooleanField(default=False,
@@ -131,7 +131,7 @@ class AttachmentRecognitionQuerySet(QuerySet):
 class AttachmentRecognition(FormatMixin, models.Model):
 
     # May NOT be NULL
-    attachment = models.ForeignKey(Attachment)
+    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
 
     # May NOT be NULL
     successful = models.BooleanField(default=False,
@@ -235,7 +235,7 @@ class AttachmentAnonymizationQuerySet(QuerySet):
 class AttachmentAnonymization(FormatMixin, models.Model):
 
     # May NOT be NULL
-    attachment = models.ForeignKey(Attachment)
+    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
 
     # May NOT be NULL
     successful = models.BooleanField(default=False,
@@ -334,7 +334,7 @@ class AttachmentFinalizationQuerySet(QuerySet):
 class AttachmentFinalization(FormatMixin, models.Model):
 
     # May NOT be NULL
-    attachment = models.ForeignKey(Attachment)
+    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
 
     # May NOT be NULL
     successful = models.BooleanField(default=False,

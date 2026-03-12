@@ -61,13 +61,13 @@ class Invitation(FormatMixin, models.Model):
                 """))
 
     # May NOT be NULL
-    invitor = models.ForeignKey(User,
+    invitor = models.ForeignKey(User, on_delete=models.CASCADE,
             help_text=squeeze(u"""
                 The user who sent the invitation.
                 """))
 
     # May be NULL
-    invitee = models.OneToOneField(User, blank=True, null=True, related_name=u'invited_with',
+    invitee = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True, related_name=u'invited_with',
             help_text=squeeze(u"""
                 The user who was invited after he accepts the invitation and registers himself.
                 NULL for pending and expired invitations.
@@ -163,7 +163,7 @@ class InvitationSupplyQuerySet(QuerySet):
 
 class InvitationSupply(FormatMixin, models.Model):
     # May NOT be NULL
-    user = models.OneToOneField(User,
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
             help_text=squeeze(u"""
                 The user to whom the invitation supply belongs.
                 """))

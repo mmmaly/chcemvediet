@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import Prefetch
 from django.utils.functional import cached_property
 from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericRelation
 from jsonfield import JSONField
 
 from poleno.attachments.models import Attachment
@@ -20,13 +20,13 @@ class InforequestDraftQuerySet(QuerySet):
 
 class InforequestDraft(FormatMixin, models.Model):
     # May NOT be NULL
-    applicant = models.ForeignKey(User,
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE,
             help_text=squeeze(u"""
                 The draft owner, the future inforequest applicant.
                 """))
 
     # May be NULL
-    obligee = models.ForeignKey(u'obligees.Obligee', blank=True, null=True,
+    obligee = models.ForeignKey(u'obligees.Obligee', on_delete=models.SET_NULL, blank=True, null=True,
             help_text=squeeze(u"""
                 The obligee the inforequest will be sent to, if the user has already set it.
                 """))
@@ -39,7 +39,7 @@ class InforequestDraft(FormatMixin, models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     # May be empty
-    attachment_set = generic.GenericRelation(u'attachments.Attachment',
+    attachment_set = GenericRelation(u'attachments.Attachment',
             content_type_field=u'generic_type', object_id_field=u'generic_id')
 
     # Backward relations added to other models:

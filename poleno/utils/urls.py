@@ -17,7 +17,7 @@ def reverse_adaptor(viewname, argname):
         return func
     return actual_decorator
 
-def reverse(viewname, urlconf=None, args=None, kwargs=None, prefix=None, current_app=None):
+def reverse(viewname, urlconf=None, args=None, kwargs=None, current_app=None):
     u"""
     Django ``reverse()`` expects exactly the same arguments as parsed from url. However, sometimes
     it is more convenient to call ``reverse()`` with complex objects that can be reduced to url
@@ -63,7 +63,7 @@ def reverse(viewname, urlconf=None, args=None, kwargs=None, prefix=None, current
             args = args[:-1]
     if kwargs is not None:
         kwargs = dict((k, v) for k, v in kwargs.iteritems() if v is not None)
-    return django_reverse(viewname, urlconf, args, kwargs, prefix, current_app)
+    return django_reverse(viewname, urlconf, args, kwargs, current_app)
 
 def complete_url(path, secure=False):
     u"""

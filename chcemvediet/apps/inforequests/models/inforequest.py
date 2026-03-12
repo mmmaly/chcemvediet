@@ -75,7 +75,7 @@ class InforequestQuerySet(QuerySet):
 
 class Inforequest(FormatMixin, models.Model):
     # May NOT be NULL
-    applicant = models.ForeignKey(User,
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE,
             help_text=squeeze(u"""
                 The inforequest owner, the user who submitted it.
                 """))

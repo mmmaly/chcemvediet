@@ -7,7 +7,7 @@ from django.db.models import Prefetch
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import escape
 from django.utils.functional import cached_property
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericRelation
 
 from jsonfield import JSONField
 
@@ -97,7 +97,7 @@ class Message(FormatMixin, models.Model):
                 """))
 
     # May be empty; Backward generic relation
-    attachment_set = generic.GenericRelation(u'attachments.Attachment',
+    attachment_set = GenericRelation(u'attachments.Attachment',
             content_type_field=u'generic_type', object_id_field=u'generic_id')
 
     # Backward relations:
@@ -222,7 +222,7 @@ class RecipientQuerySet(QuerySet):
 
 class Recipient(FormatMixin, models.Model):
     # May NOT be NULL
-    message = models.ForeignKey(u'Message')
+    message = models.ForeignKey(u'Message', on_delete=models.CASCADE)
 
     # May be empty
     name = models.CharField(blank=True, max_length=255,

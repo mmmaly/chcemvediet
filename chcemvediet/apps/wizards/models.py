@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericRelation
 from jsonfield import JSONField
 
 from poleno.utils.models import QuerySet
@@ -18,7 +18,7 @@ class WizardDraft(FormatMixin, models.Model):
     id = models.CharField(max_length=255, primary_key=True)
 
     # May NOT be NULL
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # May be empty
     step = models.CharField(blank=True, max_length=255)
@@ -30,7 +30,7 @@ class WizardDraft(FormatMixin, models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     # May be empty; Backward generic relation
-    attachment_set = generic.GenericRelation(u'attachments.Attachment',
+    attachment_set = GenericRelation(u'attachments.Attachment',
             content_type_field=u'generic_type', object_id_field=u'generic_id')
 
     # Backward relations added to other models:

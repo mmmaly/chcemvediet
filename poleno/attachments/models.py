@@ -9,7 +9,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.functional import cached_property
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from poleno import datacheck
 from poleno.attachments.utils import attachment_file_check, attachment_orphaned_file_check
@@ -50,9 +50,9 @@ class AttachmentQuerySet(QuerySet):
 
 class Attachment(FormatMixin, models.Model):
     # May NOT be NULL; Generic relation; Index is prefix of [generic_type, generic_id] index
-    generic_type = models.ForeignKey(ContentType, db_index=False)
+    generic_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_index=False)
     generic_id = models.CharField(max_length=255)
-    generic_object = generic.GenericForeignKey(u'generic_type', u'generic_id')
+    generic_object = GenericForeignKey(u'generic_type', u'generic_id')
 
     # May NOT be NULL; Random local filename is generated in save() when creating a new object.
     file = models.FileField(upload_to=u'attachments', max_length=255)

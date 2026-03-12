@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from . import views
 
@@ -11,8 +11,8 @@ urlparams = dict(
         name=r'(?P<name>[a-z0-9-]+[.][a-z0-9-.]+)',
         )
 
-urlpatterns = patterns(u'',
+urlpatterns = [
     url(r'^alternatives/{lang}/{path}$'.format(**urlparams), views.alternatives, name=u'alternatives'),
     url(r'^{path}$'.format(**urlparams), views.view, name=u'view'),
     url(r'^{path}{name}$'.format(**urlparams), views.file, name=u'file'),
-)
+]

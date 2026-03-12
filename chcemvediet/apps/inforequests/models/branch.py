@@ -20,14 +20,14 @@ class BranchQuerySet(QuerySet):
 
 class Branch(FormatMixin, models.Model):
     # May NOT be NULL; Index is prefix of [inforequest, advanced_by] index
-    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
+    inforequest = models.ForeignKey(u'Inforequest', on_delete=models.CASCADE, db_index=False)
 
     # May NOT be NULL
-    obligee = models.ForeignKey(u'obligees.Obligee',
+    obligee = models.ForeignKey(u'obligees.Obligee', on_delete=models.CASCADE,
             help_text=u'The obligee the inforequest was sent or advanced to.')
 
     # May NOT be NULL; Automaticly frozen in save() when creating a new object
-    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee',
+    historicalobligee = models.ForeignKey(u'obligees.HistoricalObligee', on_delete=models.CASCADE,
             help_text=squeeze(u"""
                 Frozen Obligee at the time the Inforequest was submitted or advanced to it.
                 """))
@@ -35,7 +35,7 @@ class Branch(FormatMixin, models.Model):
     # Advancement action that advanced the inforequest to this obligee; None if it's inforequest
     # main branch. Inforequest must contain exactly one branch with ``advanced_by`` set to None;
     # Index is prefix of [advanced_by, inforequest] index
-    advanced_by = models.ForeignKey(u'Action', related_name=u'advanced_to_set',
+    advanced_by = models.ForeignKey(u'Action', on_delete=models.SET_NULL, related_name=u'advanced_to_set',
             blank=True, null=True, db_index=False,
             help_text=squeeze(u"""
                 NULL for main branches. The advancement action the inforequest was advanced by for

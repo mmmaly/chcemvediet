@@ -3,7 +3,7 @@
 from django.template import Context, Template
 from django.http import HttpResponse, HttpResponseNotFound
 from django.conf import settings
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -189,14 +189,14 @@ class ActiveTemplatefilterTest(TestCase):
             u'request': request,
         })))
 
-    urlpatterns = tuple(patterns(u'',
+    urlpatterns = [
         url(r'^$', active_view, name=u'index'),
         url(r'^first/', active_view, name=u'first'),
-        url(r'^second/', include(namespace=u'second', arg=patterns(u'',
+        url(r'^second/', include(([
             url(r'^$', active_view, name=u'index'),
             url(r'^first/', active_view, name=u'first'),
-        ))),
-    ))
+        ], None, u'second'))),
+    ]
 
     urls = Bunch(
         urlpatterns=urlpatterns,
@@ -251,7 +251,7 @@ class ChangeLangTemplatetagTest(TestCase):
             u'request': request,
         })))
 
-    urlpatterns = tuple(i18n_patterns(u'',
+    urlpatterns = list(i18n_patterns(
         url(r'^language/$', language_view, name=u'language'),
         url(r'^kwargs/(?P<a>\d+)/(?P<b>\d+)/$', language_view, name=u'language_kwargs'),
         url(r'^args/(.+)/(.+)/(.+)/$', language_view, name=u'language_args'),

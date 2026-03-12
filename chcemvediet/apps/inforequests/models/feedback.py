@@ -15,7 +15,7 @@ class FeedbackQuerySet(QuerySet):
 
 class Feedback(FormatMixin, models.Model):
     # NOT NULL
-    inforequest = models.ForeignKey(u'Inforequest', db_index=False)
+    inforequest = models.ForeignKey(u'Inforequest', on_delete=models.CASCADE, db_index=False)
 
     # May be empty
     content = models.TextField(blank=True)

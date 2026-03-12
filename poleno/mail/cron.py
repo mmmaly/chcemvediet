@@ -4,7 +4,7 @@ import traceback
 
 from django.db import transaction
 from django.conf import settings
-from django.utils.module_loading import import_by_path
+from django.utils.module_loading import import_string
 
 from poleno.cron import cron_job, cron_logger
 from poleno.utils.date import utc_now
@@ -19,7 +19,7 @@ def mail():
     # Get inbound mail
     path = getattr(settings, u'EMAIL_INBOUND_TRANSPORT', None)
     if path:
-        klass = import_by_path(path)
+        klass = import_string(path)
         with klass() as transport:
             messages = transport.get_messages()
             while True:
@@ -65,7 +65,7 @@ def mail():
                 .prefetch_related(Message.prefetch_attachments())
                 )[:10]
         if messages:
-            klass = import_by_path(path)
+            klass = import_string(path)
             with klass() as transport:
                 for message in messages:
                     try:

@@ -201,7 +201,7 @@ class Obligee(FormatMixin, models.Model):
             help_text=u'Zip part of postal address.')
 
     # May NOT be NULL
-    iczsj = models.ForeignKey(Neighbourhood,
+    iczsj = models.ForeignKey(Neighbourhood, on_delete=models.CASCADE,
             help_text=u'City neighbourhood the obligee address is in.')
 
     # May be empty
@@ -320,7 +320,7 @@ class ObligeeAliasQuerySet(QuerySet):
 
 class ObligeeAlias(FormatMixin, models.Model):
     # May NOT be NULL
-    obligee = models.ForeignKey(Obligee, help_text=u'Obligee of which this is alias.')
+    obligee = models.ForeignKey(Obligee, on_delete=models.CASCADE, help_text=u'Obligee of which this is alias.')
 
     # Should NOT be empty
     name = models.CharField(max_length=255, unique=True,

@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import Prefetch, Q, F, Count, Case, When, IntegerField
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericRelation
 from multiselectfield import MultiSelectField
 
 from poleno import datacheck
@@ -82,7 +82,7 @@ class ActionQuerySet(QuerySet):
 
 class Action(FormatMixin, models.Model):
     # NOT NULL
-    branch = models.ForeignKey(u'Branch')
+    branch = models.ForeignKey(u'Branch', on_delete=models.CASCADE)
 
     # NOT NULL for actions sent or received by email; NULL otherwise
     email = models.OneToOneField(u'mail.Message', blank=True, null=True, on_delete=models.SET_NULL)
@@ -161,7 +161,7 @@ class Action(FormatMixin, models.Model):
                 """))
 
     # May be empty
-    attachment_set = generic.GenericRelation(u'attachments.Attachment',
+    attachment_set = GenericRelation(u'attachments.Attachment',
             content_type_field=u'generic_type', object_id_field=u'generic_id',
             related_query_name=u'action')
 

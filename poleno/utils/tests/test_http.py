@@ -4,7 +4,7 @@ import os
 import random
 from testfixtures import TempDirectory
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.http import HttpResponseNotModified, FileResponse
 from django.utils.http import urlquote, urlencode, http_date
 from django.test import TestCase
@@ -29,9 +29,9 @@ class SendFileResponseTest(TestCase):
         content_type = request.GET[u'content-type']
         return send_file_response(request, path, name, content_type)
 
-    urls = patterns(u'',
+    urls = [
         url(r'^file/$', file_view),
-        )
+        ]
 
     def setUp(self):
         self.tempdir = TempDirectory()

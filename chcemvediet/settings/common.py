@@ -119,8 +119,9 @@ TEMPLATES = [
     },
 ]
 
-# Allauth 0.30.0 checks the old-style TEMPLATE_CONTEXT_PROCESSORS setting directly.
-# We must include the socialaccount processor here even though rendering uses the TEMPLATES dict.
+# Allauth 0.30.0 checks the old-style TEMPLATE_CONTEXT_PROCESSORS setting directly via
+# settings.TEMPLATE_CONTEXT_PROCESSORS. In Django 1.9 this setting is ignored by the template
+# engine, but third-party packages may still read it. We keep it here so allauth doesn't error.
 TEMPLATE_CONTEXT_PROCESSORS = (
     u'django.contrib.auth.context_processors.auth',
     u'django.template.context_processors.debug',

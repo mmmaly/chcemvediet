@@ -95,7 +95,7 @@ class District(FormatMixin, models.Model): # "Okres"
                 """))
 
     # May NOT be NULL
-    region = models.ForeignKey(Region, help_text=u'Region the district belongs to.')
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, help_text=u'Region the district belongs to.')
 
     # Backward relations:
     #
@@ -162,8 +162,8 @@ class Municipality(FormatMixin, models.Model): # "Obec"
                 """))
 
     # May NOT be NULL
-    district = models.ForeignKey(District, help_text=u'District the municipality belongs to.')
-    region = models.ForeignKey(Region, help_text=u'Region the municipality belongs to.')
+    district = models.ForeignKey(District, on_delete=models.CASCADE, help_text=u'District the municipality belongs to.')
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, help_text=u'Region the municipality belongs to.')
 
     # Backward relations:
     #
@@ -228,11 +228,11 @@ class Neighbourhood(FormatMixin, models.Model): # "Základná sídelná jednotka
                 """))
 
     # May NOT be NULL
-    municipality = models.ForeignKey(Municipality,
+    municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE,
             help_text=u'Municipality the neighbourhood belongs to.')
-    district = models.ForeignKey(District,
+    district = models.ForeignKey(District, on_delete=models.CASCADE,
             help_text=u'District the neighbourhood belongs to.')
-    region = models.ForeignKey(Region,
+    region = models.ForeignKey(Region, on_delete=models.CASCADE,
             help_text=u'Region the neighbourhood belongs to.')
 
     # Backward relations added to other models:

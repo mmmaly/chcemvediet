@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from poleno.utils.urls import reverse_adaptor, reverse
@@ -34,7 +34,7 @@ parts = {
     u'feedback_action':           lazy_concat(_(u'inforequests:urls:feedback_action'), u'/')
     }
 
-urlpatterns = patterns(u'',
+urlpatterns = [
     url(lazy_format(r'^$'),                                                                             views.inforequest_index,                name=u'index'),
     url(lazy_format(r'^{mine}$', **parts),                                                              views.inforequest_mine,                 name=u'mine'),
     url(lazy_format(r'^{create}{draft_pk?}$', **parts),                                                 views.inforequest_create,               name=u'create'),
@@ -49,15 +49,15 @@ urlpatterns = patterns(u'',
     url(lazy_format(r'^{attachments}$', **parts),                                                       views.attachment_upload,                name=u'upload_attachment'),
     url(lazy_format(r'^{attachments}{attachment_pk}$', **parts),                                        views.attachment_download,              name=u'download_attachment'),
     url(lazy_format(r'^{attachment_finalizations}{attachment_finalization_pk}$', **parts),              views.attachment_finalization_download, name=u'download_attachment_finalization'),
-)
+]
 
 if settings.DEBUG: # pragma: no cover
-    urlpatterns += patterns(u'',
+    urlpatterns += [
         url(lazy_format(r'^devtools/mock-response/{inforequest_pk}$', **parts),    views.devtools_mock_response,    name=u'devtools_mock_response'),
         url(lazy_format(r'^devtools/undo-last-action/{inforequest_pk}$', **parts), views.devtools_undo_last_action, name=u'devtools_undo_last_action'),
         url(lazy_format(r'^devtools/push-history/{inforequest_pk}$', **parts),     views.devtools_push_history,     name=u'devtools_push_history'),
         url(lazy_format(r'^devtools/delete/{inforequest_pk}$', **parts),           views.devtools_delete,           name=u'devtools_delete'),
-    )
+    ]
 
 
 @reverse_adaptor(u'inforequests:create', u'draft')
