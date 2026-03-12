@@ -64,7 +64,7 @@ class ReadOnlyAdminInlineMixin(admin.options.InlineModelAdmin):
 
 class BulkDeleteAdminMixin(admin.ModelAdmin):
 
-    actions = admin.ModelAdmin.actions + [
+    actions = list(admin.ModelAdmin.actions) + [
             u'delete_selected',
             ]
 
