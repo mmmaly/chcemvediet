@@ -3,5 +3,5 @@
 from django.dispatch.dispatcher import Signal
 
 
-message_sent = Signal(providing_args=['message'])
-message_received = Signal(providing_args=['message'])
+message_sent = Signal()
+message_received = Signal()

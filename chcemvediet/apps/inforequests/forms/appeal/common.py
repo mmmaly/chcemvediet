@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from poleno.utils.date import local_today
 from poleno.utils.misc import squeeze

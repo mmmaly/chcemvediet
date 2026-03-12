@@ -5,7 +5,7 @@ import mock
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 from django.dispatch.dispatcher import Signal
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -23,7 +23,7 @@ class OverrideSignalsTest(TestCase):
         Checks that receivers registered outside ``override_signals`` context do not get signals
         emitted inside the context block.
         """
-        signal = Signal(providing_args=[u'message'])
+        signal = Signal()
         original_receiver = mock.Mock()
         signal.connect(original_receiver)
         signal.send(sender=None, message=u'before')
@@ -40,7 +40,7 @@ class OverrideSignalsTest(TestCase):
         Checks that receivers registered inside ``override_signals`` context get only signals
         emitted inside the context block.
         """
-        signal = Signal(providing_args=[u'message'])
+        signal = Signal()
         signal.send(sender=None, message=u'before')
         with override_signals(signal):
             new_receiver = mock.Mock()
@@ -52,8 +52,8 @@ class OverrideSignalsTest(TestCase):
             ])
 
     def test_with_multiple_signals(self):
-        signal1 = Signal(providing_args=[u'message'])
-        signal2 = Signal(providing_args=[u'message'])
+        signal1 = Signal()
+        signal2 = Signal()
         original_receiver = mock.Mock()
         signal1.connect(original_receiver)
         signal2.connect(original_receiver)
@@ -112,7 +112,7 @@ class ViewTestCaseMixinAssertAllowedHttpMethodsTest(ViewTestCaseMixin, TestCase)
         return HttpResponse()
 
     urls = (
-        url(r'^$', mock_view),
+        re_path(r'^$', mock_view),
     )
 
     def test_with_all_methods_allowed_as_expected(self):
@@ -150,9 +150,9 @@ class ViewTestCaseMixinAssertAnonymousUserIsRedirected(ViewTestCaseMixin, TestCa
         return HttpResponse()
 
     urls = (
-        url(r'^with_login_required/$', with_login_required_view, name=u'aa'),
-        url(r'^without_login_required/$', without_login_required_view),
-        url(r'^accounts/login/$', login_view, name=u'account_login'),
+        re_path(r'^with_login_required/$', with_login_required_view, name=u'aa'),
+        re_path(r'^without_login_required/$', without_login_required_view),
+        re_path(r'^accounts/login/$', login_view, name=u'account_login'),
     )
 
     def test_on_wiew_with_login_required_passes(self):

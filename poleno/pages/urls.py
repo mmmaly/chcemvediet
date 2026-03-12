@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
@@ -14,7 +14,7 @@ urlparams = dict(
 app_name = u'pages'
 
 urlpatterns = [
-    url(r'^alternatives/{lang}/{path}$'.format(**urlparams), views.alternatives, name=u'alternatives'),
-    url(r'^{path}$'.format(**urlparams), views.view, name=u'view'),
-    url(r'^{path}{name}$'.format(**urlparams), views.file, name=u'file'),
+    re_path(r'^alternatives/{lang}/{path}$'.format(**urlparams), views.alternatives, name=u'alternatives'),
+    re_path(r'^{path}$'.format(**urlparams), views.view, name=u'view'),
+    re_path(r'^{path}{name}$'.format(**urlparams), views.file, name=u'file'),
 ]

@@ -5,7 +5,7 @@ from email.utils import formataddr
 from django.core.mail import EmailMessage
 from django.db import models
 from django.db.models import Prefetch, Q, F, Count, Case, When, IntegerField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 from django.contrib.contenttypes.fields import GenericRelation
 from multiselectfield import MultiSelectField

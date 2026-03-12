@@ -7,9 +7,9 @@ from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.forms.utils import flatatt
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.html import format_html
 
 from poleno.utils.template import render_to_string
@@ -179,16 +179,16 @@ class EditableSpan(forms.Widget):
         # Therefore we must set it here as well.
         span_attrs = merge_html_attrs(self.attrs, attrs, {'data-padding': '. '*47},
                 contenteditable=u'true', class_=u'pln-editable-span')
-        input_attrs = dict(type=u'hidden', name=name, value=force_text(value))
+        input_attrs = dict(type=u'hidden', name=name, value=force_str(value))
         return format_html(u'<span{0}>{1}</span><input{2} />',
-                flatatt(span_attrs), force_text(value), flatatt(input_attrs))
+                flatatt(span_attrs), force_str(value), flatatt(input_attrs))
 
 class RangeWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         if value is None:
             value = u''
         input_attrs = merge_html_attrs(self.attrs, attrs, type=u'range', name=name,
-                value=force_text(value))
+                value=force_str(value))
         return mark_safe(format_html(
                 u'<div class="pln-range-widget"><input{0} /><span></span></div>',
                 flatatt(input_attrs)

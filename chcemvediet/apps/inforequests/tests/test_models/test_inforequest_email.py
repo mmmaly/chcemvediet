@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.db import IntegrityError
 from django.test import TestCase
-from django.utils.translation import ugettext as __
+from django.utils.translation import gettext as __
 
 from poleno.utils.date import utc_datetime_from_local
 

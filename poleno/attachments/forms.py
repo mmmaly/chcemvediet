@@ -5,7 +5,7 @@ import collections.abc
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from poleno.utils.template import render_to_string
 from poleno.utils.misc import cached_method, filesize

@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -18,7 +18,7 @@ class AjaxRequiredTest(TestCase):
         return HttpResponse()
 
     urls = (
-        url(r'^require-ajax/$', require_ajax_view),
+        re_path(r'^require-ajax/$', require_ajax_view),
     )
 
     def setUp(self):
@@ -65,8 +65,8 @@ class LoginRequiredTest(TestCase):
         return HttpResponse()
 
     urls = (
-        url(r'^login-required-with-redirect/$', login_required_with_redirect_view),
-        url(r'^login-required-with-exception/$', login_required_with_exception_view),
+        re_path(r'^login-required-with-redirect/$', login_required_with_redirect_view),
+        re_path(r'^login-required-with-exception/$', login_required_with_exception_view),
     )
 
     def setUp(self):
@@ -138,8 +138,8 @@ class SecureRequiredTest(TestCase):
         return HttpResponse()
 
     urls = (
-        url(r'^secure-required-with-redirect/$', secure_required_with_redirect_view),
-        url(r'^secure-required-with-exception/$', secure_required_with_exception_view),
+        re_path(r'^secure-required-with-redirect/$', secure_required_with_redirect_view),
+        re_path(r'^secure-required-with-exception/$', secure_required_with_exception_view),
     )
 
     def setUp(self):

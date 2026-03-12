@@ -7,7 +7,8 @@ from threading import local
 from django.http import HttpResponseNotModified, FileResponse, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from django.views.static import was_modified_since
-from django.utils.http import http_date, urlquote
+from urllib.parse import quote as urlquote
+from django.utils.http import http_date
 
 # Thread local data
 _local = local()

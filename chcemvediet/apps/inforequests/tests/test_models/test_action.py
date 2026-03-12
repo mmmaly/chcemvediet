@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from django.db import IntegrityError
 from django.test import TestCase
-from django.utils.translation import ugettext as __
+from django.utils.translation import gettext as __
 
 from poleno.timewarp import timewarp
 from poleno.attachments.models import Attachment

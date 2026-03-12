@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib import admin
 from django.contrib.auth.backends import ModelBackend
 from django.urls import resolve, Resolver404
@@ -69,6 +69,6 @@ class AdminLoginAsAdminMixin(admin.ModelAdmin):
         info = self.model._meta.app_label, self.model._meta.model_name
         login_as_view = self.admin_site.admin_view(self.login_as_view)
         urls = [
-                url(r'^(\d+)/login-as/$', login_as_view, name=u'{}_{}_login_as'.format(*info)),
+                re_path(r'^(\d+)/login-as/$', login_as_view, name=u'{}_{}_login_as'.format(*info)),
                 ]
         return urls + super(AdminLoginAsAdminMixin, self).get_urls()

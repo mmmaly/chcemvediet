@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
@@ -8,6 +8,6 @@ from . import views
 app_name = u'obligees'
 
 urlpatterns = [
-    url(r'^$', views.index, name=u'index'),
-    url(r'^autocomplete/$', views.autocomplete, name=u'autocomplete'),
+    re_path(r'^$', views.index, name=u'index'),
+    re_path(r'^autocomplete/$', views.autocomplete, name=u'autocomplete'),
 ]

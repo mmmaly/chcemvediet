@@ -3,8 +3,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_text
+from django.utils.translation import gettext_lazy as _
+from django.utils.encoding import force_str
 from django.utils.datastructures import MultiValueDict
 
 from poleno.utils.html import merge_html_attrs
@@ -27,7 +27,7 @@ class ObligeeWidget(forms.Widget):
 
     def _input_attrs(self, name, value, skel=False):
         obligee = value if isinstance(value, Obligee) else None
-        value = force_text(obligee.name if obligee else u'' if value is None else value)
+        value = force_str(obligee.name if obligee else u'' if value is None else value)
         return merge_html_attrs(self.input_attrs, {
                 u'class': u'pln-autocomplete form-control',
                 u'type': u'text',

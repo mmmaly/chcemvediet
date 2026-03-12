@@ -6,7 +6,7 @@ import json
 from testfixtures import TempDirectory
 
 from django.core.files.base import ContentFile
-from django.conf.urls import url
+from django.urls import re_path
 from django.http import HttpResponseNotModified, FileResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.utils.http import http_date
@@ -32,8 +32,8 @@ class AttachmentViewsTest(TestCase):
         return download(request, attachment)
 
     urls = (
-        url(r'^upload/$', upload_view),
-        url(r'^download/$', download_view),
+        re_path(r'^upload/$', upload_view),
+        re_path(r'^download/$', download_view),
         )
 
 

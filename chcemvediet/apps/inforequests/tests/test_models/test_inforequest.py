@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.http import urlencode
 from django.test import TestCase
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from poleno.timewarp import timewarp
 from poleno.mail.models import Message
@@ -247,7 +247,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
 
     def test_slug_property_with_empty_subject(self):
         inforequest = self._create_inforequest(subject=u'')
-        self.assertEqual(inforequest.slug, ugettext(u'inforequests:Inforequest:fallback_slug'))
+        self.assertEqual(inforequest.slug, gettext(u'inforequests:Inforequest:fallback_slug'))
 
     def test_prefetch_branches_staticmethod(self):
         inforequest, branch1, actions = self._create_inforequest_scenario(self.user1, u'advancement')
@@ -1024,7 +1024,7 @@ class InforequestTest(InforequestsTestCaseMixin, TestCase):
         for language_code, _ in lang:
             with translation(language_code):
                 expected_url = u'/{}/{}/{}-{}/#anchor'.format(language_code,
-                        ugettext(u'main:urls:inforequests'), inforequest.slug, inforequest.pk)
+                        gettext(u'main:urls:inforequests'), inforequest.slug, inforequest.pk)
                 self.assertEqual(inforequest.get_absolute_url(u'#anchor'), expected_url)
 
     def test_send_notification(self):

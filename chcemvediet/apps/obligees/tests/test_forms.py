@@ -4,7 +4,7 @@ import lxml.html
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from poleno.utils.urls import reverse
 from chcemvediet.tests import ChcemvedietTestCaseMixin

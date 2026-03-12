@@ -6,7 +6,7 @@ from allauth.account.forms import (LoginForm as AllauthLoginForm,
 from allauth.utils import set_form_field_order
 from captcha.fields import ReCaptchaField
 from django import forms
-from django.utils.translation import ungettext_lazy, ugettext_lazy as _
+from django.utils.translation import ngettext_lazy, gettext_lazy as _
 
 from poleno.utils.lazy import lazy_format
 from poleno.utils.forms import RangeWidget
@@ -108,7 +108,7 @@ class SettingsForm(forms.Form):
     custom_anonymized_strings = forms.CharField(
             label=_(u'accounts:SettingsForm:custom_anonymized_strings:label'),
             required=False,
-            help_text=lazy_format(ungettext_lazy(
+            help_text=lazy_format(ngettext_lazy(
                 u'accounts:SettingsForm:custom_anonymized_strings:help_text',
                 u'accounts:SettingsForm:custom_anonymized_strings:help_text {count}',
                 WORD_SIZE_MIN), count=WORD_SIZE_MIN),
@@ -164,7 +164,7 @@ class SettingsForm(forms.Form):
             if len(line) >= WORD_SIZE_MIN:
                 lines.append(line)
             else:
-                error_message = lazy_format(ungettext_lazy(
+                error_message = lazy_format(ngettext_lazy(
                         u'accounts:SettingsForm:custom_anonymized_strings:error:line_too_short',
                         u'accounts:SettingsForm:custom_anonymized_strings:error:line_too_short {count}',
                         WORD_SIZE_MIN), count=WORD_SIZE_MIN)

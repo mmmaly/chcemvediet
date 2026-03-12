@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     u'allauth.socialaccount',
     u'allauth.socialaccount.providers.google',
     # Other 3part apps
-    u'adminplus',
+    u'vendor.adminplus',
     u'django_cron',
     u'simple_history',
     u'widget_tweaks',

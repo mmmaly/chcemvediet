@@ -11,7 +11,7 @@ from poleno.utils.mail import full_decode_header
 from ...models import Message, Recipient
 
 
-webhook_event = Signal(providing_args=['event_type', 'data'])
+webhook_event = Signal()
 
 @receiver(webhook_event)
 def message_status_webhook_event(sender, event_type, data, **kwargs):

@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.test import TestCase
@@ -27,10 +27,10 @@ class AdminLoginAsBackendMixinTest(TestCase):
         return HttpResponse()
 
     urls = (
-            url(r'^$', public_view),
-            url(r'admin/', ([
-                    url(r'^$', admin_view),
-                    url(r'^(\d+)/login-as/$', set_admin_login_as_attribute_admin_view),
+            re_path(r'^$', public_view),
+            re_path(r'admin/', ([
+                    re_path(r'^$', admin_view),
+                    re_path(r'^(\d+)/login-as/$', set_admin_login_as_attribute_admin_view),
             ], None, u'admin')),
     )
 

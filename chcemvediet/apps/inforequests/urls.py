@@ -1,8 +1,8 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.conf.urls import url
-from django.utils.translation import ugettext_lazy as _
+from django.urls import re_path
+from django.utils.translation import gettext_lazy as _
 
 from poleno.utils.urls import reverse_adaptor, reverse
 from poleno.utils.lazy import lazy_concat, lazy_format
@@ -37,28 +37,28 @@ parts = {
 app_name = u'inforequests'
 
 urlpatterns = [
-    url(lazy_format(r'^$'),                                                                             views.inforequest_index,                name=u'index'),
-    url(lazy_format(r'^{mine}$', **parts),                                                              views.inforequest_mine,                 name=u'mine'),
-    url(lazy_format(r'^{create}{draft_pk?}$', **parts),                                                 views.inforequest_create,               name=u'create'),
-    url(lazy_format(r'^{delete_draft}{draft_pk}$', **parts),                                            views.inforequest_delete_draft,         name=u'delete_draft'),
-    url(lazy_format(r'^{obligee_action_dispatcher}$', **parts),                                         views.obligee_action_dispatcher,        name=u'obligee_action_dispatcher'),
-    url(lazy_format(r'^{inforequest_slug_pk}$', **parts),                                               views.inforequest_detail,               name=u'detail'),
-    url(lazy_format(r'^{inforequest_slug_pk}{obligee_action}{step_idx?}$', **parts),                    views.obligee_action,                   name=u'obligee_action'),
-    url(lazy_format(r'^{inforequest_slug_pk}{clarification_response}{branch_pk}{step_idx?}$', **parts), views.clarification_response,           name=u'clarification_response'),
-    url(lazy_format(r'^{inforequest_slug_pk}{appeal}{branch_pk}{step_idx?}$', **parts),                 views.appeal,                           name=u'appeal'),
-    url(lazy_format(r'^{inforequest_slug_pk}{snooze}{branch_pk}{action_pk}$', **parts),                 views.snooze,                           name=u'snooze'),
-    url(lazy_format(r'^{inforequest_slug_pk}{feedback_action}{step_idx?}$', **parts),                    views.feedback_action,                  name=u'feedback_action'),
-    url(lazy_format(r'^{attachments}$', **parts),                                                       views.attachment_upload,                name=u'upload_attachment'),
-    url(lazy_format(r'^{attachments}{attachment_pk}$', **parts),                                        views.attachment_download,              name=u'download_attachment'),
-    url(lazy_format(r'^{attachment_finalizations}{attachment_finalization_pk}$', **parts),              views.attachment_finalization_download, name=u'download_attachment_finalization'),
+    re_path(lazy_format(r'^$'),                                                                             views.inforequest_index,                name=u'index'),
+    re_path(lazy_format(r'^{mine}$', **parts),                                                              views.inforequest_mine,                 name=u'mine'),
+    re_path(lazy_format(r'^{create}{draft_pk?}$', **parts),                                                 views.inforequest_create,               name=u'create'),
+    re_path(lazy_format(r'^{delete_draft}{draft_pk}$', **parts),                                            views.inforequest_delete_draft,         name=u'delete_draft'),
+    re_path(lazy_format(r'^{obligee_action_dispatcher}$', **parts),                                         views.obligee_action_dispatcher,        name=u'obligee_action_dispatcher'),
+    re_path(lazy_format(r'^{inforequest_slug_pk}$', **parts),                                               views.inforequest_detail,               name=u'detail'),
+    re_path(lazy_format(r'^{inforequest_slug_pk}{obligee_action}{step_idx?}$', **parts),                    views.obligee_action,                   name=u'obligee_action'),
+    re_path(lazy_format(r'^{inforequest_slug_pk}{clarification_response}{branch_pk}{step_idx?}$', **parts), views.clarification_response,           name=u'clarification_response'),
+    re_path(lazy_format(r'^{inforequest_slug_pk}{appeal}{branch_pk}{step_idx?}$', **parts),                 views.appeal,                           name=u'appeal'),
+    re_path(lazy_format(r'^{inforequest_slug_pk}{snooze}{branch_pk}{action_pk}$', **parts),                 views.snooze,                           name=u'snooze'),
+    re_path(lazy_format(r'^{inforequest_slug_pk}{feedback_action}{step_idx?}$', **parts),                    views.feedback_action,                  name=u'feedback_action'),
+    re_path(lazy_format(r'^{attachments}$', **parts),                                                       views.attachment_upload,                name=u'upload_attachment'),
+    re_path(lazy_format(r'^{attachments}{attachment_pk}$', **parts),                                        views.attachment_download,              name=u'download_attachment'),
+    re_path(lazy_format(r'^{attachment_finalizations}{attachment_finalization_pk}$', **parts),              views.attachment_finalization_download, name=u'download_attachment_finalization'),
 ]
 
 if settings.DEBUG: # pragma: no cover
     urlpatterns += [
-        url(lazy_format(r'^devtools/mock-response/{inforequest_pk}$', **parts),    views.devtools_mock_response,    name=u'devtools_mock_response'),
-        url(lazy_format(r'^devtools/undo-last-action/{inforequest_pk}$', **parts), views.devtools_undo_last_action, name=u'devtools_undo_last_action'),
-        url(lazy_format(r'^devtools/push-history/{inforequest_pk}$', **parts),     views.devtools_push_history,     name=u'devtools_push_history'),
-        url(lazy_format(r'^devtools/delete/{inforequest_pk}$', **parts),           views.devtools_delete,           name=u'devtools_delete'),
+        re_path(lazy_format(r'^devtools/mock-response/{inforequest_pk}$', **parts),    views.devtools_mock_response,    name=u'devtools_mock_response'),
+        re_path(lazy_format(r'^devtools/undo-last-action/{inforequest_pk}$', **parts), views.devtools_undo_last_action, name=u'devtools_undo_last_action'),
+        re_path(lazy_format(r'^devtools/push-history/{inforequest_pk}$', **parts),     views.devtools_push_history,     name=u'devtools_push_history'),
+        re_path(lazy_format(r'^devtools/delete/{inforequest_pk}$', **parts),           views.devtools_delete,           name=u'devtools_delete'),
     ]
 
 

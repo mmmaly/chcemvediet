@@ -4,9 +4,10 @@ import os
 import random
 from testfixtures import TempDirectory
 
-from django.conf.urls import url
+from django.urls import re_path
 from django.http import HttpResponseNotModified, FileResponse
-from django.utils.http import urlquote, urlencode, http_date
+from urllib.parse import quote as urlquote
+from django.utils.http import urlencode, http_date
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -30,7 +31,7 @@ class SendFileResponseTest(TestCase):
         return send_file_response(request, path, name, content_type)
 
     urls = (
-        url(r'^file/$', file_view),
+        re_path(r'^file/$', file_view),
         )
 
     def setUp(self):

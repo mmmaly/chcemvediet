@@ -2,7 +2,7 @@
 import traceback
 
 from lxml import etree
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from poleno.utils.template import Library
 from poleno.utils.http import get_request

@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from poleno.utils.forms import EditableSpan
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from chcemvediet.apps.wizards.forms import PaperCharField
 
 from .common import AppealSectionStep, AppealLegalDateStep

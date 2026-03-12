@@ -3,7 +3,7 @@
 from django.template import Context, Template
 from django.http import HttpResponse, HttpResponseNotFound
 from django.conf import settings
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -190,11 +190,11 @@ class ActiveTemplatefilterTest(TestCase):
         })))
 
     urlpatterns = [
-        url(r'^$', active_view, name=u'index'),
-        url(r'^first/', active_view, name=u'first'),
-        url(r'^second/', include(([
-            url(r'^$', active_view, name=u'index'),
-            url(r'^first/', active_view, name=u'first'),
+        re_path(r'^$', active_view, name=u'index'),
+        re_path(r'^first/', active_view, name=u'first'),
+        re_path(r'^second/', include(([
+            re_path(r'^$', active_view, name=u'index'),
+            re_path(r'^first/', active_view, name=u'first'),
         ], None, u'second'))),
     ]
 
@@ -252,9 +252,9 @@ class ChangeLangTemplatetagTest(TestCase):
         })))
 
     urlpatterns = list(i18n_patterns(
-        url(r'^language/$', language_view, name=u'language'),
-        url(r'^kwargs/(?P<a>\d+)/(?P<b>\d+)/$', language_view, name=u'language_kwargs'),
-        url(r'^args/(.+)/(.+)/(.+)/$', language_view, name=u'language_args'),
+        re_path(r'^language/$', language_view, name=u'language'),
+        re_path(r'^kwargs/(?P<a>\d+)/(?P<b>\d+)/$', language_view, name=u'language_kwargs'),
+        re_path(r'^args/(.+)/(.+)/(.+)/$', language_view, name=u'language_args'),
     ))
 
     urls = Bunch(
@@ -289,7 +289,7 @@ class ChangeLangTemplatetagTest(TestCase):
                 self.assertEqual(r.status_code, 200)
                 self.assertEqual(r.content, u'(/en/language/)(/de/language/)(/fr/language/)')
 
-    def test_change_lang_tag_with_missing_language_in_url(self):
+    def test_change_lang_tag_with_missing_language_in_re_path(self):
         u"""
         Tests ``change_lang`` template tag without language prefix in URL. Checking that it
         generates same URLs, for all defined languages, if they are active or not.

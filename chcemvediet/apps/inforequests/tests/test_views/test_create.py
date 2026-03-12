@@ -4,7 +4,7 @@ import re
 import mock
 
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from poleno.mail.models import Message
 from poleno.utils.test import created_instances, patch_with_exception, ViewTestCaseMixin

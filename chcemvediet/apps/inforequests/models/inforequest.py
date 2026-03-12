@@ -5,7 +5,7 @@ from django.db.models import Q, Prefetch, Max, Count, Case, When, IntegerField
 from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.http import urlencode
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
 
 from poleno import datacheck
