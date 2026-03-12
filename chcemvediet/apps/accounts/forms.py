@@ -4,7 +4,7 @@ from allauth.account.forms import (LoginForm as AllauthLoginForm,
                                    SignupForm as AllauthSignupForm,
                                    ResetPasswordForm as AllauthResetPasswordForm)
 from allauth.utils import set_form_field_order
-from captcha.fields import ReCaptchaField
+from django_recaptcha.fields import ReCaptchaField
 from django import forms
 from django.utils.translation import ngettext_lazy, gettext_lazy as _
 

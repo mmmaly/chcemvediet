@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     u'widget_tweaks',
     u'compressor',
     u'vendor.bootstrap_sass',
-    u'captcha',
+    u'django_recaptcha',
     # Reused apps
     u'poleno.utils',
     u'poleno.dummymail',
@@ -82,6 +82,7 @@ MIDDLEWARE = (
     u'django.middleware.locale.LocaleMiddleware',
     u'django.middleware.clickjacking.XFrameOptionsMiddleware',
     u'simple_history.middleware.HistoryRequestMiddleware',
+    u'allauth.account.middleware.AccountMiddleware',
     )
 
 AUTHENTICATION_BACKENDS = (
