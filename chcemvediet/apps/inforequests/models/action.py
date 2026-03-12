@@ -497,7 +497,7 @@ class Action(FormatMixin, models.Model):
 
     def send_by_email(self):
         if not self.is_applicant_action:
-            raise TypeError(u'{} is not applicant action'.format(self.get_type_display()).encode(u'utf-8'))
+            raise TypeError(u'{} is not applicant action'.format(self.get_type_display()))
         if not self.branch.collect_obligee_emails:
             # Django silently ignores messages with no recipients
             raise ValueError(u'Action has no recipients')

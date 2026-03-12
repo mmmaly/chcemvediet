@@ -279,11 +279,9 @@ class CronJobTest(CronTestCaseMixin, TestCase):
 
     def test_run_at_times_with_today_failed_run(self):
         u"""
-        Checks that the cron job is NOT run even if it's more o'clock than ``run_at_times``
-        plus ``retry_after_failure_mins`` and its last run was today, but failed.
-
-        It's quite a strange behaviour, looks like a design flaw in ``django_cron``. I'd expect the
-        job to be rerun after it fails.
+        Checks that the cron job IS re-run if it's more o'clock than ``run_at_times`` and its last
+        run was today but failed. (Fixed in django-cron 0.5.1: failed run_at_times jobs are now
+        re-run, since should_run_now filters by is_success=True.)
         """
         timewarp.enable()
         timewarp.jump(local_datetime_from_local(2014, 10, 5, 11, 30, 0))
@@ -292,8 +290,8 @@ class CronJobTest(CronTestCaseMixin, TestCase):
                 mock_logs=[
                     (datetime.timedelta(hours=-1), False, datetime.time(10, 0)),
                     ],
-                expected_call_count=0,
-                expected_logs=[],
+                expected_call_count=1,
+                expected_logs=[(True, datetime.time(10, 0))],
                 )
         timewarp.reset()
 

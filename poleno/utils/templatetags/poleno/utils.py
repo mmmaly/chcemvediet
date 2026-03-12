@@ -11,6 +11,7 @@ from poleno.utils.lorem_ipsum import paragraphs
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from poleno.utils.urls import reverse, complete_url
 from poleno.utils.misc import squeeze as squeeze_func
@@ -274,6 +275,7 @@ def lorem(randseed=None, count=1, method=None):
 
     if method == u'p':
         res = [u'<p>{}</p>'.format(p) for p in res]
+        return mark_safe(u'\n'.join(res))
     return u'\n'.join(res)
 
 @register.simple_tag
