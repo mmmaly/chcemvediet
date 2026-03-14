@@ -3,7 +3,7 @@
 import sys
 import time as time_orig
 import datetime as datetime_orig
-import copy_reg
+import copyreg
 
 from django.core.cache import cache
 
@@ -63,8 +63,7 @@ class _WarpedTime(object):
 
 class _WarpedDatetime(object):
 
-    class date(datetime_orig.date):
-        __metaclass__ = _meta_factory(datetime_orig.date)
+    class date(datetime_orig.date, metaclass=_meta_factory(datetime_orig.date)):
 
         def __new__(cls, *args, **kwargs):
             return datetime_orig.date(*args, **kwargs)
@@ -73,8 +72,7 @@ class _WarpedDatetime(object):
         def today(cls):
             return datetime_orig.datetime.fromtimestamp(timewarp.warped_time).date()
 
-    class datetime(datetime_orig.datetime):
-        __metaclass__ = _meta_factory(datetime_orig.datetime)
+    class datetime(datetime_orig.datetime, metaclass=_meta_factory(datetime_orig.datetime)):
 
         def __new__(cls, *args, **kwargs):
             return datetime_orig.datetime(*args, **kwargs)
@@ -124,17 +122,17 @@ class Timewarp(object):
         if not self._enabled:
             self._enabled = True
             self._remap_modules({a: b for a, b in self._remap})
-            copy_reg.pickle(datetime_orig.date,
+            copyreg.pickle(datetime_orig.date,
                     lambda d: (_WarpedDatetime.date,) + d.__reduce__()[1:])
-            copy_reg.pickle(datetime_orig.datetime,
+            copyreg.pickle(datetime_orig.datetime,
                     lambda d: (_WarpedDatetime.datetime,) + d.__reduce__()[1:])
 
     def disable(self):
         if self._enabled:
             self._enabled = False
             self._remap_modules({b: a for a, b in self._remap})
-            copy_reg.pickle(datetime_orig.date, lambda d: d.__reduce__())
-            copy_reg.pickle(datetime_orig.datetime, lambda d: d.__reduce__())
+            copyreg.pickle(datetime_orig.date, lambda d: d.__reduce__())
+            copyreg.pickle(datetime_orig.datetime, lambda d: d.__reduce__())
 
     def _remap_modules(self, remap):
         types = [type(a) for a in remap]

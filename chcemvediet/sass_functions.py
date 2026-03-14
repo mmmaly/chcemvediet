@@ -7,10 +7,10 @@ def static(path):
     # expects reference to the real function, but ``django_libsass`` module may not be imported in
     # ``settings.py``, because it requires settings already configured.
     from django.templatetags.static import static as django_static
-    return '"{}"'.format(django_static(path))
+    return django_static(path)
 
 def md5(path):
     import hashlib
     from django.contrib.staticfiles.finders import find
-    with open(find(path)) as f:
+    with open(find(path), 'rb') as f:
         return hashlib.md5(f.read()).hexdigest()

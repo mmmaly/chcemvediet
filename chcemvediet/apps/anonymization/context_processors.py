@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from anonymization import ANONYMIZATION_STRING
+from .anonymization import ANONYMIZATION_STRING
 
 
 def constants(request):

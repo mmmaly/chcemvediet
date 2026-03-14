@@ -401,4 +401,4 @@ def assets(types, external=False, local=False):
             if type_re.search(url):
                 res.append(format_html(type_tpl, url=url))
                 break
-    return u'\n'.join(res)
+    return mark_safe(u'\n'.join(res))
