@@ -19,11 +19,8 @@ from .misc import squeeze
 
 
 def render_to_string(template_name, dictionary=None, context_instance=None, dirs=None):
-    if context_instance is None:
-        request = get_request()
-        if request is not None:
-            context_instance = RequestContext(request)
-    return django_render_to_string(template_name, dictionary, context_instance, dirs)
+    request = get_request()
+    return django_render_to_string(template_name, dictionary, request=request)
 
 @lazy_decorator(str)
 def lazy_render_to_string(*args, **kwargs):
@@ -74,14 +71,26 @@ class TranslationLoader(BaseLoader):
             self._cached_loader = self.engine.find_template_loader(self._loader)
         return self._cached_loader
 
-    def load_template(self, template_name, template_dirs=None):
+    def get_template_sources(self, template_name):
         language = get_language()
         template_base, template_ext = splitext(template_name)
+        translated_name = '{}.{}{}'.format(template_base, language, template_ext)
+        for source in self.loader.get_template_sources(translated_name):
+            yield source
+        for source in self.loader.get_template_sources(template_name):
+            yield source
+
+    def get_contents(self, origin):
+        return self.loader.get_contents(origin)
+
+    def get_template(self, template_name, skip=None):
+        language = get_language()
+        template_base, template_ext = splitext(template_name)
+        translated_name = '{}.{}{}'.format(template_base, language, template_ext)
         try:
-            return self.loader.load_template(u'{}.{}{}'.format(
-                template_base, language, template_ext), template_dirs)
+            return self.loader.get_template(translated_name, skip)
         except TemplateDoesNotExist:
-            return self.loader.load_template(template_name, template_dirs)
+            return self.loader.get_template(template_name, skip)
 
 
 class AppLoader(BaseLoader):
@@ -113,23 +122,26 @@ class AppLoader(BaseLoader):
     Which is based on: http://djangosnippets.org/snippets/1376/
     """
 
-    def load_template_source(self, template_name, template_dirs=None):
-        u"""
-        Loads the template from the app specified by a colon-prefixed name. If the name does not
-        contain an app name (no colon), raises TemplateDoesNotExist.
-        """
-        if u':' not in template_name:
-            raise TemplateDoesNotExist(template_name)
-        app_name, tmpl_name = template_name.split(u':', 1)
+    def get_template_sources(self, template_name):
+        from django.template import Origin
+        if ':' not in template_name:
+            return
+        app_name, tmpl_name = template_name.split(':', 1)
         for app in apps.get_app_configs():
             if app.label == app_name:
-                template_path = join(app.path, u'templates', tmpl_name)
-                try:
-                    with io.open(template_path, encoding=self.engine.file_charset) as fp:
-                        return fp.read(), template_path
-                except IOError:
-                    raise TemplateDoesNotExist(template_name)
-        raise TemplateDoesNotExist(template_name)
+                template_path = join(app.path, 'templates', tmpl_name)
+                yield Origin(
+                    name=template_path,
+                    template_name=template_name,
+                    loader=self,
+                )
+
+    def get_contents(self, origin):
+        try:
+            with io.open(origin.name, encoding=self.engine.file_charset) as fp:
+                return fp.read()
+        except IOError:
+            raise TemplateDoesNotExist(origin)
 
 
 class Library(template.Library):
