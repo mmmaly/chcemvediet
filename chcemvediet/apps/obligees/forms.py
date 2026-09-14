@@ -37,7 +37,7 @@ class ObligeeWidget(forms.Widget):
                 u'data-name': name,
                 })
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         obligee = value if isinstance(value, Obligee) else None
         return render_to_string(u'obligees/widgets/obligee_widget.html', {
                 u'widget_attrs': self._widget_attrs(attrs),
@@ -47,7 +47,7 @@ class ObligeeWidget(forms.Widget):
 
 class MultipleObligeeWidget(ObligeeWidget):
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         inputs = []
         for item in value or [None]:
             obligee = item if isinstance(item, Obligee) else None

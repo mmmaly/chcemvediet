@@ -105,10 +105,10 @@ def reload_for_context(manager, module):
     module = importlib.import_module(module)
     try:
         with manager as context:
-            reload(module)
+            importlib.reload(module)
             yield context
     finally:
-        reload(module)
+        importlib.reload(module)
 
 class ViewTestCaseMixin(TestCase):
 

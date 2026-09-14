@@ -65,7 +65,9 @@ class Command(BaseCommand):
             except IOError as e:
                 raise CommandError(u'Could not open file: {}.'.format(e))
         else:
-            content = sys.stdin.buffer.read()
+            content = getattr(sys.stdin, u'buffer', sys.stdin).read()
+            if isinstance(content, str):
+                content = content.encode(u'utf-8')
             if not content:
                 raise CommandError(u'No content given.')
 
