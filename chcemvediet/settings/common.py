@@ -96,6 +96,11 @@ TEMPLATES = [
         u'DIRS': [],
         u'APP_DIRS': False,
         u'OPTIONS': {
+            # Pages stored in ``media/pages`` may still ``{% load static from staticfiles %}``;
+            # the ``staticfiles`` library was removed in Django 3.0.
+            u'libraries': {
+                u'staticfiles': u'django.templatetags.static',
+            },
             u'loaders': [
                 (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.filesystem.Loader'),
                 (u'poleno.utils.template.TranslationLoader', u'django.template.loaders.app_directories.Loader'),
