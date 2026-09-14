@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from functools import reduce
 import re
 import operator
 from unidecode import unidecode

@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from functools import reduce
 import operator
 
 from django.dispatch import receiver
