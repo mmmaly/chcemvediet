@@ -1,6 +1,5 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.core.management.color import color_style
 
@@ -14,17 +13,19 @@ class Command(BaseCommand):
             Runs all registered data checks and report any issues found. Use prefixes to filter
             checks by name.
             """)
-    args = u'[prefix] ...'
-    option_list = BaseCommand.option_list + (
-        make_option(u'--list', action=u'store_true', dest=u'list', default=False,
-            help=u'Print registered checks.'),
-        make_option(u'--superficial', action=u'store_true', dest=u'superficial', default=False,
-            help=u'Run only siplified checks and skip any checks that may be slow.'),
-        make_option(u'--autofix', action=u'store_true', dest=u'autofix', default=False,
-            help=u'Automatically fix trivial issues.'),
-        )
 
-    def handle(self, *prefixes, **options):
+    def add_arguments(self, parser):
+        parser.add_argument(u'prefixes', nargs=u'*', metavar=u'prefix')
+        parser.add_argument(u'--list', action=u'store_true', dest=u'list', default=False,
+            help=u'Print registered checks.')
+        parser.add_argument(u'--superficial', action=u'store_true', dest=u'superficial',
+            default=False,
+            help=u'Run only siplified checks and skip any checks that may be slow.')
+        parser.add_argument(u'--autofix', action=u'store_true', dest=u'autofix', default=False,
+            help=u'Automatically fix trivial issues.')
+
+    def handle(self, *args, **options):
+        prefixes = options[u'prefixes']
         groups = [
                 (u'CRITICALS', datacheck.CRITICAL, float(u'inf'),      color_style().ERROR),
                 (u'ERRORS',    datacheck.ERROR,    datacheck.CRITICAL, color_style().ERROR),

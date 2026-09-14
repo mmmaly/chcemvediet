@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 from textwrap import dedent
 
-from django.core.management.base import NoArgsCommand
-
 from django_cron.models import CronJobLog
 from django_cron.management.commands.runcrons import Command as OriginalCommand
 

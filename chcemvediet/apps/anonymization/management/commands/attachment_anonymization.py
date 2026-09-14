@@ -1,5 +1,4 @@
 import sys
-from optparse import make_option
 
 import magic
 from django.core.files.base import ContentFile
@@ -13,29 +12,28 @@ from chcemvediet.apps.inforequests.models import Action
 
 
 class Command(BaseCommand):
-    args = u'attachment_id [file]'
     help = squeeze(u"""
             Creates anonymization for the specified Attachment. The anonymized content is read from
             the given file or from stdin if no file is specified. If no file is specified and stdin
             is empty, the command will fail.
             """)
 
-    option_list = BaseCommand.option_list + (
-        make_option(u'--content_type',
+    def add_arguments(self, parser):
+        parser.add_argument(u'args', nargs=u'*', metavar=u'attachment_id [file]')
+        parser.add_argument(u'--content_type', default=None,
                     help=squeeze(u"""
                             Content type of file, e.g. "application/pdf". Automatically guessed from
                             the file content if not specified.
                             """)
-                    ),
-        make_option(u'--debug',
+                    )
+        parser.add_argument(u'--debug',
                     default=u'',
                     help=u'Debug message to the newly created anonymization. Empty by default.'
-                    ),
-        make_option(u'--force',
-                    action=u'store_true',
+                    )
+        parser.add_argument(u'--force',
+                    action=u'store_true', default=False,
                     help=u'Overwrite any existing anonymization for the attachment.'
-                    ),
-    )
+                    )
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -67,7 +65,7 @@ class Command(BaseCommand):
             except IOError as e:
                 raise CommandError(u'Could not open file: {}.'.format(e))
         else:
-            content = sys.stdin.read()
+            content = sys.stdin.buffer.read()
             if not content:
                 raise CommandError(u'No content given.')
 

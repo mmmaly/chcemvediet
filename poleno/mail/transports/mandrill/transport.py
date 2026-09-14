@@ -63,7 +63,7 @@ class MandrillTransport(BaseTransport):
             attch = {}
             attch[u'type'] = attachment.content_type
             attch[u'name'] = attachment.name
-            attch[u'content'] = base64.b64encode(attachment.content)
+            attch[u'content'] = base64.b64encode(attachment.content).decode(u'ascii')
             msg[u'attachments'].append(attch)
 
         data = {}

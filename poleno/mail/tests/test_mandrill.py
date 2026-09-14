@@ -299,8 +299,6 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
     Tests ``webhook()`` view.
     """
 
-    urls = u'poleno.mail.transports.mandrill.urls'
-
     @contextlib.contextmanager
     def _overrides(self, delete_settings=(), **override_settings):
         overrides = {
@@ -325,7 +323,7 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
                     yield
 
     def _webhook_url(self, secret_name=u'default_testing_secret_name', secret=u'default_testing_secret'):
-        return u'%s?%s=%s' % (reverse(u'webhook'), secret_name, secret)
+        return u'%s?%s=%s' % (reverse(u'mandrill:webhook'), secret_name, secret)
 
     def _check_response(self, response, klass=HttpResponse, status_code=200, error=None):
         self.assertEqual(type(response), klass)
