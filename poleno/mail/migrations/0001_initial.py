@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 import django.db.models.deletion
 import jsonfield.fields
 
@@ -46,7 +47,7 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='message',
             index_together=set([('processed', 'id')]),
         ),

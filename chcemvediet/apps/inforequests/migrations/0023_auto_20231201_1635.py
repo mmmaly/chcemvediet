@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 import django.db.models.deletion
 import poleno.utils.date
 import poleno.utils.misc
@@ -27,7 +28,7 @@ class Migration(migrations.Migration):
             },
             bases=(poleno.utils.misc.FormatMixin, models.Model),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='feedback',
             index_together=set([('created', 'id')]),
         ),

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 
 
 class Migration(migrations.Migration):
@@ -11,7 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='message',
             index_together=set([('created', 'id'), ('processed', 'id')]),
         ),

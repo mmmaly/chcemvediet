@@ -25,3 +25,23 @@ class RenameOrAddIndex(migrations.RenameIndex):
                 return
         super(RenameOrAddIndex, self).database_forwards(
                 app_label, schema_editor, from_state, to_state)
+
+
+class AlterIndexTogetherStateOnly(migrations.SeparateDatabaseAndState):
+    u"""
+    Django 5.1+ ignores ``index_together`` when creating tables, so on a freshly created
+    database the historical ``AlterIndexTogether`` operations find nothing to alter and fail.
+    Databases that predate Django 5 already have these migrations applied. Keep the migration
+    state (later ``RenameOrAddIndex`` operations turn it into named ``Meta.indexes``) and skip
+    the database operation.
+    """
+
+    def __init__(self, name, index_together):
+        super(AlterIndexTogetherStateOnly, self).__init__(
+                state_operations=[migrations.AlterIndexTogether(name, index_together)])
+
+    def deconstruct(self):
+        return (self.__class__.__qualname__, [], {
+                u'name': self.state_operations[0].name,
+                u'index_together': self.state_operations[0].option_value,
+                })

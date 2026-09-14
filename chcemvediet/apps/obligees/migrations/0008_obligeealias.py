@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 import django.db.models.deletion
 
 
@@ -56,15 +57,15 @@ class Migration(migrations.Migration):
             field=models.CharField(help_text='Unique human readable tag name.', unique=True, max_length=255, db_index=True),
             preserve_default=True,
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='obligee',
             index_together=set([]),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='obligeegroup',
             index_together=set([]),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='obligeetag',
             index_together=set([]),
         ),

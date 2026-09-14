@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 import poleno.utils.forms
 
 
@@ -217,11 +218,11 @@ class Migration(migrations.Migration):
             field=models.CharField(help_text='Zip part of postal address.', max_length=10),
             preserve_default=True,
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='obligeegroup',
             index_together=set([('name', 'id')]),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='obligeetag',
             index_together=set([('name', 'id')]),
         ),

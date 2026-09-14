@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 import poleno.utils.date
 
 
@@ -48,7 +49,7 @@ class Migration(migrations.Migration):
             field=models.DateField(help_text="The date at which the action was sent or received. If the action was sent/received by e\u2011mail it's set automatically. If it was sent/received by s\u2011mail it's filled by the applicant.", null=True, blank=True),
             preserve_default=True,
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='action',
             index_together=set([('created', 'id')]),
         ),
