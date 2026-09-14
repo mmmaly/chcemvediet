@@ -130,17 +130,20 @@ class Timewarp(object):
         if not self._enabled:
             self._enabled = True
             self._remap_modules({a: b for a, b in self._remap})
-            copyreg.pickle(datetime_orig.date,
-                    lambda d: (_WarpedDatetime.date,) + d.__reduce__()[1:])
-            copyreg.pickle(datetime_orig.datetime,
-                    lambda d: (_WarpedDatetime.datetime,) + d.__reduce__()[1:])
+            # Pickle warped and original dates alike as the original classes: the warped
+            # classes live inside a replaced module and cannot be located by pickle.
+            for cls in (datetime_orig.date, _WarpedDatetime.date):
+                copyreg.pickle(cls, lambda d: (datetime_orig.date,) + d.__reduce__()[1:])
+            for cls in (datetime_orig.datetime, _WarpedDatetime.datetime):
+                copyreg.pickle(cls, lambda d: (datetime_orig.datetime,) + d.__reduce__()[1:])
 
     def disable(self):
         if self._enabled:
             self._enabled = False
             self._remap_modules({b: a for a, b in self._remap})
-            copyreg.pickle(datetime_orig.date, lambda d: d.__reduce__())
-            copyreg.pickle(datetime_orig.datetime, lambda d: d.__reduce__())
+            for cls in (datetime_orig.date, _WarpedDatetime.date,
+                        datetime_orig.datetime, _WarpedDatetime.datetime):
+                copyreg.dispatch_table.pop(cls, None)
 
     def _remap_modules(self, remap):
         types = [type(a) for a in remap]
