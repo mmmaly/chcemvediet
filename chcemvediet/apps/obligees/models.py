@@ -1,6 +1,8 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from email.utils import formataddr, getaddresses
+from email.utils import formataddr
+
+from poleno.utils.mail import getaddresses_lenient as getaddresses
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _

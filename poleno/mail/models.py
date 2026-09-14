@@ -1,6 +1,8 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from email.utils import formataddr, parseaddr
+from email.utils import formataddr
+
+from poleno.utils.mail import parseaddr_lenient as parseaddr
 
 from django.db import models
 from django.db.models import Prefetch

@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from email.utils import parseaddr
+from poleno.utils.mail import parseaddr_lenient as parseaddr
 from email.mime.base import MIMEBase
 
 from django.core.files.base import ContentFile

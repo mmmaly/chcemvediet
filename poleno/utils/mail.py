@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from email.header import decode_header
+from email.utils import parseaddr, getaddresses
 
 from django.core.mail import EmailMultiAlternatives, EmailMessage
 from django.template import TemplateDoesNotExist
@@ -52,6 +53,28 @@ def render_mail(template_prefix, dictionary=None, **kwargs):
         msg = EmailMessage(subject, bodies[u'txt'], **kwargs)
 
     return msg
+
+def parseaddr_lenient(value):
+    u"""
+    ``email.utils.parseaddr`` with the lenient behaviour of Python < 3.10.14. Recent versions
+    parse strictly by default and return ``('', '')`` for anything questionable, which would
+    silently drop e.g. obligee addresses stored in the database years ago.
+    """
+    try:
+        return parseaddr(value, strict=False)
+    except TypeError:
+        return parseaddr(value)
+
+def getaddresses_lenient(values):
+    u"""
+    ``email.utils.getaddresses`` with the lenient behaviour of Python < 3.10.14. See
+    ``parseaddr_lenient``. Empty pairs are dropped.
+    """
+    try:
+        parsed = getaddresses(values, strict=False)
+    except TypeError:
+        parsed = getaddresses(values)
+    return [(name, address) for name, address in parsed if name or address]
 
 def full_decode_header(header):
     u"""

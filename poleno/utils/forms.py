@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from itertools import chain
-from email.utils import parseaddr, getaddresses
+from poleno.utils.mail import parseaddr_lenient, getaddresses_lenient
 
 from django import forms
 from django.core.validators import validate_email
@@ -194,22 +194,8 @@ class RangeWidget(forms.Widget):
                 flatatt(input_attrs)
                 ))
 
-def _parseaddr(value):
-    # Python >= 3.10.14 parses strictly by default; keep the lenient legacy behaviour.
-    try:
-        return parseaddr(value, strict=False)
-    except TypeError:
-        return parseaddr(value)
-
-def _getaddresses(value):
-    try:
-        parsed = getaddresses([value], strict=False)
-    except TypeError:
-        parsed = getaddresses([value])
-    return [(name, address) for name, address in parsed if name or address]
-
 def validate_formatted_email(value):
-    name, address = _parseaddr(value)
+    name, address = parseaddr_lenient(value)
     try:
         validate_email(address)
     except ValidationError:
@@ -217,7 +203,7 @@ def validate_formatted_email(value):
         raise ValidationError(msg.format(address))
 
 def validate_comma_separated_emails(value):
-    parsed = _getaddresses(value)
+    parsed = getaddresses_lenient([value])
     for name, address in parsed:
         try:
             validate_email(address)
