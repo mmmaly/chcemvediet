@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import json
+import binascii
 import hmac
 import hashlib
 from base64 import b64encode
@@ -697,7 +698,7 @@ class InboundEmailWebhookEvent(MailTestCaseMixin, TestCase):
             u'bbb': {u'name': u'file.txt', u'content': u'Text Content'},
             u'ccc': {u'name': u'file.txt', u'type': u'text/plain'},
             })
-        attchs = [(a.name, a.content_type, a.content) for a in msgs[0].attachment_set.all()]
+        attchs = [(a.name, a.content_type, a.content.decode(u'utf-8')) for a in msgs[0].attachment_set.all()]
         self.assertItemsEqual(attchs, [
             (u'file.txt', u'text/plain', u'Text Content'),
             (u'file.html', u'text/html', u'<html><body>HTML Content</body></html>'),
@@ -711,13 +712,13 @@ class InboundEmailWebhookEvent(MailTestCaseMixin, TestCase):
         msgs = self._call_webhook(attachments={
             u'file.txt': {u'name': u'file.txt', u'type': u'text/plain', u'content': u'Y29udGVudA==', u'base64': True},
             })
-        attchs = [(a.name, a.content_type, a.content) for a in msgs[0].attachment_set.all()]
+        attchs = [(a.name, a.content_type, a.content.decode(u'utf-8')) for a in msgs[0].attachment_set.all()]
         self.assertItemsEqual(attchs, [
             (u'file.txt', u'text/plain', u'content'),
             ])
 
     def test_message_attachment_base64_encoded_with_invalid_content(self):
-        with self.assertRaisesMessage(TypeError, u'Incorrect padding'):
+        with self.assertRaisesMessage(binascii.Error, u'Incorrect padding'):
             self._call_webhook(attachments={
                 u'file.txt': {u'name': u'file.txt', u'type': u'text/plain', u'content': u'invalid', u'base64': True},
                 })

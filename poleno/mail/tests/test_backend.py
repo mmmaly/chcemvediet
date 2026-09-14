@@ -128,7 +128,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
             ])
         self.assertEqual(mail.instance.text, u'Text content')
         self.assertEqual(mail.instance.html, u'<html><body>HTML alternative 1</body></html>')
-        attachments = [(a.name, a.content, a.content_type) for a in mail.instance.attachment_set.all()]
+        attachments = [(a.name, a.content.decode(u'utf-8'), a.content_type) for a in mail.instance.attachment_set.all()]
         self.assertEqual(attachments, [
             (u'message.html', u'<html><body>HTML alternative 2</body></html>', u'text/html'),
             (u'message.txt', u'Text alternative', u'text/plain'),
@@ -142,7 +142,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
             ])
         self.assertEqual(mail.instance.text, u'Text alternative 1')
         self.assertEqual(mail.instance.html, u'<html><body>HTML content</body></html>')
-        attachments = [(a.name, a.content, a.content_type) for a in mail.instance.attachment_set.all()]
+        attachments = [(a.name, a.content.decode(u'utf-8'), a.content_type) for a in mail.instance.attachment_set.all()]
         self.assertEqual(attachments, [
             (u'message.html', u'<html><body>HTML alternative</body></html>', u'text/html'),
             (u'message.txt', u'Text alternative 2', u'text/plain'),
@@ -153,7 +153,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
             (u'filename.pdf', u'%PDF-2.0', u'application/pdf'),
             (u'another.txt', u'text attachment', u'text/plain'),
             ])
-        attachments = [(a.name, a.content, a.content_type) for a in mail.instance.attachment_set.all()]
+        attachments = [(a.name, a.content.decode(u'utf-8'), a.content_type) for a in mail.instance.attachment_set.all()]
         self.assertEqual(attachments, [
             (u'filename.pdf', u'%PDF-2.0', u'application/pdf'),
             (u'another.txt', u'text attachment', u'text/plain'),
@@ -164,7 +164,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
             (None, bytearray([1, 65, 2, 0]), None),
             (None, u'content', None),
             ])
-        attachments = [(a.name, a.content, a.content_type) for a in mail.instance.attachment_set.all()]
+        attachments = [(a.name, a.content.decode(u'utf-8'), a.content_type) for a in mail.instance.attachment_set.all()]
         self.assertEqual(attachments, [
             (u'attachment.bin', bytearray([1, 65, 2, 0]), u'application/octet-stream'),
             (u'attachment.txt', u'content', u'text/plain'),
@@ -172,7 +172,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
 
     def test_message_with_attachment_as_mime_object(self):
         mail = self._send_email(attachments=[MIMEText(u'text attachment')])
-        attachments = [(a.name, a.content, a.content_type) for a in mail.instance.attachment_set.all()]
+        attachments = [(a.name, a.content.decode(u'utf-8'), a.content_type) for a in mail.instance.attachment_set.all()]
         self.assertEqual(attachments, [
             (u'attachment.txt', u'text attachment', u'text/plain'),
             ])
@@ -188,7 +188,7 @@ class EmailBackendTest(MailTestCaseMixin, TestCase):
             ])
         self.assertEqual(mail.instance.text, u'Text content')
         self.assertEqual(mail.instance.html, u'<html><body>HTML alternative 1</body></html>')
-        attachments = [(a.name, a.content, a.content_type) for a in mail.instance.attachment_set.all()]
+        attachments = [(a.name, a.content.decode(u'utf-8'), a.content_type) for a in mail.instance.attachment_set.all()]
         self.assertEqual(attachments, [
             (u'filename.pdf', u'%PDF-2.0', u'application/pdf'),
             (u'another.txt', u'text attachment', u'text/plain'),
