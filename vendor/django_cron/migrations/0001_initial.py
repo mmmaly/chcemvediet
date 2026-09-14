@@ -34,14 +34,19 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AlterIndexTogether(
-            name='cronjoblog',
-            index_together=set(
-                [
-                    ('code', 'is_success', 'ran_at_time'),
-                    ('code', 'start_time', 'ran_at_time'),
-                    ('code', 'start_time'),
-                ]
-            ),
+        # The upstream migration used ``index_together`` (removed in Django 5.1). Databases
+        # created before django-cron shipped migrations carry these indexes under generated
+        # names; that is harmless, Django never needs to touch them again.
+        migrations.AddIndex(
+            model_name='cronjoblog',
+            index=models.Index(fields=['code', 'is_success', 'ran_at_time'], name='django_cron_code_is_succ_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='cronjoblog',
+            index=models.Index(fields=['code', 'start_time', 'ran_at_time'], name='django_cron_code_start_r_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='cronjoblog',
+            index=models.Index(fields=['code', 'start_time'], name='django_cron_code_start_idx'),
         ),
     ]

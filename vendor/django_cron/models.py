@@ -25,9 +25,9 @@ class CronJobLog(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['code', 'is_success', 'ran_at_time']),
-            models.Index(fields=['code', 'start_time', 'ran_at_time']),
-            models.Index(fields=['code', 'start_time']),
+            models.Index(fields=['code', 'is_success', 'ran_at_time'], name='django_cron_code_is_succ_idx'),
+            models.Index(fields=['code', 'start_time', 'ran_at_time'], name='django_cron_code_start_r_idx'),
+            models.Index(fields=['code', 'start_time'], name='django_cron_code_start_idx'),
         ]
         app_label = 'django_cron'
 

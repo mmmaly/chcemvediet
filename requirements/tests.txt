@@ -1,9 +1,4 @@
 # Requirements for unittests
-coverage==4.0a1
-instrumental==0.5.3
-testfixtures==4.1.2
-
-# Dependencies for requirements for unittests
-astkit==0.5.4     # instrumental
-Mako==1.0.1       # instrumental
-MarkupSafe==0.23  # instrumental
+mock==5.2.0
+testfixtures==8.3.0
+coverage==7.16.1
