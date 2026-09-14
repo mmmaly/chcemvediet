@@ -605,8 +605,9 @@ def main():
         call(u'Creating a virtual Python environment: %s/' % ENV_DIR,
                 [sys.executable, u'-m', u'venv', ENV_DIR]);
 
-    # Make sure we are running within the virtual environment
-    if os.path.realpath(sys.executable) != os.path.realpath(ENV_PYTHON):
+    # Make sure we are running within the virtual environment. (``venv`` symlinks its python to
+    # the system interpreter, so compare the environment prefix, not the executable path.)
+    if os.path.realpath(sys.prefix) != os.path.realpath(ENV_DIR):
         try:
             call(u'Rerunning with: %s' % ENV_PYTHON, [ENV_PYTHON, u'setup.py']);
         except KeyboardInterrupt:
