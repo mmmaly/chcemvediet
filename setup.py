@@ -470,7 +470,21 @@ def create_or_sync_database(configure):
         call(u'Load datasheets:',
                 [ENV_PYTHON, u'manage.py', u'loadsheets', u'fixtures/datasheets.xlsx'])
     else:
+        fake_legacy_migrations(configure)
         call(u'Migrate DB:', [ENV_PYTHON, u'manage.py', u'migrate'])
+
+def fake_legacy_migrations(configure):
+    from django.db import connection
+    from django.db.migrations.recorder import MigrationRecorder
+
+    # Databases created with django-cron < 0.4 got their table from ``syncdb`` without any
+    # migration records. The vendored django-cron 0.6 ships migrations whose 0001 and 0002 match
+    # that legacy table exactly, so record them as applied instead of failing on CREATE TABLE.
+    tables = connection.introspection.table_names()
+    applied = MigrationRecorder(connection).applied_migrations()
+    if u'django_cron_cronjoblog' in tables and not any(app == u'django_cron' for app, name in applied):
+        call(u'Record legacy django_cron table as migrated:',
+                [ENV_PYTHON, u'manage.py', u'migrate', u'django_cron', u'0002', u'--fake'])
 
 def load_redirects(configure):
     from django.contrib.redirects.models import Redirect
