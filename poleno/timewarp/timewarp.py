@@ -101,6 +101,13 @@ class _WarpedDatetime(object):
         return getattr(datetime_orig, attr)
 
 
+# While timewarp is enabled ``sys.modules['datetime']`` is a ``_WarpedDatetime`` instance, so
+# pickle must be able to find the warped classes as ``datetime.date`` and ``datetime.datetime``.
+for _cls in (_WarpedDatetime.date, _WarpedDatetime.datetime):
+    _cls.__module__ = datetime_orig.__name__
+    _cls.__qualname__ = _cls.__name__
+del _cls
+
 class Timewarp(object):
     def __init__(self):
         self._enabled = False
@@ -130,20 +137,17 @@ class Timewarp(object):
         if not self._enabled:
             self._enabled = True
             self._remap_modules({a: b for a, b in self._remap})
-            # Pickle warped and original dates alike as the original classes: the warped
-            # classes live inside a replaced module and cannot be located by pickle.
-            for cls in (datetime_orig.date, _WarpedDatetime.date):
-                copyreg.pickle(cls, lambda d: (datetime_orig.date,) + d.__reduce__()[1:])
-            for cls in (datetime_orig.datetime, _WarpedDatetime.datetime):
-                copyreg.pickle(cls, lambda d: (datetime_orig.datetime,) + d.__reduce__()[1:])
+            copyreg.pickle(datetime_orig.date,
+                    lambda d: (_WarpedDatetime.date,) + d.__reduce__()[1:])
+            copyreg.pickle(datetime_orig.datetime,
+                    lambda d: (_WarpedDatetime.datetime,) + d.__reduce__()[1:])
 
     def disable(self):
         if self._enabled:
             self._enabled = False
             self._remap_modules({b: a for a, b in self._remap})
-            for cls in (datetime_orig.date, _WarpedDatetime.date,
-                        datetime_orig.datetime, _WarpedDatetime.datetime):
-                copyreg.dispatch_table.pop(cls, None)
+            copyreg.pickle(datetime_orig.date, lambda d: d.__reduce__())
+            copyreg.pickle(datetime_orig.datetime, lambda d: d.__reduce__())
 
     def _remap_modules(self, remap):
         types = [type(a) for a in remap]
