@@ -51,15 +51,23 @@ def webhook(request):
         for key, value_list in post_lists:
             for item in value_list:
                 post_parts.extend([key, item])
-        post_string_encoded = u''.join(post_parts).encode(u'ascii', u'ignore')
+        post_string = u''.join(post_parts)
+        # Mandrill signs the raw (UTF-8) POST data. The ASCII-only variant is kept for
+        # compatibility with the original implementation of this view.
+        post_strings_encoded = [post_string.encode(u'utf-8'),
+                                post_string.encode(u'ascii', u'ignore')]
         computed = []
         for webhook_key in webhook_keys:
             webhook_key_encoded = webhook_key.encode(u'ascii', u'ignore')
-            hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded,
-                    digestmod=hashlib.sha1).digest()).decode(u'ascii')
-            computed.append(hash_string)
-            if hmac.compare_digest(signature, hash_string):
-                break
+            for post_string_encoded in post_strings_encoded:
+                hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded,
+                        digestmod=hashlib.sha1).digest()).decode(u'ascii')
+                computed.append(hash_string)
+                if hmac.compare_digest(signature, hash_string):
+                    break
+            else:
+                continue
+            break
         else:
             # ``MANDRILL_WEBHOOK_VERIFY_SIGNATURE`` may be set to False to only log signature
             # mismatches instead of rejecting the request. The ``secret`` query argument is

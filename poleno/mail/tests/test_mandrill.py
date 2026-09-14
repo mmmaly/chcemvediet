@@ -1,6 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import json
+import hmac
+import hashlib
+from base64 import b64encode
 import mock
 import contextlib
 
@@ -324,6 +327,17 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
     def _webhook_url(self, secret_name=u'default_testing_secret_name', secret=u'default_testing_secret'):
         return u'%s?%s=%s' % (reverse(u'mandrill:webhook'), secret_name, secret)
 
+    def _signature(self, data, url=u'https://testhost/', key=u'testkey'):
+        u"""
+        Computes the signature the same way Mandrill does: HMAC-SHA1 over the webhook URL
+        followed by the sorted POST keys and values.
+        """
+        parts = [url]
+        for name in sorted(data):
+            parts.extend([name, data[name]])
+        return b64encode(hmac.new(key=key.encode(u'ascii'), msg=u''.join(parts).encode(u'utf-8'),
+                digestmod=hashlib.sha1).digest()).decode(u'ascii')
+
     def _check_response(self, response, klass=HttpResponse, status_code=200, error=None):
         self.assertEqual(type(response), klass)
         self.assertEqual(response.status_code, status_code)
@@ -424,13 +438,13 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
         with self._overrides(MANDRILL_WEBHOOK_URL=u'https://testhost/', MANDRILL_WEBHOOK_KEYS=[u'testkey']):
             receiver = mock.Mock()
             webhook_event.connect(receiver)
-            response = self.client.post(self._webhook_url(), secure=True,
-                    data={u'mandrill_events': json.dumps([
+            data = {u'mandrill_events': json.dumps([
                         {u'event': u'deferral', u'_id': u'remote-1'},
                         {u'event': u'soft_bounce', u'_id': u'remote-2'},
                         {u'event': u'click', u'_id': u'remote-3'},
-                        ])},
-                    HTTP_X_MANDRILL_SIGNATURE=u'e/e0y1qBZghx4pyHFFoRrtgqmWg=')
+                        ])}
+            response = self.client.post(self._webhook_url(), secure=True, data=data,
+                    HTTP_X_MANDRILL_SIGNATURE=self._signature(data))
         self._check_response(response)
         self.assertItemsEqual(receiver.mock_calls, [
             mock.call(signal=webhook_event, data={u'_id': u'remote-1', u'event': u'deferral'}, event_type=u'deferral', sender=None),
@@ -447,21 +461,17 @@ class WebhookViewTest(MailTestCaseMixin, ViewTestCaseMixin, TestCase):
 
             # No exceptions, data committed
             with created_instances(Message.objects) as msg_set:
-                self.client.post(self._webhook_url(), secure=True,
-                        data={u'mandrill_events': json.dumps([
-                            {u'event': u'click', u'_id': u'remote-1'},
-                            ])},
-                        HTTP_X_MANDRILL_SIGNATURE=u'phOye9ZN3XunJ8SG7R9AT6KhpUo=')
+                data = {u'mandrill_events': json.dumps([{u'event': u'click', u'_id': u'remote-1'}])}
+                self.client.post(self._webhook_url(), secure=True, data=data,
+                        HTTP_X_MANDRILL_SIGNATURE=self._signature(data))
             self.assertTrue(msg_set.exists())
 
             # With exception, data rolled back
             with created_instances(Message.objects) as msg_set:
                 with patch_with_exception(u'poleno.mail.transports.mandrill.views.HttpResponse'):
-                    self.client.post(self._webhook_url(), secure=True,
-                            data={u'mandrill_events': json.dumps([
-                                {u'event': u'click', u'_id': u'remote-1'},
-                                ])},
-                            HTTP_X_MANDRILL_SIGNATURE=u'phOye9ZN3XunJ8SG7R9AT6KhpUo=')
+                    data = {u'mandrill_events': json.dumps([{u'event': u'click', u'_id': u'remote-1'}])}
+                    self.client.post(self._webhook_url(), secure=True, data=data,
+                            HTTP_X_MANDRILL_SIGNATURE=self._signature(data))
             self.assertFalse(msg_set.exists())
 
 class MessageStatusWebhookEventTest(MailTestCaseMixin, TestCase):
@@ -479,7 +489,7 @@ class MessageStatusWebhookEventTest(MailTestCaseMixin, TestCase):
 
 
     def test_event_receiver_is_registered(self):
-        self.assertIn(message_status_webhook_event, webhook_event._live_receivers(sender=None))
+        self.assertIn(message_status_webhook_event, webhook_event._live_receivers(sender=None)[0])
 
     def _test_event_type_changing_recipient_status(self, event_type, status):
         msg = self._create_message()
@@ -581,7 +591,7 @@ class InboundEmailWebhookEvent(MailTestCaseMixin, TestCase):
 
 
     def test_event_receiver_is_registered(self):
-        self.assertIn(inbound_email_webhook_event, webhook_event._live_receivers(sender=None))
+        self.assertIn(inbound_email_webhook_event, webhook_event._live_receivers(sender=None)[0])
 
     def test_event_type_inbound_saves_message(self):
         msgs = self._call_webhook()
