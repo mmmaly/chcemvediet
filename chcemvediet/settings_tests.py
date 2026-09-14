@@ -38,3 +38,4 @@ SEARCH_API_KEY = u''
 RECAPTCHA_PUBLIC_KEY = u'6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_PRIVATE_KEY = u'6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
 CSRF_TRUSTED_ORIGINS = [u'http://testserver', u'https://testserver']
+SILENCED_SYSTEM_CHECKS = [u'django_recaptcha.recaptcha_test_key_error']
