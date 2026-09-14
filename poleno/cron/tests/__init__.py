@@ -45,7 +45,9 @@ class CronTestCaseMixin(TestCase):
 
         with mock.patch(u'poleno.cron.tests.mock_cron_job', mock_cron_job):
             with self.settings(CRON_CLASSES=(u'poleno.cron.tests.mock_cron_job',)):
-                with contextlib.nested(*additional_context_managers):
+                with contextlib.ExitStack() as stack:
+                    for cm in additional_context_managers:
+                        stack.enter_context(cm)
                     # ``runcrons`` command runs ``logging.debug()`` that somehow spoils stderr.
                     with mock.patch(u'django_cron.logging'):
                         call_command(u'runcrons')

@@ -85,7 +85,7 @@ def local_datetime_from_utc(*args, **kwargs):
     respective objects. Similarly all other values may be given as numbers or strings containing
     numbers.
     """
-    return local_datetime_from_local(from_tz=timezone.utc, *args, **kwargs)
+    return local_datetime_from_local(from_tz=datetime.timezone.utc, *args, **kwargs)
 
 def utc_now():
     u"""
@@ -104,7 +104,7 @@ def utc_datetime(dt):
     Usage:
         utc_datetime(aware_datetime)
     """
-    return local_datetime(dt, timezone.utc)
+    return local_datetime(dt, datetime.timezone.utc)
 
 def utc_datetime_from_local(*args, **kwargs):
     u"""
@@ -126,7 +126,7 @@ def utc_datetime_from_local(*args, **kwargs):
     respective objects. Similarly all other values may be given as numbers or strings containing
     numbers.
     """
-    return local_datetime_from_local(tz=timezone.utc, *args, **kwargs)
+    return local_datetime_from_local(tz=datetime.timezone.utc, *args, **kwargs)
 
 def utc_datetime_from_utc(*args, **kwargs):
     u"""
@@ -146,7 +146,7 @@ def utc_datetime_from_utc(*args, **kwargs):
     respective objects. Similarly all other values may be given as numbers or strings containing
     numbers.
     """
-    return local_datetime_from_local(from_tz=timezone.utc, tz=timezone.utc, *args, **kwargs)
+    return local_datetime_from_local(from_tz=datetime.timezone.utc, tz=datetime.timezone.utc, *args, **kwargs)
 
 
 def local_today(tz=None):
