@@ -345,11 +345,9 @@ def cached_method(method=None, cached_exceptions=None):
                 res, exc = cache[args]
             except KeyError:
                 try:
-                    res = method(self, *args)
-                except cached_exceptions as exc:
-                    res = None
-                else:
-                    exc = None
+                    res, exc = method(self, *args), None
+                except cached_exceptions as e:
+                    res, exc = None, e
                 cache[args] = res, exc
             if exc is None:
                 return res

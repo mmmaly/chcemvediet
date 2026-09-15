@@ -109,7 +109,7 @@ def between(after, before, holiday_set=None):
 
     # Having: after < before
     days = (before - after).days
-    res = (days/7)*(7-len(WEEKEND)) # Full weeks
+    res = (days//7)*(7-len(WEEKEND)) # Full weeks
     res += len([1 for d in range(days%7) # At most 6 iterations for the remaining partial week
                   if (before - datetime.timedelta(days=d)).weekday() not in WEEKEND])
     res -= len([1 for d in holiday_set.between(after, before)

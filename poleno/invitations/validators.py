@@ -1,6 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
-from email.utils import getaddresses
+from poleno.utils.mail import getaddresses_lenient as getaddresses
 
 from django.core.exceptions import ValidationError
 from django.db.models import Q

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import email
 import email.message
-from email.utils import parseaddr
+from poleno.utils.mail import parseaddr_lenient as parseaddr
 from imaplib import IMAP4, IMAP4_SSL, IMAP4_PORT, IMAP4_SSL_PORT
 
 from django.core.files.base import ContentFile

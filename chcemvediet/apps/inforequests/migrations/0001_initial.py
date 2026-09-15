@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 import jsonfield.fields
 import django.db.models.deletion
 import multiselectfield.db.fields
@@ -106,7 +107,7 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='inforequestemail',
             index_together=set([('inforequest', 'email'), ('email', 'inforequest'), ('type', 'inforequest')]),
         ),
@@ -116,7 +117,7 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(to='mail.Message', through='inforequests.InforequestEmail'),
             preserve_default=True,
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='inforequest',
             index_together=set([('submission_date', 'id')]),
         ),
@@ -132,7 +133,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(help_text='The obligee the inforequest was sent or advanced to.', to='obligees.Obligee', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='branch',
             index_together=set([('inforequest', 'advanced_by'), ('advanced_by', 'inforequest')]),
         ),
@@ -166,7 +167,7 @@ class Migration(migrations.Migration):
             field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='mail.Message'),
             preserve_default=True,
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='action',
             index_together=set([('effective_date', 'id')]),
         ),

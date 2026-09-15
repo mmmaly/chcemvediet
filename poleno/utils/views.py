@@ -19,7 +19,7 @@ def require_ajax(view):
     """
     @wraps(view)
     def wrapped_view(request, *args, **kwargs):
-        if not request.is_ajax():
+        if request.headers.get(u'x-requested-with') != u'XMLHttpRequest':
             raise SuspiciousOperation()
         return view(request, *args, **kwargs)
     return wrapped_view

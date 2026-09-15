@@ -14,19 +14,28 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='historicalobligee',
-            name='iczsj_id',
+        # django-simple-history 1.5 stored the neighbourhood of a historical record as a plain
+        # ``iczsj_id`` integer column; simple-history 3.x models it as a constraint-less
+        # ForeignKey ``iczsj`` using the very same ``iczsj_id`` column. Change only the migration
+        # state and keep the column (and its data) in the database.
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(
+                    model_name='historicalobligee',
+                    name='iczsj_id',
+                ),
+                migrations.AddField(
+                    model_name='historicalobligee',
+                    name='iczsj',
+                    field=models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to='geounits.Neighbourhood', null=True),
+                ),
+            ],
+            database_operations=[],
         ),
         migrations.AddField(
             model_name='historicalobligee',
             name='history_change_reason',
             field=models.CharField(max_length=100, null=True),
-        ),
-        migrations.AddField(
-            model_name='historicalobligee',
-            name='iczsj',
-            field=models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to='geounits.Neighbourhood', null=True),
         ),
         migrations.AlterField(
             model_name='historicalobligee',

@@ -1,7 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from collections import defaultdict, OrderedDict
-from optparse import make_option
 from openpyxl import load_workbook
 
 from django.core.management.base import BaseCommand, CommandError
@@ -437,27 +436,28 @@ class Importer(object):
 
 class LoadSheetsCommand(BaseCommand):
     help = u'Loads .xlsx files with data'
-    args = u'file [file ...]'
-    option_list = BaseCommand.option_list + (
-        make_option(u'--dry-run', action=u'store_true', default=False,
-            help=squeeze(u"""
-                Just show if the files would be imported correctly. Rollback all changes at the
-                end.
-                """)),
-        make_option(u'--reset', action=u'store_true', default=False,
-            help=squeeze(u"""
-                Discard current data before imporing the files. Only data from sheets present in
-                the files are discarded. Data from missing sheets are left untouched.
-                """)),
-        make_option(u'--assume', choices=[u'yes', u'no', u'default'],
-            help=squeeze(u"""
-                Assume yes/no/default answer to all yes/no questions.
-                """)),
-        )
     importer = Importer
     book = None
 
+    def add_arguments(self, parser):
+        parser.add_argument(u'files', nargs=u'*', metavar=u'file')
+        parser.add_argument(u'--dry-run', action=u'store_true', default=False,
+            help=squeeze(u"""
+                Just show if the files would be imported correctly. Rollback all changes at the
+                end.
+                """))
+        parser.add_argument(u'--reset', action=u'store_true', default=False,
+            help=squeeze(u"""
+                Discard current data before imporing the files. Only data from sheets present in
+                the files are discarded. Data from missing sheets are left untouched.
+                """))
+        parser.add_argument(u'--assume', choices=[u'yes', u'no', u'default'], default=None,
+            help=squeeze(u"""
+                Assume yes/no/default answer to all yes/no questions.
+                """))
+
     def handle(self, *args, **options):
+        args = options[u'files']
         if not args:
             raise CommandError(u'No file specified.')
 

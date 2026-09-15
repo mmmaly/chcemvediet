@@ -1,6 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import sys
+import types
 import time as time_orig
 import datetime as datetime_orig
 import copyreg
@@ -22,7 +23,14 @@ def _meta_factory(cls):
 
     return Meta
 
-class _WarpedTime(object):
+class _WarpedTime(types.ModuleType):
+    u"""
+    Replacement for the ``time`` module. It must be a real module object: C code such as
+    ``time.tzset()`` used by ``strptime`` rejects anything else.
+    """
+
+    def __init__(self):
+        super(_WarpedTime, self).__init__(time_orig.__name__, time_orig.__doc__)
 
     @classmethod
     def asctime(cls, t=None):
@@ -92,6 +100,13 @@ class _WarpedDatetime(object):
     def __getattr__(self, attr):
         return getattr(datetime_orig, attr)
 
+
+# While timewarp is enabled ``sys.modules['datetime']`` is a ``_WarpedDatetime`` instance, so
+# pickle must be able to find the warped classes as ``datetime.date`` and ``datetime.datetime``.
+for _cls in (_WarpedDatetime.date, _WarpedDatetime.datetime):
+    _cls.__module__ = datetime_orig.__name__
+    _cls.__qualname__ = _cls.__name__
+del _cls
 
 class Timewarp(object):
     def __init__(self):

@@ -85,7 +85,7 @@ def local_datetime_from_utc(*args, **kwargs):
     respective objects. Similarly all other values may be given as numbers or strings containing
     numbers.
     """
-    return local_datetime_from_local(from_tz=timezone.utc, *args, **kwargs)
+    return local_datetime_from_local(from_tz=datetime.timezone.utc, *args, **kwargs)
 
 def utc_now():
     u"""
@@ -104,7 +104,7 @@ def utc_datetime(dt):
     Usage:
         utc_datetime(aware_datetime)
     """
-    return local_datetime(dt, timezone.utc)
+    return local_datetime(dt, datetime.timezone.utc)
 
 def utc_datetime_from_local(*args, **kwargs):
     u"""
@@ -126,7 +126,7 @@ def utc_datetime_from_local(*args, **kwargs):
     respective objects. Similarly all other values may be given as numbers or strings containing
     numbers.
     """
-    return local_datetime_from_local(tz=timezone.utc, *args, **kwargs)
+    return local_datetime_from_local(tz=datetime.timezone.utc, *args, **kwargs)
 
 def utc_datetime_from_utc(*args, **kwargs):
     u"""
@@ -146,7 +146,7 @@ def utc_datetime_from_utc(*args, **kwargs):
     respective objects. Similarly all other values may be given as numbers or strings containing
     numbers.
     """
-    return local_datetime_from_local(from_tz=timezone.utc, tz=timezone.utc, *args, **kwargs)
+    return local_datetime_from_local(from_tz=datetime.timezone.utc, tz=datetime.timezone.utc, *args, **kwargs)
 
 
 def local_today(tz=None):
@@ -237,8 +237,8 @@ def _datetime_factory(*args, **kwargs):
             try:
                 return datetime.datetime.strptime(value, f)
             except ValueError as e:
-                pass
-        raise e
+                error = e
+        raise error
 
     def parse_date(value):
         if isinstance(value, datetime.date):
@@ -247,8 +247,8 @@ def _datetime_factory(*args, **kwargs):
             try:
                 return datetime.datetime.strptime(value, f).date()
             except ValueError as e:
-                pass
-        raise e
+                error = e
+        raise error
 
     def parse_time(value):
         if isinstance(value, datetime.time):
@@ -257,8 +257,8 @@ def _datetime_factory(*args, **kwargs):
             try:
                 return datetime.datetime.strptime(value, f).time()
             except ValueError as e:
-                pass
-        raise e
+                error = e
+        raise error
 
     def pop_arg(name, typ, parser, error=None, default=nop):
         if name in kwargs:

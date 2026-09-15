@@ -1,7 +1,7 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 from itertools import chain
-from email.utils import parseaddr, getaddresses
+from poleno.utils.mail import parseaddr_lenient, getaddresses_lenient
 
 from django import forms
 from django.core.validators import validate_email
@@ -35,7 +35,7 @@ def clean_button(post, clean_values, default_value=None, key=u'button'):
     return post[key]
 
 class SuppressedInput(forms.TextInput):
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         return format_html(u'<span{0}><input type="hidden" name="{1}" value="{2}">{3}</span>',
                 flatatt(self.attrs), name, value, value)
 
@@ -72,7 +72,7 @@ class AutoSuppressedSelect(forms.Select):
         self.suppressed_attrs = kwargs.pop(u'suppressed_attrs', {})
         super(AutoSuppressedSelect, self).__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         all_choices = list(chain(self.choices, choices))
         if len(all_choices) == 1:
             option_value, option_label = all_choices[0]
@@ -80,7 +80,7 @@ class AutoSuppressedSelect(forms.Select):
                 return format_html(
                         u'<span{0}><input type="hidden" name="{1}" value="{2}">{3}</span>',
                         flatatt(self.suppressed_attrs), name, option_value, option_label)
-        return super(AutoSuppressedSelect, self).render(name, value, attrs, choices)
+        return super(AutoSuppressedSelect, self).render(name, value, attrs, renderer=renderer)
 
 class CompositeTextWidget(forms.MultiWidget):
     u"""
@@ -171,7 +171,7 @@ class ValidatorChain(object):
             validator(value)
 
 class EditableSpan(forms.Widget):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if value is None:
             value = u''
         # Workaround for Safari 7: If ``data-padding`` attribute is set in javascript only, Safari
@@ -184,7 +184,7 @@ class EditableSpan(forms.Widget):
                 flatatt(span_attrs), force_str(value), flatatt(input_attrs))
 
 class RangeWidget(forms.Widget):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if value is None:
             value = u''
         input_attrs = merge_html_attrs(self.attrs, attrs, type=u'range', name=name,
@@ -195,7 +195,7 @@ class RangeWidget(forms.Widget):
                 ))
 
 def validate_formatted_email(value):
-    name, address = parseaddr(value)
+    name, address = parseaddr_lenient(value)
     try:
         validate_email(address)
     except ValidationError:
@@ -203,7 +203,7 @@ def validate_formatted_email(value):
         raise ValidationError(msg.format(address))
 
 def validate_comma_separated_emails(value):
-    parsed = getaddresses([value])
+    parsed = getaddresses_lenient([value])
     for name, address in parsed:
         try:
             validate_email(address)

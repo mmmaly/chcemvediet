@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import datetime
 from textwrap import dedent
-from optparse import make_option
 from dateutil.relativedelta import relativedelta
 
 from django.core.management.base import BaseCommand, CommandError
@@ -26,53 +25,47 @@ class Command(BaseCommand):
             timewarp --speedup=-1          Make time flow backwards.
             timewarp --reset               Return back to the present.""")
 
-    args = u"""[yyyy-mm-dd [hh:mm[:ss]]]"""
-
-    option_list = BaseCommand.option_list + (
-        make_option(u'--year', action=u'store', type=u'int', dest=u'year', default=None,
-            help=u'Change to year.'),
-        make_option(u'--month', action=u'store', type=u'int', dest=u'month', default=None,
-            help=u'Change to month.'),
-        make_option(u'--day', action=u'store', type=u'int', dest=u'day', default=None,
-            help=u'Change to day in month.'),
-        make_option(u'--hour', action=u'store', type=u'int', dest=u'hour', default=None,
-            help=u'Change to hour.'),
-        make_option(u'--minute', action=u'store', type=u'int', dest=u'minute', default=None,
-            help=u'Change to minute.'),
-        make_option(u'--second', action=u'store', type=u'int', dest=u'second', default=None,
-            help=u'Change to second.'),
-        make_option(u'--microsecond', action=u'store', type=u'int', dest=u'microsecond',
-            default=None,
-            help=u'Change to microsecond.'),
-
-        make_option(u'--years', action=u'store', type=u'int', dest=u'years', default=None,
-            help=u'Advance by years.'),
-        make_option(u'--months', action=u'store', type=u'int', dest=u'months', default=None,
-            help=u'Advance by months.'),
-        make_option(u'--weeks', action=u'store', type=u'int', dest=u'weeks', default=None,
-            help=u'Advance by weeks.'),
-        make_option(u'--days', action=u'store', type=u'int', dest=u'days', default=None,
-            help=u'Advance by days.'),
-        make_option(u'--hours', action=u'store', type=u'int', dest=u'hours', default=None,
-            help=u'Advance by hours.'),
-        make_option(u'--minutes', action=u'store', type=u'int', dest=u'minutes', default=None,
-            help=u'Advance by minutes.'),
-        make_option(u'--seconds', action=u'store', type=u'int', dest=u'seconds', default=None,
-            help=u'Advance by seconds.'),
-        make_option(u'--microseconds', action=u'store', type=u'int', dest=u'microseconds',
-            default=None,
-            help=u'Advance by microseconds.'),
-        make_option(u'--weekday', action=u'store', type=u'int', dest=u'weekday', default=None,
-            help=u'Advance to the next weekday. (0 for monday, 1 for tuesday, ...)'),
-
-        make_option(u'--speedup', action=u'store', type=u'int', dest=u'speedup', default=None,
-            help=u'Rate at which the time flows.'),
-        make_option(u'--reset', action=u'store_true', dest=u'reset', default=False,
-            help=u'Reset Timewarp.'),
-        )
+    def add_arguments(self, parser):
+        parser.add_argument(u'datetime', nargs=u'*', metavar=u'yyyy-mm-dd [hh:mm[:ss]]')
+        parser.add_argument(u'--year', action=u'store', type=int, dest=u'year', default=None,
+            help=u'Change to year.')
+        parser.add_argument(u'--month', action=u'store', type=int, dest=u'month', default=None,
+            help=u'Change to month.')
+        parser.add_argument(u'--day', action=u'store', type=int, dest=u'day', default=None,
+            help=u'Change to day in month.')
+        parser.add_argument(u'--hour', action=u'store', type=int, dest=u'hour', default=None,
+            help=u'Change to hour.')
+        parser.add_argument(u'--minute', action=u'store', type=int, dest=u'minute', default=None,
+            help=u'Change to minute.')
+        parser.add_argument(u'--second', action=u'store', type=int, dest=u'second', default=None,
+            help=u'Change to second.')
+        parser.add_argument(u'--microsecond', action=u'store', type=int, dest=u'microsecond', default=None,
+            help=u'Change to microsecond.')
+        parser.add_argument(u'--years', action=u'store', type=int, dest=u'years', default=None,
+            help=u'Advance by years.')
+        parser.add_argument(u'--months', action=u'store', type=int, dest=u'months', default=None,
+            help=u'Advance by months.')
+        parser.add_argument(u'--weeks', action=u'store', type=int, dest=u'weeks', default=None,
+            help=u'Advance by weeks.')
+        parser.add_argument(u'--days', action=u'store', type=int, dest=u'days', default=None,
+            help=u'Advance by days.')
+        parser.add_argument(u'--hours', action=u'store', type=int, dest=u'hours', default=None,
+            help=u'Advance by hours.')
+        parser.add_argument(u'--minutes', action=u'store', type=int, dest=u'minutes', default=None,
+            help=u'Advance by minutes.')
+        parser.add_argument(u'--seconds', action=u'store', type=int, dest=u'seconds', default=None,
+            help=u'Advance by seconds.')
+        parser.add_argument(u'--microseconds', action=u'store', type=int, dest=u'microseconds', default=None,
+            help=u'Advance by microseconds.')
+        parser.add_argument(u'--weekday', action=u'store', type=int, dest=u'weekday', default=None,
+            help=u'Advance to the next weekday. (0 for monday, 1 for tuesday, ...)')
+        parser.add_argument(u'--speedup', action=u'store', type=int, dest=u'speedup', default=None,
+            help=u'Rate at which the time flows.')
+        parser.add_argument(u'--reset', action=u'store_true', dest=u'reset', default=False,
+            help=u'Reset Timewarp.')
 
     def handle(self, *args, **options):
-        #print(args, options)
+        args = options[u'datetime']
 
         delta_options = {k: options[k] for k in [
                     u'year', u'month', u'day', u'hour', u'minute', u'second', u'microsecond',
@@ -81,12 +74,12 @@ class Command(BaseCommand):
                     ] if options[k] is not None}
 
         if options[u'reset']:
-            if options[u'verbosity'] != u'0':
+            if options[u'verbosity'] != 0:
                 print(u'Resetting Timewarp...')
             timewarp.reset()
 
         elif args or delta_options or options[u'speedup'] is not None:
-            if options[u'verbosity'] != u'0':
+            if options[u'verbosity'] != 0:
                 print(u'Jumping...')
             if args:
                 joined = u' '.join(args)
@@ -105,7 +98,7 @@ class Command(BaseCommand):
             delta = relativedelta(**delta_options)
             timewarp.jump(date=date+delta, speed=options[u'speedup'])
 
-        if options[u'verbosity'] != u'0':
+        if options[u'verbosity'] != 0:
             print(u'Real time: {}'.format(datetime.datetime.fromtimestamp(timewarp.real_time)))
             print(u'Warped time: {}'.format(datetime.datetime.fromtimestamp(timewarp.warped_time)
                     if timewarp.is_warped else u'--'))

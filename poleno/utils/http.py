@@ -38,7 +38,7 @@ def send_file_response(request, path, name, content_type, attachment=True):
     if not stat.S_ISREG(statobj.st_mode):
         raise OSError(u'Not a regular file: {}'.format(path))
     http_header = request.META.get(u'HTTP_IF_MODIFIED_SINCE')
-    if not was_modified_since(http_header, statobj.st_mtime, statobj.st_size):
+    if not was_modified_since(http_header, statobj.st_mtime):
         return HttpResponseNotModified()
     response = FileResponse(open(path, u'rb'), content_type=content_type)
     response[u'Last-Modified'] = http_date(statobj.st_mtime)

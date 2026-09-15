@@ -3,6 +3,7 @@
 import itertools
 import logging
 import os
+import unittest
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -34,6 +35,9 @@ class CustomTestRunner(DiscoverRunner):
 
     def setup_test_environment(self, **kwargs):
         super(CustomTestRunner, self).setup_test_environment(**kwargs)
+        # Python 2 name still used throughout the test suite.
+        if not hasattr(unittest.TestCase, u'assertItemsEqual'):
+            unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
         settings.LANGUAGE_CODE = u'en'
         settings.PASSWORD_HASHERS = [u'django.contrib.auth.hashers.MD5PasswordHasher']
         os.environ[u'RECAPTCHA_TESTING'] = u'True'
@@ -79,7 +83,7 @@ class ChcemvedietTestCaseMixin(TestCase):
         return func(**defaults)
 
     def _create_user(self, **kwargs):
-        nr = u'{:03d}'.format(self.counter.next())
+        nr = u'{:03d}'.format(next(self.counter))
         street = kwargs.pop(u'street', u'Default User Street')
         city = kwargs.pop(u'city', u'Default User City')
         zip = kwargs.pop(u'zip', u'00000')
@@ -153,14 +157,14 @@ class ChcemvedietTestCaseMixin(TestCase):
             })
 
     def _create_region(self, **kwargs):
-        name = u'SK{:05d}'.format(self.counter.next())
+        name = u'SK{:05d}'.format(next(self.counter))
         return self._call_with_defaults(Region.objects.create, kwargs, {
                 u'id': name,
                 u'name': name,
                 })
 
     def _create_district(self, **kwargs):
-        name = u'SK{:05d}'.format(self.counter.next())
+        name = u'SK{:05d}'.format(next(self.counter))
         return self._call_with_defaults(District.objects.create, kwargs, {
                 u'id': name,
                 u'name': name,
@@ -168,7 +172,7 @@ class ChcemvedietTestCaseMixin(TestCase):
                 })
 
     def _create_municipality(self, **kwargs):
-        name = u'SK{:05d}'.format(self.counter.next())
+        name = u'SK{:05d}'.format(next(self.counter))
         return self._call_with_defaults(Municipality.objects.create, kwargs, {
                 u'id': name,
                 u'name': name,
@@ -177,7 +181,7 @@ class ChcemvedietTestCaseMixin(TestCase):
                 })
 
     def _create_neighbourhood(self, **kwargs):
-        name = u'SK{:05d}'.format(self.counter.next())
+        name = u'SK{:05d}'.format(next(self.counter))
         return self._call_with_defaults(Neighbourhood.objects.create, kwargs, {
                 u'id': name,
                 u'name': name,
@@ -189,7 +193,7 @@ class ChcemvedietTestCaseMixin(TestCase):
     def _create_obligee(self, **kwargs):
         return self._call_with_defaults(Obligee.objects.create, kwargs, {
                 u'official_name': u'Default Testing Official Name',
-                u'name': u'Default Testing Name {:03d}'.format(self.counter.next()),
+                u'name': u'Default Testing Name {:03d}'.format(next(self.counter)),
                 u'name_genitive': u'Default Testing Name genitive',
                 u'name_dative': u'Default Testing Name dative',
                 u'name_accusative': u'Default Testing Name accusative',
@@ -212,14 +216,14 @@ class ChcemvedietTestCaseMixin(TestCase):
                 })
 
     def _create_obligee_tag(self, **kwargs):
-        nr = u'{:03d}'.format(self.counter.next())
+        nr = u'{:03d}'.format(next(self.counter))
         return self._call_with_defaults(ObligeeTag.objects.create, kwargs, {
                 u'key': u'Default Testing Key {}'.format(nr),
                 u'name': u'Default Testing Name {}'.format(nr),
                 })
 
     def _create_obligee_group(self, **kwargs):
-        nr = u'{:03d}'.format(self.counter.next())
+        nr = u'{:03d}'.format(next(self.counter))
         return self._call_with_defaults(ObligeeGroup.objects.create, kwargs, {
                 u'key': u'Default Testing Key {}'.format(nr),
                 u'name': u'Default Testing Name {}'.format(nr),

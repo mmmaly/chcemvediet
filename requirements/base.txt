@@ -6,7 +6,6 @@ requests==2.31.0
 Django==5.2.1
 django-allauth==65.3.0
 django-simple-history==3.7.0
-django-cron==0.6.0
 django-multiselectfield==0.1.13
 django-widget-tweaks==1.4.9
 django-compressor==4.5.1
@@ -20,6 +19,8 @@ django-recaptcha==4.0.0
 # Dependencies for base requirements
 six==1.16.0                   # python-dateutil
 python3-openid==3.2.0         # django-allauth
+PyJWT==2.12.1                 # django-allauth (google provider)
+cryptography==46.0.5          # PyJWT (RS256 id_token verification)
 requests-oauthlib==1.3.1      # django-allauth
 oauthlib==3.2.2               # django-allauth
 django-appconf==1.0.5         # django-compressor

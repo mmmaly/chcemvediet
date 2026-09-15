@@ -2,6 +2,8 @@
 
 from django.db import migrations
 
+from poleno.utils.migrations import RenameOrAddIndex
+
 
 class Migration(migrations.Migration):
 
@@ -10,42 +12,42 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='action',
             new_name='inforequest_created_f01854_idx',
             old_fields=('created', 'id'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='branch',
             new_name='inforequest_advance_db9bc3_idx',
             old_fields=('advanced_by', 'inforequest'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='branch',
             new_name='inforequest_inforeq_e62ce9_idx',
             old_fields=('inforequest', 'advanced_by'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='feedback',
             new_name='inforequest_created_1b4f49_idx',
             old_fields=('created', 'id'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='inforequest',
             new_name='inforequest_submiss_bd5cb3_idx',
             old_fields=('submission_date', 'id'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='inforequestemail',
             new_name='inforequest_email_i_cf2d2c_idx',
             old_fields=('email', 'inforequest'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='inforequestemail',
             new_name='inforequest_type_84a659_idx',
             old_fields=('type', 'inforequest'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='inforequestemail',
             new_name='inforequest_inforeq_15a0ed_idx',
             old_fields=('inforequest', 'email'),

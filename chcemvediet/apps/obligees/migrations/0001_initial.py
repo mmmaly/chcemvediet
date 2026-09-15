@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from poleno.utils.migrations import AlterIndexTogetherStateOnly
 from django.conf import settings
 import django.db.models.deletion
 import poleno.utils.forms
@@ -53,7 +54,7 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.AlterIndexTogether(
+        AlterIndexTogetherStateOnly(
             name='obligee',
             index_together=set([('name', 'id')]),
         ),

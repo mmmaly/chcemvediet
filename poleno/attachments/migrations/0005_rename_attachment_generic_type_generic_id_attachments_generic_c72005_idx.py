@@ -2,6 +2,8 @@
 
 from django.db import migrations
 
+from poleno.utils.migrations import RenameOrAddIndex
+
 
 class Migration(migrations.Migration):
 
@@ -10,7 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='attachment',
             new_name='attachments_generic_c72005_idx',
             old_fields=('generic_type', 'generic_id'),

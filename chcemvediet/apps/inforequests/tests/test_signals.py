@@ -19,7 +19,7 @@ class AssignEmailOnMessageReceivedTest(InforequestsTestCaseMixin, TestCase):
     """
 
     def test_event_receiver_is_registered(self):
-        self.assertIn(assign_email_on_message_received, message_received._live_receivers(sender=None))
+        self.assertIn(assign_email_on_message_received, message_received._live_receivers(sender=None)[0])
 
     def test_received_message_is_assigned_and_marked_undecided(self):
         inforequest = self._create_inforequest()

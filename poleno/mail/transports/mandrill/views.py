@@ -3,6 +3,7 @@
 import hashlib
 import hmac
 import json
+import logging
 from base64 import b64encode
 
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
@@ -15,6 +16,8 @@ from django.conf import settings
 from poleno.utils.views import secure_required
 
 from .signals import webhook_event
+
+logger = logging.getLogger(__name__)
 
 
 @require_http_methods([u'HEAD', u'GET', u'POST'])
@@ -48,15 +51,34 @@ def webhook(request):
         for key, value_list in post_lists:
             for item in value_list:
                 post_parts.extend([key, item])
-        post_string_encoded = u''.join(post_parts).encode(u'ascii', u'ignore')
+        post_string = u''.join(post_parts)
+        # Mandrill signs the raw (UTF-8) POST data. The ASCII-only variant is kept for
+        # compatibility with the original implementation of this view.
+        post_strings_encoded = [post_string.encode(u'utf-8'),
+                                post_string.encode(u'ascii', u'ignore')]
+        computed = []
         for webhook_key in webhook_keys:
             webhook_key_encoded = webhook_key.encode(u'ascii', u'ignore')
-            hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded,
-                    digestmod=hashlib.sha1).digest())
-            if signature == hash_string:
-                break
+            for post_string_encoded in post_strings_encoded:
+                hash_string = b64encode(hmac.new(key=webhook_key_encoded, msg=post_string_encoded,
+                        digestmod=hashlib.sha1).digest()).decode(u'ascii')
+                computed.append(hash_string)
+                if hmac.compare_digest(signature, hash_string):
+                    break
+            else:
+                continue
+            break
         else:
-            raise SuspiciousOperation(u'Signature does not match')
+            # ``MANDRILL_WEBHOOK_VERIFY_SIGNATURE`` may be set to False to only log signature
+            # mismatches instead of rejecting the request. The ``secret`` query argument is
+            # still checked above. Use it only temporarily, e.g. while verifying that the
+            # configured ``MANDRILL_WEBHOOK_URL`` and keys match the Mandrill configuration.
+            if getattr(settings, u'MANDRILL_WEBHOOK_VERIFY_SIGNATURE', True):
+                logger.warning(u'Mandrill webhook signature mismatch: received %r, computed %r',
+                        signature, computed)
+                raise SuspiciousOperation(u'Signature does not match')
+            logger.warning(u'Mandrill webhook signature mismatch ignored (verification '
+                    u'disabled): received %r, computed %r', signature, computed)
 
         try:
             data = json.loads(request.POST.get(u'mandrill_events'))

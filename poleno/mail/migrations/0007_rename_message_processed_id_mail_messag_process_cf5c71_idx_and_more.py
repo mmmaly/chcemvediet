@@ -2,6 +2,8 @@
 
 from django.db import migrations
 
+from poleno.utils.migrations import RenameOrAddIndex
+
 
 class Migration(migrations.Migration):
 
@@ -10,12 +12,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='message',
             new_name='mail_messag_process_cf5c71_idx',
             old_fields=('processed', 'id'),
         ),
-        migrations.RenameIndex(
+        RenameOrAddIndex(
             model_name='message',
             new_name='mail_messag_created_422214_idx',
             old_fields=('created', 'id'),

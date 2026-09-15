@@ -1,5 +1,6 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
+from functools import reduce
 import re
 import operator
 from unidecode import unidecode
@@ -41,9 +42,17 @@ def autocomplete(request):
     query = reduce(operator.and_, (Q(slug__contains=w) for w in words), Q())
     obligees = Obligee.objects.pending().filter(query).order_by_name()[:50]
 
+    def serializable(obligee):
+        # ``model_to_dict`` returns model instances for many-to-many fields; use their keys.
+        res = model_to_dict(obligee)
+        for key, value in res.items():
+            if isinstance(value, list):
+                res[key] = [getattr(v, u'pk', v) for v in value]
+        return res
+
     data = [{
         u'label': obligee.name,
-        u'obligee': model_to_dict(obligee),
+        u'obligee': serializable(obligee),
     } for obligee in obligees]
 
     # Note: Jquery-ui autocomplete expects JSON with Array, despite possible problems with

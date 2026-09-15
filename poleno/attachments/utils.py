@@ -1,7 +1,7 @@
 import datetime
 
 from poleno.utils.misc import squeeze
-from poleno.utils.date import utc_now, utc_datetime_from_local
+from poleno.utils.date import utc_now
 from poleno import datacheck
 
 
@@ -31,7 +31,8 @@ def attachment_orphaned_file_check(attachments, field, model):
         return
     for file_name in field.storage.listdir(field.upload_to)[1]:
         attachment_name = u'{}/{}'.format(field.upload_to, file_name)
-        modified_time = utc_datetime_from_local(field.storage.modified_time(attachment_name))
+        # ``get_modified_time`` returns an aware datetime when USE_TZ is enabled.
+        modified_time = field.storage.get_modified_time(attachment_name)
         timedelta = utc_now() - modified_time
         if timedelta > datetime.timedelta(days=5) and attachment_name not in attachment_names:
             yield datacheck.Info(squeeze(u"""

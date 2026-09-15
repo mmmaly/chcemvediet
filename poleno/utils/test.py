@@ -3,12 +3,31 @@
 import mock
 import contextlib
 import importlib
+import logging
 
 from django.utils.http import urlencode
 from django.test import TestCase
 
 from poleno.utils.urls import reverse
 
+
+@contextlib.contextmanager
+def patch_logger(logger_name, log_level):
+    u"""
+    Replacement for ``django.test.utils.patch_logger`` removed in Django 3.0. Replaces the
+    ``log_level`` method of the named logger and collects the formatted messages in the yielded
+    list. Works even when logging is disabled by the test runner.
+    """
+    calls = []
+    def replacement(msg, *args, **kwargs):
+        calls.append(msg % args if args else msg)
+    logger = logging.getLogger(logger_name)
+    original = getattr(logger, log_level)
+    setattr(logger, log_level, replacement)
+    try:
+        yield calls
+    finally:
+        setattr(logger, log_level, original)
 
 @contextlib.contextmanager
 def override_signals(*signals):
@@ -86,10 +105,10 @@ def reload_for_context(manager, module):
     module = importlib.import_module(module)
     try:
         with manager as context:
-            reload(module)
+            importlib.reload(module)
             yield context
     finally:
-        reload(module)
+        importlib.reload(module)
 
 class ViewTestCaseMixin(TestCase):
 
