@@ -51,8 +51,11 @@ def reverse(viewname, urlconf=None, args=None, kwargs=None, current_app=None):
     ``args`` there is no way to fix it.
     """
     # Make sure urls were included. Otherwise the adaptors don't have to be registered yet if this
-    # is the first call to the resolver.
-    get_resolver(urlconf or get_urlconf())._populate()
+    # is the first call to the resolver. On Django >= 2.0 ``_populate()`` rebuilds the whole
+    # resolver on every call (hundreds of ms on a large URL conf), so populate only once.
+    resolver = get_resolver(urlconf or get_urlconf())
+    if not getattr(resolver, u'_populated', False):
+        resolver._populate()
 
     for argname, adaptor in reverse_adaptors[viewname]:
         if kwargs and argname in kwargs:
