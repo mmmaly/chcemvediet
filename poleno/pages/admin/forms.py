@@ -74,8 +74,8 @@ class LivePath(FakeField):
 
 class PreviewFileInput(forms.FileInput):
 
-    def render(self, name, value, attrs=None):
-        change = super(PreviewFileInput, self).render(name, value, attrs)
+    def render(self, name, value, attrs=None, renderer=None):
+        change = super(PreviewFileInput, self).render(name, value, attrs, renderer=renderer)
 
         if isinstance(value, pages.File):
             if value.content_type.startswith(u'image/'):

@@ -50,10 +50,12 @@ class Step(forms.Form):
         step_values = self.wizard.draft.data.setdefault(self.key, {})
         global_values = self.wizard.draft.data.setdefault(u'global', {})
         for field_name in self.fields:
+            # ``Form._raw_value()`` was removed in Django 1.9; ``BoundField.data`` returns the same
+            # raw widget value.
             if field_name in global_fields:
-                global_values[field_name] = self._raw_value(field_name)
+                global_values[field_name] = self[field_name].data
             else:
-                step_values[field_name] = self._raw_value(field_name)
+                step_values[field_name] = self[field_name].data
 
     def add_prefix(self, field_name):
         return self.wizard.add_prefix(field_name)
