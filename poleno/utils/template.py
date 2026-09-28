@@ -148,7 +148,7 @@ class Library(template.Library):
 
     def simple_pair_tag(self, func=None, takes_context=None, name=None, lazy_content=None):
 
-        def compiler(parser, token, params, varargs, varkw, defaults,
+        def compiler(parser, token, params, varargs, varkw, defaults, kwonly, kwonly_defaults,
                 name, takes_context, node_class):
             if params[0] == 'content':
                 params = params[1:]
@@ -157,8 +157,9 @@ class Library(template.Library):
                         u'The first argument of "{}" must be "content"'.format(name))
 
             bits = token.split_contents()[1:]
+            # Django >= 2.0 signature: keyword-only parameters come before takes_context/name.
             args, kwargs = parse_bits(parser, bits, params, varargs, varkw, defaults,
-                    takes_context, name)
+                    kwonly, kwonly_defaults, takes_context, name)
             nodelist = parser.parse((u'end' + name,))
             parser.delete_first_token()
             return node_class(takes_context, nodelist, args, kwargs)
@@ -187,10 +188,11 @@ class Library(template.Library):
                     else:
                         return func(content, *resolved_args, **resolved_kwargs)
 
-            params, varargs, varkw, defaults = getfullargspec(func)[:4]
+            params, varargs, varkw, defaults, kwonly, kwonly_defaults, _ = getfullargspec(func)
             function_name = (name or getattr(func, u'_decorated_function', func).__name__)
             compile_func = partial(compiler, params=params, varargs=varargs, varkw=varkw,
-                    defaults=defaults, name=function_name, takes_context=takes_context,
+                    defaults=defaults, kwonly=kwonly, kwonly_defaults=kwonly_defaults,
+                    name=function_name, takes_context=takes_context,
                     node_class=SimplePairNode)
             compile_func.__doc__ = func.__doc__
             self.tag(function_name, compile_func)
