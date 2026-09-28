@@ -61,6 +61,9 @@ class RefusalReasonField(MultiSelectFormField):
         if self.allow_no_reason:
             choices = choices + [(u'none', _(u'inforequests:RefusalReasonField:no_reason'))]
 
+        # django-multiselectfield >= 0.1.12 requires ``flat_choices`` (the model field passes it
+        # when it builds its own form field).
+        kwargs.setdefault(u'flat_choices', choices)
         super(RefusalReasonField, self).__init__(choices=choices, *args, **kwargs)
 
     def clean(self, value):
