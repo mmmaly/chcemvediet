@@ -99,7 +99,9 @@ class CompositeTextWidget(forms.MultiWidget):
         if renderer is None:
             renderer = get_default_renderer()
         context = self.get_context(name, value, attrs)
-        rendered_widgets = [renderer.render(subwidget[u'template_name'], {u'widget': subwidget})
+        # The renderer strips its output, which turns the SafeString back into a plain str.
+        rendered_widgets = [
+                mark_safe(renderer.render(subwidget[u'template_name'], {u'widget': subwidget}))
                 for subwidget in context[u'widget'][u'subwidgets']]
         return self.format_output(rendered_widgets)
 
