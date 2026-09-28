@@ -6,6 +6,7 @@ from poleno.utils.mail import parseaddr_lenient, getaddresses_lenient
 from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.forms.renderers import get_default_renderer
 from django.forms.utils import flatatt
 from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
@@ -91,6 +92,16 @@ class CompositeTextWidget(forms.MultiWidget):
         self.composite_attrs = kwargs.pop(u'composite_attrs', {})
         self.context = kwargs.pop(u'context', {})
         super(CompositeTextWidget, self).__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None, renderer=None):
+        # Django >= 1.11 renders multi-widgets with a template and never calls
+        # ``format_output()``. Render the subwidgets ourselves and compose them with our template.
+        if renderer is None:
+            renderer = get_default_renderer()
+        context = self.get_context(name, value, attrs)
+        rendered_widgets = [renderer.render(subwidget[u'template_name'], {u'widget': subwidget})
+                for subwidget in context[u'widget'][u'subwidgets']]
+        return self.format_output(rendered_widgets)
 
     def format_output(self, rendered_widgets):
         context = dict(self.context, inputs=rendered_widgets, finalize=False)
