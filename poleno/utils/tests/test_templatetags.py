@@ -195,7 +195,7 @@ class ActiveTemplatefilterTest(TestCase):
         re_path(r'^second/', include(([
             re_path(r'^$', active_view, name=u'index'),
             re_path(r'^first/', active_view, name=u'first'),
-        ], None, u'second'))),
+        ], u'second'))),
     ]
 
     urls = Bunch(

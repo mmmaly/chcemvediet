@@ -50,7 +50,7 @@ def amend(content, context):
         for action in context[u'_amend']:
             fragment = action(fragment)
 
-        return lxml.html.tostring(fragment)[6:-7] # Strip root tag
+        return lxml.html.tostring(fragment, encoding=u'unicode')[6:-7] # Strip root tag
 
 @register.simple_pair_tag(takes_context=True)
 def prepend(content, context, path):
