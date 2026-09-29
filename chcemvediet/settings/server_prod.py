@@ -37,7 +37,18 @@ CACHES = {
         u'KEY_PREFIX': None,
         u'VERSION': None,
     },
+    # django_compressor keeps one cache object per process (a module-level
+    # ``SimpleLazyObject(lambda: caches[...])``) that all mod_wsgi threads share, and pymemcache
+    # clients are not thread-safe: concurrent page renders read each other's replies and fail
+    # with 500/504. Give the compressor its own in-process cache, which is thread-safe.
+    u'compressor': {
+        u'BACKEND': u'django.core.cache.backends.locmem.LocMemCache',
+        u'LOCATION': u'compressor',
+        u'TIMEOUT': None,
+        u'OPTIONS': {u'MAX_ENTRIES': 2000},
+    },
 }
+COMPRESS_CACHE_BACKEND = u'compressor'
 
 LOGGING = {
     u'version': 1,
