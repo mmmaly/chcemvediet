@@ -152,6 +152,10 @@ def anonymize_markup(prog, content, parser, xpath=u'.//', namespace=None):
         if t.text is None:
             continue
         t.text = prog.sub(ANONYMIZATION_STRING, t.text)
+    # Return the same type we got: ``str`` for HTML rendered into templates, ``bytes`` for ODT
+    # files. ``etree.tostring()`` returns bytes by default on Python 3.
+    if isinstance(content, str):
+        return etree.tostring(root, encoding=u'unicode')
     return etree.tostring(root)
 
 def anonymize_odt(attachment_recognition):
