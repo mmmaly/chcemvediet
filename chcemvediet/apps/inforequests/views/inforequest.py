@@ -41,37 +41,38 @@ def inforequest_index(request):
 @require_http_methods([u'HEAD', u'GET'])
 @login_required
 def inforequest_mine(request):
-    pending_inforequests = (Inforequest.objects
+    # The tables show the main obligee, the branches advanced from each action, the last action
+    # with its deadline and the disclosure level. Fetch all branches and actions in a few queries
+    # instead of several queries per inforequest.
+    def prefetch_tree(queryset):
+        return queryset.prefetch_related(
+                Inforequest.prefetch_branches(None,
+                    Branch.objects.select_related(u'historicalobligee')),
+                Branch.prefetch_actions(u'branches'),
+                )
+
+    pending_inforequests = prefetch_tree(Inforequest.objects
             .not_closed()
             .owned_by(request.user)
             .order_by_submission_date()
             .select_undecided_emails_count()
-            .prefetch_related(
-                Inforequest.prefetch_main_branch(None,
-                    Branch.objects.select_related(u'historicalobligee')))
             )
     drafts = (InforequestDraft.objects
             .owned_by(request.user)
             .order_by_pk()
             .select_related(u'obligee')
             )
-    successful_inforequests = (Inforequest.objects
+    successful_inforequests = prefetch_tree(Inforequest.objects
             .successful()
             .owned_by(request.user)
             .order_by_submission_date()
             .reverse()
-            .prefetch_related(
-                Inforequest.prefetch_main_branch(None,
-                    Branch.objects.select_related(u'historicalobligee')))
             )
-    unsuccessful_inforequests = (Inforequest.objects
+    unsuccessful_inforequests = prefetch_tree(Inforequest.objects
             .unsuccessful()
             .owned_by(request.user)
             .order_by_submission_date()
             .reverse()
-            .prefetch_related(
-                Inforequest.prefetch_main_branch(None,
-                    Branch.objects.select_related(u'historicalobligee')))
             )
 
     return render(request, u'inforequests/mine/mine.html', {

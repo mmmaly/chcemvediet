@@ -310,6 +310,13 @@ class Action(FormatMixin, models.Model):
 
     @cached_property
     def previous_action(self):
+        # Takes advantage of ``Branch.actions`` if it is already fetched and contains this action.
+        # Actions created later cannot change the previous action, so the cached list is safe.
+        if u'actions' in self.branch.__dict__:
+            pks = [a.pk for a in self.branch.actions]
+            if self.pk in pks:
+                index = pks.index(self.pk)
+                return self.branch.actions[index-1] if index > 0 else None
         return self.branch.action_set.order_by_created().before(self).last()
 
     @cached_property
