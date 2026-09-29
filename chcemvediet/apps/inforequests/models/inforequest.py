@@ -370,18 +370,39 @@ class Inforequest(FormatMixin, models.Model):
             return self.undecided_emails_set.order_by_processed().last()
 
     @cached_property
+    def _prefetched_actions(self):
+        u"""
+        List of all actions of all branches if ``Inforequest.branches`` and ``Branch.actions`` of
+        every branch are already fetched, None otherwise.
+        """
+        if u'branches' not in self.__dict__:
+            return None
+        if any(u'actions' not in b.__dict__ for b in self.branches):
+            return None
+        return [a for b in self.branches for a in b.actions]
+
+    @cached_property
     def last_action(self):
         u"""
-        Cached last action across all branches from all actions assigned to the inforequest.
+        Cached last action across all branches from all actions assigned to the inforequest. Takes
+        advantage of ``Inforequest.branches`` and ``Branch.actions`` if they are already fetched.
         """
+        actions = self._prefetched_actions
+        if actions is not None:
+            return max(actions, key=lambda a: (a.created, a.pk)) if actions else None
         return Action.objects.of_inforequest(inforequest=self).order_by_created().last()
 
     @cached_property
     def disclosure_level(self):
         u"""
         Cached maximum disclosure level to the inforequest. Returns None if the inforequest hasn't
-        got any action, that may disclose information.
+        got any action, that may disclose information. Takes advantage of ``Inforequest.branches``
+        and ``Branch.actions`` if they are already fetched.
         """
+        actions = self._prefetched_actions
+        if actions is not None:
+            levels = [a.disclosure_level for a in actions if a.disclosure_level is not None]
+            return max(levels) if levels else None
         return (Action.objects.of_inforequest(inforequest=self)
                 .aggregate(Max(u'disclosure_level'))[u'disclosure_level__max']
                 )
