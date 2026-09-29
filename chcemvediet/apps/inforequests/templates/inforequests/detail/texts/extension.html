@@ -9,4 +9,8 @@
 {% endcomment %}
 
 
-o {% plural action.extension "1:{n} pracovný deň" "2~4:{n} pracovné dni" "{n} pracovných dní" %}
+{% comment %}
+ % Some old actions have no extension days. Django < 2.1 silently rendered a failing include as an
+ % empty string; keep that output instead of crashing the whole page.
+{% endcomment %}
+{% if action.extension is not None %}o {% plural action.extension "1:{n} pracovný deň" "2~4:{n} pracovné dni" "{n} pracovných dní" %}{% endif %}
