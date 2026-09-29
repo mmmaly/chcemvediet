@@ -132,6 +132,7 @@ TEMPLATES = [
 CRON_USER_INTERACTION_TIMES = [u'09:00', u'10:00', u'11:00', u'12:00', u'13:00', u'14:00']
 CRON_IMPORTANT_MAINTENANCE_TIMES = [u'02:00', u'03:00', u'04:00', u'05:00']
 CRON_UNIMPORTANT_MAINTENANCE_TIMES = [u'04:00']
+CRON_DAILY_STATUS_TIMES = [u'07:00']
 CRON_CLASSES = (
     u'poleno.cron.cron.clear_old_cronlogs',
     u'poleno.datacheck.cron.datacheck',
@@ -146,6 +147,7 @@ CRON_CLASSES = (
     u'chcemvediet.apps.anonymization.cron.anonymization',
     u'chcemvediet.cron.clear_expired_sessions',
     u'chcemvediet.cron.send_admin_error_logs',
+    u'chcemvediet.cron.send_daily_status',
     )
 
 # FIXME: Static and media files in production?
