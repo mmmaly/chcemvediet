@@ -238,6 +238,12 @@ ASSETS = (
     u'main/css/03.gcsefix.css',
     )
 
+# OCR of attachments: 'abbyy' runs the ``abbyyocr11`` command, 'tesseract' runs Tesseract with
+# TESSERACT_LANG and the optional TESSERACT_TESSDATA directory (None = system models).
+OCR_ENGINE = u'abbyy'
+TESSERACT_LANG = u'slk'
+TESSERACT_TESSDATA = None
+
 # Django-allauth settings
 ACCOUNT_ADAPTER = u'chcemvediet.adapters.AccountAdapter'
 ACCOUNT_AUTHENTICATION_METHOD = u'email'

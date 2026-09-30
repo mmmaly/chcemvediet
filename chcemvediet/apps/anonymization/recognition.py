@@ -11,6 +11,7 @@ from poleno.cron import cron_logger
 from .models import AttachmentNormalization, AttachmentRecognition
 from .utils import temporary_directory
 from . import content_types
+from . import tesseract_odt
 
 
 OCR_TIMEOUT = 300
@@ -39,25 +40,32 @@ def recognize_using_ocr(attachment_normalization):
         with temporary_directory() as directory:
             filename = os.path.join(directory, u'file.pdf')
             shutil.copy2(attachment_normalization.file.path, filename)
-            p = subprocess.run(
-                [u'abbyyocr11', u'--recognitionLanguage', u'Slovak', u'--splitDualPages', u'-if',
-                 filename, u'-f', u'ODT', u'--rtfKeepLines', u'--rtfRemoveSoftHyphens',
-                 u'--rtfPageSynthesisMode', u'ExactCopy', u'-of',
-                 os.path.join(directory, u'file.odt')],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=OCR_TIMEOUT,
-                check=True,
-            )
+            if settings.OCR_ENGINE == u'tesseract':
+                # Tesseract + our own ODT writer; see ``tesseract_odt``.
+                blocks = tesseract_odt.recognize(filename, os.path.join(directory, u'file.odt'),
+                        lang=settings.TESSERACT_LANG, tessdata=settings.TESSERACT_TESSDATA,
+                        timeout=OCR_TIMEOUT)
+                debug = u'tesseract {}: {} text blocks'.format(settings.TESSERACT_LANG, blocks)
+            else:
+                p = subprocess.run(
+                    [u'abbyyocr11', u'--recognitionLanguage', u'Slovak', u'--splitDualPages', u'-if',
+                     filename, u'-f', u'ODT', u'--rtfKeepLines', u'--rtfRemoveSoftHyphens',
+                     u'--rtfPageSynthesisMode', u'ExactCopy', u'-of',
+                     os.path.join(directory, u'file.odt')],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=OCR_TIMEOUT,
+                    check=True,
+                )
+                debug = u'STDOUT:\n{}\nSTDERR:\n{}'.format(p.stdout.decode(u'utf-8'),
+                                                            p.stderr.decode(u'utf-8'))
             with open(os.path.join(directory, u'file.odt'), u'rb') as file_odt:
                 AttachmentRecognition.objects.create(
                     attachment=attachment_normalization.attachment,
                     successful=True,
                     file=ContentFile(file_odt.read()),
                     content_type=content_types.ODT_CONTENT_TYPE,
-                    debug=u'STDOUT:\n{}\nSTDERR:\n{}'.format(p.stdout.decode(u'utf-8'),
-                                                             p.stderr.decode(u'utf-8'),
-                                                             )
+                    debug=debug,
                 )
             cron_logger.info(u'Recognized attachment_normalization using OCR: {}'.format(
                 attachment_normalization))
