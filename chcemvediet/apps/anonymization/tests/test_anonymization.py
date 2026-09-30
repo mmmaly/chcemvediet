@@ -27,3 +27,34 @@ class AnonymizeMarkupTest(TestCase):
     def test_empty_pattern_returns_content_unchanged(self):
         prog = re.compile(u'')
         self.assertEqual(anonymize_markup(prog, u'<p>x</p>', etree.HTMLParser()), u'<p>x</p>')
+
+
+class HideUniqueEmailTest(TestCase):
+    u"""
+    Tests ``hide_unique_email()`` template helper.
+    """
+
+    class Inforequest(object):
+        applicant = u'applicant'
+        unique_email = u'abcd@mail.example.com'
+
+    def _hide(self, user, content):
+        from chcemvediet.apps.anonymization.templatetags.chcemvediet.anonymization import (
+                hide_unique_email)
+        return hide_unique_email(self.Inforequest(), user, content)
+
+    def test_address_is_hidden_from_others(self):
+        res = self._hide(u'other', u'Reply to ABCD@mail.example.com <mailto:abcd@mail.example.com>.')
+        self.assertEqual(res, u'Reply to xxxxx <mailto:xxxxx>.')
+
+    def test_address_is_hidden_in_attachment_name(self):
+        res = self._hide(u'other', u'list_Abcd@mail.example.com.pdf')
+        self.assertEqual(res, u'list_xxxxx.pdf')
+
+    def test_address_is_shown_to_applicant(self):
+        res = self._hide(u'applicant', u'Reply to abcd@mail.example.com.')
+        self.assertEqual(res, u'Reply to abcd@mail.example.com.')
+
+    def test_other_addresses_are_kept(self):
+        content = u'xabcd@mail.example.com, abcd@mail.example.community, abcdx@mail.example.com'
+        self.assertEqual(self._hide(u'other', content), content)
