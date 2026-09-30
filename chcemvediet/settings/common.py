@@ -13,6 +13,11 @@ ROOT_URLCONF = u'chcemvediet.urls'
 FORMAT_MODULE_PATH = u'chcemvediet.locale'
 HOLIDAYS_MODULE_PATH = u'chcemvediet.holidays'
 EMAIL_BACKEND = u'poleno.mail.backend.EmailBackend'
+
+# Django >= 1.10 rejects non-file request bodies over 2.5 MB by default (HTTP 400). Mandrill posts
+# inbound mail including base64 encoded attachments in one such body, so allow as much as Apache
+# does (``LimitRequestBody`` in the virtual host).
+DATA_UPLOAD_MAX_MEMORY_SIZE = 60 * 1024 * 1024
 TEST_RUNNER = u'chcemvediet.tests.CustomTestRunner'
 WSGI_APPLICATION = u'chcemvediet.wsgi.application'
 DEFAULT_AUTO_FIELD = u'django.db.models.AutoField'
