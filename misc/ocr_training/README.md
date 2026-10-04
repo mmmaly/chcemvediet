@@ -11,9 +11,14 @@ fine-tuned on our own data. This directory keeps the scripts that produced it.
     # model file chv.traineddata (16 MB) in a directory that also has Tesseract's `configs/`
     OCR_ENGINE = u'tesseract'
     TESSERACT_LANG = u'chv'
-    TESSERACT_TESSDATA = u'/opt/tessdata_ft4'
+    TESSERACT_TESSDATA = u'/opt/tessdata_ft4c'
 
-The model is not in git. Round 4 lives on the production server in `/opt/tessdata_ft4`.
+The model is not in git. Download `chv.traineddata` from the GitHub release
+[ocr-model-r4](https://github.com/mmmaly/chcemvediet/releases/tag/ocr-model-r4)
+(sha256 `d3f9e0f59830ab7da2475fea0c74a11c95e185d3c3ed0d39f5f442e6b423836a`); on the production
+server it is in `/opt/tessdata_ft4c`. Its dictionary is the stock Slovak word list plus a few
+generic words with `ĺ`/`ŕ`; it contains no words taken from our documents (an earlier build
+did, and must not be published).
 
 ## Why a custom model
 
@@ -30,6 +35,9 @@ Measured on 60 of our documents from 2025-2026 (30 PDFs with a text layer = grou
 
 * The stock Slovak model has a 120 character set without `@ § & – ; ' = Q q ĺ ö ü`.
 * `ŕ` is still not recognized by round 4 (0/7 in the sample); it needs more training.
+* Round 5 taught `ŕ` with synthetic lines full of `ŕ`/`ĺ` words and overdid it: the model then
+  wrote `ŕ`/`ĺ` for `ť`, `ľ`, `ž` and capital `Í` ("INVESTÍCIĺ"). Synthetic material for rare
+  letters has to contain their look-alikes too.
 
 ## How the model was trained
 
