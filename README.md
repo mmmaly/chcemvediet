@@ -29,7 +29,8 @@ instead of them:
 
  * libreoffice (ver. 6.3.4+)
  * imagemagick
- * [abbyyocr11]
+ * [abbyyocr11], or Tesseract 5 with poppler-utils (`OCR_ENGINE = 'tesseract'`, see
+   `misc/ocr_training/README.md`)
 
  [abbyyocr11]: https://www.ocr4linux.com/en:download:start
 
@@ -170,7 +171,8 @@ You need the following packages installed
  * imagemagick
  * libmagic (ver. 5.25+, package `libmagic1`)
  * webp
- * [abbyyocr11]
+ * [abbyyocr11], or Tesseract 5 with poppler-utils (`OCR_ENGINE = 'tesseract'`, see
+   `misc/ocr_training/README.md`)
 
  [abbyyocr11]: https://www.ocr4linux.com/en:download:start
 
