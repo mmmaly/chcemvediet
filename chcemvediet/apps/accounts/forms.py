@@ -4,8 +4,9 @@ from allauth.account.forms import (LoginForm as AllauthLoginForm,
                                    SignupForm as AllauthSignupForm,
                                    ResetPasswordForm as AllauthResetPasswordForm)
 from allauth.utils import set_form_field_order
-from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.fields import ReCaptchaField as BaseReCaptchaField
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import ngettext_lazy, gettext_lazy as _
 
 from poleno.utils.lazy import lazy_format
@@ -14,6 +15,19 @@ from chcemvediet.apps.anonymization.anonymization import (WORD_SIZE_MIN,
                                                           get_default_anonymized_strings_for_user)
 from chcemvediet.apps.inforequests.constants import MAX_DAYS_TO_PUBLISH_INFOREQUEST
 
+
+class ReCaptchaField(BaseReCaptchaField):
+    u"""
+    ``django_recaptcha`` turns only HTTP errors of the verification request into a form error. Any
+    other network failure (connection reset, timeout, DNS) would crash the view with HTTP 500, so
+    report it as the same "captcha could not be verified" form error and let the user try again.
+    """
+
+    def validate(self, value):
+        try:
+            super(ReCaptchaField, self).validate(value)
+        except OSError: # includes URLError, socket.timeout and ConnectionError
+            raise ValidationError(self.error_messages[u'captcha_error'], code=u'captcha_error')
 
 class LoginForm(AllauthLoginForm):
 
