@@ -19,6 +19,11 @@ import zipfile
 from xml.etree import ElementTree
 from xml.sax.saxutils import escape
 
+try:
+    from .ocr_corrections import correct_line
+except ImportError: # run as a script
+    from ocr_corrections import correct_line
+
 DEFAULT_LANG = u'slk'
 DEFAULT_DPI = 300
 FONT = u'Liberation Sans'
@@ -93,7 +98,7 @@ def parse_hocr(path):
                 sx1 = max(b[2] for b, _, _ in segment)
                 sy1 = max(b[3] for b, _, _ in segment)
                 blocks.append({u'bbox': [sx0, sy0, sx1, sy1], u'sizes': [em],
-                               u'lines': [u' '.join(t for _, t, _ in segment)],
+                               u'lines': [correct_line(u' '.join(t for _, t, _ in segment))],
                                u'confidence': sum(c for _, _, c in segment) / len(segment)})
     # Drop noise: blocks without a single letter or digit (specks read as punctuation).
     blocks = [b for b in blocks if re.search(r'\w', u' '.join(b[u'lines']))]

@@ -34,7 +34,13 @@ Measured on 60 of our documents from 2025-2026 (30 PDFs with a text layer = grou
 | **Latin fine-tuned, round 4** | **99.3 % / 97.9 % / 82.3 %** | 55/55 | 82/82 | 14/19 |
 
 * The stock Slovak model has a 120 character set without `@ § & – ; ' = Q q ĺ ö ü`.
-* `ŕ` is still not recognized by round 4 (0/7 in the sample); it needs more training.
+* `ŕ` is not recognized by round 4 (0/7 in the sample) and `ĺ` only partly. Instead of more
+  training, `chcemvediet/apps/anonymization/ocr_corrections.py` fixes the regular misreadings
+  of the common word families after OCR ("predlžiť" -> "predĺžiť", "zahĺňať" -> "zahŕňať",
+  "doplňanie" -> "dopĺňanie"). On the sample it raises correctly read `ĺ`/`ŕ` words from 17 to
+  30 of 36 (the rest are mostly errors in the reference) and changes 1 word in 22,002 true lines.
+* Round 6 repeated round 5 with look-alike letters in the synthetic lines: better (11 wrong
+  words instead of 15) but still not better than round 4 overall. Rounds 5 and 6 are not used.
 * Round 5 taught `ŕ` with synthetic lines full of `ŕ`/`ĺ` words and overdid it: the model then
   wrote `ŕ`/`ĺ` for `ť`, `ľ`, `ž` and capital `Í` ("INVESTÍCIĺ"). Synthetic material for rare
   letters has to contain their look-alikes too.
