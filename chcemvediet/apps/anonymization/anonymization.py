@@ -132,6 +132,16 @@ def generate_user_pattern(inforequest, match_subwords=False):
     )
     return re.compile(u'|'.join(patterns), re.IGNORECASE | re.UNICODE)
 
+def generate_attachment_pattern(inforequest):
+    u"""
+    Pattern for anonymized copies of attachments: the user strings and the inforequest unique
+    e-mail address. The address is printed in most replies and published addresses attract spam.
+    """
+    patterns = [generate_user_pattern(inforequest).pattern]
+    if inforequest.unique_email:
+        patterns.append(u'({})'.format(re.escape(inforequest.unique_email)))
+    return re.compile(u'|'.join(p for p in patterns if p), re.IGNORECASE | re.UNICODE)
+
 def anonymize_string(prog, content):
     if not prog.pattern:
         return content
@@ -162,7 +172,7 @@ def anonymize_odt(attachment_recognition):
     try:
         inforequest = attachment_recognition.attachment.generic_object.branch.inforequest
         parser = etree.XMLParser()
-        pattern = generate_user_pattern(inforequest)
+        pattern = generate_attachment_pattern(inforequest)
         namespace = {u'text': u'urn:oasis:names:tc:opendocument:xmlns:text:1.0'}
         with closing(io.BytesIO(attachment_recognition.content)) as buffer_in:
             with closing(io.BytesIO()) as buffer_out:

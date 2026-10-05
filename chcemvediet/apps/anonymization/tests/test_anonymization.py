@@ -58,3 +58,29 @@ class HideUniqueEmailTest(TestCase):
     def test_other_addresses_are_kept(self):
         content = u'xabcd@mail.example.com, abcd@mail.example.community, abcdx@mail.example.com'
         self.assertEqual(self._hide(u'other', content), content)
+
+
+class GenerateAttachmentPatternTest(TestCase):
+    u"""
+    Tests ``generate_attachment_pattern()``: user strings plus the inforequest e-mail address.
+    """
+
+    def _pattern(self, words, unique_email):
+        from unittest import mock
+        from chcemvediet.apps.anonymization import anonymization
+        inforequest = mock.Mock(unique_email=unique_email)
+        user_pattern = re.compile(u'|'.join(u'(\\b{}\\b)'.format(w) for w in words), re.IGNORECASE)
+        with mock.patch.object(anonymization, u'generate_user_pattern', return_value=user_pattern):
+            return anonymization.generate_attachment_pattern(inforequest)
+
+    def test_address_and_user_strings_are_anonymized(self):
+        prog = self._pattern([u'Novák'], u'abcd@mail.example.com')
+        res = prog.sub(u'xxxxx', u'Ján Novák <Abcd@mail.example.com>, other@mail.example.com')
+        self.assertEqual(res, u'Ján xxxxx <xxxxx>, other@mail.example.com')
+
+    def test_address_is_anonymized_without_user_strings(self):
+        prog = self._pattern([], u'abcd@mail.example.com')
+        self.assertEqual(prog.sub(u'xxxxx', u'Odpoveď na abcd@mail.example.com.'), u'Odpoveď na xxxxx.')
+
+    def test_empty_pattern_without_address_and_strings(self):
+        self.assertEqual(self._pattern([], u'').pattern, u'')
