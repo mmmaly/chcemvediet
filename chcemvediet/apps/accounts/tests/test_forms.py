@@ -240,3 +240,28 @@ class ResetPasswordFormTest(TestCase):
         data = self._create_account_password_reset_data(**{u'g-recaptcha-response': u''})
         response = self.client.post(reverse(u'account_reset_password'), data, follow=True)
         self.assertFormError(response, u'form', u'recaptcha', u'This field is required.')
+
+class ReCaptchaFieldTest(TestCase):
+    u"""
+    Tests ``ReCaptchaField`` handling of network errors while verifying the captcha.
+    """
+
+    def _validate(self, error):
+        from unittest import mock
+        from django.core.exceptions import ValidationError
+        from chcemvediet.apps.accounts.forms import ReCaptchaField
+        field = ReCaptchaField(label=u'')
+        with mock.patch(u'django_recaptcha.fields.client.submit', side_effect=error):
+            with self.assertRaises(ValidationError) as cm:
+                field.validate(u'response-token')
+        return cm.exception
+
+    def test_connection_reset_is_reported_as_form_error(self):
+        from urllib.error import URLError
+        error = self._validate(URLError(ConnectionResetError(104, u'Connection reset by peer')))
+        self.assertEqual(error.code, u'captcha_error')
+
+    def test_timeout_is_reported_as_form_error(self):
+        import socket
+        error = self._validate(socket.timeout(u'timed out'))
+        self.assertEqual(error.code, u'captcha_error')
