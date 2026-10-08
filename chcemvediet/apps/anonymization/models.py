@@ -413,7 +413,9 @@ class AttachmentFinalization(FormatMixin, models.Model):
             if self.file._file:
                 self.file.name = random_string(10)
                 self.size = self.file.size
-                self.name = adjust_extension(self.attachment.name, self.content_type)
+                # Copies of spreadsheets come with their own names (one CSV for every sheet).
+                if not self.name:
+                    self.name = adjust_extension(self.attachment.name, self.content_type)
         super(AttachmentFinalization, self).save(*args, **kwargs)
 
     def __str__(self):

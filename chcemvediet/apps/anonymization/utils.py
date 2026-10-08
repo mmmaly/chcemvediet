@@ -37,15 +37,24 @@ def run_command(args, timeout):
         raise subprocess.CalledProcessError(process.returncode, args, output=stdout, stderr=stderr)
     return subprocess.CompletedProcess(args, process.returncode, stdout, stderr)
 
-def libreoffice_convert_to_pdf(filename, directory, timeout):
+def libreoffice_convert(filename, directory, target, timeout):
     u"""
-    Converts ``filename`` to PDF in ``directory`` with LibreOffice. Every run uses its own user
-    profile inside ``directory``, so a hung or parallel LibreOffice can never capture the request.
+    Converts ``filename`` with LibreOffice into ``directory``. ``target`` is its "--convert-to"
+    value, e.g. u'pdf' or u'ods'. Every run uses its own user profile (removed afterwards), so a
+    hung or parallel LibreOffice can never capture the request.
     """
-    return run_command(
-            [u'libreoffice', u'-env:UserInstallation=file://' + os.path.join(directory, u'profile'),
-             u'--headless', u'--convert-to', u'pdf', u'--outdir', directory, filename],
-            timeout=timeout)
+    os.makedirs(directory, exist_ok=True)
+    profile = tempfile.mkdtemp(prefix=u'loprofile')
+    try:
+        return run_command(
+                [u'libreoffice', u'-env:UserInstallation=file://' + profile, u'--headless',
+                 u'--convert-to', target, u'--outdir', directory, filename],
+                timeout=timeout)
+    finally:
+        shutil.rmtree(profile, ignore_errors=True)
+
+def libreoffice_convert_to_pdf(filename, directory, timeout):
+    return libreoffice_convert(filename, directory, u'pdf', timeout)
 
 def process_output(process, exception):
     u"""

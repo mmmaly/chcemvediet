@@ -2,6 +2,8 @@ import os
 import shutil
 import traceback
 
+from django.db import transaction
+
 import subprocess
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -11,7 +13,8 @@ from poleno.attachments.models import Attachment
 from poleno.utils.misc import guess_extension
 from chcemvediet.apps.inforequests.models import Action
 
-from .models import AttachmentNormalization
+from .models import AttachmentNormalization, AttachmentFinalization
+from . import spreadsheets
 from .utils import (temporary_directory, run_command, libreoffice_convert_to_pdf,
         process_output)
 from . import content_types
@@ -123,6 +126,55 @@ def skip_normalization(attachment):
     cron_logger.info(u'Skipping normalization of attachment with not supported content '
                      u'type: {}'.format(attachment))
 
+def normalize_spreadsheet(attachment):
+    u"""
+    Spreadsheets do not go through recognition and anonymization of PDF print-outs. Their public
+    copies (the original file, an anonymized XLSX or CSV files) are made here in one step; see
+    ``spreadsheets``. The attachment is "normalized" to ODS, which later stages ignore.
+    """
+    if settings.MOCK_LIBREOFFICE:
+        normalize_using_libreoffice(attachment)
+        return
+    try:
+        inforequest = attachment.generic_object.branch.inforequest
+        ods, copies, note = spreadsheets.public_copies(attachment.file.path, attachment.name,
+                attachment.content_type, inforequest)
+    except spreadsheets.NotASpreadsheet as e:
+        if attachment.content_type in content_types.LIBREOFFICE_CONTENT_TYPES:
+            normalize_using_libreoffice(attachment) # e.g. a Word document named "*.xls"
+        else:
+            skip_normalization(attachment)
+        return
+    except Exception as e:
+        trace = traceback.format_exc()
+        AttachmentNormalization.objects.create(
+            attachment=attachment,
+            successful=False,
+            content_type=content_types.ODS_CONTENT_TYPE,
+            debug=u'Spreadsheet: no public copy.\n{}'.format(trace)
+        )
+        cron_logger.error(u'Making public copy of spreadsheet has failed: {}\n An unexpected error '
+                          u'occured: {}\n{}'.format(attachment, e.__class__.__name__, trace))
+        return
+    with transaction.atomic():
+        AttachmentNormalization.objects.create(
+            attachment=attachment,
+            successful=True,
+            file=ContentFile(ods),
+            content_type=content_types.ODS_CONTENT_TYPE,
+            debug=u'Spreadsheet: {}'.format(note)
+        )
+        for name, content_type, content in copies:
+            AttachmentFinalization.objects.create(
+                attachment=attachment,
+                successful=True,
+                file=ContentFile(content),
+                name=name,
+                content_type=content_type,
+                debug=u'Spreadsheet: {}'.format(note)
+            )
+    cron_logger.info(u'Made public copy of spreadsheet: {} ({})'.format(attachment, note))
+
 def normalize_attachment():
     attachment = (Attachment.objects
                   .attached_to(Action)
@@ -133,6 +185,8 @@ def normalize_attachment():
         return
     elif attachment.content_type == content_types.PDF_CONTENT_TYPE:
         normalize_pdf(attachment)
+    elif spreadsheets.is_spreadsheet(attachment):
+        normalize_spreadsheet(attachment)
     elif attachment.content_type in content_types.LIBREOFFICE_CONTENT_TYPES:
         normalize_using_libreoffice(attachment)
     elif attachment.content_type in content_types.IMAGEMAGICK_CONTENT_TYPES:
