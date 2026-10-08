@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 from xml.etree import ElementTree
 from xml.sax.saxutils import escape
@@ -224,13 +225,17 @@ def overlaps(a, b):
 def recognize(pdf, odt, lang=DEFAULT_LANG, dpi=DEFAULT_DPI, tessdata=None, timeout=None,
               text_output=None):
     u"""
-    Runs the whole PDF -> ODT recognition. Raises ``subprocess.CalledProcessError`` on failure.
+    Runs the whole PDF -> ODT recognition. Raises ``subprocess.CalledProcessError`` on failure
+    and ``subprocess.TimeoutExpired`` if the whole document takes longer than ``timeout`` seconds.
     ``text_output``: optional path for a plain text dump (evaluation).
     """
+    deadline = time.time() + timeout if timeout else None
+    def remaining():
+        return max(1, deadline - time.time()) if deadline else None
     directory = tempfile.mkdtemp(prefix=u'tessodt')
     try:
         run([u'pdftoppm', u'-r', str(dpi), u'-gray', u'-png', pdf, os.path.join(directory, u'page')],
-                timeout=timeout)
+                timeout=remaining())
         images = sorted(f for f in os.listdir(directory) if f.endswith(u'.png'))
         if not images:
             raise RuntimeError(u'pdftoppm produced no pages')
@@ -243,7 +248,7 @@ def recognize(pdf, odt, lang=DEFAULT_LANG, dpi=DEFAULT_DPI, tessdata=None, timeo
                        u'-c', u'thresholding_method=' + method, u'hocr']
                 if tessdata:
                     cmd[3:3] = [u'--tessdata-dir', tessdata]
-                run(cmd, timeout=timeout)
+                run(cmd, timeout=remaining())
                 size, found = parse_hocr(base + u'.hocr')
                 if not blocks:
                     blocks = found

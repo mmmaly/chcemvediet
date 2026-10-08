@@ -12,7 +12,8 @@ from poleno.utils.misc import guess_extension
 from chcemvediet.apps.inforequests.models import Action
 
 from .models import AttachmentNormalization
-from .utils import temporary_directory
+from .utils import (temporary_directory, run_command, libreoffice_convert_to_pdf,
+        process_output)
 from . import content_types
 
 
@@ -51,14 +52,7 @@ def normalize_using_libreoffice(attachment):
         with temporary_directory() as directory:
             filename = os.path.join(directory, u'file' + guess_extension(attachment.content_type))
             shutil.copy2(attachment.file.path, filename)
-            p = subprocess.run(
-                [u'libreoffice', u'--headless', u'--convert-to', u'pdf', u'--outdir', directory,
-                 filename],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=LIBREOFFICE_TIMEOUT,
-                check=True,
-            )
+            p = libreoffice_convert_to_pdf(filename, directory, LIBREOFFICE_TIMEOUT)
             with open(os.path.join(directory, u'file.pdf'), u'rb') as file_pdf:
                 AttachmentNormalization.objects.create(
                     attachment=attachment,
@@ -72,8 +66,7 @@ def normalize_using_libreoffice(attachment):
             cron_logger.info(u'Normalized attachment using libreoffice: {}'.format(attachment))
     except Exception as e:
         trace = traceback.format_exc()
-        stdout = (p.stdout if p else getattr(e, u'stdout', b'')).decode(u'utf-8')
-        stderr = (p.stderr if p else getattr(e, u'stderr', b'')).decode(u'utf-8')
+        stdout, stderr = process_output(p, e)
         AttachmentNormalization.objects.create(
             attachment=attachment,
             successful=False,
@@ -94,13 +87,8 @@ def normalize_using_imagemagic(attachment):
         with temporary_directory() as directory:
             filename = os.path.join(directory, u'file' + guess_extension(attachment.content_type))
             shutil.copy2(attachment.file.path, filename)
-            p = subprocess.run(
-                [u'convert', filename, os.path.join(directory, u'file.pdf')],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=IMAGEMAGIC_TIMEOUT,
-                check=True,
-            )
+            p = run_command([u'convert', filename, os.path.join(directory, u'file.pdf')],
+                    timeout=IMAGEMAGIC_TIMEOUT)
             with open(os.path.join(directory, u'file.pdf'), u'rb') as file_pdf:
                 AttachmentNormalization.objects.create(
                     attachment=attachment,
@@ -114,8 +102,7 @@ def normalize_using_imagemagic(attachment):
             cron_logger.info(u'Normalized attachment using imagemagic: {}'.format(attachment))
     except Exception as e:
         trace = traceback.format_exc()
-        stdout = (p.stdout if p else getattr(e, u'stdout', b'')).decode(u'utf-8')
-        stderr = (p.stderr if p else getattr(e, u'stderr', b'')).decode(u'utf-8')
+        stdout, stderr = process_output(p, e)
         AttachmentNormalization.objects.create(
             attachment=attachment,
             successful=False,
