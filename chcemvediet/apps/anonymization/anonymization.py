@@ -142,6 +142,16 @@ def generate_attachment_pattern(inforequest):
         patterns.append(u'({})'.format(re.escape(inforequest.unique_email)))
     return re.compile(u'|'.join(p for p in patterns if p), re.IGNORECASE | re.UNICODE)
 
+def anonymize_filename(inforequest, filename):
+    u"""
+    File name of a public copy of an attachment: the user strings (also inside longer words, file
+    names are often written without spaces) and the inforequest unique e-mail address are replaced.
+    """
+    if inforequest.unique_email:
+        filename = re.sub(re.escape(inforequest.unique_email), ANONYMIZATION_STRING, filename,
+                flags=re.IGNORECASE)
+    return anonymize_string(generate_user_pattern(inforequest, match_subwords=True), filename)
+
 def anonymize_string(prog, content):
     if not prog.pattern:
         return content
