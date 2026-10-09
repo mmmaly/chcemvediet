@@ -22,6 +22,7 @@ found in it, nothing is published.
 import os
 import re
 import shutil
+import subprocess
 import zipfile
 from html import unescape
 from io import BytesIO
@@ -35,7 +36,8 @@ from .anonymization import (ANONYMIZATION_STRING, generate_attachment_pattern,
 from .utils import temporary_directory, libreoffice_convert
 
 
-LIBREOFFICE_TIMEOUT = 300
+# Large workbooks take minutes to load; there is no page limit like with PDF print-outs.
+LIBREOFFICE_TIMEOUT = 900
 # LibreOffice filter options for CSV: comma, double quote, UTF-8, from the first row; the last
 # option (-1) exports every sheet to its own file "<name>-<sheet>.csv".
 CSV_FILTER = u'csv:Text - txt - csv (StarCalc):44,34,76,1,,0,false,true,false,false,false,-1'
@@ -172,18 +174,27 @@ def extract_ods_text(ods):
     return u'\n'.join(texts)
 
 def extract_ooxml_text(data):
-    u"""Rough text of an OOXML (XLSX) file: tags replaced with line breaks. For checks only."""
+    u"""
+    Texts of an XLSX file a reader may see: strings, numbers, formulas, comments, sheet names,
+    headers and document properties. Row numbers, cell references and indexes of shared strings
+    are left out; a postcode-like number would match them by accident. For checks only.
+    """
     texts = []
     with zipfile.ZipFile(BytesIO(data)) as archive:
         for name in archive.namelist():
             texts.append(name)
-            if name.endswith((u'.xml', u'.rels', u'.vml')):
-                xml = archive.read(name).decode(u'utf-8', u'replace')
-                # Texts of one cell may be split into runs: check them both joined and apart.
-                texts.append(unescape(re.sub(r'</?(?:r|t|rPr|rFont|sz|b|i|u|color|family|charset|scheme)\b[^>]*>', u'', xml)))
-                texts.append(unescape(re.sub(r'<[^>]+>', u'\n', xml)))
-                texts.extend(unescape(v) for v in re.findall(r'="([^"]*)"', xml))
-    return u'\n'.join(texts)
+            if not name.endswith((u'.xml', u'.vml')):
+                continue
+            xml = archive.read(name).decode(u'utf-8', u'replace')
+            if name.startswith(u'xl/worksheets/'):
+                xml = re.sub(r'(?s)<c\b[^>]*\bt="s"[^>]*>.*?</c>', u'', xml)
+            elif name == u'xl/workbook.xml' or name.startswith(u'docProps/'):
+                texts.extend(unescape(v) for v in re.findall(r'\bname="([^"]*)"', xml))
+            # Texts of one cell may be split into runs: check them both joined and apart.
+            texts.append(unescape(re.sub(r'</?(?:r|t|rPr|rFont|sz|b|i|u|color|family|charset|scheme)\b[^>]*>', u'', xml)
+                    ).replace(u'<', u'\n<').replace(u'>', u'>\n'))
+            texts.append(unescape(re.sub(r'<[^>]+>', u'\n', xml)))
+    return u'\n'.join(l for l in u'\n'.join(texts).split(u'\n') if not l.startswith(u'<'))
 
 def stringify_cell(cell, text=None):
     u"""Turns a typed cell (number, date, formula) into a plain string cell."""
@@ -325,6 +336,8 @@ def public_copies(path, name, content_type, inforequest):
             with open(os.path.join(directory, u'ods', u'source.ods'), u'rb') as f:
                 ods = f.read()
             reasons = inspect_ods(ods)
+        except subprocess.TimeoutExpired:
+            raise # Too big, not unreadable: no public copy rather than thousands of PDF pages.
         except Exception as e:
             raise NotASpreadsheet(u'{}: {}'.format(e.__class__.__name__, e))
         if has_macros(source):

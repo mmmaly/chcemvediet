@@ -131,6 +131,20 @@ class SpreadsheetsTest(TestCase):
         with self.assertRaises(spreadsheets.StillIdentifiable):
             spreadsheets.assert_not_identifiable(pattern(u'Novák'), spreadsheets.extract_ods_text(make_ods()))
 
+    def test_xlsx_text_has_cell_values_but_no_row_numbers_and_string_indexes(self):
+        output = BytesIO()
+        with zipfile.ZipFile(output, u'w') as z:
+            z.writestr(u'xl/workbook.xml', u'<workbook><sheets><sheet name="Hárok Novák" sheetId="1"/></sheets></workbook>')
+            z.writestr(u'xl/sharedStrings.xml', u'<sst><si><r><t>pani Nová</t></r><r><rPr><b/></rPr><t>ková</t></r></si></sst>')
+            z.writestr(u'xl/worksheets/sheet1.xml', u'<worksheet><sheetData><row r="81101">'
+                    u'<c r="A81101" t="s"><v>94905</v></c><c r="B81101"><v>12345</v></c>'
+                    u'<c r="C81101" t="str"><f>A1&amp;"x"</f><v>text</v></c></row></sheetData></worksheet>')
+        text = spreadsheets.extract_ooxml_text(output.getvalue())
+        for expected in [u'Hárok Novák', u'pani Nováková', u'12345', u'A1&"x"', u'text']:
+            self.assertIn(expected, text)
+        for unexpected in [u'81101', u'94905']:
+            self.assertNotIn(unexpected, text)
+
     def test_identifying_strings(self):
         profile = mock.Mock(custom_anonymized_strings=None, street=u'Hlavná 5', city=u'Bratislava', zip=u'81101')
         user = mock.Mock(first_name=u'Ján', last_name=u'Novák', profile=profile)
