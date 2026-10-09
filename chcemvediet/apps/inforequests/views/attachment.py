@@ -13,7 +13,7 @@ from poleno.utils.urls import reverse
 from poleno.utils.views import require_ajax, login_required
 from chcemvediet.apps.wizards.models import WizardDraft
 from chcemvediet.apps.inforequests.models import InforequestDraft, Action
-from chcemvediet.apps.anonymization.anonymization import generate_user_pattern, anonymize_string
+from chcemvediet.apps.anonymization.anonymization import anonymize_filename
 from chcemvediet.apps.anonymization.models import AttachmentFinalization
 
 
@@ -67,7 +67,7 @@ def attachment_finalization_download(request, attachment_finalization_pk):
     generic_object = attachment_finalization.attachment.generic_object
     if isinstance(generic_object, Action):
         if generic_object.branch.inforequest.published:
-            prog = generate_user_pattern(generic_object.branch.inforequest, match_subwords=True)
-            filename = anonymize_string(prog, attachment_finalization.name)
+            filename = anonymize_filename(generic_object.branch.inforequest,
+                    attachment_finalization.name)
             return attachments_views.download(request, attachment_finalization, filename)
     raise Http404()

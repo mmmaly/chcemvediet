@@ -84,3 +84,26 @@ class GenerateAttachmentPatternTest(TestCase):
 
     def test_empty_pattern_without_address_and_strings(self):
         self.assertEqual(self._pattern([], u'').pattern, u'')
+
+
+class AnonymizeFilenameTest(TestCase):
+    u"""
+    Tests ``anonymize_filename()``: names of public copies of attachments.
+    """
+
+    def _anonymize(self, filename, unique_email=u'abcd@mail.example.com'):
+        from unittest import mock
+        from chcemvediet.apps.anonymization import anonymization
+        inforequest = mock.Mock(unique_email=unique_email)
+        user_pattern = re.compile(u'(nov(?:a|á|ä)k)', re.IGNORECASE)
+        with mock.patch.object(anonymization, u'generate_user_pattern', return_value=user_pattern) as pattern:
+            res = anonymization.anonymize_filename(inforequest, filename)
+        pattern.assert_called_once_with(inforequest, match_subwords=True)
+        return res
+
+    def test_surname_and_address_are_replaced(self):
+        self.assertEqual(self._anonymize(u'odpoved_Novak_Abcd@mail.example.com.pdf'), u'odpoved_xxxxx_xxxxx.pdf')
+
+    def test_other_names_are_kept(self):
+        self.assertEqual(self._anonymize(u'rozhodnutie 12-2026.pdf'), u'rozhodnutie 12-2026.pdf')
+        self.assertEqual(self._anonymize(u'Novák.xlsx', unique_email=u''), u'xxxxx.xlsx')
