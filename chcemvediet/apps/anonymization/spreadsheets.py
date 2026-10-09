@@ -349,7 +349,9 @@ def public_copies(path, name, content_type, inforequest):
                     u', '.join(sorted(reasons)))
             return ods, copies, note
 
-        if not found(identifying, name + u'\n' + extract_ods_text(ods)):
+        # The file name does not matter here: names of public copies are anonymized when they are
+        # shown and downloaded.
+        if not found(identifying, extract_ods_text(ods)):
             with open(path, u'rb') as f:
                 return ods, [(name, content_type, f.read())], u'Original file, nothing to anonymize.'
 
