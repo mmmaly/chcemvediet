@@ -14,7 +14,9 @@ from .models import AttachmentAnonymization, AttachmentFinalization
 from . import content_types
 
 
-LIBREOFFICE_TIMEOUT = 300
+# Converting a recognized document of a few hundred pages (about 30,000 text boxes) to PDF takes
+# LibreOffice 10 to 15 minutes; ordinary documents need seconds.
+LIBREOFFICE_TIMEOUT = 1200
 
 def finalize_using_mock(attachment_anonymization):
     finalized = os.path.join(settings.PROJECT_PATH,
