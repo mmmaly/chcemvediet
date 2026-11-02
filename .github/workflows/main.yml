@@ -1,67 +1,29 @@
 name: Testing project
-on: push
+on:
+  push:
+  pull_request:
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    # The same system and Python as the production server.
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: 2.7.18
+        python-version: '3.10'
+        cache: pip
+        cache-dependency-path: requirements/*.txt
     - name: Install dependencies
       run: |
-        sudo apt-get update && sudo apt-get install virtualenv gettext
-    - name: Run setup
+        sudo apt-get update && sudo apt-get install -y gettext libmysqlclient-dev pkg-config
+        pip install -r requirements/base.txt -r requirements/local.txt -r requirements/tests.txt
+    - name: Download Fontello icons and compile translations
       run: |
-        CONFIGURATION=(
-          # Server mode: Local development mode with dummy email infrastructure.
-          "2"
-          # Mock libreoffice?
-          "y"
-          # Mock imagemagic?
-          "y"
-          # Mock abbyyocr11?
-          "y"
-          # Install requirements for unittesting?
-          "y"
-          # Server domain
-          "localhost:8000"
-          # Admin e-mail (default)
-          ""
-          # Support e-mail (default)
-          ""
-          # Inforequest unique e-mail (default)
-          ""
-          # Default from e-mail (default)
-          ""
-          # Obligee dummy e-mail
-          "obilgee@chcemvediet.sk"
-          # Unique cache key prefix (default)
-          ""
-          # Google Custom Search API key (default)
-          ""
-          # Google reCaptcha public key (default)
-          ""
-          # Google reCaptcha private key (default)
-          ""
-          # Load datasheets / Neighbourhood dummy was omitted / Delete it?
-          "y"
-          # Load datasheets / Municipality dummy was omitted / Delete it?
-          "y"
-          # Load datasheets / District dummy was omitted / Delete it?
-          "y"
-          # Load datasheets / Region dummy was omitted / Delete it?
-          "y"
-          # Admin password
-          "admin"
-          # Google OAuth Client ID (default)
-          ""
-          # Google OAuth Secret (default)
-          ""
-        )
-        printf "%s\n" "${CONFIGURATION[@]}" | PYTHONUNBUFFERED=1 python setup.py
+        python fontello/fontello.py
+        python manage.py compilemessages --settings=chcemvediet.settings_tests
     - name: Run tests
+      # chcemvediet.settings_tests: SQLite, file cache, no mail, LibreOffice/ImageMagick/OCR mocked.
       run: |
-        env/bin/python manage.py test
+        python manage.py test --settings=chcemvediet.settings_tests --noinput

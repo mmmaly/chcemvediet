@@ -31,7 +31,7 @@ class ChcemvedietConfig(AppConfig):
         # The bug seems to be fixed in Django 3.1rc1.
         # See: https://github.com/django/django/commit/88637064b3118f90ae5a402e1b47a243ef88d656
 
-        from chcemvediet import settings
+        from django.conf import settings
         if settings.DATABASES[u'default'][u'ENGINE'] == u'django.db.backends.sqlite3':
             import django.db.backends.sqlite3.base
             original_sqlite_format_dtdelta = django.db.backends.sqlite3.base._sqlite_format_dtdelta
