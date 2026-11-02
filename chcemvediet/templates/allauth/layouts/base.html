@@ -1,0 +1,13 @@
+{# vim: set filetype=htmldjango shiftwidth=2 :#}
+{% extends "main/base/single_column.html" %}
+
+{% comment %}
+ %
+ % django-allauth >= 0.55 renders its own pages (e.g. "Sign in via Google", "Confirm access")
+ % through this layout. Pages the project overrides itself do not use it. Their blocks
+ % "head_title" and "content" are placed into the site layout here.
+ %
+{% endcomment %}
+
+
+{% block title %}{% block head_title %}{% endblock %} | {{ block.super }}{% endblock %}

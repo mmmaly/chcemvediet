@@ -1,0 +1,12 @@
+{% load allauth %}
+{# Form of allauth's own pages in the layout of the site's forms (see main/forms). #}
+<form class="form-horizontal" method="{{ attrs.method }}" action="{{ attrs.action }}">
+  {% slot body %}
+  {% endslot %}
+  <div class="form-group">
+    <div class="{% if attrs.form %}col-sm-offset-3 col-sm-9{% else %}col-sm-12{% endif %}">
+      {% slot actions %}
+      {% endslot %}
+    </div>
+  </div>
+</form>
