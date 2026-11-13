@@ -85,6 +85,7 @@ MIDDLEWARE = (
     u'django.contrib.messages.middleware.MessageMiddleware',
     u'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     u'django.middleware.locale.LocaleMiddleware',
+    u'poleno.utils.admin_login_as.AdminLoginAsMiddleware',
     u'django.middleware.clickjacking.XFrameOptionsMiddleware',
     u'simple_history.middleware.HistoryRequestMiddleware',
     u'allauth.account.middleware.AccountMiddleware',
