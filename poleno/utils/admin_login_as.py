@@ -1,53 +1,61 @@
 from django.urls import re_path
 from django.contrib import admin
-from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import User
 from django.urls import resolve, Resolver404
 from django.http import HttpResponseRedirect
+from django.utils.deprecation import MiddlewareMixin
+from django.utils.functional import SimpleLazyObject
 
-from poleno.utils.http import get_request
 from poleno.utils.urls import reverse
 
 
-class AdminLoginAsBackendMixin(ModelBackend):
+class AdminLoginAsMiddleware(MiddlewareMixin):
     u"""
-    Django authentication ModelBackend that allows admin to log in as any user (without being logged
-    off) and perform any action on his behalf, without the admin knowing the user's password. Admin
-    can simultaneously perform actions on admin page. Must be used together with
-    ``AdminLoginAsAdminMixin``. Note that admin application namespace must be called 'admin'.
+    Middleware that allows admin to log in as any user (without being logged off) and perform any
+    action on his behalf, without the admin knowing the user's password. Admin can simultaneously
+    perform actions on admin page. Must be used together with ``AdminLoginAsAdminMixin``. Note that
+    admin application namespace must be called 'admin'.
 
-    Example:
-
-        class MyApplicationBackend(AdminLoginAsBackendMixin, SomeAuthenticationBackend):
-            ...
+    The admin stays authenticated in the session as himself; only ``request.user`` is replaced
+    outside the admin pages. Replacing the user already in the authentication backend does not
+    work since Django 1.10: Django verifies the session hash against the returned user and logs
+    the admin out when it does not match.
 
     Settings:
 
-        AUTHENTICATION_BACKENDS = (
-            'path.to.MyApplicationBackend',
+        MIDDLEWARE = (
+            ...
+            'django.contrib.auth.middleware.AuthenticationMiddleware',
+            'django.middleware.locale.LocaleMiddleware',
+            'poleno.utils.admin_login_as.AdminLoginAsMiddleware',
             ...
         )
     """
     def is_admin_path(self, path):
         return resolve(path).namespace == u'admin'
 
-    def get_user(self, user_id):
-        request = get_request()
-        user = super(AdminLoginAsBackendMixin, self).get_user(user_id)
-        if request is None:
-            return user
-        try:
-            resolve(request.path)
-        except Resolver404:
-            return user
+    def get_user(self, admin, admin_login_as):
+        if not admin.is_staff:
+            return admin
+        return User.objects.filter(pk=admin_login_as).first() or admin
+
+    def process_request(self, request):
         admin_login_as = request.session.get(u'admin_login_as')
-        if user and user.is_staff and not self.is_admin_path(request.path) and admin_login_as:
-            return super(AdminLoginAsBackendMixin, self).get_user(admin_login_as) or user
-        return user
+        if not admin_login_as:
+            return None
+        try:
+            if self.is_admin_path(request.path):
+                return None
+        except Resolver404:
+            return None
+        admin = request.user
+        request.user = SimpleLazyObject(lambda: self.get_user(admin, admin_login_as))
+        return None
 
 class AdminLoginAsAdminMixin(admin.ModelAdmin):
     u"""
     Django ModelAdmin that defines view, which allows admin to be simultaneously logged in as any
-    user. Must be used together with ``AdminLoginAsBackendMixin``.
+    user. Must be used together with ``AdminLoginAsMiddleware``.
 
     Example:
 

@@ -33,6 +33,8 @@ class LoginForm(AllauthLoginForm):
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
+        # The login template has its own "forgot password" link next to the submit button.
+        self.fields[u'password'].help_text = u''
         self.fields[u'recaptcha'] = ReCaptchaField(label=u'')
 
 class SignupForm(AllauthSignupForm):

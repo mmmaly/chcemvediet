@@ -1,7 +1,9 @@
 # vim: expandtab
 # -*- coding: utf-8 -*-
 import lxml.html
+from allauth.socialaccount.models import SocialApp
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.test import TestCase
 
 from poleno.utils.urls import reverse
@@ -18,6 +20,9 @@ class LoginFormTest(TestCase):
         user = User.objects.create(username=u'john', email=u'john@doe.org')
         user.set_password(u'doe')
         user.save()
+        # The login page links to Google login, which needs the app to be configured.
+        app = SocialApp.objects.create(provider=u'google', name=u'Google', client_id=u'id', secret=u'secret')
+        app.sites.add(Site.objects.get_current())
 
     def _create_account_login_data(self, **kwargs):
         defaults = {
@@ -35,6 +40,11 @@ class LoginFormTest(TestCase):
         self.assertTemplateUsed(response, u'account/login.html')
         html = lxml.html.fromstring(response.content.decode(u'utf-8'))
         element = html.get_element_by_id(u'g-recaptcha-response')
+
+    def test_get_login_form_has_no_escaped_markup(self):
+        response = self.client.get(reverse(u'account_login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(u'&lt;a ', response.content.decode(u'utf-8'))
 
     def test_post_login_form_with_valid_data(self):
         data = self._create_account_login_data(login=u'john@doe.org', password=u'doe')
