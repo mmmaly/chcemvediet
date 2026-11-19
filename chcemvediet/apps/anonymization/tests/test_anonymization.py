@@ -1,4 +1,7 @@
+import io
 import re
+import subprocess
+import zipfile
 
 from lxml import etree
 from django.test import TestCase
@@ -107,3 +110,59 @@ class AnonymizeFilenameTest(TestCase):
     def test_other_names_are_kept(self):
         self.assertEqual(self._anonymize(u'rozhodnutie 12-2026.pdf'), u'rozhodnutie 12-2026.pdf')
         self.assertEqual(self._anonymize(u'Novák.xlsx', unique_email=u''), u'xxxxx.xlsx')
+
+
+class OriginalPdfIsPublishableTest(TestCase):
+    u"""
+    Tests ``original_pdf_is_publishable()``: a PDF without identifying data is published untouched.
+    """
+
+    ODT_NS = u'urn:oasis:names:tc:opendocument:xmlns:text:1.0'
+
+    def _odt(self, *spans):
+        content = u'<?xml version="1.0" encoding="UTF-8"?><r xmlns:text="{}"><text:p>{}</text:p></r>'.format(
+                self.ODT_NS, u''.join(u'<text:span>{}</text:span>'.format(s) for s in spans))
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, u'w') as z:
+            z.writestr(u'mimetype', u'application/vnd.oasis.opendocument.text')
+            z.writestr(u'content.xml', content.encode(u'utf-8'))
+        return buffer.getvalue()
+
+    def _publishable(self, odt, pdf_text=u'', content_type=u'application/pdf', pdf_error=None):
+        from unittest import mock
+        from chcemvediet.apps.anonymization import anonymization, spreadsheets
+        attachment = mock.Mock(content_type=content_type)
+        pattern = re.compile(u'(\\bNov(?:a|á|ä)k\\b)', re.IGNORECASE)
+        with mock.patch.object(spreadsheets, u'generate_identifying_pattern', return_value=pattern), \
+                mock.patch.object(anonymization, u'pdf_text', return_value=pdf_text,
+                        side_effect=pdf_error):
+            return anonymization.original_pdf_is_publishable(attachment, odt)
+
+    def test_pdf_without_identifying_data_is_publishable(self):
+        self.assertTrue(self._publishable(self._odt(u'Projekt organizácie dopravy', u'Bratislava'),
+                pdf_text=u'Author: Úrad'))
+
+    def test_identifying_data_in_recognized_text(self):
+        self.assertFalse(self._publishable(self._odt(u'Vážený pán Novák')))
+
+    def test_word_split_into_spans_is_found(self):
+        self.assertFalse(self._publishable(self._odt(u'Vážený pán No', u'vák')))
+
+    def test_identifying_data_in_text_layer_or_metadata(self):
+        self.assertFalse(self._publishable(self._odt(u'Rozhodnutie'), pdf_text=u'Author: Ján Novák'))
+
+    def test_other_content_types_are_not_publishable(self):
+        self.assertFalse(self._publishable(self._odt(u'Rozhodnutie'),
+                content_type=u'application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
+
+    def test_pdf_that_can_not_be_read_is_not_publishable(self):
+        self.assertFalse(self._publishable(self._odt(u'Rozhodnutie'),
+                pdf_error=subprocess.CalledProcessError(1, u'pdftotext')))
+
+    def test_pdf_text_reads_text_layer_and_metadata(self):
+        import os
+        from django.conf import settings
+        from chcemvediet.apps.anonymization.anonymization import pdf_text
+        text = pdf_text(os.path.join(settings.PROJECT_PATH,
+                u'chcemvediet/apps/anonymization/mocks/normalized.pdf'))
+        self.assertIn(u'Pages:', text)
