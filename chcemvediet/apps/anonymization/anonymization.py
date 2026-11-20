@@ -8,15 +8,19 @@ from contextlib import closing
 import magic
 from lxml import etree
 from django.core.files.base import ContentFile
+from django.db import transaction
 
 from poleno.cron import cron_logger
 
-from .models import AttachmentRecognition, AttachmentAnonymization
+from .models import AttachmentRecognition, AttachmentAnonymization, AttachmentFinalization
+from .utils import run_command
 from . import content_types
 
 
 ANONYMIZATION_STRING = u'xxxxx'
 WORD_SIZE_MIN = 3
+# pdftotext and pdfinfo need seconds even for documents of hundreds of pages.
+POPPLER_TIMEOUT = 300
 
 TRANSLATE_TABLE = {
     u'a': u'(?:a|á|ä)',
@@ -178,13 +182,62 @@ def anonymize_markup(prog, content, parser, xpath=u'.//', namespace=None):
         return etree.tostring(root, encoding=u'unicode')
     return etree.tostring(root)
 
+def odt_text(odt):
+    u"""
+    Text of all XML members of ``odt`` (bytes): every paragraph and heading on its own line, with
+    its spans joined, so a word split into several spans is found too; then any other text.
+    """
+    paragraphs = (u'{urn:oasis:names:tc:opendocument:xmlns:text:1.0}p',
+                  u'{urn:oasis:names:tc:opendocument:xmlns:text:1.0}h')
+    texts = []
+    with zipfile.ZipFile(io.BytesIO(odt)) as z:
+        for name in z.namelist():
+            if name.endswith(u'.xml'):
+                root = etree.fromstring(z.read(name), etree.XMLParser(huge_tree=True))
+                texts.extend(u''.join(e.itertext()) for e in root.iter(*paragraphs))
+                texts.extend(root.itertext())
+    return u'\n'.join(texts)
+
+def pdf_text(path):
+    u"""
+    Text layer and metadata (document info and XMP) of the PDF file ``path``.
+    """
+    texts = []
+    for args in ([u'pdftotext', u'-q', path, u'-'], [u'pdfinfo', path], [u'pdfinfo', u'-meta', path]):
+        texts.append(run_command(args, POPPLER_TIMEOUT).stdout.decode(u'utf-8', u'replace'))
+    return u'\n'.join(texts)
+
+def original_pdf_is_publishable(attachment, recognized_odt):
+    u"""
+    Whether the original PDF ``attachment`` can be published untouched. The copy rebuilt from the
+    recognized text loses every picture, drawing and stamp, so a PDF in which there is nothing to
+    hide is published as it is, like spreadsheets: no identifying data of the requester (see
+    ``spreadsheets.get_identifying_strings``) may be found in its recognized text, in its own text
+    layer, or in its metadata. If anything can not be checked, the PDF is not publishable.
+    """
+    from .spreadsheets import generate_identifying_pattern, found
+    if attachment.content_type != content_types.PDF_CONTENT_TYPE:
+        return False
+    inforequest = attachment.generic_object.branch.inforequest
+    pattern = generate_identifying_pattern(inforequest)
+    try:
+        text = odt_text(recognized_odt) + u'\n' + pdf_text(attachment.file.path)
+    except Exception:
+        cron_logger.warning(u'Checking original PDF has failed, it will not be published: {}\n{}'
+                .format(attachment, traceback.format_exc()))
+        return False
+    return not found(pattern, text)
+
 def anonymize_odt(attachment_recognition):
     try:
-        inforequest = attachment_recognition.attachment.generic_object.branch.inforequest
+        attachment = attachment_recognition.attachment
+        inforequest = attachment.generic_object.branch.inforequest
         parser = etree.XMLParser()
         pattern = generate_attachment_pattern(inforequest)
         namespace = {u'text': u'urn:oasis:names:tc:opendocument:xmlns:text:1.0'}
-        with closing(io.BytesIO(attachment_recognition.content)) as buffer_in:
+        recognized_odt = attachment_recognition.content
+        publish_original = original_pdf_is_publishable(attachment, recognized_odt)
+        with closing(io.BytesIO(recognized_odt)) as buffer_in:
             with closing(io.BytesIO()) as buffer_out:
                 with zipfile.ZipFile(buffer_in) as zipfile_in:
                     with zipfile.ZipFile(buffer_out, u'w') as zipfile_out:
@@ -195,14 +248,27 @@ def anonymize_odt(attachment_recognition):
                                         pattern, content, parser, u'.//text:span', namespace))
                             else:
                                 zipfile_out.writestr(f, content)
-                AttachmentAnonymization.objects.create(
-                    attachment=attachment_recognition.attachment,
-                    successful=True,
-                    file=ContentFile(buffer_out.getvalue()),
-                    content_type=content_types.ODT_CONTENT_TYPE,
-                )
-                cron_logger.info(u'Anonymized attachment_recognition: {}'.format(
-                        attachment_recognition))
+                with transaction.atomic():
+                    AttachmentAnonymization.objects.create(
+                        attachment=attachment,
+                        successful=True,
+                        file=ContentFile(buffer_out.getvalue()),
+                        content_type=content_types.ODT_CONTENT_TYPE,
+                    )
+                    if publish_original:
+                        # The finalization step skips attachments that are already finalized.
+                        with open(attachment.file.path, u'rb') as original:
+                            AttachmentFinalization.objects.create(
+                                attachment=attachment,
+                                successful=True,
+                                file=ContentFile(original.read()),
+                                content_type=content_types.PDF_CONTENT_TYPE,
+                                debug=u'Original PDF published untouched: no identifying data '
+                                      u'of the requester found in it.',
+                            )
+                cron_logger.info(u'Anonymized attachment_recognition: {}{}'.format(
+                        attachment_recognition,
+                        u' (original PDF published)' if publish_original else u''))
     except Exception as e:
         trace = traceback.format_exc()
         AttachmentAnonymization.objects.create(
